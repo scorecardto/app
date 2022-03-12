@@ -1,3 +1,5 @@
+import {ColorSchemeName} from 'react-native';
+
 export interface ColorThemeWithAppearance {
   light: ColorTheme;
   dark: ColorTheme;
@@ -13,6 +15,39 @@ export interface ColorTheme {
   700: string;
   800: string;
 }
+
+export interface AppearanceColors {
+  appearance: ColorSchemeName;
+  100: string;
+  200: string;
+  300: string;
+  400: string;
+  500: string;
+  600: string;
+  700: string;
+}
+
+export const DAY_COLORS: AppearanceColors = {
+  appearance: 'light',
+  100: '#FFFFFF',
+  200: '#F7F7F7',
+  300: '#E5E5E5',
+  400: '#909090',
+  500: '#688091',
+  600: '#EFF1F4',
+  700: '#333333',
+};
+
+export const NIGHT_COLORS: AppearanceColors = {
+  appearance: 'dark',
+  100: '#252A2E',
+  200: '#363E45',
+  300: '#535c63',
+  400: '#909090',
+  500: '#748A9A',
+  600: '#3D4249',
+  700: '#FFFFFF',
+};
 
 const PACIFIC_NEUTRAL = {
   300: '#73A2D0',

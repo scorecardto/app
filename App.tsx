@@ -42,14 +42,17 @@ import Navigation from './components/structure/Navigation';
 import CoursesScreen from './components/structure/screens/CoursesScreen';
 
 import {
+  AppearanceColors,
   ColorThemeWithAppearance,
+  DAY_COLORS,
+  NIGHT_COLORS,
   THEME_PACIFIC,
   THEME_ROSE,
   THEME_WARM,
 } from './lib/types/ColorTheme';
 import GradeSheet from './components/summary/GradeSheet';
 
-export const AppearanceContext = createContext('light');
+export const AppearanceContext = createContext(DAY_COLORS);
 export const ThemeContext = createContext(THEME_PACIFIC);
 
 export const Light: Theme = {
@@ -70,15 +73,17 @@ export const Dark: Theme = {
 
 export default function App() {
   // holds light dark mode state
-  const [appearance, setAppearance] = useState<ColorSchemeName>(
-    useColorScheme(),
+  const [appearance, setAppearance] = useState<AppearanceColors>(
+    useColorScheme() === 'light' ? DAY_COLORS : NIGHT_COLORS,
   );
 
   const [theme, setTheme] = useState<ColorThemeWithAppearance>(THEME_ROSE);
 
   // update state when theme changes
   const appearanceChangeListener = useCallback(() => {
-    setAppearance(Appearance.getColorScheme());
+    setAppearance(
+      Appearance.getColorScheme() === 'light' ? DAY_COLORS : NIGHT_COLORS,
+    );
   }, []);
 
   // call themeChangeListener when theme changes
@@ -97,7 +102,8 @@ export default function App() {
   return (
     <AppearanceContext.Provider value={appearance}>
       <ThemeContext.Provider value={theme}>
-        <NavigationContainer theme={appearance === 'light' ? Light : Dark}>
+        <NavigationContainer
+          theme={appearance.appearance === 'light' ? Light : Dark}>
           <Navigation screens={screens} />
         </NavigationContainer>
       </ThemeContext.Provider>

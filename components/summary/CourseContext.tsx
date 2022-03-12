@@ -11,42 +11,15 @@ import {
 import {AppearanceContext, Dark, Light} from '../../App';
 import Grade from './Grade';
 import PinButton from './PinButton';
-import GradeSheet from './GradeSheet';
-import {SheetManager} from 'react-native-actions-sheet';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Easing} from 'react-native-reanimated';
 
-type ICourseCardProps = {
-  courseName: string;
-  average: string;
-  pinned: boolean;
-  index: number;
-};
+type ICourseContextProps = {};
 
-export default function CourseCard({
-  courseName,
-  average,
-  pinned,
-  index,
-}: ICourseCardProps) {
-  // const widthAnim = useRef(new Animated.Value(0)).current;
-
-  const [expanded, setExpanded] = useState(false);
-
+export default function CourseContext({}: ICourseContextProps) {
   const usingDarkMode = useContext(AppearanceContext).appearance !== 'light';
-
-  const handlePress = () => {
-    SheetManager.show('GradeSheet_' + index);
-  };
-
-  const handleLongPress = () => {};
 
   return (
     <Animated.View style={styles.cardWrapper}>
-      <TouchableHighlight
-        underlayColor="none"
-        onPress={handlePress}
-        onLongPress={handleLongPress}>
+      <TouchableHighlight underlayColor="none">
         <Animated.View
           style={{
             ...styles.card,
@@ -61,15 +34,15 @@ export default function CourseCard({
                 ...styles.courseName,
                 color: !usingDarkMode ? Light.colors.text : Dark.colors.text,
               }}>
-              {courseName}
+              {'courseName'}
             </Text>
 
             <View style={styles.bottomContainer}>
-              <Grade average={average} />
-              <PinButton pinned={pinned} />
+              <View style={styles.bottomContainerLeft}>
+                <Grade average={'average'} />
+                <PinButton pinned={true} />
+              </View>
             </View>
-
-            <GradeSheet index={index} />
           </>
         </Animated.View>
       </TouchableHighlight>
@@ -81,7 +54,7 @@ const styles = StyleSheet.create({
   cardWrapper: {
     alignSelf: 'flex-start',
     flex: 1,
-    flexBasis: '50%',
+    flexBasis: '100%',
     padding: 8,
     flexGrow: 0,
   },
@@ -100,8 +73,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  bottomContainerLeft: {
+    flexDirection: 'row',
+  },
   courseName: {
     fontSize: 16,
     fontWeight: '500',
+  },
+  gradeWrapper: {
+    marginRight: 10,
   },
 });

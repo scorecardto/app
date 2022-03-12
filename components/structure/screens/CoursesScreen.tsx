@@ -6,6 +6,7 @@ import GradeSheet from '../../summary/GradeSheet';
 import React, {useCallback, useMemo, useRef} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+import CourseContext from '../../summary/CourseContext';
 
 export default function CoursesScreen() {
   const courses: Course[] = [
@@ -48,6 +49,7 @@ export default function CoursesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.view}>
+      <CourseContext />
       {courses.map((c, idx) => {
         return (
           <React.Fragment key={idx}>

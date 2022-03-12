@@ -6,13 +6,8 @@ import {ColorThemeWithAppearance} from '../../lib/types/ColorTheme';
 import {ColorSchemeName} from 'react-native';
 import {SFSymbol} from '../util/SFSymbol';
 
-type IPinButtonProps = {
-  pinned: boolean;
-};
-
-export default function PinButton({pinned}: IPinButtonProps) {
-  const theme: ColorThemeWithAppearance = useContext(ThemeContext);
-  const appearance: ColorSchemeName = useContext(AppearanceContext).appearance;
+export default function PinButton() {
+  const appearance: ColorSchemeName = useContext(AppearanceContext);
 
   return (
     <View

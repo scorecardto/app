@@ -62,7 +62,9 @@ const isGradeHigh = (
 };
 
 const styles = StyleSheet.create({
-  background: {},
+  background: {
+    marginRight: 10,
+  },
   gradientWrapper: {
     alignSelf: 'flex-start',
     justifySelf: 'flex-end',
