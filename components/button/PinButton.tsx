@@ -27,7 +27,7 @@ export default function PinButton({pinned}: IPinButtonProps) {
           ? theme.dark[700]
           : theme.light[appearance === 'light' ? 100 : 300],
       }}>
-      {Platform.OS === 'ios' ? (
+      {Platform.OS !== 'ios' ? (
         <SFSymbol
           name={'pin.fill'}
           weight="semibold"
@@ -39,7 +39,7 @@ export default function PinButton({pinned}: IPinButtonProps) {
           style={{width: 32, height: 32}}
         />
       ) : (
-        <Icon name="pin" size={18} color={color} />
+        <Icon name="pin" size={20} color={color} />
       )}
     </View>
   );

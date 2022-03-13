@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
-import {Text, View, StyleSheet, ColorSchemeName} from 'react-native';
+import {Text, View, StyleSheet, ColorSchemeName, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {AppearanceContext, ThemeContext} from '../../App';
 import {ColorTheme, ColorThemeWithAppearance} from '../../lib/types/ColorTheme';
 import {SFSymbol} from '../util/SFSymbol';
 import GradeSheet from './GradeSheet';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type IGradeProps = {
   average: string;
@@ -31,6 +32,20 @@ export default function Grade({average}: IGradeProps) {
       {gradeDisplay === 'unsure' ? (
         <View style={{...styles.error, backgroundColor: theme.light[800]}}>
           {
+            Platform.OS === 'ios' ? (
+              <SFSymbol
+                name={'questionmark'}
+                weight="semibold"
+                scale="large"
+                color={'#FFFFFF'}
+                size={10}
+                resizeMode="center"
+                multicolor={false}
+                style={{width: 24, height: 24}}
+              />
+            ) : (
+              <Icon name="help" size={14} color={'#FFFFFF'} />
+            )
             // <SFSymbol
             //   name={'questionmark'}
             //   weight="semibold"
@@ -78,11 +93,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   error: {
-    width: 20,
-    height: 20,
-    borderRadius: 20 / 2,
+    width: 24,
+    height: 24,
+    borderRadius: 24 / 2,
     position: 'absolute',
-    right: -5,
-    bottom: -5,
+    right: -7,
+    bottom: -7,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
