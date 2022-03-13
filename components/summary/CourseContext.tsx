@@ -13,6 +13,7 @@ import CloseButton from '../button/CloseButton';
 import Grade from './Grade';
 import PinButton from '../button/PinButton';
 import Checkbox from '../interactive/Checkbox';
+import LabeledCheckbox from '../interactive/LabeledCheckbox';
 
 type ICourseContextProps = {};
 
@@ -36,15 +37,14 @@ export default function CourseContext({}: ICourseContextProps) {
                 ...styles.courseName,
                 color: !usingDarkMode ? Light.colors.text : Dark.colors.text,
               }}>
-              {'courseName'}
+              {'Geography'}
             </Text>
 
-            <Text>Weighted</Text>
-            <Checkbox />
+            <LabeledCheckbox label="Weighted" />
 
             <View style={styles.bottomContainer}>
               <View style={styles.bottomContainerLeft}>
-                <Grade average={'average'} />
+                <Grade average={'100'} />
                 <PinButton pinned={true} />
               </View>
               <CloseButton />
