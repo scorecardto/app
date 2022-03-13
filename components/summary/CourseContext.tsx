@@ -9,8 +9,10 @@ import {
   Animated,
 } from 'react-native';
 import {AppearanceContext, Dark, Light} from '../../App';
+import CloseButton from '../button/CloseButton';
 import Grade from './Grade';
-import PinButton from './PinButton';
+import PinButton from '../button/PinButton';
+import Checkbox from '../interactive/Checkbox';
 
 type ICourseContextProps = {};
 
@@ -37,11 +39,15 @@ export default function CourseContext({}: ICourseContextProps) {
               {'courseName'}
             </Text>
 
+            <Text>Weighted</Text>
+            <Checkbox />
+
             <View style={styles.bottomContainer}>
               <View style={styles.bottomContainerLeft}>
                 <Grade average={'average'} />
                 <PinButton pinned={true} />
               </View>
+              <CloseButton />
             </View>
           </>
         </Animated.View>

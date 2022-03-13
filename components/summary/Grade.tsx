@@ -31,16 +31,16 @@ export default function Grade({average}: IGradeProps) {
       {gradeDisplay === 'unsure' ? (
         <View style={{...styles.error, backgroundColor: theme.light[800]}}>
           {
-            <SFSymbol
-              name={'questionmark'}
-              weight="semibold"
-              scale="large"
-              color={'#FFFFFF'}
-              size={8}
-              resizeMode="center"
-              multicolor={false}
-              style={{width: 20, height: 20}}
-            />
+            // <SFSymbol
+            //   name={'questionmark'}
+            //   weight="semibold"
+            //   scale="large"
+            //   color={'#FFFFFF'}
+            //   size={8}
+            //   resizeMode="center"
+            //   multicolor={false}
+            //   style={{width: 20, height: 20}}
+            // />
           }
         </View>
       ) : (
@@ -63,7 +63,7 @@ const isGradeHigh = (
 
 const styles = StyleSheet.create({
   background: {
-    marginRight: 10,
+    marginRight: 12,
   },
   gradientWrapper: {
     alignSelf: 'flex-start',

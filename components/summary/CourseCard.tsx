@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {AppearanceContext, Dark, Light} from '../../App';
 import Grade from './Grade';
-import PinButton from './PinButton';
+import PinButton from '../button/PinButton';
 import GradeSheet from './GradeSheet';
 import {SheetManager} from 'react-native-actions-sheet';
 import {TouchableOpacity} from 'react-native-gesture-handler';

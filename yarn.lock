@@ -1412,7 +1412,14 @@
   "resolved" "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.4.tgz"
   "version" "15.7.4"
 
-"@types/react@^16.0.25":
+"@types/react-native@^0.67.2":
+  "integrity" "sha512-DyBkq7kw1UngzfvBr8WE41+hL/TWpxOZVaeABJz6Si7DmpT0Rq6vJCYjVaR85ViKSYJvIHpzxYfp0dD+lb3ctA=="
+  "resolved" "https://registry.npmjs.org/@types/react-native/-/react-native-0.67.2.tgz"
+  "version" "0.67.2"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react@*", "@types/react@^16.0.25":
   "integrity" "sha512-WngBZLuSkP4IAgPi0HOsGCHo6dn3CcuLQnCfC17VbA7YBgipZiZoTOhObwl/93DsFW0Y2a/ZXeonpW4DxirEJg=="
   "resolved" "https://registry.npmjs.org/@types/react/-/react-16.14.23.tgz"
   "version" "16.14.23"
@@ -5802,6 +5809,14 @@
   "resolved" "https://registry.npmjs.org/react-native-sfsymbols/-/react-native-sfsymbols-1.2.0.tgz"
   "version" "1.2.0"
 
+"react-native-vector-icons@^9.1.0":
+  "integrity" "sha512-2AHZ/h9d/+rC0odz+OwbGNlc1Lik/pHhSixn4HfC8RtQ8CxfSBZ6gg7bTLcZhdSvZN+ZEGi30Fj+ZnOSQy+smg=="
+  "resolved" "https://registry.npmjs.org/react-native-vector-icons/-/react-native-vector-icons-9.1.0.tgz"
+  "version" "9.1.0"
+  dependencies:
+    "prop-types" "^15.7.2"
+    "yargs" "^16.1.1"
+
 "react-native@*", "react-native@>=0.55", "react-native@>=0.57", "react-native@0.67.3":
   "integrity" "sha512-epMVRMRH7dLCis97+YwiV4dmTVZO6qKmQgwcTNcxVt/kEMxAa+OYK7h81+99/n7XCeMFk/U2zYOBuQqc7c5Amg=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.67.3.tgz"
@@ -7203,6 +7218,19 @@
     "which-module" "^2.0.0"
     "y18n" "^4.0.0"
     "yargs-parser" "^18.1.2"
+
+"yargs@^16.1.1":
+  "integrity" "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw=="
+  "resolved" "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz"
+  "version" "16.2.0"
+  dependencies:
+    "cliui" "^7.0.2"
+    "escalade" "^3.1.1"
+    "get-caller-file" "^2.0.5"
+    "require-directory" "^2.1.1"
+    "string-width" "^4.2.0"
+    "y18n" "^5.0.5"
+    "yargs-parser" "^20.2.2"
 
 "yargs@^16.2.0":
   "integrity" "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw=="

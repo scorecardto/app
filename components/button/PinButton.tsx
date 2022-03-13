@@ -1,10 +1,11 @@
 import React, {useContext} from 'react';
 
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Platform} from 'react-native';
 import {AppearanceContext, ThemeContext} from '../../App';
 import {ColorThemeWithAppearance} from '../../lib/types/ColorTheme';
 import {ColorSchemeName} from 'react-native';
 import {SFSymbol} from '../util/SFSymbol';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type IPinButtonProps = {
   pinned: boolean;
@@ -14,6 +15,10 @@ export default function PinButton({pinned}: IPinButtonProps) {
   const theme: ColorThemeWithAppearance = useContext(ThemeContext);
   const appearance: ColorSchemeName = useContext(AppearanceContext).appearance;
 
+  const color = pinned
+    ? '#FFFFFF'
+    : theme.light[appearance === 'light' ? 300 : 100];
+
   return (
     <View
       style={{
@@ -22,18 +27,20 @@ export default function PinButton({pinned}: IPinButtonProps) {
           ? theme.dark[700]
           : theme.light[appearance === 'light' ? 100 : 300],
       }}>
-      <SFSymbol
-        name={'pin.fill'}
-        weight="semibold"
-        scale="large"
-        color={
-          pinned ? '#FFFFFF' : theme.light[appearance === 'light' ? 300 : 100]
-        }
-        size={12}
-        resizeMode="center"
-        multicolor={false}
-        style={{width: 32, height: 32}}
-      />
+      {Platform.OS === 'ios' ? (
+        <SFSymbol
+          name={'pin.fill'}
+          weight="semibold"
+          scale="large"
+          color={color}
+          size={12}
+          resizeMode="center"
+          multicolor={false}
+          style={{width: 32, height: 32}}
+        />
+      ) : (
+        <Icon name="pin" size={18} color={color} />
+      )}
     </View>
   );
 }
