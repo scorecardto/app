@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useRef} from 'react';
 
 import {
@@ -15,19 +15,22 @@ import GradeSheet from './GradeSheet';
 import {SheetManager} from 'react-native-actions-sheet';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Easing} from 'react-native-reanimated';
+import {Course} from '../../lib/types/Course';
 
 type ICourseCardProps = {
-  courseName: string;
-  average: string;
+  course: Course;
   pinned: boolean;
   index: number;
+  highlightedCourse: Course;
+  setHighlightedCourse: React.Dispatch<React.SetStateAction<Course>>;
 };
 
 export default function CourseCard({
-  courseName,
-  average,
+  course,
   pinned,
   index,
+  highlightedCourse,
+  setHighlightedCourse,
 }: ICourseCardProps) {
   // const widthAnim = useRef(new Animated.Value(0)).current;
 
@@ -36,14 +39,34 @@ export default function CourseCard({
   const usingDarkMode = useContext(AppearanceContext).appearance !== 'light';
 
   const handlePress = () => {
-    SheetManager.show('GradeSheet_' + index);
+    if (highlightedCourse == null) {
+      SheetManager.show('GradeSheet_' + index);
+    } else {
+      setHighlightedCourse(course);
+    }
   };
 
-  const handleLongPress = () => {};
+  const handleLongPress = () => {
+    setHighlightedCourse(course);
+  };
+
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue:
+        highlightedCourse == null ||
+        JSON.stringify(highlightedCourse) === JSON.stringify(course)
+          ? 1
+          : 0.3,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [highlightedCourse]);
 
   return (
     <Animated.View style={styles.cardWrapper}>
-      <TouchableHighlight
+      <TouchableOpacity
         underlayColor="none"
         onPress={handlePress}
         onLongPress={handleLongPress}>
@@ -53,6 +76,7 @@ export default function CourseCard({
             backgroundColor: !usingDarkMode
               ? Light.colors.card
               : Dark.colors.card,
+            opacity: opacity,
           }}>
           <>
             <Text
@@ -61,18 +85,18 @@ export default function CourseCard({
                 ...styles.courseName,
                 color: !usingDarkMode ? Light.colors.text : Dark.colors.text,
               }}>
-              {courseName}
+              {course.courseName}
             </Text>
 
             <View style={styles.bottomContainer}>
-              <Grade average={average} />
+              <Grade average={course.average} />
               <PinButton pinned={pinned} />
             </View>
 
             <GradeSheet index={index} />
           </>
         </Animated.View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     </Animated.View>
   );
 }

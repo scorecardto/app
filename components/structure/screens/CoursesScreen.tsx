@@ -3,7 +3,7 @@ import {Course} from '../../../lib/types/Course';
 import CourseCard from '../../summary/CourseCard';
 import GradeSheet from '../../summary/GradeSheet';
 
-import React, {useCallback, useMemo, useRef} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import CourseContext from '../../summary/CourseContext';
@@ -45,18 +45,139 @@ export default function CoursesScreen() {
         Teacher: 'Johny Appleseed',
       },
     },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
+    {
+      courseName: 'Geometry',
+      average: 'P',
+      otherFields: {
+        Teacher: 'Johny Appleseed',
+      },
+    },
   ];
 
+  const [scrollingEnabled, setScrollingEnabled] = useState(true);
+  const [highlightedCourse, setHighlightedCourse] = useState<
+    Course | undefined
+  >(undefined);
   return (
-    <ScrollView contentContainerStyle={styles.view}>
-      <CourseContext />
-      {courses.map((c, idx) => {
-        return (
-          <React.Fragment key={idx}>
-            <CourseCard {...c} pinned={idx % 2 === 0} index={idx} />
-          </React.Fragment>
-        );
-      })}
+    <ScrollView scrollEnabled={scrollingEnabled}>
+      <CourseContext
+        setScrollingEnabled={setScrollingEnabled}
+        course={highlightedCourse}
+        setCourse={setHighlightedCourse}
+      />
+      <View style={styles.view}>
+        {courses.map((c, idx) => {
+          return (
+            <React.Fragment key={idx}>
+              <CourseCard
+                course={c}
+                pinned={idx % 2 === 0}
+                index={idx}
+                highlightedCourse={highlightedCourse}
+                setHighlightedCourse={setHighlightedCourse}
+              />
+            </React.Fragment>
+          );
+        })}
+      </View>
     </ScrollView>
   );
 }

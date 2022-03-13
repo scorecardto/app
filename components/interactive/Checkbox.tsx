@@ -17,8 +17,6 @@ export default function Checkbox({checked}: ICheckboxProps) {
   const checkedAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    console.log('setting to ' + (checked ? 1 : 0));
-
     Animated.timing(checkedAnim, {
       toValue: checked ? 1 : 0,
       duration: 150,

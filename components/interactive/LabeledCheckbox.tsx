@@ -41,24 +41,28 @@ export default function LabeledCheckbox({label}: ILabeledCheckboxProps) {
   };
 
   return (
-    <TouchableOpacity
-      onPressIn={pressInHandler}
-      onPressOut={pressOutHandler}
-      onPress={pressHandler}>
-      <View style={styles.container}>
-        <View style={styles.checkboxWrapper}>
-          <Checkbox checked={checked} setChecked={setChecked} />
+    <View style={styles.wrapper}>
+      <TouchableOpacity
+        onPressIn={pressInHandler}
+        onPressOut={pressOutHandler}
+        onPress={pressHandler}>
+        <View style={styles.container}>
+          <View style={styles.checkboxWrapper}>
+            <Checkbox checked={checked} setChecked={setChecked} />
+          </View>
+          <Text style={styles.text}>{label}</Text>
         </View>
-        <Text style={styles.text}>{label}</Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    alignSelf: 'flex-start',
+  },
   container: {
     flexDirection: 'row',
-    alignSelf: 'flex-start',
     justifyContent: 'flex-end',
   },
   checkboxWrapper: {

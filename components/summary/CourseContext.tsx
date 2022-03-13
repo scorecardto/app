@@ -7,6 +7,10 @@ import {
   StyleSheet,
   TouchableHighlight,
   Animated,
+  Alert,
+  Touchable,
+  GestureResponderEvent,
+  Dimensions,
 } from 'react-native';
 import {AppearanceContext, Dark, Light} from '../../App';
 import CloseButton from '../button/CloseButton';
@@ -14,55 +18,201 @@ import Grade from './Grade';
 import PinButton from '../button/PinButton';
 import Checkbox from '../interactive/Checkbox';
 import LabeledCheckbox from '../interactive/LabeledCheckbox';
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import CourseContextFieldTable from './CourseContextFieldTable';
+import GestureRecognizer from 'react-native-swipe-gestures';
+import {Course} from '../../lib/types/Course';
 
-type ICourseContextProps = {};
+type ICourseContextProps = {
+  course: Course;
+  setCourse: React.Dispatch<React.SetStateAction<Course>>;
+  setScrollingEnabled: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-export default function CourseContext({}: ICourseContextProps) {
-  const usingDarkMode = useContext(AppearanceContext).appearance !== 'light';
+export default function CourseContext({
+  course,
+  setCourse,
+  setScrollingEnabled,
+}: ICourseContextProps) {
+  const appearance = useContext(AppearanceContext);
+
+  const handleRename = () => {
+    Alert.prompt('Rename', undefined, (s: string) => {
+      console.log(s);
+    });
+  };
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+
+  const [initialX, setInitialX] = useState(0);
+  const deltaX = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  const scale = useRef(new Animated.Value(1)).current;
+  const [scaleState, setScaleState] = useState(1);
+
+  const [componentEnabled, setComponentEnabled] = useState(true);
+
+  const onTouchStart = (s: GestureResponderEvent) => {
+    if (!componentEnabled) return;
+    setInitialX(s.nativeEvent.pageX);
+    setScrollingEnabled(false);
+  };
+
+  const onTouchMove = (s: GestureResponderEvent) => {
+    if (!componentEnabled) return;
+    const newDelta = Math.min(-1 * (initialX - s.nativeEvent.pageX), 0);
+
+    Animated.timing(deltaX, {
+      toValue: newDelta,
+      duration: 0,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(opacity, {
+      toValue: Math.max(1 + (newDelta / windowWidth) * 2, 0.5),
+      duration: 0,
+      useNativeDriver: true,
+    }).start();
+
+    if (newDelta / windowWidth < -0.2) {
+      if (scaleState !== 0.9) {
+        setScaleState(0.9);
+        Animated.timing(scale, {
+          toValue: 0.9,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
+      }
+    } else if (scaleState !== 1) {
+      setScaleState(1);
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
+  const onTouchEnd = (s: GestureResponderEvent) => {
+    if (!componentEnabled) return;
+    setScrollingEnabled(true);
+
+    if (
+      Math.min(-1 * (initialX - s.nativeEvent.pageX), 0) / windowWidth <
+      -0.2
+    ) {
+      Animated.timing(deltaX, {
+        toValue: -1 * windowWidth,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+
+      setTimeout(() => {
+        Animated.timing(deltaX, {
+          toValue: 0,
+          duration: 0,
+          useNativeDriver: true,
+        }).start();
+
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 0,
+          useNativeDriver: true,
+        }).start();
+
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 0,
+          useNativeDriver: true,
+        }).start();
+
+        setCourse(undefined);
+      }, 200);
+    } else {
+      Animated.timing(deltaX, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   return (
-    <Animated.View style={styles.cardWrapper}>
-      <TouchableHighlight underlayColor="none">
+    <Animated.View
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{
+        ...styles.cardWrapper,
+        transform: [{translateX: deltaX}, {scale: scale}],
+        opacity: opacity,
+      }}>
+      {course != null ? (
         <Animated.View
           style={{
             ...styles.card,
-            backgroundColor: !usingDarkMode
-              ? Light.colors.card
-              : Dark.colors.card,
+            backgroundColor:
+              appearance.appearance === 'light'
+                ? Light.colors.card
+                : Dark.colors.card,
           }}>
           <>
             <Text
               numberOfLines={1}
               style={{
                 ...styles.courseName,
-                color: !usingDarkMode ? Light.colors.text : Dark.colors.text,
+                color: appearance[700],
               }}>
-              {'Geography'}
+              {course.courseName}
             </Text>
+
+            <View style={styles.renameWrapper}>
+              <TouchableOpacity onPress={handleRename}>
+                <Text style={{color: appearance[500]}}>Rename</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.tableWrapper}>
+              <ScrollView>
+                <CourseContextFieldTable fields={course.otherFields} />
+              </ScrollView>
+            </View>
 
             <LabeledCheckbox label="Weighted" />
 
             <View style={styles.bottomContainer}>
               <View style={styles.bottomContainerLeft}>
-                <Grade average={'100'} />
+                <Grade average={course.average} />
                 <PinButton pinned={true} />
               </View>
               <CloseButton />
             </View>
           </>
         </Animated.View>
-      </TouchableHighlight>
+      ) : (
+        <></>
+      )}
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    alignSelf: 'flex-start',
-    flex: 1,
-    flexBasis: '100%',
-    padding: 8,
-    flexGrow: 0,
+    margin: 8,
   },
   card: {
     padding: 16,
@@ -75,7 +225,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     height: 36,
-    marginTop: 10,
+    marginTop: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -88,5 +238,14 @@ const styles = StyleSheet.create({
   },
   gradeWrapper: {
     marginRight: 10,
+  },
+  renameWrapper: {
+    alignSelf: 'flex-start',
+    paddingVertical: 5,
+  },
+  tableWrapper: {
+    marginVertical: 10,
+    maxHeight: 300,
+    overflow: 'scroll',
   },
 });
