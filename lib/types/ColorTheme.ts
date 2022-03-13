@@ -94,8 +94,6 @@ export const THEME_ROSE: ColorThemeWithAppearance = {
 };
 
 const WARM_NEUTRAL = {
-  100: '#FCF7DD',
-  200: '#EE6417',
   300: '#E2800C',
   400: '#F89C13',
   500: '#E77A15',
@@ -112,6 +110,28 @@ export const THEME_WARM: ColorThemeWithAppearance = {
   },
   dark: {
     ...WARM_NEUTRAL,
+    100: '#EE6417',
+    200: '#FCF7DD',
+  },
+};
+
+const JADE_NEUTRAL = {
+  300: '#7fb18e',
+  400: '#28d16e',
+  500: '#15d34e',
+  600: '#1c6fb3',
+  700: '#179c53',
+  800: '#066631',
+};
+
+export const THEME_JADE: ColorThemeWithAppearance = {
+  light: {
+    ...JADE_NEUTRAL,
+    100: '#c7f1d8',
+    200: '#138b49',
+  },
+  dark: {
+    ...JADE_NEUTRAL,
     100: '#EE6417',
     200: '#FCF7DD',
   },

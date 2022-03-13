@@ -46,6 +46,7 @@ import {
   ColorThemeWithAppearance,
   DAY_COLORS,
   NIGHT_COLORS,
+  THEME_JADE,
   THEME_PACIFIC,
   THEME_ROSE,
   THEME_WARM,
@@ -77,7 +78,7 @@ export default function App() {
     useColorScheme() === 'light' ? DAY_COLORS : NIGHT_COLORS,
   );
 
-  const [theme, setTheme] = useState<ColorThemeWithAppearance>(THEME_WARM);
+  const [theme, setTheme] = useState<ColorThemeWithAppearance>(THEME_JADE);
 
   // update state when theme changes
   const appearanceChangeListener = useCallback(() => {
