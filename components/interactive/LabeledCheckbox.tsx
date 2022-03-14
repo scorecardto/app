@@ -50,7 +50,7 @@ export default function LabeledCheckbox({label}: ILabeledCheckboxProps) {
           <View style={styles.checkboxWrapper}>
             <Checkbox checked={checked} setChecked={setChecked} />
           </View>
-          <Text style={styles.text}>{label}</Text>
+          <Text style={{...styles.text, color: appearance[700]}}>{label}</Text>
         </View>
       </TouchableOpacity>
     </View>

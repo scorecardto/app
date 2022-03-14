@@ -51,7 +51,7 @@ import {
   THEME_ROSE,
   THEME_WARM,
 } from './lib/types/ColorTheme';
-import GradeSheet from './components/summary/GradeSheet';
+import GradeSheet from './components/summary/GradeSheet/GradeSheet';
 
 export const AppearanceContext = createContext(DAY_COLORS);
 export const ThemeContext = createContext(THEME_PACIFIC);
@@ -78,7 +78,7 @@ export default function App() {
     useColorScheme() === 'light' ? DAY_COLORS : NIGHT_COLORS,
   );
 
-  const [theme, setTheme] = useState<ColorThemeWithAppearance>(THEME_JADE);
+  const [theme, setTheme] = useState<ColorThemeWithAppearance>(THEME_PACIFIC);
 
   // update state when theme changes
   const appearanceChangeListener = useCallback(() => {

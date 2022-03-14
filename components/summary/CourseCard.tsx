@@ -11,9 +11,12 @@ import {
 import {AppearanceContext, Dark, Light} from '../../App';
 import Grade from './Grade';
 import PinButton from '../button/PinButton';
-import GradeSheet from './GradeSheet';
+import GradeSheet from './GradeSheet/GradeSheet';
 import {SheetManager} from 'react-native-actions-sheet';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 import {Easing} from 'react-native-reanimated';
 import {Course} from '../../lib/types/Course';
 
@@ -21,8 +24,8 @@ type ICourseCardProps = {
   course: Course;
   pinned: boolean;
   index: number;
-  highlightedCourse: Course;
-  setHighlightedCourse: React.Dispatch<React.SetStateAction<Course>>;
+  highlightedCourse: [Course, number];
+  setHighlightedCourse: React.Dispatch<React.SetStateAction<[Course, number]>>;
 };
 
 export default function CourseCard({
@@ -42,12 +45,18 @@ export default function CourseCard({
     if (highlightedCourse == null) {
       SheetManager.show('GradeSheet_' + index);
     } else {
-      setHighlightedCourse(course);
+      setHighlightedCourse([course, index]);
     }
   };
 
   const handleLongPress = () => {
-    setHighlightedCourse(course);
+    Animated.timing(scale, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    setHighlightedCourse([course, index]);
   };
 
   const opacity = useRef(new Animated.Value(1)).current;
@@ -55,20 +64,35 @@ export default function CourseCard({
   useEffect(() => {
     Animated.timing(opacity, {
       toValue:
-        highlightedCourse == null ||
-        JSON.stringify(highlightedCourse) === JSON.stringify(course)
-          ? 1
-          : 0.3,
+        highlightedCourse == null || highlightedCourse[1] === index ? 1 : 0.3,
       duration: 200,
       useNativeDriver: true,
     }).start();
   }, [highlightedCourse]);
 
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.timing(scale, {
+      toValue: 0.9,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.timing(scale, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  };
   return (
     <Animated.View style={styles.cardWrapper}>
-      <TouchableOpacity
-        underlayColor="none"
+      <TouchableWithoutFeedback
         onPress={handlePress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         onLongPress={handleLongPress}>
         <Animated.View
           style={{
@@ -77,6 +101,7 @@ export default function CourseCard({
               ? Light.colors.card
               : Dark.colors.card,
             opacity: opacity,
+            transform: [{scale: scale}],
           }}>
           <>
             <Text
@@ -96,7 +121,7 @@ export default function CourseCard({
             <GradeSheet index={index} />
           </>
         </Animated.View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     </Animated.View>
   );
 }

@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {AppearanceContext, ThemeContext} from '../../App';
 import {ColorTheme, ColorThemeWithAppearance} from '../../lib/types/ColorTheme';
 import {SFSymbol} from '../util/SFSymbol';
-import GradeSheet from './GradeSheet';
+import GradeSheet from './GradeSheet/GradeSheet';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type IGradeProps = {

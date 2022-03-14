@@ -22,10 +22,12 @@ import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import CourseContextFieldTable from './CourseContextFieldTable';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import {Course} from '../../lib/types/Course';
+import Card from '../interactive/Card';
+import {SheetManager} from 'react-native-actions-sheet';
 
 type ICourseContextProps = {
-  course: Course;
-  setCourse: React.Dispatch<React.SetStateAction<Course>>;
+  course: [Course, number];
+  setCourse: React.Dispatch<React.SetStateAction<[Course, number]>>;
   setScrollingEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -151,6 +153,53 @@ export default function CourseContext({
     }
   };
 
+  const handleCloseButton = () => {
+    Animated.timing(deltaX, {
+      toValue: -1 * windowWidth,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(opacity, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(scale, {
+      toValue: 0.9,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    setTimeout(() => {
+      Animated.timing(deltaX, {
+        toValue: 0,
+        duration: 0,
+        useNativeDriver: true,
+      }).start();
+
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 0,
+        useNativeDriver: true,
+      }).start();
+
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: 0,
+        useNativeDriver: true,
+      }).start();
+
+      setCourse(undefined);
+    }, 200);
+  };
+
+  const handleAssignmentsButton = () => {
+    handleCloseButton();
+    SheetManager.show(`GradeSheet_${course[1]}`);
+  };
+
   return (
     <Animated.View
       onTouchStart={onTouchStart}
@@ -171,24 +220,37 @@ export default function CourseContext({
                 : Dark.colors.card,
           }}>
           <>
-            <Text
-              numberOfLines={1}
-              style={{
-                ...styles.courseName,
-                color: appearance[700],
-              }}>
-              {course.courseName}
-            </Text>
+            <View style={styles.topContainer}>
+              <View>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    ...styles.courseName,
+                    color: appearance[700],
+                  }}>
+                  {course[0].courseName}
+                </Text>
 
-            <View style={styles.renameWrapper}>
-              <TouchableOpacity onPress={handleRename}>
-                <Text style={{color: appearance[500]}}>Rename</Text>
+                <View style={styles.renameWrapper}>
+                  <TouchableOpacity onPress={handleRename}>
+                    <Text style={{color: appearance[500]}}>Rename</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <TouchableOpacity onPress={handleAssignmentsButton}>
+                <Card
+                  label="Assignments"
+                  colored={true}
+                  icon="tag-outline"
+                  sfIcon="tag"
+                />
               </TouchableOpacity>
             </View>
 
             <View style={styles.tableWrapper}>
               <ScrollView>
-                <CourseContextFieldTable fields={course.otherFields} />
+                <CourseContextFieldTable fields={course[0].otherFields} />
               </ScrollView>
             </View>
 
@@ -196,10 +258,10 @@ export default function CourseContext({
 
             <View style={styles.bottomContainer}>
               <View style={styles.bottomContainerLeft}>
-                <Grade average={course.average} />
+                <Grade average={course[0].average} />
                 <PinButton pinned={true} />
               </View>
-              <CloseButton />
+              <CloseButton onPress={handleCloseButton} />
             </View>
           </>
         </Animated.View>
@@ -240,12 +302,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   renameWrapper: {
-    alignSelf: 'flex-start',
     paddingVertical: 5,
   },
   tableWrapper: {
     marginVertical: 10,
     maxHeight: 300,
     overflow: 'scroll',
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

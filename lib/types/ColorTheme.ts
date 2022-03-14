@@ -132,7 +132,7 @@ export const THEME_JADE: ColorThemeWithAppearance = {
   },
   dark: {
     ...JADE_NEUTRAL,
-    100: '#EE6417',
-    200: '#FCF7DD',
+    100: '#138b49',
+    200: '#c7f1d8',
   },
 };

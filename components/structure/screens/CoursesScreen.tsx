@@ -1,7 +1,7 @@
 import LinearGradient from 'react-native-linear-gradient';
 import {Course} from '../../../lib/types/Course';
 import CourseCard from '../../summary/CourseCard';
-import GradeSheet from '../../summary/GradeSheet';
+import GradeSheet from '../../summary/GradeSheet/GradeSheet';
 
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
@@ -154,7 +154,7 @@ export default function CoursesScreen() {
 
   const [scrollingEnabled, setScrollingEnabled] = useState(true);
   const [highlightedCourse, setHighlightedCourse] = useState<
-    Course | undefined
+    [Course, number] | undefined
   >(undefined);
   return (
     <ScrollView scrollEnabled={scrollingEnabled}>
