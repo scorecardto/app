@@ -28,7 +28,7 @@ export default function GradeSheet({index}: IGradeSheetProps) {
           <AssignmentRow
             assignment={{
               grade: '100',
-              name: 'Project',
+              name: 'ProjectProProjectProProjectProProjectProProjectProProjectProProjectProProjectProProjectProProjectProProjectPro',
               weight: 10,
               otherFields: {},
             }}
