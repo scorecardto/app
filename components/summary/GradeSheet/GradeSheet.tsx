@@ -3,6 +3,7 @@ import {View, ScrollView, Text, Button, StyleSheet} from 'react-native';
 import ActionSheet, {SheetManager} from 'react-native-actions-sheet';
 import {AppearanceContext} from '../../../App';
 import Card from '../../interactive/Card';
+import AssignmentRow from './AssignmentRow';
 
 type IGradeSheetProps = {
   index: number;
@@ -21,8 +22,17 @@ export default function GradeSheet({index}: IGradeSheetProps) {
             Course Name
           </Text>
         </View>
+
         <ScrollView style={styles.scroll}>
           <Card label="Settings" colored={true} icon={'cog'} sfIcon={'gear'} />
+          <AssignmentRow
+            assignment={{
+              grade: '100',
+              name: 'Project',
+              weight: 10,
+              otherFields: {},
+            }}
+          />
         </ScrollView>
       </ActionSheet>
     </View>

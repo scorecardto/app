@@ -10,7 +10,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 type IGradeProps = {
   average: string;
 };
-export default function Grade({average}: IGradeProps) {
+
+export default function GradeWithWeight({average}: IGradeProps) {
   const theme: ColorThemeWithAppearance = useContext(ThemeContext);
   const gradeDisplay = isGradeHigh(average, 85);
 
@@ -27,6 +28,18 @@ export default function Grade({average}: IGradeProps) {
           useAngle={true}>
           <Text style={styles.text}>{average}</Text>
         </LinearGradient>
+      </View>
+
+      <View
+        style={{
+          ...styles.weightWrapper,
+          opacity: gradeDisplay === 'high' ? 1 : 0.5,
+          backgroundColor: theme.light[400],
+        }}>
+        <View style={styles.weightIcon}>
+          <Icon name="chart-bubble" size={22} color={'#FFFFFF'} />
+        </View>
+        <Text style={[styles.text, styles.weightText]}>{average}</Text>
       </View>
 
       {gradeDisplay === 'unsure' ? (
@@ -67,11 +80,13 @@ const isGradeHigh = (
 const styles = StyleSheet.create({
   background: {
     marginRight: 12,
+    flexDirection: 'row',
   },
   gradientWrapper: {
     alignSelf: 'flex-start',
     justifySelf: 'flex-end',
-    borderRadius: 13,
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
     overflow: 'hidden',
   },
   text: {
@@ -89,5 +104,19 @@ const styles = StyleSheet.create({
     bottom: -7,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  weightWrapper: {
+    alignSelf: 'flex-start',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    overflow: 'hidden',
+    flexDirection: 'row',
+  },
+  weightIcon: {
+    justifyContent: 'center',
+    paddingHorizontal: 6,
+  },
+  weightText: {
+    paddingLeft: 0,
   },
 });

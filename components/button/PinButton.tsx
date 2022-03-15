@@ -27,7 +27,7 @@ export default function PinButton({pinned}: IPinButtonProps) {
           ? theme.dark[700]
           : theme.light[appearance === 'light' ? 100 : 300],
       }}>
-      {Platform.OS !== 'ios' ? (
+      {Platform.OS === 'ios' ? (
         <SFSymbol
           name={'pin.fill'}
           weight="semibold"
