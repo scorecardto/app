@@ -95,7 +95,7 @@ export const THEME_ROSE: ColorThemeWithAppearance = {
 
 const WARM_NEUTRAL = {
   300: '#E2800C',
-  400: '#F89C13',
+  400: '#e48f0f',
   500: '#E77A15',
   600: '#DF7D21',
   700: '#B61D1D',
@@ -117,7 +117,7 @@ export const THEME_WARM: ColorThemeWithAppearance = {
 
 const JADE_NEUTRAL = {
   300: '#7fb18e',
-  400: '#28d16e',
+  400: '#277538',
   500: '#15d34e',
   600: '#1c6fb3',
   700: '#179c53',
