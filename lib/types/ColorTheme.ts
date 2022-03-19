@@ -117,7 +117,7 @@ export const THEME_WARM: ColorThemeWithAppearance = {
 
 const JADE_NEUTRAL = {
   300: '#7fb18e',
-  400: '#277538',
+  400: '#379e78',
   500: '#15d34e',
   600: '#1c6fb3',
   700: '#179c53',
