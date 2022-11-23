@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "scorecard-app",
-    "slug": "scorecard-app",
-    "version": "1.0.0",
+    "name": "Scorecard",
+    "slug": "scorecard",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
