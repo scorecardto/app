@@ -1,12 +1,100 @@
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import ScorecardScreen from "./components/screens/ScorecardScreen";
+import StartScreen from "./components/screens/AccountScreen";
+import {
+  MobileDataContext,
+  MobileDataProvider,
+} from "./components/core/context/MobileDataContext";
+import { useMemo, useState } from "react";
+import { DataContext, GradebookRecord } from "scorecard-types";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [data, setData] = useState<GradebookRecord | null>(null);
+  const [gradeCategory, setGradeCategory] = useState<number>(0);
+  const [courseDisplayNames, setCourseDisplayNames] = useState<{
+    [key: string]: string;
+  }>({});
+
+  const dataContext = useMemo(
+    () => ({
+      data,
+      setData,
+      gradeCategory,
+      setGradeCategory,
+      courseDisplayNames,
+      setCourseDisplayNames,
+    }),
+    [
+      data,
+      gradeCategory,
+      setGradeCategory,
+      courseDisplayNames,
+      setCourseDisplayNames,
+    ]
+  );
+
+  const [district, setDistrict] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [referer, setReferer] = useState("");
+  const [sessionId, setSessionId] = useState("");
+
+  const mobileData = useMemo<MobileDataProvider>(
+    () => ({
+      district,
+      setDistrict,
+      username,
+      setUsername,
+      password,
+      setPassword,
+      referer,
+      setReferer,
+      sessionId,
+      setSessionId,
+    }),
+    [
+      district,
+      setDistrict,
+      username,
+      setUsername,
+      password,
+      setPassword,
+      referer,
+      setReferer,
+      sessionId,
+      setSessionId,
+    ]
+  );
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <DataContext.Provider value={dataContext}>
+      <MobileDataContext.Provider value={mobileData}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="account"
+              component={StartScreen}
+              options={{
+                title: "Account",
+              }}
+            />
+            <Stack.Screen
+              name="scorecard"
+              component={ScorecardScreen}
+              options={{
+                headerBackVisible: false,
+                title: "Scorecard",
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </MobileDataContext.Provider>
+    </DataContext.Provider>
   );
 }
 
