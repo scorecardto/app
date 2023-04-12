@@ -1,8 +1,10 @@
-import axios, { Options } from "redaxios";
+import axios, { AxiosRequestConfig } from "axios";
 import Form from "form-data";
 import parse from "node-html-parser";
 import qs from "qs";
 import {
+  AllContentResponse,
+  AllCoursesResponse,
   Assignment,
   Course,
   CourseResponse,
@@ -33,7 +35,7 @@ const fetchReportCard = async (
 ): Promise<CourseResponse> => {
   const cookie = generateSessionId();
 
-  const ENTRY_POINT: Options = {
+  const ENTRY_POINT: AxiosRequestConfig = {
     url: `https://${host}/selfserve/EntryPointHomeAction.do?parent=false`,
     method: "GET",
     headers: {
@@ -46,7 +48,7 @@ const fetchReportCard = async (
 
   const entryPointResponse = await axios(ENTRY_POINT);
 
-  const ENTRY_POINT_LOGIN: Options = {
+  const ENTRY_POINT_LOGIN: AxiosRequestConfig = {
     url: `https://${host}/selfserve/HomeLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "GET",
     headers: {
@@ -60,7 +62,7 @@ const fetchReportCard = async (
 
   const entryPointLoginResponse = await axios(ENTRY_POINT_LOGIN);
 
-  const HOME_LOGIN: Options = {
+  const HOME_LOGIN: AxiosRequestConfig = {
     url: `https://${host}/selfserve/SignOnLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "POST",
     data: toFormData({
@@ -98,10 +100,10 @@ const fetchReportCard = async (
     throw new Error("INCORRECT_USERNAME");
   }
 
-  const REPORT_CARDS: Options = {
+  const REPORT_CARDS: AxiosRequestConfig = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
-    body: toFormData({
+    data: toFormData({
       "x-tab-id": "undefined",
     }),
     headers: {
@@ -181,7 +183,7 @@ const fetchGradeCategoriesForCourse = async (
   referer: string,
   course: Course
 ): Promise<GradeCategoriesResponse> => {
-  const ASSIGNMENTS: Options = {
+  const ASSIGNMENTS: AxiosRequestConfig = {
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
     method: "POST",
     data: toFormData({
@@ -196,22 +198,22 @@ const fetchGradeCategoriesForCourse = async (
     }),
     headers: {
       Referer: referer,
-      Cookie: `JSESSIONID=${sessionId}`,
+      Cookie: `JSESSIONID=${sessionId};`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
     },
-    responseType: "arrayBuffer",
+    responseType: "arraybuffer",
   };
 
-  console.log(referer, sessionId);
-
   const assignmentsResponseRaw = await axios(ASSIGNMENTS);
+  console.log(assignmentsResponseRaw.data);
+
   const assignmentsResponse = iso88592.decode(
     new Uint8Array(assignmentsResponseRaw.data)
   );
 
-  console.log(assignmentsResponse);
+  console.log(assignmentsResponseRaw.data, ASSIGNMENTS);
 
   const assignmentsHtml = parse(assignmentsResponse);
 
@@ -337,7 +339,7 @@ const fetchGradeCategoriesForCourse = async (
     formData[`tableId_${c.id}`] = c.id;
   });
 
-  const BACK_TO_REPORT_CARD: Options = {
+  const BACK_TO_REPORT_CARD: AxiosRequestConfig = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
     data: toFormData(formData),
@@ -359,4 +361,61 @@ const fetchGradeCategoriesForCourse = async (
   };
 };
 
-export { fetchReportCard, fetchGradeCategoriesForCourse };
+const fetchAllContent = async (
+  host: string,
+  username: string,
+  password: string
+): Promise<AllContentResponse> => {
+  const reportCard = await fetchReportCard(host, username, password);
+
+  const gradeCategories = reportCard.gradeCategoryNames;
+
+  const assignmentsAllCoursesResponse = await fetchGradeCategoriesForCourses(
+    host,
+    reportCard.sessionId,
+    reportCard.referer,
+    reportCard.courses
+  );
+
+  return {
+    ...assignmentsAllCoursesResponse,
+    gradeCategoryNames: gradeCategories,
+  };
+};
+
+const fetchGradeCategoriesForCourses = async (
+  host: string,
+  sessionId: string,
+  oldReferer: string,
+  courses: Course[]
+): Promise<AllCoursesResponse> => {
+  const all: Course[] = [];
+
+  let referer = oldReferer;
+
+  for (let i = 0; i < courses.length; i++) {
+    const course = courses[i];
+
+    const assignmentsResponse = await fetchGradeCategoriesForCourse(
+      host,
+      sessionId,
+      referer,
+      course
+    );
+
+    all.push({
+      ...course,
+      gradeCategories: assignmentsResponse.gradeCategories,
+    });
+
+    referer = assignmentsResponse.referer;
+  }
+
+  return {
+    sessionId,
+    referer,
+    courses: all,
+  };
+};
+
+export { fetchReportCard, fetchGradeCategoriesForCourse, fetchAllContent };

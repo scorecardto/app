@@ -10,6 +10,7 @@ import {
 } from "./components/core/context/MobileDataContext";
 import { useMemo, useState } from "react";
 import { DataContext, GradebookRecord } from "scorecard-types";
+import StartingScreen from "./components/screens/StartingScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -77,9 +78,19 @@ export default function App() {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen
+              name="starting"
+              component={StartingScreen}
+              options={{
+                title: "Initializing App",
+                headerBackVisible: false,
+              }}
+            />
+
+            <Stack.Screen
               name="account"
               component={StartScreen}
               options={{
+                headerBackVisible: false,
                 title: "Account",
               }}
             />

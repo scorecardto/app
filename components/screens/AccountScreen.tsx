@@ -8,9 +8,10 @@ import Button, { ButtonStyle, ButtonTextStyle } from "../input/Button";
 import { useRef } from "react";
 import { TextInput } from "../input/TextInput";
 import { useEffect } from "react";
-import { fetchReportCard } from "../../lib/fetcher";
+import { fetchAllContent, fetchReportCard } from "../../lib/fetcher";
 import { MobileDataContext } from "../core/context/MobileDataContext";
-import { DataContext } from "scorecard-types";
+import { DataContext, GradebookRecord } from "scorecard-types";
+import { Storage } from "expo-storage";
 
 const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const [url, setUrl] = useState("");
@@ -25,6 +26,8 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const [loading, setLoading] = useState(false);
 
   const dataContext = React.useContext(DataContext);
+  const mobileData = React.useContext(MobileDataContext);
+
   useEffect(() => {
     const opacity = loading ? 0.5 : 1;
 
@@ -35,23 +38,46 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
     buttonRef.current.setNativeProps({ opacity });
 
     if (loading) {
-      const reportCard = fetchReportCard(url, username, password);
+      const reportCard = fetchAllContent(url, username, password);
 
-      reportCard.then((data) => {
-        let totalGradeCategory = 0;
+      reportCard.then(async (data) => {
+        const gradeCategory =
+          Math.max(
+            ...data.courses.map(
+              (course) => course.grades.filter((g) => g).length
+            )
+          ) - 1;
 
-        data.courses.forEach((course) => {
-          totalGradeCategory += course.grades.filter((g) => g).length;
-        });
-
-        const averageGradeCategory =
-          Math.round(totalGradeCategory / data.courses.length) - 1;
+        mobileData.setReferer(data.referer);
+        mobileData.setSessionId(data.sessionId);
+        mobileData.setDistrict(url);
+        mobileData.setUsername(username);
+        mobileData.setPassword(password);
 
         dataContext.setData({
           courses: data.courses,
-          gradeCategory: averageGradeCategory,
+          gradeCategory,
           date: Date.now(),
           gradeCategoryNames: data.gradeCategoryNames,
+        });
+
+        await Storage.setItem({
+          key: "login",
+          value: JSON.stringify({
+            host: url,
+            username,
+            password,
+          }),
+        });
+
+        await Storage.setItem({
+          key: "data",
+          value: JSON.stringify({
+            courses: data.courses,
+            gradeCategory,
+            date: Date.now(),
+            gradeCategoryNames: data.gradeCategoryNames,
+          }),
         });
 
         props.navigation.navigate("scorecard");
