@@ -4,6 +4,7 @@ import { Course, DataContext, GradeCategoriesResponse } from "scorecard-types";
 import GradebookCategory from "./GradebookCategory";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import { fetchGradeCategoriesForCourse } from "../../../lib/fetcher";
+import { MotiView } from "moti";
 
 export default function CourseGradebook(props: {
   courseId: string;
@@ -49,13 +50,32 @@ export default function CourseGradebook(props: {
     }
   }, [props.courseId]);
 
+  const [childHighlighted, setChildHighlighted] = useState(false);
   return (
     <View style={styles.wrapper}>
       <Text>Current Gradebook</Text>
 
       {modifiedCourse?.gradeCategories?.map((category, idx) => {
-        return <GradebookCategory category={category} key={idx} />;
+        return (
+          <GradebookCategory
+            category={category}
+            key={idx}
+            hiddenFromOtherHighlight={childHighlighted}
+            onHighlight={setChildHighlighted}
+          />
+        );
       })}
+
+      <MotiView
+        style={[styles.inspector]}
+        animate={{
+          translateY: childHighlighted ? 0 : 300,
+        }}
+        transition={{
+          type: "timing",
+          duration: 500,
+        }}
+      ></MotiView>
     </View>
   );
 }
@@ -63,5 +83,15 @@ export default function CourseGradebook(props: {
 const styles = StyleSheet.create({
   wrapper: {
     paddingBottom: 20,
+    position: "relative",
+  },
+  inspector: {
+    zIndex: 20,
+    position: "absolute",
+    height: 300,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#ebf5ff",
   },
 });
