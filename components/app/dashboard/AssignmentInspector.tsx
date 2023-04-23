@@ -1,6 +1,6 @@
 import { MotiView, View } from "moti";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Assignment } from "scorecard-types";
 import AssignmentMetaTable from "./AssignmentMetaTable";
 import GradeAdjuster from "./GradeAdjuster";
@@ -8,6 +8,7 @@ import GradeAdjuster from "./GradeAdjuster";
 export default function AssignmentInspector(props: {
   assignment?: Assignment;
   setAssignment: (assignment: Assignment) => void;
+  close: () => void;
 }) {
   return (
     <MotiView
@@ -22,6 +23,9 @@ export default function AssignmentInspector(props: {
     >
       {props.assignment && (
         <View style={styles.content}>
+          <TouchableOpacity onPress={() => props.close()}>
+            <Text>Close</Text>
+          </TouchableOpacity>
           <Text>Detailed View</Text>
           <Text>{props.assignment?.name}</Text>
 

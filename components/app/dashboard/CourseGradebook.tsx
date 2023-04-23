@@ -11,6 +11,7 @@ import { MobileDataContext } from "../../core/context/MobileDataContext";
 import { fetchGradeCategoriesForCourse } from "../../../lib/fetcher";
 import { MotiView } from "moti";
 import AssignmentInspector from "./AssignmentInspector";
+import { formatCourseFromAssignmentPoints } from "../../../lib/gradeTesting";
 
 export type HighlightedAssignment = {
   assignment: Assignment;
@@ -88,6 +89,11 @@ export default function CourseGradebook(props: {
       })}
 
       <AssignmentInspector
+        close={() => {
+          console.log("close");
+
+          setHighlight(undefined);
+        }}
         assignment={highlight?.assignment}
         setAssignment={(assignment) => {
           setModifiedCourse((prevCourse) => {
@@ -97,7 +103,10 @@ export default function CourseGradebook(props: {
               highlight.assignmentIndex
             ] = assignment;
 
-            return newCourse;
+            return formatCourseFromAssignmentPoints(
+              newCourse,
+              props.currentGradingPeriod
+            );
           });
 
           setHighlight((prevHighlight) => {
