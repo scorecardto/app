@@ -1,10 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Course, DataContext, GradeCategoriesResponse } from "scorecard-types";
+import {
+  Assignment,
+  Course,
+  DataContext,
+  GradeCategoriesResponse,
+} from "scorecard-types";
 import GradebookCategory from "./GradebookCategory";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import { fetchGradeCategoriesForCourse } from "../../../lib/fetcher";
 import { MotiView } from "moti";
+import AssignmentInspector from "./AssignmentInspector";
+
+export type HighlightedAssignment = {
+  assignment: Assignment;
+  categoryIndex: number;
+  assignmentIndex: number;
+};
 
 export default function CourseGradebook(props: {
   courseId: string;
@@ -50,7 +62,10 @@ export default function CourseGradebook(props: {
     }
   }, [props.courseId]);
 
-  const [childHighlighted, setChildHighlighted] = useState(false);
+  const [highlight, setHighlight] = useState<HighlightedAssignment | undefined>(
+    undefined
+  );
+
   return (
     <View style={styles.wrapper}>
       <Text>Current Gradebook</Text>
@@ -60,22 +75,41 @@ export default function CourseGradebook(props: {
           <GradebookCategory
             category={category}
             key={idx}
-            hiddenFromOtherHighlight={childHighlighted}
-            onHighlight={setChildHighlighted}
+            inHighlightView={highlight?.assignment !== undefined}
+            setHighlight={(assignment, assignmentIdx) => {
+              setHighlight({
+                assignment,
+                categoryIndex: idx,
+                assignmentIndex: assignmentIdx,
+              });
+            }}
           />
         );
       })}
 
-      <MotiView
-        style={[styles.inspector]}
-        animate={{
-          translateY: childHighlighted ? 0 : 300,
+      <AssignmentInspector
+        assignment={highlight?.assignment}
+        setAssignment={(assignment) => {
+          setModifiedCourse((prevCourse) => {
+            const newCourse = { ...prevCourse };
+
+            newCourse.gradeCategories[highlight.categoryIndex].assignments[
+              highlight.assignmentIndex
+            ] = assignment;
+
+            return newCourse;
+          });
+
+          setHighlight((prevHighlight) => {
+            if (prevHighlight) {
+              return {
+                ...prevHighlight,
+                assignment,
+              };
+            }
+          });
         }}
-        transition={{
-          type: "timing",
-          duration: 500,
-        }}
-      ></MotiView>
+      />
     </View>
   );
 }
@@ -84,14 +118,5 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingBottom: 20,
     position: "relative",
-  },
-  inspector: {
-    zIndex: 20,
-    position: "absolute",
-    height: 300,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#ebf5ff",
   },
 });

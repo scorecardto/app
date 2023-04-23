@@ -19,8 +19,8 @@ import { MotiView } from "moti";
 
 export default function AssignmentGrade(props: {
   assignment: Assignment;
-  onHighlight: (highlight: boolean) => void;
-  hiddenFromOtherHighlight: boolean;
+  setHighlight: (highlight: Assignment) => void;
+  inHighlightView: boolean;
 }) {
   const COUNT_BG = "#EBEBEB";
   const COUNT_TEXT = "#7C7C7C";
@@ -45,7 +45,13 @@ export default function AssignmentGrade(props: {
   }
 
   useEffect(() => {
-    props.onHighlight(highlight);
+    if (!highlight) {
+      setPlaceholderHeight(0);
+      setTranslateY(0);
+      props.setHighlight(undefined);
+    } else {
+      props.setHighlight(props.assignment);
+    }
   }, [highlight]);
 
   return (
@@ -61,7 +67,7 @@ export default function AssignmentGrade(props: {
                 paddingBottom: highlight ? 30 : 10,
                 position: highlight ? "absolute" : "relative",
                 zIndex: highlight ? 20 : 0,
-                opacity: props.hiddenFromOtherHighlight && !highlight ? 0.5 : 1,
+                opacity: props.inHighlightView && !highlight ? 0.5 : 1,
               },
             ]}
             animate={{

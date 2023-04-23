@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { GradeCategory } from "scorecard-types";
+import { Assignment, GradeCategory } from "scorecard-types";
 import SolidChip from "./SolidChip";
 import GradientChip from "./GradientChip";
 import AssignmentGrade from "./AssignmentGrade";
 
 export default function GradebookCategory(props: {
   category: GradeCategory;
-  onHighlight: (highlight: boolean) => void;
-  hiddenFromOtherHighlight: boolean;
+  setHighlight: (highlight: Assignment, assignmentIndex: number) => void;
+  inHighlightView: boolean;
 }) {
   const HEADER_BG = "#ebf5ff";
   const WEIGHT_BG = "#D9EDFF";
@@ -16,10 +16,16 @@ export default function GradebookCategory(props: {
 
   const [childHighlighted, setChildHighlighted] = React.useState(false);
 
-  function handleHighlight(highlight: boolean) {
-    setChildHighlighted(highlight);
+  function handleHighlight(highlight: Assignment, assignmentIndex: number) {
+    setChildHighlighted(highlight !== undefined);
 
-    props.onHighlight(highlight);
+    if (highlight) {
+      props.setHighlight(highlight, assignmentIndex);
+    }
+
+    if (!highlight) {
+      props.setHighlight(undefined, assignmentIndex);
+    }
   }
 
   return (
@@ -33,7 +39,7 @@ export default function GradebookCategory(props: {
           styles.header,
           {
             backgroundColor: HEADER_BG,
-            opacity: props.hiddenFromOtherHighlight ? 0.5 : 1,
+            opacity: props.inHighlightView ? 0.5 : 1,
           },
         ]}
       >
@@ -54,8 +60,8 @@ export default function GradebookCategory(props: {
           <AssignmentGrade
             assignment={assignment}
             key={idx}
-            onHighlight={handleHighlight}
-            hiddenFromOtherHighlight={props.hiddenFromOtherHighlight}
+            inHighlightView={childHighlighted}
+            setHighlight={(highlight) => handleHighlight(highlight, idx)}
           />
         ))}
       </View>
