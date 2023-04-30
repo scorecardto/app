@@ -16,6 +16,7 @@ import { Assignment } from "scorecard-types";
 import SolidChip from "./SolidChip";
 import GradientChip from "./GradientChip";
 import { MotiView } from "moti";
+import * as Haptics from "expo-haptics";
 
 export default function AssignmentGrade(props: {
   assignment: Assignment;
@@ -32,7 +33,9 @@ export default function AssignmentGrade(props: {
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [translateY, setTranslateY] = useState(0);
 
-  function handleTempPress() {
+  function handlePress() {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
     UIManager.measure(
       findNodeHandle(viewRef.current),
       (x, y, width, height, pageX, pageY) => {
@@ -54,9 +57,27 @@ export default function AssignmentGrade(props: {
     }
   }, [highlight]);
 
+  useEffect(() => {
+    if (!props.inHighlightView) {
+      setHighlight(false);
+    }
+  }, [props.inHighlightView]);
+
+  const [changeZIndex, setChangeZIndex] = useState(false);
+
+  useEffect(() => {
+    if (highlight) {
+      setChangeZIndex(true);
+    } else {
+      setTimeout(() => {
+        setChangeZIndex(false);
+      }, 400);
+    }
+  }, [highlight]);
+
   return (
-    <View style={{ zIndex: highlight ? 20 : 0 }}>
-      <TouchableWithoutFeedback onPress={handleTempPress}>
+    <View style={{ zIndex: changeZIndex ? 20 : 0 }}>
+      <TouchableWithoutFeedback onPress={handlePress}>
         <View>
           <View style={{ height: placeholderHeight }} />
           <MotiView
@@ -66,16 +87,16 @@ export default function AssignmentGrade(props: {
               {
                 paddingBottom: highlight ? 30 : 10,
                 position: highlight ? "absolute" : "relative",
-                zIndex: highlight ? 20 : 0,
                 opacity: props.inHighlightView && !highlight ? 0.5 : 1,
               },
             ]}
             animate={{
               transform: [{ translateY: translateY }],
+              zIndex: changeZIndex ? 20 : 0,
             }}
             transition={{
-              type: "timing",
-              duration: 500,
+              type: "spring",
+              damping: 20,
             }}
           >
             <Text style={styles.text}>{props.assignment.name}</Text>

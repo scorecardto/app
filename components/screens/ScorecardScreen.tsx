@@ -6,6 +6,8 @@ import CourseCard from "../app/dashboard/CourseCard";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import CourseGradebook from "../app/dashboard/CourseGradebook";
 import { Storage } from "expo-storage";
+import * as Haptics from "expo-haptics";
+
 const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const data = useContext(DataContext);
 
@@ -29,6 +31,7 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
           return (
             <CourseCard
               onClick={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 actionSheetRef.current?.show();
                 setOpenedCourseId(course.key);
               }}

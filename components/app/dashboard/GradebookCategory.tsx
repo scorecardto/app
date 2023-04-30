@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Assignment, GradeCategory } from "scorecard-types";
 import SolidChip from "./SolidChip";
@@ -28,10 +28,28 @@ export default function GradebookCategory(props: {
     }
   }
 
+  useEffect(() => {
+    if (!props.inHighlightView) {
+      setChildHighlighted(false);
+    }
+  }, [props.inHighlightView]);
+
+  const [changeZIndex, setChangeZIndex] = useState(false);
+
+  useEffect(() => {
+    if (childHighlighted) {
+      setChangeZIndex(true);
+    } else {
+      setTimeout(() => {
+        setChangeZIndex(false);
+      }, 400);
+    }
+  }, [childHighlighted]);
+
   return (
     <View
       style={{
-        zIndex: childHighlighted ? 10 : 0,
+        zIndex: changeZIndex ? 10 : 0,
       }}
     >
       <View

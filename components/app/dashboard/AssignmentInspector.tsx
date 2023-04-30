@@ -1,4 +1,4 @@
-import { MotiView, View } from "moti";
+import { AnimatePresence, MotiView, View } from "moti";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Assignment } from "scorecard-types";
@@ -17,31 +17,37 @@ export default function AssignmentInspector(props: {
         translateY: props.assignment ? 0 : 300,
       }}
       transition={{
-        type: "timing",
-        duration: 500,
+        type: "spring",
+        damping: 20,
       }}
     >
-      {props.assignment && (
-        <View style={styles.content}>
-          <TouchableOpacity onPress={() => props.close()}>
-            <Text>Close</Text>
-          </TouchableOpacity>
-          <Text>Detailed View</Text>
-          <Text>{props.assignment?.name}</Text>
+      <AnimatePresence exitBeforeEnter>
+        {props.assignment && (
+          <MotiView
+            style={styles.content}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <TouchableOpacity onPress={() => props.close()}>
+              <Text>Close</Text>
+            </TouchableOpacity>
+            <Text>Detailed View</Text>
+            <Text>{props.assignment?.name}</Text>
 
-          <GradeAdjuster
-            assignment={props.assignment}
-            setPoints={(points) => {
-              props.setAssignment({
-                ...props.assignment,
-                points,
-              });
-            }}
-          />
+            <GradeAdjuster
+              assignment={props.assignment}
+              setPoints={(points) => {
+                props.setAssignment({
+                  ...props.assignment,
+                  points,
+                });
+              }}
+            />
 
-          <AssignmentMetaTable assignment={props.assignment} />
-        </View>
-      )}
+            <AssignmentMetaTable assignment={props.assignment} />
+          </MotiView>
+        )}
+      </AnimatePresence>
     </MotiView>
   );
 }
