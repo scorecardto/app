@@ -23,7 +23,9 @@ export default function CourseGradebook(props: {
   courseId: string;
   currentGradingPeriod: number;
 }) {
-  const [modifiedCourse, setModifiedCourse] = useState(undefined);
+  const [modifiedCourse, setModifiedCourse] = useState<Course | undefined>(
+    undefined
+  );
 
   const mobileData = useContext(MobileDataContext);
   const data = useContext(DataContext);
@@ -69,7 +71,13 @@ export default function CourseGradebook(props: {
 
   return (
     <View style={styles.wrapper}>
-      <Text>Current Gradebook</Text>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>{modifiedCourse?.name}</Text>
+        <Text>
+          Average:{" "}
+          {modifiedCourse?.grades[props.currentGradingPeriod]?.value ?? "N/A"}
+        </Text>
+      </View>
 
       {modifiedCourse?.gradeCategories?.map((category, idx) => {
         return (
@@ -127,5 +135,13 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingBottom: 20,
     position: "relative",
+  },
+  headerText: {
+    fontSize: 24,
+  },
+  header: {
+    paddingBottom: 15,
+    paddingTop: 15,
+    paddingHorizontal: 20,
   },
 });

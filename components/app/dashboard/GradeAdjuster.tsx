@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   pointsRatioText: {
     fontSize: 20,
     width: "fit-content",
+    fontVariant: ["tabular-nums"],
   },
   slider: {
     flexShrink: 1,

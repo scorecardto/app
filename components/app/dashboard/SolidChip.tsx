@@ -6,10 +6,16 @@ export default function SolidChip(props: {
   color?: string;
   textColor?: string;
 }) {
+  const isNumber = !isNaN(Number(props.label.replace("%", "")));
+
+  const rounded = isNumber
+    ? Math.round(Number(props.label)) + "%"
+    : props.label;
+
   return (
     <View style={[styles.wrapper, { backgroundColor: props.color || "#000" }]}>
       <Text style={[styles.text, { color: props.textColor || "#fff" }]}>
-        {props.label}
+        {rounded}
       </Text>
     </View>
   );

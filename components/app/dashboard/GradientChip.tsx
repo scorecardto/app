@@ -3,13 +3,19 @@ import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function GradientChip(props: { label: string }) {
+  const isNumber = !isNaN(Number(props.label.replace("%", "")));
+
+  const rounded = isNumber
+    ? Math.round(Number(props.label.replace("%", ""))) + "%"
+    : props.label;
+
   return (
     <View>
       <LinearGradient
         colors={["#4c669f", "#3b5998", "#192f6a"]}
         style={styles.wrapper}
       >
-        <Text style={styles.text}>{props.label}</Text>
+        <Text style={styles.text}>{rounded}</Text>
       </LinearGradient>
     </View>
   );

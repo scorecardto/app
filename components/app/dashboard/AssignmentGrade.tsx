@@ -22,6 +22,7 @@ export default function AssignmentGrade(props: {
   assignment: Assignment;
   setHighlight: (highlight: Assignment) => void;
   inHighlightView: boolean;
+  showOverlay: boolean;
 }) {
   const COUNT_BG = "#EBEBEB";
   const COUNT_TEXT = "#7C7C7C";
@@ -76,10 +77,15 @@ export default function AssignmentGrade(props: {
   }, [highlight]);
 
   return (
-    <View style={{ zIndex: changeZIndex ? 20 : 0 }}>
-      <TouchableWithoutFeedback onPress={handlePress}>
-        <View>
-          <View style={{ height: placeholderHeight }} />
+    <View style={{ zIndex: changeZIndex ? 20 : 0, position: "relative" }}>
+      <TouchableWithoutFeedback
+        onPress={handlePress}
+        style={{ zIndex: changeZIndex ? 20 : 0 }}
+      >
+        <View style={{ zIndex: changeZIndex ? 20 : 0 }}>
+          <View
+            style={{ height: placeholderHeight, zIndex: changeZIndex ? 20 : 0 }}
+          />
           <MotiView
             ref={viewRef}
             style={[
@@ -87,12 +93,12 @@ export default function AssignmentGrade(props: {
               {
                 paddingBottom: highlight ? 30 : 10,
                 position: highlight ? "absolute" : "relative",
-                opacity: props.inHighlightView && !highlight ? 0.5 : 1,
+                // opacity: props.inHighlightView && !highlight ? 0.5 : 1,
+                zIndex: changeZIndex ? 20 : 0,
               },
             ]}
             animate={{
               transform: [{ translateY: translateY }],
-              zIndex: changeZIndex ? 20 : 0,
             }}
             transition={{
               type: "spring",
@@ -115,6 +121,23 @@ export default function AssignmentGrade(props: {
           </MotiView>
         </View>
       </TouchableWithoutFeedback>
+      <MotiView
+        pointerEvents={props.showOverlay ? "auto" : "none"}
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          backgroundColor: "black",
+          zIndex: props.showOverlay ? 15 : 0,
+        }}
+        animate={{
+          opacity: props.showOverlay ? 0.5 : 0,
+        }}
+        transition={{
+          type: "timing",
+          duration: props.showOverlay ? 200 : 0,
+        }}
+      />
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { Assignment, GradeCategory } from "scorecard-types";
 import SolidChip from "./SolidChip";
 import GradientChip from "./GradientChip";
 import AssignmentGrade from "./AssignmentGrade";
+import { MotiView } from "moti";
 
 export default function GradebookCategory(props: {
   category: GradeCategory;
@@ -46,10 +47,12 @@ export default function GradebookCategory(props: {
     }
   }, [childHighlighted]);
 
+  const showOverlay = props.inHighlightView && !childHighlighted;
   return (
     <View
       style={{
         zIndex: changeZIndex ? 10 : 0,
+        position: "relative",
       }}
     >
       <View
@@ -57,25 +60,46 @@ export default function GradebookCategory(props: {
           styles.header,
           {
             backgroundColor: HEADER_BG,
-            opacity: props.inHighlightView ? 0.5 : 1,
           },
         ]}
       >
-        <Text style={styles.text}>{props.category.name}</Text>
-        <View style={styles.chips}>
-          <SolidChip
-            label={`Weight: ${props.category.weight}`}
-            color={WEIGHT_BG}
-            textColor={WEIGHT_TEXT}
-          />
-          <GradientChip
-            label={props.category.average ? `${props.category.average}%` : "NG"}
-          />
+        <MotiView
+          pointerEvents={props.inHighlightView ? "auto" : "none"}
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "black",
+            zIndex: props.inHighlightView ? 10 : 0,
+          }}
+          animate={{
+            opacity: props.inHighlightView ? 0.5 : 0,
+          }}
+          transition={{
+            type: "timing",
+            duration: props.inHighlightView ? 200 : 0,
+          }}
+        />
+        <View style={styles.headerContent}>
+          <Text style={styles.text}>{props.category.name}</Text>
+          <View style={styles.chips}>
+            <SolidChip
+              label={`Weight: ${props.category.weight}`}
+              color={WEIGHT_BG}
+              textColor={WEIGHT_TEXT}
+            />
+            <GradientChip
+              label={
+                props.category.average ? `${props.category.average}%` : "NG"
+              }
+            />
+          </View>
         </View>
       </View>
       <View>
         {props.category.assignments.map((assignment, idx) => (
           <AssignmentGrade
+            showOverlay={props.inHighlightView}
             assignment={assignment}
             key={idx}
             inHighlightView={childHighlighted}
@@ -92,7 +116,10 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   header: {
+    position: "relative",
     zIndex: 0,
+  },
+  headerContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
