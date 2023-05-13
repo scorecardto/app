@@ -5,12 +5,14 @@ import { DataContext } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
 import Spinner from "react-native-loading-spinner-overlay/lib";
 import { Storage } from "expo-storage";
+import { MobileDataContext } from "../core/context/MobileDataContext";
 const StartingScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const navigation = useNavigationState((state) => state);
   const onStartingScreen =
     navigation.routes[navigation.index].name === "starting";
 
   const dataContext = useContext(DataContext);
+  const mobileData = useContext(MobileDataContext);
 
   useEffect(() => {
     // get login and data from storage
@@ -21,7 +23,15 @@ const StartingScreen = (props: { navigation: NavigationProp<any, any> }) => {
       if (login && data) {
         const { courses, gradeCategory, gradeCategoryNames, date } =
           JSON.parse(data);
+
+        const { username, password, host } = JSON.parse(login);
+
+        mobileData.setUsername(username);
+        mobileData.setPassword(password);
+        mobileData.setDistrict(host);
+
         props.navigation.navigate("scorecard");
+
         dataContext.setData({
           courses,
           gradeCategory,

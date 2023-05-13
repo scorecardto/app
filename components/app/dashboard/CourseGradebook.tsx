@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import {
   Assignment,
   Course,
@@ -28,6 +35,7 @@ export default function CourseGradebook(props: {
   );
 
   const mobileData = useContext(MobileDataContext);
+
   const data = useContext(DataContext);
 
   useEffect(() => {

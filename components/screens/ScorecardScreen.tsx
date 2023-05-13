@@ -1,4 +1,4 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, FlatList, RefreshControl } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext, GradebookRecord } from "scorecard-types";
@@ -7,13 +7,62 @@ import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import CourseGradebook from "../app/dashboard/CourseGradebook";
 import { Storage } from "expo-storage";
 import * as Haptics from "expo-haptics";
+import { fetchAllContent } from "../../lib/fetcher";
+import { MobileDataContext } from "../core/context/MobileDataContext";
 
 const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
-  const data = useContext(DataContext);
+  const dataContext = useContext(DataContext);
+  const mobileData = useContext(MobileDataContext);
 
   const actionSheetRef = React.useRef<ActionSheetRef>(null);
 
   const [openedCourseId, setOpenedCourseId] = useState(null as string | null);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    console.log(mobileData);
+
+    const url = mobileData.district;
+    const username = mobileData.username;
+    const password = mobileData.password;
+
+    console.log(url);
+
+    const reportCard = fetchAllContent(url, username, password);
+
+    reportCard.then(async (data) => {
+      const gradeCategory =
+        Math.max(
+          ...data.courses.map((course) => course.grades.filter((g) => g).length)
+        ) - 1;
+
+      mobileData.setReferer(data.referer);
+      mobileData.setSessionId(data.sessionId);
+      mobileData.setDistrict(url);
+
+      dataContext.setData({
+        courses: data.courses,
+        gradeCategory,
+        date: Date.now(),
+        gradeCategoryNames: data.gradeCategoryNames,
+      });
+
+      await Storage.setItem({
+        key: "data",
+        value: JSON.stringify({
+          courses: data.courses,
+          gradeCategory,
+          date: Date.now(),
+          gradeCategoryNames: data.gradeCategoryNames,
+        }),
+      });
+
+      setRefreshing(false);
+    });
+  }, []);
 
   return (
     <View>
@@ -21,26 +70,31 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
         {openedCourseId && (
           <CourseGradebook
             courseId={openedCourseId}
-            currentGradingPeriod={data.data.gradeCategory}
+            currentGradingPeriod={dataContext.data.gradeCategory}
           />
         )}
       </ActionSheet>
 
-      {data?.data?.courses &&
-        data.data.courses.map((course, idx) => {
-          return (
+      {dataContext?.data?.courses && (
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          data={dataContext.data.courses}
+          renderItem={({ item }) => (
             <CourseCard
               onClick={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 actionSheetRef.current?.show();
-                setOpenedCourseId(course.key);
+                setOpenedCourseId(item.key);
               }}
-              key={idx}
-              course={course}
-              gradingPeriod={data.data.gradeCategory}
+              course={item}
+              gradingPeriod={dataContext.data.gradeCategory}
             />
-          );
-        })}
+          )}
+          keyExtractor={(item) => item.key}
+        />
+      )}
 
       <Button
         title="Reset Cache"
