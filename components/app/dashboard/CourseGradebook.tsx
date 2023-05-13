@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import {
   Assignment,
   Course,
@@ -31,37 +31,38 @@ export default function CourseGradebook(props: {
   const data = useContext(DataContext);
 
   useEffect(() => {
-    const course = data.data.courses.find((c) => c.key === props.courseId);
+    const course = JSON.parse(
+      JSON.stringify(data.data.courses.find((c) => c.key === props.courseId))
+    );
 
     if (course?.gradeCategories) {
       setModifiedCourse(course);
     } else {
-      if (mobileData.referer && mobileData.sessionId) {
-        fetchGradeCategoriesForCourse(
-          mobileData.district,
-          mobileData.sessionId,
-          mobileData.referer,
-          course
-        ).then((categoriesResp: GradeCategoriesResponse) => {
-          setModifiedCourse({
-            ...course,
-            gradeCategories: categoriesResp.gradeCategories,
-          });
-
-          data.setData({
-            ...data.data,
-            courses: data.data.courses.map((c) => {
-              if (c.key === course.key) {
-                return {
-                  ...c,
-                  gradeCategories: categoriesResp.gradeCategories,
-                };
-              }
-              return c;
-            }),
-          });
-        });
-      }
+      // if (mobileData.referer && mobileData.sessionId) {
+      //   fetchGradeCategoriesForCourse(
+      //     mobileData.district,
+      //     mobileData.sessionId,
+      //     mobileData.referer,
+      //     course
+      //   ).then((categoriesResp: GradeCategoriesResponse) => {
+      //     setModifiedCourse({
+      //       ...course,
+      //       gradeCategories: categoriesResp.gradeCategories,
+      //     });
+      //     data.setData({
+      //       ...data.data,
+      //       courses: data.data.courses.map((c) => {
+      //         if (c.key === course.key) {
+      //           return {
+      //             ...c,
+      //             gradeCategories: categoriesResp.gradeCategories,
+      //           };
+      //         }
+      //         return c;
+      //       }),
+      //     });
+      //   });
+      // }
     }
   }, [props.courseId]);
 
@@ -79,22 +80,24 @@ export default function CourseGradebook(props: {
         </Text>
       </View>
 
-      {modifiedCourse?.gradeCategories?.map((category, idx) => {
-        return (
-          <GradebookCategory
-            category={category}
-            key={idx}
-            inHighlightView={highlight?.assignment !== undefined}
-            setHighlight={(assignment, assignmentIdx) => {
-              setHighlight({
-                assignment,
-                categoryIndex: idx,
-                assignmentIndex: assignmentIdx,
-              });
-            }}
-          />
-        );
-      })}
+      <ScrollView style={styles.list}>
+        {modifiedCourse?.gradeCategories.map((category, index) => {
+          return (
+            <GradebookCategory
+              category={category}
+              key={index}
+              inHighlightView={highlight?.assignment !== undefined}
+              setHighlight={(assignment, assignmentIdx) => {
+                setHighlight({
+                  assignment,
+                  categoryIndex: index,
+                  assignmentIndex: assignmentIdx,
+                });
+              }}
+            />
+          );
+        })}
+      </ScrollView>
 
       <AssignmentInspector
         close={() => {
@@ -133,8 +136,9 @@ export default function CourseGradebook(props: {
 
 const styles = StyleSheet.create({
   wrapper: {
-    paddingBottom: 20,
+    paddingBottom: 0,
     position: "relative",
+    maxHeight: "100%",
   },
   headerText: {
     fontSize: 24,
@@ -143,5 +147,8 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingTop: 15,
     paddingHorizontal: 20,
+  },
+  list: {
+    height: "100%",
   },
 });

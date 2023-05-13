@@ -17,7 +17,7 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
 
   return (
     <View>
-      <ActionSheet ref={actionSheetRef}>
+      <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
         {openedCourseId && (
           <CourseGradebook
             courseId={openedCourseId}

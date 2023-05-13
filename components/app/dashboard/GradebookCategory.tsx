@@ -51,7 +51,7 @@ export default function GradebookCategory(props: {
   return (
     <View
       style={{
-        zIndex: changeZIndex ? 10 : 0,
+        zIndex: changeZIndex ? 15 : 0,
         position: "relative",
       }}
     >
@@ -96,7 +96,7 @@ export default function GradebookCategory(props: {
           </View>
         </View>
       </View>
-      <View>
+      <View style={{ zIndex: changeZIndex ? 15 : 0 }}>
         {props.category.assignments.map((assignment, idx) => (
           <AssignmentGrade
             showOverlay={props.inHighlightView}

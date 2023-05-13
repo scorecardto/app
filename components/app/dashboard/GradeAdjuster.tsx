@@ -19,18 +19,21 @@ export default function GradeAdjuster(props: {
     <View>
       {pointsRatioString && (
         <View style={styles.wrapper}>
-          <View style={styles.pointsRatioWrapper}>
-            <Text style={styles.pointsRatioText}>{pointsRatioString}</Text>
-          </View>
+          <Text style={styles.label}>Adjust This Grade</Text>
+          <View style={styles.inner}>
+            <View style={styles.pointsRatioWrapper}>
+              <Text style={styles.pointsRatioText}>{pointsRatioString}</Text>
+            </View>
 
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            value={props.assignment?.points}
-            step={1}
-            onValueChange={props.setPoints}
-            maximumValue={props.assignment.max}
-          />
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              value={props.assignment?.points}
+              step={1}
+              onValueChange={props.setPoints}
+              maximumValue={props.assignment.max}
+            />
+          </View>
         </View>
       )}
     </View>
@@ -38,7 +41,20 @@ export default function GradeAdjuster(props: {
 }
 
 const styles = StyleSheet.create({
+  label: {
+    fontSize: 15,
+    color: "#555",
+    marginVertical: 5,
+    marginHorizontal: 5,
+  },
   wrapper: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: "#eee",
+    marginVertical: 15,
+  },
+  inner: {
     flexDirection: "row",
     justifyContent: "space-between",
     display: "flex",
@@ -48,13 +64,13 @@ const styles = StyleSheet.create({
   pointsRatioWrapper: {
     marginRight: 20,
     backgroundColor: "#ddd",
-    borderRadius: 50,
+    borderRadius: 10,
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     alignSelf: "center",
   },
   pointsRatioText: {
-    fontSize: 20,
+    fontSize: 15,
     width: "fit-content",
     fontVariant: ["tabular-nums"],
   },

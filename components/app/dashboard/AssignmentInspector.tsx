@@ -28,12 +28,6 @@ export default function AssignmentInspector(props: {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <TouchableOpacity onPress={() => props.close()}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-            <Text>Detailed View</Text>
-            <Text>{props.assignment?.name}</Text>
-
             <GradeAdjuster
               assignment={props.assignment}
               setPoints={(points) => {

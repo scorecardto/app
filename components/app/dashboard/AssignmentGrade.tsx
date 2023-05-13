@@ -35,6 +35,13 @@ export default function AssignmentGrade(props: {
   const [translateY, setTranslateY] = useState(0);
 
   function handlePress() {
+    if (highlight) {
+      props.setHighlight(undefined);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+
+      return;
+    }
+
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     UIManager.measure(
@@ -77,14 +84,14 @@ export default function AssignmentGrade(props: {
   }, [highlight]);
 
   return (
-    <View style={{ zIndex: changeZIndex ? 20 : 0, position: "relative" }}>
+    <View style={{ zIndex: changeZIndex ? 25 : 0, position: "relative" }}>
       <TouchableWithoutFeedback
         onPress={handlePress}
-        style={{ zIndex: changeZIndex ? 20 : 0 }}
+        style={{ zIndex: changeZIndex ? 25 : 0 }}
       >
-        <View style={{ zIndex: changeZIndex ? 20 : 0 }}>
+        <View style={{ zIndex: changeZIndex ? 25 : 0 }}>
           <View
-            style={{ height: placeholderHeight, zIndex: changeZIndex ? 20 : 0 }}
+            style={{ height: placeholderHeight, zIndex: changeZIndex ? 25 : 0 }}
           />
           <MotiView
             ref={viewRef}
@@ -94,7 +101,7 @@ export default function AssignmentGrade(props: {
                 paddingBottom: highlight ? 30 : 10,
                 position: highlight ? "absolute" : "relative",
                 // opacity: props.inHighlightView && !highlight ? 0.5 : 1,
-                zIndex: changeZIndex ? 20 : 0,
+                zIndex: changeZIndex ? 25 : 0,
               },
             ]}
             animate={{
@@ -121,23 +128,30 @@ export default function AssignmentGrade(props: {
           </MotiView>
         </View>
       </TouchableWithoutFeedback>
-      <MotiView
-        pointerEvents={props.showOverlay ? "auto" : "none"}
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          backgroundColor: "black",
-          zIndex: props.showOverlay ? 15 : 0,
+      <TouchableWithoutFeedback
+        onPress={(e) => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          props.setHighlight(undefined);
         }}
-        animate={{
-          opacity: props.showOverlay ? 0.5 : 0,
-        }}
-        transition={{
-          type: "timing",
-          duration: props.showOverlay ? 200 : 0,
-        }}
-      />
+      >
+        <MotiView
+          pointerEvents={props.showOverlay ? "auto" : "none"}
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "black",
+            zIndex: props.showOverlay ? 15 : 0,
+          }}
+          animate={{
+            opacity: props.showOverlay ? 0.5 : 0,
+          }}
+          transition={{
+            type: "timing",
+            duration: props.showOverlay ? 200 : 0,
+          }}
+        />
+      </TouchableWithoutFeedback>
     </View>
   );
 }

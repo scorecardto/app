@@ -6,7 +6,7 @@ export default function AssignmentMetaTableRow(props: {
   right: string;
 }) {
   return (
-    <View>
+    <View style={styles.wrapper}>
       <View>
         <Text>{props.left}</Text>
       </View>
@@ -25,5 +25,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+    paddingVertical: 10,
   },
 });
