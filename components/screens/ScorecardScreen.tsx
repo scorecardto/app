@@ -1,4 +1,11 @@
-import { View, Text, Button, FlatList, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext, GradebookRecord } from "scorecard-types";
@@ -9,6 +16,9 @@ import { Storage } from "expo-storage";
 import * as Haptics from "expo-haptics";
 import { fetchAllContent } from "../../lib/fetcher";
 import { MobileDataContext } from "../core/context/MobileDataContext";
+import LargeText from "../text/LargeText";
+import StatusText from "../text/StatusText";
+import Header from "../text/Header";
 
 const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const dataContext = useContext(DataContext);
@@ -66,7 +76,30 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
 
   return (
     <View>
-      <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
+      <Header header="Your Scorecard" subheader="Your Grades" />
+
+      {dataContext?.data?.courses && (
+        <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          data={dataContext.data.courses}
+          renderItem={({ item }) => (
+            <CourseCard
+              onClick={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                actionSheetRef.current?.show();
+                setOpenedCourseId(item.key);
+              }}
+              course={item}
+              gradingPeriod={dataContext.data.gradeCategory}
+            />
+          )}
+          keyExtractor={(item) => item.key}
+        />
+      )}
+
+      {/* <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
         {openedCourseId && (
           <CourseGradebook
             courseId={openedCourseId}
@@ -95,7 +128,7 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
           keyExtractor={(item) => item.key}
         />
       )}
-
+*/}
       <Button
         title="Reset Cache"
         onPress={() => {

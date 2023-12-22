@@ -1,25 +1,39 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { Appearance, StyleSheet, useColorScheme } from "react-native";
 import ScorecardScreen from "./components/screens/ScorecardScreen";
 import StartScreen from "./components/screens/AccountScreen";
 import {
   MobileDataContext,
   MobileDataProvider,
 } from "./components/core/context/MobileDataContext";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataContext, GradebookRecord } from "scorecard-types";
 import StartingScreen from "./components/screens/StartingScreen";
+import Color from "./lib/Color";
+import {
+  useFonts,
+  DMSans_400Regular,
+  DMSans_500Medium,
+  DMSans_700Bold,
+} from "@expo-google-fonts/dm-sans";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [fontsLoaded, fontError] = useFonts({
+    DMSans_400Regular,
+    DMSans_500Medium,
+    DMSans_700Bold,
+  });
+
   const [data, setData] = useState<GradebookRecord | null>(null);
   const [gradeCategory, setGradeCategory] = useState<number>(0);
   const [courseDisplayNames, setCourseDisplayNames] = useState<{
     [key: string]: string;
   }>({});
+
+  const appearance = useColorScheme();
 
   const dataContext = useMemo(
     () => ({
@@ -72,10 +86,16 @@ export default function App() {
     ]
   );
 
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
     <DataContext.Provider value={dataContext}>
       <MobileDataContext.Provider value={mobileData}>
-        <NavigationContainer>
+        <NavigationContainer
+          theme={appearance === "dark" ? Color.DarkTheme : Color.LightTheme}
+        >
           <Stack.Navigator>
             <Stack.Screen
               name="starting"
