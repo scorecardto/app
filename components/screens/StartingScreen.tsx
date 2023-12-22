@@ -30,7 +30,10 @@ const StartingScreen = (props: { navigation: NavigationProp<any, any> }) => {
         mobileData.setPassword(password);
         mobileData.setDistrict(host);
 
-        props.navigation.navigate("scorecard");
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "scorecard" }],
+        });
 
         dataContext.setData({
           courses,
@@ -40,7 +43,10 @@ const StartingScreen = (props: { navigation: NavigationProp<any, any> }) => {
         });
         dataContext.setCourseDisplayNames({});
       } else {
-        props.navigation.navigate("account");
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "account" }],
+        });
       }
     });
   }, []);

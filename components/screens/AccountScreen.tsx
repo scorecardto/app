@@ -80,7 +80,10 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
           }),
         });
 
-        props.navigation.navigate("scorecard");
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "scorecard" }],
+        });
       });
     }
   }, [loading]);
