@@ -17,6 +17,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import CourseScreen from "./components/screens/CourseScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -116,6 +117,13 @@ export default function App() {
             <Stack.Screen
               name="scorecard"
               component={ScorecardScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="course"
+              component={CourseScreen}
               options={{
                 headerShown: false,
               }}

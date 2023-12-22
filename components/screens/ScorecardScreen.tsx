@@ -90,6 +90,9 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 actionSheetRef.current?.show();
                 setOpenedCourseId(item.key);
+                props.navigation.navigate("course", {
+                  key: item.key,
+                });
               }}
               course={item}
               gradingPeriod={dataContext.data.gradeCategory}
