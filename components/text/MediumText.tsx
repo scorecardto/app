@@ -5,7 +5,7 @@ export default function MediumText(props) {
   return (
     <Text
       style={{
-        fontSize: 20,
+        fontSize: 16,
         fontFamily: "DMSans_500Medium",
         ...props.style,
       }}

@@ -16,13 +16,11 @@ export default function CourseCard(props: {
   gradingPeriod: number;
   onClick: () => void;
 }) {
-  // const t = useTheme();
-  // const colors = t.colors;
-  // console.log(t);
+  const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     wrapper: {
-      // backgroundColor: colors.background,
+      backgroundColor: colors.card,
       borderRadius: 12,
       overflow: "hidden",
       marginBottom: 10,
@@ -37,35 +35,24 @@ export default function CourseCard(props: {
       alignItems: "center",
     },
     badge: {
-      width: 64,
-      height: 64,
+      width: 56,
+      height: 56,
       backgroundColor: "#31A2C5",
     },
     header: {
       paddingLeft: 24,
-      // color: colors.primary,
+      color: colors.primary,
     },
     grade: {
       marginRight: 24,
-      fontSize: 20,
-      // color: colors.text,
+      fontSize: 16,
+      color: colors.text,
     },
   });
 
   return (
     <TouchableOpacity onPress={props.onClick}>
-      <View
-        style={{
-          // backgroundColor: colors.background,
-          borderRadius: 12,
-          overflow: "hidden",
-          marginBottom: 10,
-          marginHorizontal: 12,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <View style={styles.wrapper}>
         <View style={styles.left}>
           <View style={styles.badge}></View>
           <MediumText style={styles.header}>{props.course.name}</MediumText>

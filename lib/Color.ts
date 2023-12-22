@@ -6,7 +6,8 @@ const MyLightTheme = {
     ...DefaultTheme.colors,
     primary: "#000",
     text: "#A0A0A0",
-    background: "#FFF",
+    background: "#F6FAFD",
+    card: "#FFF",
   },
 };
 
@@ -16,7 +17,8 @@ const MyDarkTheme = {
     ...DefaultTheme.colors,
     primary: "#000",
     text: "#A0A0A0",
-    background: "#1E213B",
+    background: "#151727",
+    card: "#1E213B",
   },
 };
 

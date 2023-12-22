@@ -110,16 +110,14 @@ export default function App() {
               name="account"
               component={StartScreen}
               options={{
-                headerBackVisible: false,
-                title: "Account",
+                headerShown: false,
               }}
             />
             <Stack.Screen
               name="scorecard"
               component={ScorecardScreen}
               options={{
-                headerBackVisible: false,
-                title: "Scorecard",
+                headerShown: false,
               }}
             />
           </Stack.Navigator>

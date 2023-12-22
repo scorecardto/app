@@ -13,7 +13,10 @@ export default function Header(props: { header: string; subheader: string }) {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginTop: 80,
+    marginBottom: 28,
+  },
   header: {
     textAlign: "center",
   },

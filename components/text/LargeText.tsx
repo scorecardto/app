@@ -5,7 +5,7 @@ export default function LargeText(props) {
   return (
     <Text
       style={{
-        fontSize: 32,
+        fontSize: 30,
         fontWeight: "bold",
         fontFamily: "DMSans_700Bold",
         ...props.style,
