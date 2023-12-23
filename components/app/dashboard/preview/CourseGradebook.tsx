@@ -14,11 +14,11 @@ import {
   GradeCategoriesResponse,
 } from "scorecard-types";
 import GradebookCategory from "./GradebookCategory";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
-import { fetchGradeCategoriesForCourse } from "../../../lib/fetcher";
+import { MobileDataContext } from "../../../core/context/MobileDataContext";
+import { fetchGradeCategoriesForCourse } from "../../../../lib/fetcher";
 import { MotiView } from "moti";
 import AssignmentInspector from "./AssignmentInspector";
-import { formatCourseFromAssignmentPoints } from "../../../lib/gradeTesting";
+import { formatCourseFromAssignmentPoints } from "../../../../lib/gradeTesting";
 
 export type HighlightedAssignment = {
   assignment: Assignment;

@@ -4,13 +4,19 @@ import LargeText from "./LargeText";
 import StatusText from "./StatusText";
 import { useTheme } from "@react-navigation/native";
 
-export default function Header(props: { header: string; subheader?: string }) {
+export default function Header(props: {
+  header: string;
+  subheader?: string;
+  children?: React.ReactNode;
+}) {
   const { colors } = useTheme();
 
   const styles = StyleSheet.create({
     container: {
       marginTop: 84,
       marginBottom: 42,
+      flexDirection: "column",
+      alignItems: "center",
     },
     header: {
       textAlign: "center",
@@ -29,6 +35,7 @@ export default function Header(props: { header: string; subheader?: string }) {
       {props.subheader && (
         <StatusText style={styles.subheader}>{props.subheader}</StatusText>
       )}
+      {props.children}
     </View>
   );
 }

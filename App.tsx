@@ -17,6 +17,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import { AnekKannada_400Regular } from "@expo-google-fonts/anek-kannada";
 import CourseScreen from "./components/screens/CourseScreen";
 
 const Stack = createNativeStackNavigator();
@@ -26,6 +27,7 @@ export default function App() {
     DMSans_400Regular,
     DMSans_500Medium,
     DMSans_700Bold,
+    AnekKannada_400Regular,
   });
 
   const [data, setData] = useState<GradebookRecord | null>(null);

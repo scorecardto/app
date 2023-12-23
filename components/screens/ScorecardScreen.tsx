@@ -11,7 +11,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext, GradebookRecord } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
-import CourseGradebook from "../app/dashboard/CourseGradebook";
+import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
 import { Storage } from "expo-storage";
 import * as Haptics from "expo-haptics";
 import { fetchAllContent } from "../../lib/fetcher";
