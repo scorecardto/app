@@ -3,6 +3,7 @@ import React from "react";
 import { useTheme } from "@react-navigation/native";
 import MediumText from "../../../text/MediumText";
 import SmallText from "../../../text/SmallText";
+import AddButton from "./AddButton";
 
 export default function GradebookCard(props: {
   title: string;
@@ -57,6 +58,7 @@ export default function GradebookCard(props: {
             );
           })}
         </View>
+        {/* <AddButton /> */}
       </View>
     </View>
   );

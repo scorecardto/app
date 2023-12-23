@@ -39,7 +39,7 @@
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-sfsymbols": "^1.2.1",
-    "react-native-svg": "^14.1.0",
+    "react-native-svg": "13.4.0",
     "realm": "^11.5.1",
     "redaxios": "^0.5.1",
     "scorecard-types": "github:scorecardto/types",
