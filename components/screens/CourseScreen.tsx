@@ -6,6 +6,7 @@ import Header from "../text/Header";
 import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { useTheme } from "@react-navigation/native";
+import Gradebook from "../app/dashboard/gradebook/Gradebook";
 
 export default function CourseScreen({ route, navigation }) {
   const { key } = route.params;
@@ -48,6 +49,10 @@ export default function CourseScreen({ route, navigation }) {
             textColor="#FFFFFF"
           />
         </Header>
+
+        <View style={{ marginHorizontal: 12 }}>
+          <Gradebook course={course} />
+        </View>
       </View>
       <View
         style={{

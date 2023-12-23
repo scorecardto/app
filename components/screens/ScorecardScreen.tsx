@@ -11,7 +11,7 @@ import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext, GradebookRecord } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
-import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
+// import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
 import { Storage } from "expo-storage";
 import * as Haptics from "expo-haptics";
 import { fetchAllContent } from "../../lib/fetcher";
@@ -106,12 +106,12 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
       )}
 
       <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
-        {openedCourseId && (
-          <CourseGradebook
-            courseId={openedCourseId}
-            currentGradingPeriod={dataContext.data.gradeCategory}
-          />
-        )}
+        {/* {openedCourseId && (
+          // <CourseGradebook
+          //   courseId={openedCourseId}
+          //   currentGradingPeriod={dataContext.data.gradeCategory}
+          // />
+        )} */}
       </ActionSheet>
 
       {/*
