@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext } from "scorecard-types";
 import Header from "../text/Header";
+import { RadialGradient } from "react-native-gradients";
 
 export default function CourseScreen({ route, navigation }) {
   const { key } = route.params;
@@ -19,9 +20,41 @@ export default function CourseScreen({ route, navigation }) {
     );
   }
 
+  const colorList = [
+    { offset: "0%", color: "#FFCBD6", opacity: "1" },
+    { offset: "100%", color: "#FFCBD6", opacity: "0" },
+  ];
+
   return (
-    <View>
-      <Header header={course.name} />
+    <View
+      style={{
+        height: "100%",
+      }}
+    >
+      <View
+        style={{
+          zIndex: 1,
+        }}
+      >
+        <Header header={course.name} />
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <RadialGradient
+          x="50%"
+          y="0"
+          rx="384"
+          ry="288"
+          colorList={colorList}
+        ></RadialGradient>
+      </View>
     </View>
   );
 }
