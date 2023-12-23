@@ -15,6 +15,7 @@ export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
   onClick: () => void;
+  onHold: () => void;
 }) {
   const { colors } = useTheme();
 
@@ -51,7 +52,7 @@ export default function CourseCard(props: {
   });
 
   return (
-    <TouchableOpacity onPress={props.onClick}>
+    <TouchableOpacity onPress={props.onClick} onLongPress={props.onHold}>
       <View style={styles.wrapper}>
         <View style={styles.left}>
           <View style={styles.badge}></View>

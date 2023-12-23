@@ -88,11 +88,14 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
             <CourseCard
               onClick={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                actionSheetRef.current?.show();
-                setOpenedCourseId(item.key);
                 props.navigation.navigate("course", {
                   key: item.key,
                 });
+              }}
+              onHold={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                setOpenedCourseId(item.key);
+                actionSheetRef.current.show();
               }}
               course={item}
               gradingPeriod={dataContext.data.gradeCategory}
@@ -102,7 +105,7 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
         />
       )}
 
-      {/* <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
+      <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
         {openedCourseId && (
           <CourseGradebook
             courseId={openedCourseId}
@@ -110,6 +113,8 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
           />
         )}
       </ActionSheet>
+
+      {/*
 
       {dataContext?.data?.courses && (
         <FlatList
