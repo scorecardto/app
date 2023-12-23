@@ -26,7 +26,7 @@ export default function GradebookCard(props: {
       fontSize: 20,
     },
     footer: {
-      marginTop: 8,
+      marginTop: 12,
       flexDirection: "row",
       justifyContent: "space-between",
       paddingBottom: 16,
@@ -58,7 +58,7 @@ export default function GradebookCard(props: {
             );
           })}
         </View>
-        {/* <AddButton /> */}
+        <AddButton />
       </View>
     </View>
   );

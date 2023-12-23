@@ -6,6 +6,7 @@ interface Theme extends NativeTheme.Theme {
     background: string;
     backgroundNeutral: string;
     borderNeutral: string;
+    secondaryNeutral: string;
     card: string;
     text: string;
     border: string;
@@ -22,6 +23,7 @@ const MyLightTheme = {
     background: "#F6FAFD",
     backgroundNeutral: "#f6f6f6",
     borderNeutral: "#e8e8e8",
+    secondaryNeutral: "#f4f4f4",
     card: "#FFF",
   },
 };
@@ -35,6 +37,7 @@ const MyDarkTheme = {
     background: "#151727",
     backgroundNeutral: "#CCC",
     borderNeutral: "#e8e8e8",
+    secondaryNeutral: "#DDD",
     card: "#1E213B",
   },
 };
