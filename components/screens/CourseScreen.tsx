@@ -50,7 +50,7 @@ export default function CourseScreen({ route, navigation }) {
           />
         </Header>
 
-        <View style={{ marginHorizontal: 12 }}>
+        <View style={{}}>
           <Gradebook course={course} />
         </View>
       </View>

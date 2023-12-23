@@ -6,7 +6,7 @@ import TableRow from "./TableRow";
 export default function CategoryTable(props: { category: GradeCategory }) {
   return (
     <View>
-      {props.category.assignments.map((assignment, idx) => {
+      {props.category?.assignments?.map((assignment, idx) => {
         return (
           <TableRow
             key={idx}
