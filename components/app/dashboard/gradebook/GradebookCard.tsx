@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import MediumText from "../../../text/MediumText";
 import SmallText from "../../../text/SmallText";
 import AddButton from "./AddButton";
+import { Pagination } from "react-native-snap-carousel";
 
 export default function GradebookCard(props: {
   title: string;
@@ -17,10 +18,14 @@ export default function GradebookCard(props: {
     wrapper: {
       backgroundColor: colors.card,
       borderRadius: 12,
+      maxHeight: 500,
     },
     header: {
       paddingVertical: 24,
       paddingHorizontal: 24,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
     },
     headerText: {
       fontSize: 20,
@@ -43,9 +48,28 @@ export default function GradebookCard(props: {
   });
 
   return (
-    <View style={styles.wrapper}>
+    <ScrollView style={styles.wrapper}>
       <View style={styles.header}>
         <MediumText style={styles.headerText}>{props.title}</MediumText>
+        {/* <Pagination
+          dotsLength={props.totalCarouselLength}
+          activeDotIndex={props.index + 1}
+          containerStyle={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            paddingVertical: 0,
+            paddingHorizontal: 0,
+          }}
+          dotStyle={{
+            width: 6,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: colors.primary,
+          }}
+          inactiveDotOpacity={0.3}
+          inactiveDotScale={1}
+        /> */}
       </View>
       {props.children}
       <View style={styles.footer}>
@@ -60,6 +84,6 @@ export default function GradebookCard(props: {
         </View>
         <AddButton />
       </View>
-    </View>
+    </ScrollView>
   );
 }
