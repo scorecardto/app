@@ -13,6 +13,7 @@ import {
 } from "moti";
 import { useTheme } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
+import { set } from "react-native-reanimated";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -30,44 +31,7 @@ export default function Gradebook(props: { course: Course }) {
 
   const [currentCard, setCurrentCard] = useState(0);
 
-  const cardSnapAnimation: DynamicStyleProp<ExcludeFunctionKeys<ViewStyle>> = {
-    opacity: [
-      {
-        value: 0,
-        duration: 0,
-        type: "timing",
-      },
-      {
-        value: 1,
-        duration: 300,
-      },
-    ],
-    translateX: [
-      {
-        value: 100,
-        duration: 0,
-        type: "timing",
-      },
-      {
-        value: 0,
-        damping: 100,
-        type: "spring",
-      },
-    ],
-    scale: [
-      {
-        value: 0.75,
-        duration: 0,
-        type: "timing",
-      },
-      {
-        value: 1,
-        damping: 100,
-        type: "spring",
-        velocity: 1.5,
-      },
-    ],
-  };
+  const [animatingCard, setAnimatingCard] = useState(-1);
 
   return (
     <View
@@ -88,8 +52,8 @@ export default function Gradebook(props: { course: Course }) {
           marginBottom: 16,
         }}
         dotStyle={{
-          width: 16,
-          height: 3,
+          width: 6,
+          height: 6,
           borderRadius: 3,
           backgroundColor: "#C5315D",
         }}
@@ -108,15 +72,18 @@ export default function Gradebook(props: { course: Course }) {
                   title="Summary"
                   bottom={["Weight: 100%"]}
                   buttonAction={() => {}}
-                  index={-1}
-                  totalCarouselLength={props.course.gradeCategories.length + 1}
                 >
                   <SummaryTable
                     course={props.course}
                     changeGradeCategory={(c) => {
-                      ref.current.snapToItem(c + 1, false);
+                      ref.current.snapToItem(c + 1);
                       setAnimatedIndex(c + 1);
-                      cardAnimation.animateTo(cardSnapAnimation);
+                      setAnimatingCard(c);
+
+                      setTimeout(() => {
+                        setAnimatingCard(-1);
+                      }, 300);
+
                       Haptics.selectionAsync();
                     }}
                   />
@@ -126,15 +93,20 @@ export default function Gradebook(props: { course: Course }) {
           }
           return (
             <MotiView
-              state={index === animatedIndex ? cardAnimation : undefined}
+              animate={{
+                opacity:
+                  index - 1 === animatingCard || animatingCard === -1 ? 1 : 0.2,
+              }}
+              transition={{
+                type: "timing",
+                duration: 0,
+              }}
             >
               <GradebookCard
                 key={index}
                 title={item.name}
                 bottom={[`Weight: ${item.weight}%`]}
                 buttonAction={() => {}}
-                index={index - 1}
-                totalCarouselLength={props.course.gradeCategories.length + 1}
               >
                 <CategoryTable category={item} />
               </GradebookCard>
