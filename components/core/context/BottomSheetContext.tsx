@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import BottomSheetBase from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
@@ -25,9 +31,17 @@ export function BottomSheetProvider(props) {
   };
 
   const next = () => {
-    sheets.shift();
+    const remaining = sheets.length - 1;
 
-    return sheets.length !== 0;
+    setSheets((s) => {
+      const newState = [...s];
+
+      newState.shift();
+
+      return newState;
+    });
+
+    return remaining > 0;
   };
 
   return (
@@ -42,10 +56,28 @@ export function BottomSheetDisplay(props) {
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [currentSheet, setCurrentSheet] = useState(<></>);
+  function onClose() {
+    if (sheets.sheets.length > 0 && sheets.next()) {
+      bottomSheetRef.current.expand();
+    }
+  }
+
+  const [currentSheet, setCurrentSheet] = useState<React.ReactNode>(<></>);
+
   useEffect(() => {
-    console.log(sheets.sheets[0]);
+    if (sheets.sheets.length > 0) {
+      bottomSheetRef.current.expand();
+
+      setCurrentSheet(
+        sheets.sheets[0]({
+          close: () => {
+            bottomSheetRef.current.close();
+          },
+        })
+      );
+    }
   }, [sheets.sheets]);
+
   return (
     <BottomSheetBase
       ref={bottomSheetRef}
@@ -54,14 +86,10 @@ export function BottomSheetDisplay(props) {
       containerStyle={{
         zIndex: 100,
       }}
+      onClose={onClose}
+      index={-1}
     >
-      {sheets.sheets[0]?.({
-        close: () => {
-          if (!sheets.next()) {
-            bottomSheetRef.current.close();
-          }
-        },
-      }) || <></>}
+      {currentSheet}
     </BottomSheetBase>
   );
 }
