@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Text, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext } from "scorecard-types";
@@ -7,6 +7,7 @@ import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { useTheme } from "@react-navigation/native";
 import Gradebook from "../app/dashboard/gradebook/Gradebook";
+import { BottomSheetDisplay } from "../core/context/BottomSheetContext";
 
 export default function CourseScreen({ route, navigation }) {
   const { key } = route.params;
@@ -71,6 +72,7 @@ export default function CourseScreen({ route, navigation }) {
           colorList={colorList}
         ></RadialGradient>
       </View>
+      <BottomSheetDisplay />
     </View>
   );
 }

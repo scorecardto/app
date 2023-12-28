@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Touchable,
-  TouchableOpacity,
-} from "react-native";
-import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import SmallText from "../../../text/SmallText";
 
@@ -45,6 +38,7 @@ export default function TableRow(props: {
       color: colors.text,
     },
   });
+
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity style={styles.content} onPress={props.onPress}>

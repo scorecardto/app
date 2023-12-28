@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Text, View } from "react-native";
 import { GradeCategory } from "scorecard-types";
 import TableRow from "./TableRow";
+import { BottomSheetContext } from "../../../core/context/BottomSheetContext";
+import GradeSheet from "./GradeSheet";
 
 export default function CategoryTable(props: { category: GradeCategory }) {
+  const sheets = useContext(BottomSheetContext);
+
   return (
     <View>
       {props.category?.assignments?.map((assignment, idx) => {
@@ -13,11 +17,18 @@ export default function CategoryTable(props: { category: GradeCategory }) {
             name={assignment.name}
             grade={assignment.grade}
             worth={
-              "worth " +
-              assignment.count.toString() +
-              "pt" +
-              (assignment.count === 1 ? "" : "s")
+              assignment.dropped
+                ? "Dropped"
+                : "worth " +
+                  assignment.count.toString() +
+                  "pt" +
+                  (assignment.count === 1 ? "" : "s")
             }
+            onPress={() => {
+              sheets.addSheet(({ close }) => (
+                <GradeSheet assignment={assignment} close={close} />
+              ));
+            }}
           />
         );
       })}

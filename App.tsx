@@ -19,6 +19,8 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import { AnekKannada_400Regular } from "@expo-google-fonts/anek-kannada";
 import CourseScreen from "./components/screens/CourseScreen";
+import { BottomSheetContext } from "@gorhom/bottom-sheet/lib/typescript/contexts";
+import { BottomSheetProvider } from "./components/core/context/BottomSheetContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -96,42 +98,44 @@ export default function App() {
   return (
     <DataContext.Provider value={dataContext}>
       <MobileDataContext.Provider value={mobileData}>
-        <NavigationContainer
-          theme={appearance === "dark" ? Color.DarkTheme : Color.LightTheme}
-        >
-          <Stack.Navigator>
-            <Stack.Screen
-              name="starting"
-              component={StartingScreen}
-              options={{
-                title: "Initializing App",
-                headerBackVisible: false,
-              }}
-            />
+        <BottomSheetProvider>
+          <NavigationContainer
+            theme={appearance === "dark" ? Color.DarkTheme : Color.LightTheme}
+          >
+            <Stack.Navigator>
+              <Stack.Screen
+                name="starting"
+                component={StartingScreen}
+                options={{
+                  title: "Initializing App",
+                  headerBackVisible: false,
+                }}
+              />
 
-            <Stack.Screen
-              name="account"
-              component={StartScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="scorecard"
-              component={ScorecardScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="course"
-              component={CourseScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
+              <Stack.Screen
+                name="account"
+                component={StartScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="scorecard"
+                component={ScorecardScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="course"
+                component={CourseScreen}
+                options={{
+                  headerShown: false,
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </BottomSheetProvider>
       </MobileDataContext.Provider>
     </DataContext.Provider>
   );
