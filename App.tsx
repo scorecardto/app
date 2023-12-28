@@ -20,7 +20,7 @@ import {
 import { AnekKannada_400Regular } from "@expo-google-fonts/anek-kannada";
 import CourseScreen from "./components/screens/CourseScreen";
 import { BottomSheetContext } from "@gorhom/bottom-sheet/lib/typescript/contexts";
-import { BottomSheetProvider } from "./components/core/context/BottomSheetContext";
+import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
 
 const Stack = createNativeStackNavigator();
 

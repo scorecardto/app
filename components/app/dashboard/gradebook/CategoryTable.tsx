@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react";
 import { Text, View } from "react-native";
 import { GradeCategory } from "scorecard-types";
 import TableRow from "./TableRow";
-import { BottomSheetContext } from "../../../core/context/BottomSheetContext";
 import GradeSheet from "./GradeSheet";
+import BottomSheetContext from "../../../util/BottomSheet/BottomSheetContext";
 
 export default function CategoryTable(props: { category: GradeCategory }) {
   const sheets = useContext(BottomSheetContext);

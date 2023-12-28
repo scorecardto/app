@@ -7,7 +7,7 @@ import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { useTheme } from "@react-navigation/native";
 import Gradebook from "../app/dashboard/gradebook/Gradebook";
-import { BottomSheetDisplay } from "../core/context/BottomSheetContext";
+import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
 
 export default function CourseScreen({ route, navigation }) {
   const { key } = route.params;
