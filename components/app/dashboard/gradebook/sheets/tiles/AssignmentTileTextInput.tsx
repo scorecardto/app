@@ -8,6 +8,7 @@ import React, {
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
 import { useTheme } from "@react-navigation/native";
+import AssignmentTileTextInputFrame from "./AssignmentTileTextInputFrame";
 
 const AssignmentTileTextInput = forwardRef(
   (
@@ -25,15 +26,7 @@ const AssignmentTileTextInput = forwardRef(
     const { colors } = useTheme();
 
     return (
-      <View
-        style={{
-          backgroundColor: colors.borderNeutral,
-          paddingHorizontal: 12,
-          paddingVertical: 8,
-          alignSelf: "flex-start",
-          borderRadius: 8,
-        }}
-      >
+      <AssignmentTileTextInputFrame>
         <View>
           <BottomSheetTextInput
             ref={ref}
@@ -63,7 +56,7 @@ const AssignmentTileTextInput = forwardRef(
             placeholder={props.placeholder}
           />
         </View>
-      </View>
+      </AssignmentTileTextInputFrame>
     );
   }
 );

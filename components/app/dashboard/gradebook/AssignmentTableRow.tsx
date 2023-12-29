@@ -6,7 +6,10 @@ import BottomSheetContext from "../../../util/BottomSheet/BottomSheetContext";
 import AssignmentSheet from "./sheets/AssignmentSheet";
 import AssignmentEdits from "../../../../lib/types/AssignmentEdits";
 
-export default function AssignmentTableRow(props: { assignment: Assignment }) {
+export default function AssignmentTableRow(props: {
+  assignment: Assignment;
+  setModifiedAssignment(a: Assignment): void;
+}) {
   const assignment = props.assignment;
   const sheets = useContext(BottomSheetContext);
 

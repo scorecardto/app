@@ -8,6 +8,7 @@ import LargeGradebookSheetTile from "./tiles/LargeGradebookSheetTile";
 import AssignmentGradeTile from "./tiles/AssignmentGradeTile";
 import AssignmentCountTile from "./tiles/AssignmentCountTile";
 import SmallGradebookSheetTileGroup from "./tiles/SmallGradebookSheetTileGroup";
+import AssignmentDroppedTile from "./tiles/AssignmentDroppedTile";
 
 export default function AssignmentSheet(props: {
   assignment: Assignment;
@@ -58,6 +59,11 @@ export default function AssignmentSheet(props: {
           <AssignmentCountTile
             count={props.currentEdits.count ?? props.assignment.count}
             originalCount={props.assignment.count}
+            edit={props.edit}
+          />
+          <AssignmentDroppedTile
+            dropped={props.currentEdits.dropped ?? props.assignment.dropped}
+            originalDropped={props.assignment.dropped}
             edit={props.edit}
           />
         </SmallGradebookSheetTileGroup>
