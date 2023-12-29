@@ -6,6 +6,11 @@ export default function TableRow(props: {
   name: string;
   grade: string;
   worth: string;
+  red?: {
+    name?: boolean;
+    grade?: boolean;
+    worth?: boolean;
+  };
   onPress?: () => void;
 }) {
   const { colors } = useTheme();
@@ -14,6 +19,7 @@ export default function TableRow(props: {
     wrapper: {
       borderTopWidth: 1,
       borderTopColor: colors.borderNeutral,
+      width: "100%",
     },
     content: {
       paddingVertical: 12,
@@ -21,21 +27,30 @@ export default function TableRow(props: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
+
+      width: "100%",
     },
     name: {
       fontSize: 16,
+      flexShrink: 1,
+      flexGrow: 0,
+      flexWrap: "wrap",
+      color: props.red?.name ? "red" : colors.primary,
     },
     right: {
+      marginLeft: 24,
       flexDirection: "column",
       alignItems: "flex-end",
+      flexShrink: 0,
+      flexGrow: 1,
     },
     grade: {
       fontSize: 14,
-      color: colors.primary,
+      color: props.red?.grade ? "red" : colors.primary,
     },
     worth: {
       fontSize: 14,
-      color: colors.text,
+      color: props.red?.worth ? "red" : colors.primary,
     },
   });
 

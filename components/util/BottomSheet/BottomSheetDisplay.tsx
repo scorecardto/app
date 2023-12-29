@@ -60,10 +60,14 @@ export default function BottomSheetDisplay(props) {
       </TouchableWithoutFeedback>
       <BottomSheetBase
         ref={bottomSheetRef}
-        snapPoints={["25%"]}
+        snapPoints={["35%"]}
         enablePanDownToClose={true}
         containerStyle={{
           zIndex: 100,
+        }}
+        backgroundStyle={{
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
         }}
         onClose={onClose}
         index={-1}
