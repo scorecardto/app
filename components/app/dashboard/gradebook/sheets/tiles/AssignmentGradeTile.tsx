@@ -8,34 +8,32 @@ import { NativeViewGestureHandlerProps } from "react-native-gesture-handler";
 import { useTheme } from "@react-navigation/native";
 import SmallText from "../../../../../text/SmallText";
 import * as Haptics from "expo-haptics";
+import AssignmentTileTextInput from "./AssignmentTileTextInput";
+
+type TileValue =
+  | {
+      pointsPossible: number;
+      pointsEarned: number;
+    }
+  | string;
+
+const gradeToString = (grade: TileValue) => {
+  return typeof grade === "string"
+    ? grade
+    : grade.pointsPossible === 100
+    ? `${grade.pointsEarned}%`
+    : `${grade.pointsEarned} / ${grade.pointsPossible}`;
+};
+
 export default function AssignmentGradeTile(props: {
-  grade:
-    | {
-        pointsPossible: number;
-        pointsEarned: number;
-      }
-    | string;
-  originalGrade:
-    | {
-        pointsPossible: number;
-        pointsEarned: number;
-      }
-    | string;
+  grade: TileValue;
+  originalGrade: TileValue;
   edit(e: AssignmentEdits): void;
 }) {
-  const gradeToString = (grade) => {
-    return typeof grade === "string"
-      ? grade
-      : grade.pointsPossible === 100
-      ? `${grade.pointsEarned}%`
-      : `${grade.pointsEarned}  /  ${grade.pointsPossible}`;
-  };
-
   const textInputRef = useRef(null);
   const [inputValue, setInputValue] = useState(gradeToString(props.grade));
   const [testingValue, setTestingValue] = useState(gradeToString(props.grade));
 
-  const [focus, setFocus] = useState(false);
   const parseText = (value) => {
     const clean = value.replace(/[^0-9.\/%]/g, "").trim();
 
@@ -87,7 +85,33 @@ export default function AssignmentGradeTile(props: {
 
   const edited = testingValue !== gradeToString(props.originalGrade);
 
-  const { colors } = useTheme();
+  const onFinishEditing = () => {
+    const parsed = parseText(inputValue);
+
+    if (parsed === -1) {
+      setInputValue(gradeToString(props.originalGrade));
+      setTestingValue(gradeToString(props.originalGrade));
+      props.edit({
+        pointsEarned: null,
+        pointsPossible: null,
+      });
+    } else {
+      const edit =
+        typeof parsed === "object"
+          ? {
+              pointsEarned: parsed[0],
+              pointsPossible: parsed[1],
+            }
+          : {
+              pointsEarned: parsed,
+              pointsPossible: 100,
+            };
+      setInputValue(gradeToString(edit));
+      setTestingValue(gradeToString(edit));
+      props.edit(edit);
+    }
+  };
+
   return (
     <LargeGradebookSheetTile
       onPress={() => {
@@ -95,73 +119,14 @@ export default function AssignmentGradeTile(props: {
       }}
     >
       <SmallText>Exact Grade</SmallText>
-      <View
-        style={{
-          backgroundColor: colors.borderNeutral,
-          paddingHorizontal: 12,
-          paddingVertical: 8,
-          alignSelf: "flex-start",
-          borderRadius: 8,
-          marginVertical: 8,
-        }}
-      >
-        <View>
-          <BottomSheetTextInput
-            ref={textInputRef}
-            value={inputValue}
-            onFocus={() => {
-              setFocus(true);
-              setInputValue("");
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            }}
-            onBlur={() => {
-              setFocus(false);
-            }}
-            onChangeText={(t) => {
-              setInputValue(t);
-            }}
-            onEndEditing={() => {
-              const parsed = parseText(inputValue);
-
-              if (parsed === -1) {
-                setInputValue(gradeToString(props.originalGrade));
-                setTestingValue(gradeToString(props.originalGrade));
-                props.edit({
-                  pointsEarned: null,
-                  pointsPossible: null,
-                });
-              } else if (typeof parsed === "object") {
-                const edit = {
-                  pointsEarned: parsed[0],
-                  pointsPossible: parsed[1],
-                };
-                setInputValue(gradeToString(edit));
-                setTestingValue(gradeToString(edit));
-                props.edit(edit);
-              } else {
-                const edit = {
-                  pointsEarned: parsed,
-                  pointsPossible: 100,
-                };
-                setInputValue(gradeToString(edit));
-                setTestingValue(gradeToString(edit));
-                props.edit(edit);
-              }
-            }}
-            keyboardType="numbers-and-punctuation"
-            returnKeyType="done"
-            textContentType="none"
-            autoCorrect={false}
-            maxLength={7}
-            style={{
-              fontVariant: ["tabular-nums"],
-              color: edited && !focus ? "red" : colors.primary,
-              fontSize: 20,
-            }}
-            placeholder={gradeToString(props.originalGrade)}
-          />
-        </View>
-      </View>
+      <AssignmentTileTextInput
+        value={inputValue}
+        ref={textInputRef}
+        edited={edited}
+        onFinish={onFinishEditing}
+        placeholder={gradeToString(props.originalGrade)}
+        setValue={setInputValue}
+      />
       <SmallText>Rounds to 94%</SmallText>
     </LargeGradebookSheetTile>
   );
