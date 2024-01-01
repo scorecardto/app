@@ -2,35 +2,35 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Appearance, StyleSheet, useColorScheme } from "react-native";
 import ScorecardScreen from "./components/screens/ScorecardScreen";
-import StartScreen from "./components/screens/AccountScreen";
+import AccountScreen from "./components/screens/AccountScreen";
 import {
   MobileDataContext,
   MobileDataProvider,
 } from "./components/core/context/MobileDataContext";
 import { useEffect, useMemo, useState } from "react";
 import { DataContext, GradebookRecord } from "scorecard-types";
-import StartingScreen from "./components/screens/StartingScreen";
 import Color from "./lib/Color";
+import * as Font from "expo-font";
+import AnekKannada, {
+  AnekKannada_400Regular,
+} from "@expo-google-fonts/anek-kannada";
+import CourseScreen from "./components/screens/CourseScreen";
+import { BottomSheetContext } from "@gorhom/bottom-sheet/lib/typescript/contexts";
+import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
+import * as SplashScreen from "expo-splash-screen";
 import {
-  useFonts,
   DMSans_400Regular,
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import { AnekKannada_400Regular } from "@expo-google-fonts/anek-kannada";
-import CourseScreen from "./components/screens/CourseScreen";
-import { BottomSheetContext } from "@gorhom/bottom-sheet/lib/typescript/contexts";
-import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
+import initialize from "./lib/init";
+
+SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [fontsLoaded, fontError] = useFonts({
-    DMSans_400Regular,
-    DMSans_500Medium,
-    DMSans_700Bold,
-    AnekKannada_400Regular,
-  });
+  const [appReady, setAppReady] = useState(false);
 
   const [data, setData] = useState<GradebookRecord | null>(null);
   const [gradeCategory, setGradeCategory] = useState<number>(0);
@@ -91,7 +91,31 @@ export default function App() {
     ]
   );
 
-  if (!fontsLoaded && !fontError) {
+  const [nextScreen, setNextScreen] = useState("");
+
+  useEffect(() => {
+    async function prepare() {
+      const fontsAsync = Font.loadAsync({
+        AnekKannada_400Regular: AnekKannada_400Regular,
+        DMSans_400Regular: DMSans_400Regular,
+        DMSans_500Medium: DMSans_500Medium,
+        DMSans_700Bold: DMSans_700Bold,
+      });
+
+      const nextScreenAsync = initialize(dataContext, mobileData);
+
+      const [_, nextScreen] = await Promise.all([fontsAsync, nextScreenAsync]);
+
+      setNextScreen(nextScreen);
+    }
+
+    prepare().then(() => {
+      setAppReady(true);
+      SplashScreen.hideAsync();
+    });
+  }, []);
+
+  if (!appReady) {
     return null;
   }
 
@@ -102,19 +126,10 @@ export default function App() {
           <NavigationContainer
             theme={appearance === "dark" ? Color.DarkTheme : Color.LightTheme}
           >
-            <Stack.Navigator>
-              <Stack.Screen
-                name="starting"
-                component={StartingScreen}
-                options={{
-                  title: "Initializing App",
-                  headerBackVisible: false,
-                }}
-              />
-
+            <Stack.Navigator initialRouteName={nextScreen}>
               <Stack.Screen
                 name="account"
-                component={StartScreen}
+                component={AccountScreen}
                 options={{
                   headerShown: false,
                 }}
@@ -140,12 +155,3 @@ export default function App() {
     </DataContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
