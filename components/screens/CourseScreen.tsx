@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { Text, View } from "react-native";
+import React, { useContext, useRef } from "react";
+import { Text, Touchable, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext } from "scorecard-types";
 import Header from "../text/Header";
@@ -8,6 +8,9 @@ import LargeGradeText from "../text/LargeGradeText";
 import { useTheme } from "@react-navigation/native";
 import Gradebook from "../app/dashboard/gradebook/Gradebook";
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
+import CourseEditSheet from "../app/course/CourseEditSheet";
 
 export default function CourseScreen({ route, navigation }) {
   const { key } = route.params;
@@ -31,6 +34,8 @@ export default function CourseScreen({ route, navigation }) {
 
   const { colors } = useTheme();
 
+  const sheets = useContext(BottomSheetContext);
+
   return (
     <View
       style={{
@@ -43,13 +48,19 @@ export default function CourseScreen({ route, navigation }) {
           zIndex: 1,
         }}
       >
-        <Header header={course.name}>
-          <LargeGradeText
-            grade={course.grades[dataContext.gradeCategory]?.value || "NG"}
-            backgroundColor="#C5315D"
-            textColor="#FFFFFF"
-          />
-        </Header>
+        <TouchableOpacity
+          onPress={() => {
+            sheets.addSheet((close) => <CourseEditSheet />);
+          }}
+        >
+          <Header header={course.name}>
+            <LargeGradeText
+              grade={course.grades[dataContext.gradeCategory]?.value || "NG"}
+              backgroundColor="#C5315D"
+              textColor="#FFFFFF"
+            />
+          </Header>
+        </TouchableOpacity>
 
         <View style={{}}>
           <Gradebook course={course} />
