@@ -10,6 +10,7 @@ import AssignmentCountTile from "./tiles/AssignmentCountTile";
 import SmallGradebookSheetTileGroup from "./tiles/SmallGradebookSheetTileGroup";
 import AssignmentDroppedTile from "./tiles/AssignmentDroppedTile";
 import MediumText from "../../../../text/MediumText";
+import BottomSheetHeader from "../../../../util/BottomSheet/BottomSheetHeader";
 
 export default function AssignmentSheet(props: {
   assignment: Assignment;
@@ -23,17 +24,7 @@ export default function AssignmentSheet(props: {
 
   return (
     <View>
-      <MediumText
-        style={{
-          textAlign: "center",
-          paddingVertical: 12,
-          paddingHorizontal: 24,
-          width: "100%",
-          fontSize: 18,
-        }}
-      >
-        {props.assignment.name}
-      </MediumText>
+      <BottomSheetHeader>{props.assignment.name}</BottomSheetHeader>
       <View
         style={{
           flexDirection: "row",
