@@ -9,6 +9,7 @@ import AssignmentGradeTile from "./tiles/AssignmentGradeTile";
 import AssignmentCountTile from "./tiles/AssignmentCountTile";
 import SmallGradebookSheetTileGroup from "./tiles/SmallGradebookSheetTileGroup";
 import AssignmentDroppedTile from "./tiles/AssignmentDroppedTile";
+import MediumText from "../../../../text/MediumText";
 
 export default function AssignmentSheet(props: {
   assignment: Assignment;
@@ -22,18 +23,17 @@ export default function AssignmentSheet(props: {
 
   return (
     <View>
-      <TouchableOpacity
-        onPress={() => {
-          console.log(props);
-
-          props.edit({
-            pointsEarned: 1,
-            pointsPossible: 2,
-          });
+      <MediumText
+        style={{
+          textAlign: "center",
+          paddingVertical: 12,
+          paddingHorizontal: 24,
+          width: "100%",
+          fontSize: 18,
         }}
       >
-        <Text>{props.assignment.name}</Text>
-      </TouchableOpacity>
+        {props.assignment.name}
+      </MediumText>
       <View
         style={{
           flexDirection: "row",

@@ -112,13 +112,21 @@ export default function AssignmentGradeTile(props: {
     }
   };
 
+  const { colors } = useTheme();
+
   return (
     <LargeGradebookSheetTile
       onPress={() => {
         textInputRef.current.focus?.();
       }}
     >
-      <SmallText>Exact Grade</SmallText>
+      <SmallText
+        style={{
+          marginBottom: 10,
+        }}
+      >
+        Exact Grade
+      </SmallText>
       <AssignmentTileTextInput
         value={inputValue}
         ref={textInputRef}
@@ -127,7 +135,14 @@ export default function AssignmentGradeTile(props: {
         placeholder={gradeToString(props.originalGrade)}
         setValue={setInputValue}
       />
-      <SmallText>Rounds to 94%</SmallText>
+      <SmallText
+        style={{
+          marginTop: 8,
+          color: colors.text,
+        }}
+      >
+        Rounds to 94%
+      </SmallText>
     </LargeGradebookSheetTile>
   );
 }
