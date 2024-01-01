@@ -24,6 +24,9 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import initialize from "./lib/init";
+import AnimatedAppLoader from "./components/screens/loader/AnimatedAppLoader";
+
+import Constants from "expo-constants";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -110,8 +113,9 @@ export default function App() {
     }
 
     prepare().then(() => {
+      console.log("ready");
+
       setAppReady(true);
-      SplashScreen.hideAsync();
     });
   }, []);
 
@@ -122,35 +126,41 @@ export default function App() {
   return (
     <DataContext.Provider value={dataContext}>
       <MobileDataContext.Provider value={mobileData}>
-        <BottomSheetProvider>
-          <NavigationContainer
-            theme={appearance === "dark" ? Color.DarkTheme : Color.LightTheme}
-          >
-            <Stack.Navigator initialRouteName={nextScreen}>
-              <Stack.Screen
-                name="account"
-                component={AccountScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="scorecard"
-                component={ScorecardScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="course"
-                component={CourseScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </BottomSheetProvider>
+        {appReady && (
+          <AnimatedAppLoader image={require("./assets/splash.png")}>
+            <BottomSheetProvider>
+              <NavigationContainer
+                theme={
+                  appearance === "dark" ? Color.DarkTheme : Color.LightTheme
+                }
+              >
+                <Stack.Navigator initialRouteName={nextScreen}>
+                  <Stack.Screen
+                    name="account"
+                    component={AccountScreen}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="scorecard"
+                    component={ScorecardScreen}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                  <Stack.Screen
+                    name="course"
+                    component={CourseScreen}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </BottomSheetProvider>
+          </AnimatedAppLoader>
+        )}
       </MobileDataContext.Provider>
     </DataContext.Provider>
   );
