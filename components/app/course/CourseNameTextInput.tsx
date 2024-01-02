@@ -36,7 +36,6 @@ export default function CourseNameTextInput(props: {
             props.setValue(t);
           }}
           onEndEditing={props.onFinish}
-          keyboardType="numbers-and-punctuation"
           returnKeyType="done"
           textContentType="none"
           autoCorrect={false}

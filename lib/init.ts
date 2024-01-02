@@ -13,7 +13,7 @@ export default async function initialize(
   const [login, data] = await Promise.all([loginAsync, dataAsync]);
 
   if (login && data) {
-    const { courses, gradeCategory, gradeCategoryNames, date } =
+    const { courses, gradeCategory, gradeCategoryNames, date, courseSettings } =
       JSON.parse(data);
 
     const { username, password, host } = JSON.parse(login);
@@ -29,7 +29,7 @@ export default async function initialize(
       date,
     });
 
-    dataContext.setCourseDisplayNames({});
+    dataContext.setCourseSettings(courseSettings || {});
 
     return "scorecard";
   } else {

@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Appearance, StyleSheet, useColorScheme } from "react-native";
+import { Appearance, StyleSheet, Text, useColorScheme } from "react-native";
 import ScorecardScreen from "./components/screens/ScorecardScreen";
 import AccountScreen from "./components/screens/AccountScreen";
 import {
@@ -8,7 +8,12 @@ import {
   MobileDataProvider,
 } from "./components/core/context/MobileDataContext";
 import { useEffect, useMemo, useState } from "react";
-import { DataContext, GradebookRecord } from "scorecard-types";
+import {
+  CourseSettings,
+  DataContext,
+  DataProvider,
+  GradebookRecord,
+} from "scorecard-types";
 import Color from "./lib/Color";
 import * as Font from "expo-font";
 import AnekKannada, {
@@ -37,8 +42,8 @@ export default function App() {
 
   const [data, setData] = useState<GradebookRecord | null>(null);
   const [gradeCategory, setGradeCategory] = useState<number>(0);
-  const [courseDisplayNames, setCourseDisplayNames] = useState<{
-    [key: string]: string;
+  const [courseSettings, setCourseSettings] = useState<{
+    [key: string]: CourseSettings;
   }>({});
 
   const appearance = useColorScheme();
@@ -49,18 +54,13 @@ export default function App() {
       setData,
       gradeCategory,
       setGradeCategory,
-      courseDisplayNames,
-      setCourseDisplayNames,
+      courseSettings,
+      setCourseSettings,
+      courseOrder: undefined,
+      setCourseOrder: () => {},
     }),
-    [
-      data,
-      gradeCategory,
-      setGradeCategory,
-      courseDisplayNames,
-      setCourseDisplayNames,
-    ]
+    [data, gradeCategory, setGradeCategory, courseSettings, setCourseSettings]
   );
-
   const [district, setDistrict] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -110,6 +110,8 @@ export default function App() {
       const [_, nextScreen] = await Promise.all([fontsAsync, nextScreenAsync]);
 
       setNextScreen(nextScreen);
+
+      await initialize(dataContext, mobileData);
     }
 
     prepare().then(() => {
