@@ -13,6 +13,7 @@ import SmallGradebookSheetTile from "./SmallGradebookSheetTile";
 
 export default function AssignmentCountTile(props: {
   count: number;
+  testing: boolean;
   originalCount: number;
   edit(e: AssignmentEdits): void;
 }) {
@@ -25,8 +26,6 @@ export default function AssignmentCountTile(props: {
 
     return isNaN(numeric) ? -1 : numeric;
   };
-
-  const edited = testingValue !== props.originalCount;
 
   const onFinishEditing = () => {
     const parsed = parseText(inputValue);
@@ -56,7 +55,7 @@ export default function AssignmentCountTile(props: {
       <AssignmentTileTextInput
         value={inputValue}
         ref={textInputRef}
-        edited={edited}
+        edited={props.testing || testingValue !== props.originalCount}
         onFinish={onFinishEditing}
         placeholder={props.originalCount.toString()}
         setValue={setInputValue}

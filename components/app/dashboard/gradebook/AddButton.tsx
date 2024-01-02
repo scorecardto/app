@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import React from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useTheme } from "@react-navigation/native";
 
-export default function AddButton() {
+export default function AddButton(props: {onPress(): void}) {
   const { colors } = useTheme();
   const styles = StyleSheet.create({
     wrapper: {
@@ -17,7 +17,7 @@ export default function AddButton() {
     },
   });
   return (
-    <View style={styles.wrapper}>
+    <TouchableOpacity style={styles.wrapper} onPress={props.onPress}>
       <MaterialIcons
         name="add"
         size={20}
@@ -31,6 +31,6 @@ export default function AddButton() {
           lineHeight: 20,
         }}
       />
-    </View>
+    </TouchableOpacity>
   );
 }

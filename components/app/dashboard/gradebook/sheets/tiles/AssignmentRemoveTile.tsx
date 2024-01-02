@@ -12,31 +12,19 @@ import AssignmentTileTextInput from "./AssignmentTileTextInput";
 import SmallGradebookSheetTile from "./SmallGradebookSheetTile";
 import AssignmentTileTextInputFrame from "./AssignmentTileTextInputFrame";
 
-export default function AssignmentDroppedTile(props: {
-  dropped: boolean;
-  originalDropped: boolean;
-  edit(e: AssignmentEdits): void;
+export default function AssignmentRemoveTile(props: {
+    removeAssignment(): void;
 }) {
-  const [testingValue, setTestingValue] = useState(props.dropped);
-
   const {colors} = useTheme();
 
   return (
     <SmallGradebookSheetTile
-      onPress={() => {
-        props.edit({
-          dropped: !testingValue,
-        });
-
-        setTestingValue(!testingValue);
-      }}
+      onPress={props.removeAssignment}
     >
-      <SmallText>Dropped</SmallText>
-      <AssignmentTileTextInputFrame>
-        <Text style={{
-            color: testingValue !== props.originalDropped ? "red" : colors.primary
-        }}>{testingValue ? "yes" : "no"}</Text>
-      </AssignmentTileTextInputFrame>
+      <SmallText style={{
+          textAlign: "center",
+          width: "100%"
+      }}>Remove</SmallText>
     </SmallGradebookSheetTile>
   );
 }

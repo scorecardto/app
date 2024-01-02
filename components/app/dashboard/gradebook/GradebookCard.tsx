@@ -82,7 +82,7 @@ export default function GradebookCard(props: {
             );
           })}
         </View>
-        <AddButton />
+        <AddButton onPress={props.buttonAction} />
       </View>
     </ScrollView>
   );

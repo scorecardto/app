@@ -11,16 +11,21 @@ import SmallGradebookSheetTileGroup from "./tiles/SmallGradebookSheetTileGroup";
 import AssignmentDroppedTile from "./tiles/AssignmentDroppedTile";
 import MediumText from "../../../../text/MediumText";
 import BottomSheetHeader from "../../../../util/BottomSheet/BottomSheetHeader";
+import AssignmentRemoveTile from "./tiles/AssignmentRemoveTile";
 
 export default function AssignmentSheet(props: {
   assignment: Assignment;
   close(): void;
+  testing: boolean;
+  removeAssignment(): void;
   edit(e: AssignmentEdits): void;
   currentEdits: AssignmentEdits;
 }) {
   const isNumericGrade =
     props.currentEdits?.pointsEarned != null &&
     props.currentEdits?.pointsPossible != null;
+
+
 
   return (
     <View>
@@ -43,20 +48,38 @@ export default function AssignmentSheet(props: {
                 }
               : props.assignment.grade
           }
-          originalGrade={props.assignment.grade}
+          testing={props.testing}
+          originalGrade={isNumericGrade
+              ? {
+                  pointsEarned: props.assignment.points,
+                  pointsPossible: props.assignment.max,
+              }
+              : props.assignment.grade}
           edit={props.edit}
         />
         <SmallGradebookSheetTileGroup>
           <AssignmentCountTile
             count={props.currentEdits.count ?? props.assignment.count}
+            testing={props.testing}
             originalCount={props.assignment.count}
             edit={props.edit}
           />
-          <AssignmentDroppedTile
-            dropped={props.currentEdits.dropped ?? props.assignment.dropped}
-            originalDropped={props.assignment.dropped}
-            edit={props.edit}
-          />
+            {
+                props.testing ? (
+                    <AssignmentRemoveTile
+                        removeAssignment={() => {
+                            props.removeAssignment()
+                            props.close();
+                        }}
+                    />
+                    ) : (
+                    <AssignmentDroppedTile
+                        dropped={props.currentEdits.dropped ?? props.assignment.dropped}
+                        originalDropped={props.assignment.dropped}
+                        edit={props.edit}
+                    />
+                )
+            }
         </SmallGradebookSheetTileGroup>
         {/* <View
           style={{

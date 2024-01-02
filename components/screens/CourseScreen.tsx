@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useRef, useState, useContext } from "react";
 import { Text, Touchable, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext } from "scorecard-types";
@@ -40,6 +40,8 @@ export default function CourseScreen({ route, navigation }) {
       color.AccentsMatrix[accentLabel][parentTheme.dark ? "dark" : "default"],
   };
   const { colors, accents } = theme;
+  const [modifiedAvg, setModifiedAvg] = useState<number | null>(null);
+
   const sheets = useContext(BottomSheetContext);
 
   const courseDisplayName =
@@ -69,7 +71,11 @@ export default function CourseScreen({ route, navigation }) {
           >
             <Header header={courseDisplayName}>
               <LargeGradeText
-                grade={course.grades[dataContext.gradeCategory]?.value || "NG"}
+                grade={
+                  "" +
+                  (modifiedAvg ??
+                    (course.grades[dataContext.gradeCategory]?.value || "NG"))
+                }
                 backgroundColor={accents.primary}
                 textColor="#FFFFFF"
               />
@@ -77,7 +83,7 @@ export default function CourseScreen({ route, navigation }) {
           </TouchableOpacity>
 
           <View style={{}}>
-            <Gradebook course={course} />
+            <Gradebook course={course} setModifiedGrade={setModifiedAvg} />
           </View>
         </View>
         <View

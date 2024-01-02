@@ -27,6 +27,7 @@ const gradeToString = (grade: TileValue) => {
 
 export default function AssignmentGradeTile(props: {
   grade: TileValue;
+  testing: boolean;
   originalGrade: TileValue;
   edit(e: AssignmentEdits): void;
 }) {
@@ -83,8 +84,6 @@ export default function AssignmentGradeTile(props: {
     return isNaN(numeric) ? -1 : numeric;
   };
 
-  const edited = testingValue !== gradeToString(props.originalGrade);
-
   const onFinishEditing = () => {
     const parsed = parseText(inputValue);
 
@@ -130,7 +129,7 @@ export default function AssignmentGradeTile(props: {
       <AssignmentTileTextInput
         value={inputValue}
         ref={textInputRef}
-        edited={edited}
+        edited={props.testing || testingValue !== gradeToString(props.originalGrade)}
         onFinish={onFinishEditing}
         placeholder={gradeToString(props.originalGrade)}
         setValue={setInputValue}

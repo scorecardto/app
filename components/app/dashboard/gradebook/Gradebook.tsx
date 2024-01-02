@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Dimensions, Text, View, ViewStyle } from "react-native";
-import { Course, GradeCategory } from "scorecard-types";
+import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
 import CategoryTable from "./CategoryTable";
 import Carousel, { Pagination } from "react-native-snap-carousel";
@@ -14,12 +14,19 @@ import {
 import { useTheme } from "@react-navigation/native";
 import * as Haptics from "expo-haptics";
 import { set } from "react-native-reanimated";
+import {
+  averageGradeCategories,
+  averageAssignments,
+} from "../../../../lib/gradeTesting";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
 
-export default function Gradebook(props: { course: Course }) {
-  const { accents } = useTheme();
+export default function Gradebook(props: {
+  course: Course;
+  setModifiedGrade(avg: number): void;
+}) {
+  const { accents, colors } = useTheme();
   const ref = useRef<Carousel<GradeCategory>>(null);
 
   const cardAnimation = useDynamicAnimation(() => ({
@@ -32,6 +39,13 @@ export default function Gradebook(props: { course: Course }) {
   const [currentCard, setCurrentCard] = useState(0);
 
   const [animatingCard, setAnimatingCard] = useState(-1);
+
+  const [modifiedCategories, setModifiedCategories] = useState(
+    props.course.gradeCategories.map((_) => {
+      return { assignments: null, average: null };
+    })
+  );
+  const [numTestAssignments, setNumTestAssignments] = useState(0);
 
   return (
     <View
@@ -75,6 +89,8 @@ export default function Gradebook(props: { course: Course }) {
                 >
                   <SummaryTable
                     course={props.course}
+                    // @ts-ignore
+                    modified={modifiedCategories}
                     changeGradeCategory={(c) => {
                       ref.current.snapToItem(c + 1);
                       setAnimatedIndex(c + 1);
@@ -106,9 +122,103 @@ export default function Gradebook(props: { course: Course }) {
                 key={index}
                 title={item.name}
                 bottom={[`Weight: ${item.weight}%`]}
-                buttonAction={() => {}}
+                buttonAction={() => {
+                  setModifiedCategories((categories) => {
+                    const catIdx = index - 1;
+                    const newCategories = [...categories];
+
+                    if (newCategories[catIdx].assignments === null) {
+                      newCategories[catIdx].assignments = new Array(
+                        item.assignments.length
+                      ).fill(null);
+                    }
+
+                    newCategories[catIdx].assignments.push({
+                      name: "Test Assignment " + (numTestAssignments + 1),
+                      points: 100,
+                      grade: "100%",
+                      dropped: false,
+                      max: 100,
+                      count: 1,
+                      error: false,
+                    });
+                    setNumTestAssignments(numTestAssignments + 1);
+
+                    return newCategories;
+                  });
+                }}
               >
-                <CategoryTable category={item} />
+                <CategoryTable
+                  category={item}
+                  modifiedAssignments={
+                    modifiedCategories[index - 1].assignments
+                  }
+                  removeAssignment={(idx: number) => {
+                    setModifiedCategories((categories) => {
+                      const catIdx = index - 1;
+                      const newCategories = [...categories];
+
+                      if (newCategories[catIdx].assignments !== null) {
+                        newCategories[catIdx].assignments.splice(idx, 1);
+                      }
+                      if (
+                        newCategories[catIdx].assignments.every(
+                          (as) => as === null
+                        )
+                      ) {
+                        newCategories[catIdx].assignments = newCategories[
+                          catIdx
+                        ].average = null;
+                        props.setModifiedGrade(null);
+                      }
+
+                      return newCategories;
+                    });
+                  }}
+                  modifyAssignment={(a: Assignment, idx: number) => {
+                    setModifiedCategories((categories) => {
+                      const catIdx = index - 1;
+                      const newCategories = [...categories];
+                      if (newCategories[catIdx].assignments === null) {
+                        if (a === null) {
+                          return categories;
+                        }
+                        newCategories[catIdx].assignments = new Array(
+                          item.assignments.length
+                        ).fill(null);
+                      }
+                      newCategories[catIdx].assignments[idx] = a;
+                      if (
+                        newCategories[catIdx].assignments.every(
+                          (as) => as === null
+                        )
+                      ) {
+                        newCategories[catIdx].assignments = newCategories[
+                          catIdx
+                        ].average = null;
+                        props.setModifiedGrade(null);
+                      } else {
+                        const averages = averageAssignments(
+                          props.course.gradeCategories,
+                          newCategories.map((c) => c.assignments)
+                        );
+                        newCategories[catIdx].average = averages[catIdx];
+                        props.setModifiedGrade(
+                          averageGradeCategories(
+                            props.course.gradeCategories.map((c, i) => {
+                              return {
+                                ...c,
+                                average: "" + (averages[i] ?? c.average),
+                              };
+                            })
+                          )
+                        );
+                      }
+
+                      return newCategories;
+                    });
+                  }}
+                />
               </GradebookCard>
             </MotiView>
           );
