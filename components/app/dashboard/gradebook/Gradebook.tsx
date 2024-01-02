@@ -143,7 +143,19 @@ export default function Gradebook(props: { course: Course, setModifiedGrade(avg:
               >
                 <CategoryTable category={item}
                                modifiedAssignments={modifiedCategories[index-1].assignments}
-                               removeAssignment={(idx: number) => {}}
+                               removeAssignment={(idx: number) => {
+                                   setModifiedCategories(categories => {
+                                       const catIdx = index-1;
+                                       const newCategories = [...categories];
+
+                                        if (newCategories[catIdx].assignments !== null) {
+                                            newCategories[catIdx].assignments.pop(idx);
+                                        }
+                                        setNumTestAssignments(numTestAssignments-1);
+
+                                       return newCategories;
+                                   })
+                               }}
                                modifyAssignment={(a: Assignment, idx: number) => {
                                    setModifiedCategories(categories => {
                                         const catIdx = index-1;

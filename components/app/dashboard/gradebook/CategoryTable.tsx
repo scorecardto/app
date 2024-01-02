@@ -20,6 +20,7 @@ export default function CategoryTable(props: {
         return (
           <AssignmentTableRow
             testing={idx >= props.category.assignments.length}
+            removeAssignment={() => props.removeAssignment(idx)}
             key={idx}
             assignment={assignment}
             setModifiedAssignment={(a) => {

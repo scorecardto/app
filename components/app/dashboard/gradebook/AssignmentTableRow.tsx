@@ -9,6 +9,7 @@ import AssignmentEdits from "../../../../lib/types/AssignmentEdits";
 export default function AssignmentTableRow(props: {
   assignment: Assignment;
   testing: boolean;
+  removeAssignment(): void;
   setModifiedAssignment(a: Assignment): void;
 }) {
   const assignment = props.assignment;
@@ -64,8 +65,10 @@ export default function AssignmentTableRow(props: {
           <>
             <AssignmentSheet
               assignment={assignment}
+              testing={props.testing}
               close={close}
               currentEdits={currentEdits}
+              removeAssignment={props.removeAssignment}
               edit={(edits) => {
                 if (
                   edits.pointsEarned != null ||
