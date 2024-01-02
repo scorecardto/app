@@ -149,9 +149,12 @@ export default function Gradebook(props: { course: Course, setModifiedGrade(avg:
                                        const newCategories = [...categories];
 
                                         if (newCategories[catIdx].assignments !== null) {
-                                            newCategories[catIdx].assignments.pop(idx);
+                                            newCategories[catIdx].assignments.splice(idx, 1);
                                         }
-                                        setNumTestAssignments(numTestAssignments-1);
+                                       if (newCategories[catIdx].assignments.every(as => as === null)) {
+                                           newCategories[catIdx].assignments = newCategories[catIdx].average = null;
+                                           props.setModifiedGrade(null);
+                                       }
 
                                        return newCategories;
                                    })
