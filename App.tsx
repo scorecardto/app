@@ -130,9 +130,17 @@ export default function App() {
           <AnimatedAppLoader image={require("./assets/splash.png")}>
             <BottomSheetProvider>
               <NavigationContainer
-                theme={
-                  appearance === "dark" ? Color.DarkTheme : Color.LightTheme
-                }
+                theme={{
+                  ...(appearance === "dark"
+                    ? Color.DarkTheme
+                    : Color.LightTheme),
+                  dark: appearance === "dark",
+                  // @ts-ignore
+                  accents:
+                    Color.defaultAccents[
+                      appearance === "dark" ? "dark" : "default"
+                    ],
+                }}
               >
                 <Stack.Navigator initialRouteName={nextScreen}>
                   <Stack.Screen

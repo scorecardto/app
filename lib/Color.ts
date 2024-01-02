@@ -1,5 +1,71 @@
 import NativeTheme, { DefaultTheme, DarkTheme } from "@react-navigation/native";
 
+const AccentsMatrix: {
+  [x: string]: {
+    default: Theme["accents"];
+    dark: Theme["accents"];
+  };
+} = {
+  red: {
+    default: {
+      preview: "#FF505A",
+    },
+    dark: {
+      preview: "#FF505A",
+    },
+  },
+  orange: {
+    default: {
+      preview: "#FF9950",
+    },
+    dark: {
+      preview: "#FF9950",
+    },
+  },
+  yellow: {
+    default: {
+      preview: "#FFD465",
+    },
+    dark: {
+      preview: "#FFD465",
+    },
+  },
+  green: {
+    default: {
+      preview: "#2EF093",
+    },
+    dark: {
+      preview: "#2EF093",
+    },
+  },
+  blue: {
+    default: {
+      preview: "#4A93FF",
+    },
+    dark: {
+      preview: "#4A93FF",
+    },
+  },
+  purple: {
+    default: {
+      preview: "#BA49FF",
+    },
+    dark: {
+      preview: "#BA49FF",
+    },
+  },
+  pink: {
+    default: {
+      preview: "#FF5FDC",
+    },
+    dark: {
+      preview: "#FF5FDC",
+    },
+  },
+};
+
+const defaultAccents = AccentsMatrix.red;
+
 interface Theme extends NativeTheme.Theme {
   colors: {
     primary: string;
@@ -12,6 +78,11 @@ interface Theme extends NativeTheme.Theme {
     border: string;
     notification: string;
   };
+  accents: {
+    preview: string;
+  };
+  dark: boolean;
+  accentLabel: string;
 }
 
 const MyLightTheme = {
@@ -42,6 +113,11 @@ const MyDarkTheme = {
   },
 };
 
-const color = { LightTheme: MyLightTheme, DarkTheme: MyDarkTheme };
+const color = {
+  LightTheme: MyLightTheme,
+  DarkTheme: MyDarkTheme,
+  AccentsMatrix,
+  defaultAccents,
+};
 export default color;
 export type { Theme };
