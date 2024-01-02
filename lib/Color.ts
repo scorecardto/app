@@ -64,7 +64,7 @@ const AccentsMatrix: {
   },
 };
 
-const defaultAccents = AccentsMatrix.red;
+const defaultAccentLabel = "blue";
 
 interface Theme extends NativeTheme.Theme {
   colors: {
@@ -117,7 +117,7 @@ const color = {
   LightTheme: MyLightTheme,
   DarkTheme: MyDarkTheme,
   AccentsMatrix,
-  defaultAccents,
+  defaultAccentLabel,
 };
 export default color;
 export type { Theme };

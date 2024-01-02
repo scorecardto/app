@@ -207,13 +207,10 @@ const fetchGradeCategoriesForCourse = async (
   };
 
   const assignmentsResponseRaw = await axios(ASSIGNMENTS);
-  console.log(assignmentsResponseRaw.data);
 
   const assignmentsResponse = iso88592.decode(
     new Uint8Array(assignmentsResponseRaw.data)
   );
-
-  console.log(assignmentsResponseRaw.data, ASSIGNMENTS);
 
   const assignmentsHtml = parse(assignmentsResponse);
 

@@ -20,10 +20,6 @@ export default function BottomSheetBackdrop({
     ),
   }));
 
-  useEffect(() => {
-    console.log(animatedIndex.value);
-  }, [animatedIndex.value]);
-
   const containerStyle = useMemo(
     () => [
       style,

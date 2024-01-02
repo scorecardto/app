@@ -33,13 +33,9 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
-    console.log(mobileData);
-
     const url = mobileData.district;
     const username = mobileData.username;
     const password = mobileData.password;
-
-    console.log(url);
 
     const reportCard = fetchAllContent(url, username, password);
 

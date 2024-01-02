@@ -109,8 +109,6 @@ export default function CourseGradebook(props: {
 
       <AssignmentInspector
         close={() => {
-          console.log("close");
-
           setHighlight(undefined);
         }}
         assignment={highlight?.assignment}

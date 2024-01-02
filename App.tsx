@@ -46,8 +46,6 @@ export default function App() {
     [key: string]: CourseSettings;
   }>({});
 
-  const appearance = useColorScheme();
-
   const dataContext = useMemo(
     () => ({
       data,
@@ -96,6 +94,8 @@ export default function App() {
 
   const [nextScreen, setNextScreen] = useState("");
 
+  const appearance = useColorScheme();
+
   useEffect(() => {
     async function prepare() {
       const fontsAsync = Font.loadAsync({
@@ -115,8 +115,6 @@ export default function App() {
     }
 
     prepare().then(() => {
-      console.log("ready");
-
       setAppReady(true);
     });
   }, []);
@@ -139,7 +137,7 @@ export default function App() {
                   dark: appearance === "dark",
                   // @ts-ignore
                   accents:
-                    Color.defaultAccents[
+                    Color.AccentsMatrix[Color.defaultAccentLabel][
                       appearance === "dark" ? "dark" : "default"
                     ],
                   accentLabel: "red",

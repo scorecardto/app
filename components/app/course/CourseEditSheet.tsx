@@ -48,7 +48,21 @@ export default function CourseEditSheet(props: { course: Course }) {
             saveCourseSettings(newSettings);
           }}
         />
-        <CourseColorChanger />
+        <CourseColorChanger
+          onChange={(accentLabel) => {
+            const newSettings = {
+              ...dataContext.courseSettings,
+              [props.course.key]: {
+                ...courseSettings,
+                accentColor: accentLabel,
+              },
+            };
+
+            dataContext.setCourseSettings(newSettings);
+
+            saveCourseSettings(newSettings);
+          }}
+        />
       </View>
     </View>
   );
