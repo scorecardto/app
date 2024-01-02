@@ -89,7 +89,12 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   }, [loading]);
 
   return (
-    <View>
+    <View
+      style={{
+        padding: 20,
+        paddingTop: 80,
+      }}
+    >
       <View>
         <TextInput
           label="Frontline URL"

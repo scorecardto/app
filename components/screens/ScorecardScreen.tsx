@@ -19,6 +19,7 @@ import { MobileDataContext } from "../core/context/MobileDataContext";
 import LargeText from "../text/LargeText";
 import StatusText from "../text/StatusText";
 import Header from "../text/Header";
+import * as SMS from "expo-sms";
 
 const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const dataContext = useContext(DataContext);
@@ -141,6 +142,7 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
           });
         }}
       />
+      <Button title="Share" onPress={() => {}} />
     </View>
   );
 };
