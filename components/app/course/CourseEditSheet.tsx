@@ -23,7 +23,7 @@ export default function CourseEditSheet(props: { course: Course }) {
       <BottomSheetHeader>Course Details</BottomSheetHeader>
       <View
         style={{
-          padding: 20,
+          paddingHorizontal: 20,
         }}
       >
         <CourseNameTextInput

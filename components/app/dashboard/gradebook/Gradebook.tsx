@@ -19,7 +19,7 @@ const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
 
 export default function Gradebook(props: { course: Course }) {
-  const { colors } = useTheme();
+  const { accents } = useTheme();
   const ref = useRef<Carousel<GradeCategory>>(null);
 
   const cardAnimation = useDynamicAnimation(() => ({
@@ -55,7 +55,7 @@ export default function Gradebook(props: { course: Course }) {
           width: 6,
           height: 6,
           borderRadius: 3,
-          backgroundColor: "#C5315D",
+          backgroundColor: accents.primary,
         }}
         inactiveDotOpacity={0.3}
         inactiveDotScale={1}

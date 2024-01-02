@@ -10,16 +10,19 @@ import { Course, DataContext } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
-
+import color from "../../../lib/Color";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
   onClick: () => void;
   onHold: () => void;
 }) {
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
 
   const { courseSettings } = useContext(DataContext);
+
+  const accentLabel =
+    courseSettings[props.course.key]?.accentColor || color.defaultAccentLabel;
 
   const styles = StyleSheet.create({
     wrapper: {
@@ -40,7 +43,8 @@ export default function CourseCard(props: {
     badge: {
       width: 56,
       height: 56,
-      backgroundColor: "#31A2C5",
+      backgroundColor:
+        color.AccentsMatrix[accentLabel][dark ? "dark" : "default"].primary,
     },
     header: {
       paddingLeft: 24,

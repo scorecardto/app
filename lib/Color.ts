@@ -9,57 +9,85 @@ const AccentsMatrix: {
   red: {
     default: {
       preview: "#FF505A",
+      primary: "#D72B3F",
+      gradientCenter: "#FFDDE3",
+      secondary: "#FFF2F6",
     },
     dark: {
       preview: "#FF505A",
+      primary: "#D72B3F",
+      gradientCenter: "#FFDDE3",
+      secondary: "#FFF2F6",
     },
   },
   orange: {
     default: {
       preview: "#FF9950",
+      primary: "#FF7135",
+      gradientCenter: "#FFD6C9",
+      secondary: "#FFF2EC",
     },
     dark: {
       preview: "#FF9950",
+      primary: "#FF7135",
+      gradientCenter: "#FFD6C9",
+      secondary: "#FFF2EC",
     },
   },
   yellow: {
     default: {
       preview: "#FFD465",
+      primary: "#FFA800",
+      gradientCenter: "#FFF3C9",
+      secondary: "#FFFAEC",
     },
     dark: {
       preview: "#FFD465",
+      primary: "#FFA800",
+      gradientCenter: "#FFF3C9",
+      secondary: "#FFFAEC",
     },
   },
   green: {
     default: {
-      preview: "#2EF093",
+      preview: "#1CE082",
+      primary: "#00874F",
+      gradientCenter: "#C7FFE7",
+      secondary: "#DAFEEB",
     },
     dark: {
-      preview: "#2EF093",
+      preview: "#1CE082",
+      primary: "#00874F",
+      gradientCenter: "#C7FFE7",
+      secondary: "#DAFEEB",
     },
   },
   blue: {
     default: {
       preview: "#4A93FF",
+      primary: "#2B99D7",
+      gradientCenter: "#D7F5FF",
+      secondary: "#E3F8FF",
     },
     dark: {
       preview: "#4A93FF",
+      primary: "#2B99D7",
+      gradientCenter: "#D7F5FF",
+      secondary: "#E3F8FF",
     },
   },
   purple: {
     default: {
       preview: "#BA49FF",
+      primary: "#AD79EE",
+      gradientCenter: "#D6C7FF",
+      secondary: "#F8EEFF",
     },
     dark: {
       preview: "#BA49FF",
-    },
-  },
-  pink: {
-    default: {
-      preview: "#FF5FDC",
-    },
-    dark: {
-      preview: "#FF5FDC",
+      primary: "#AD79EE",
+      gradientCenter: "#D6C7FF",
+      secondary: "#F8EEFF",
     },
   },
 };
@@ -80,6 +108,9 @@ interface Theme extends NativeTheme.Theme {
   };
   accents: {
     preview: string;
+    primary: string;
+    secondary: string;
+    gradientCenter: string;
   };
   dark: boolean;
   accentLabel: string;

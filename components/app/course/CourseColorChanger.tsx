@@ -11,7 +11,12 @@ export default function CourseColorChanger(props: {
 }) {
   const theme = useTheme();
   return (
-    <View>
+    <View
+      style={{
+        marginTop: 20,
+        marginBottom: 20,
+      }}
+    >
       <SmallText style={{ fontSize: 16, marginBottom: 8 }}>Color</SmallText>
       <View
         style={{

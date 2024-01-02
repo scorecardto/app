@@ -28,11 +28,6 @@ export default function CourseScreen({ route, navigation }) {
     );
   }
 
-  const colorList = [
-    { offset: "0%", color: "#FFCBD6", opacity: "1" },
-    { offset: "100%", color: "#FFCBD6", opacity: "0" },
-  ];
-
   const parentTheme = useTheme();
   const accentLabel =
     dataContext.courseSettings[course.key]?.accentColor ||
@@ -44,12 +39,16 @@ export default function CourseScreen({ route, navigation }) {
     accents:
       color.AccentsMatrix[accentLabel][parentTheme.dark ? "dark" : "default"],
   };
-  const colors = theme.colors;
+  const { colors, accents } = theme;
   const sheets = useContext(BottomSheetContext);
 
   const courseDisplayName =
     dataContext.courseSettings[course.key]?.displayName || course.name;
 
+  const colorList = [
+    { offset: "0%", color: accents.gradientCenter, opacity: "1" },
+    { offset: "100%", color: accents.gradientCenter, opacity: "0" },
+  ];
   return (
     <ThemeProvider value={theme}>
       <View
@@ -71,7 +70,7 @@ export default function CourseScreen({ route, navigation }) {
             <Header header={courseDisplayName}>
               <LargeGradeText
                 grade={course.grades[dataContext.gradeCategory]?.value || "NG"}
-                backgroundColor="#C5315D"
+                backgroundColor={accents.primary}
                 textColor="#FFFFFF"
               />
             </Header>
