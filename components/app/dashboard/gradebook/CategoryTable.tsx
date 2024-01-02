@@ -14,8 +14,8 @@ export default function CategoryTable(props: {
 }) {
   return (
     <View>
-      {(props.modifiedAssignments ?? props.category.assignments).map((assignment, idx) => {
-        if (assignment == null) assignment = props.category.assignments[idx];
+      {new Array((props.modifiedAssignments ?? props.category.assignments).length).fill(null).map((assignment, idx) => {
+        assignment = props.category.assignments[idx] ?? props.modifiedAssignments[idx];
 
         return (
           <AssignmentTableRow
