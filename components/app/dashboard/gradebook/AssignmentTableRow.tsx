@@ -8,6 +8,7 @@ import AssignmentEdits from "../../../../lib/types/AssignmentEdits";
 
 export default function AssignmentTableRow(props: {
   assignment: Assignment;
+  testing: boolean;
   setModifiedAssignment(a: Assignment): void;
 }) {
   const assignment = props.assignment;
@@ -20,7 +21,7 @@ export default function AssignmentTableRow(props: {
   const [dropped, setDropped] = useState(assignment.dropped);
 
     useEffect(() => {
-        if (grade !== assignment.grade || points !== assignment.points || maxPoints !== assignment.max || count !== assignment.count || dropped !== assignment.dropped) {
+        if (props.testing || grade !== assignment.grade || points !== assignment.points || maxPoints !== assignment.max || count !== assignment.count || dropped !== assignment.dropped) {
             props.setModifiedAssignment({
                 ...assignment,
                 grade,
@@ -52,10 +53,11 @@ export default function AssignmentTableRow(props: {
       grade={grade}
       worth={worth({ count, dropped })}
       red={{
-        grade: assignment.grade !== grade,
-        worth:
-          worth({ count, dropped }) !==
-          worth({ count: assignment.count, dropped: assignment.dropped }),
+          name: props.testing,
+          grade: props.testing || assignment.grade !== grade,
+          worth: props.testing ||
+              worth({ count, dropped }) !==
+              worth({ count: assignment.count, dropped: assignment.dropped }),
       }}
       onPress={() => {
         sheets.addSheet(({ close }) => (

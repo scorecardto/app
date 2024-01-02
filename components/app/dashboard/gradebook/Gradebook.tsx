@@ -40,6 +40,7 @@ export default function Gradebook(props: { course: Course, setModifiedGrade(avg:
   const [modifiedCategories, setModifiedCategories] = useState(props.course.gradeCategories.map(_=>{
       return {assignments: null, average: null};
   }));
+  const [numTestAssignments, setNumTestAssignments] = useState(0);
 
   return (
     <View
@@ -116,34 +117,61 @@ export default function Gradebook(props: { course: Course, setModifiedGrade(avg:
                 key={index}
                 title={item.name}
                 bottom={[`Weight: ${item.weight}%`]}
-                buttonAction={() => {}}
-              >
-                <CategoryTable category={item} modifyAssignment={(a: Assignment, idx: number) => {
+                buttonAction={() => {
                     setModifiedCategories(categories => {
                         const catIdx = index-1;
                         const newCategories = [...categories];
+
                         if (newCategories[catIdx].assignments === null) {
-                            if (a === null) return categories;
                             newCategories[catIdx].assignments = new Array(item.assignments.length).fill(null);
                         }
-                        newCategories[catIdx].assignments[idx] = a;
-                        if (newCategories[catIdx].assignments.every(as => as == null)) {
-                            newCategories[catIdx].assignments = newCategories[catIdx].average = null;
-                            props.setModifiedGrade(null);
-                        } else {
-                            const averages = averageAssignments(props.course.gradeCategories,
-                                newCategories.map(c => c.assignments));
-                            newCategories[catIdx].average = averages[catIdx];
-                            props.setModifiedGrade(averageGradeCategories(props.course.gradeCategories.map((c,i) => {
-                                return {
-                                    ...c,
-                                    average: ""+(averages[i] ?? c.average)
-                                }
-                            })));
-                        }
+
+                        newCategories[catIdx].assignments.push({
+                            name: "Test Assignment "+(numTestAssignments+1),
+                            points: 100,
+                            grade: "100%",
+                            dropped: false,
+                            max: 100,
+                            count: 1,
+                            error: false
+                        })
+                        setNumTestAssignments(numTestAssignments+1);
 
                         return newCategories;
                     })
+                }}
+              >
+                <CategoryTable category={item}
+                               modifiedAssignments={modifiedCategories[index-1].assignments}
+                               removeAssignment={(idx: number) => {}}
+                               modifyAssignment={(a: Assignment, idx: number) => {
+                                   setModifiedCategories(categories => {
+                                        const catIdx = index-1;
+                                        const newCategories = [...categories];
+                                        if (newCategories[catIdx].assignments === null) {
+                                            if (a === null) {
+                                                return categories;
+                                            }
+                                            newCategories[catIdx].assignments = new Array(item.assignments.length).fill(null);
+                                        }
+                                        newCategories[catIdx].assignments[idx] = a;
+                                        if (newCategories[catIdx].assignments.every(as => as === null)) {
+                                            newCategories[catIdx].assignments = newCategories[catIdx].average = null;
+                                            props.setModifiedGrade(null);
+                                        } else {
+                                            const averages = averageAssignments(props.course.gradeCategories,
+                                                newCategories.map(c => c.assignments));
+                                            newCategories[catIdx].average = averages[catIdx];
+                                            props.setModifiedGrade(averageGradeCategories(props.course.gradeCategories.map((c, i) => {
+                                                return {
+                                                    ...c,
+                                                    average: "" + (averages[i] ?? c.average)
+                                                }
+                                            })));
+                                        }
+
+                                        return newCategories;
+                                   })
                 }} />
               </GradebookCard>
             </MotiView>

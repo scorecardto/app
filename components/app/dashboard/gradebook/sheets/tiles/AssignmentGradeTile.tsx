@@ -83,7 +83,6 @@ export default function AssignmentGradeTile(props: {
     return isNaN(numeric) ? -1 : numeric;
   };
 
-  console.log(testingValue+" vs "+gradeToString(props.originalGrade)+" ("+props.originalGrade+")");
   const edited = testingValue !== gradeToString(props.originalGrade);
 
   const onFinishEditing = () => {

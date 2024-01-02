@@ -2,7 +2,7 @@ import {Assignment, Course, GradeCategory} from "scorecard-types";
 
 export function averageAssignments(
     categories: GradeCategory[],
-    modifiedAssignments: (Assignment[]|null)[]|null
+    modifiedAssignments: (Assignment[]|null)[]
 ) {
     return categories.map((category, i) => {
         let sum = 0;

@@ -8,13 +8,18 @@ import AssignmentTableRow from "./AssignmentTableRow";
 
 export default function CategoryTable(props: {
   category: GradeCategory;
+  modifiedAssignments: (Assignment|null)[]|null;
   modifyAssignment(a: Assignment, idx: number): void;
+  removeAssignment(idx: number): void;
 }) {
   return (
     <View>
-      {props.category?.assignments?.map((assignment, idx) => {
+      {(props.modifiedAssignments ?? props.category.assignments).map((assignment, idx) => {
+        if (assignment == null) assignment = props.category.assignments[idx];
+
         return (
           <AssignmentTableRow
+            testing={idx >= props.category.assignments.length}
             key={idx}
             assignment={assignment}
             setModifiedAssignment={(a) => {
