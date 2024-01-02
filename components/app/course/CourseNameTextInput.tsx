@@ -20,7 +20,6 @@ export default function CourseNameTextInput(props: {
         style={{
           backgroundColor: colors.backgroundNeutral,
           paddingHorizontal: 20,
-          paddingVertical: 16,
           alignSelf: "flex-start",
           borderRadius: 8,
           width: "100%",
@@ -31,6 +30,13 @@ export default function CourseNameTextInput(props: {
           value={props.value}
           onFocus={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
+            ref.current.setNativeProps({
+              selection: {
+                start: 0,
+                end: props.value.length,
+              },
+            });
           }}
           onChangeText={(t) => {
             props.setValue(t);
@@ -39,10 +45,11 @@ export default function CourseNameTextInput(props: {
           returnKeyType="done"
           textContentType="none"
           autoCorrect={false}
-          maxLength={7}
+          maxLength={24}
           style={{
             fontSize: 20,
             fontFamily: "DMSans_500Medium",
+            paddingVertical: 16,
           }}
         />
       </View>

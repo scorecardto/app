@@ -36,6 +36,9 @@ export default function CourseScreen({ route, navigation }) {
 
   const sheets = useContext(BottomSheetContext);
 
+  const courseDisplayName =
+    dataContext.courseSettings[course.key]?.displayName || course.name;
+
   return (
     <View
       style={{
@@ -50,10 +53,10 @@ export default function CourseScreen({ route, navigation }) {
       >
         <TouchableOpacity
           onPress={() => {
-            sheets.addSheet((close) => <CourseEditSheet />);
+            sheets.addSheet((close) => <CourseEditSheet course={course} />);
           }}
         >
-          <Header header={course.name}>
+          <Header header={courseDisplayName}>
             <LargeGradeText
               grade={course.grades[dataContext.gradeCategory]?.value || "NG"}
               backgroundColor="#C5315D"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Appearance,
   StyleSheet,
@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Course } from "scorecard-types";
+import { Course, DataContext } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
@@ -18,6 +18,8 @@ export default function CourseCard(props: {
   onHold: () => void;
 }) {
   const { colors } = useTheme();
+
+  const { courseSettings } = useContext(DataContext);
 
   const styles = StyleSheet.create({
     wrapper: {
@@ -51,12 +53,15 @@ export default function CourseCard(props: {
     },
   });
 
+  const courseDisplayName =
+    courseSettings[props.course.key]?.displayName || props.course.name;
+
   return (
     <TouchableOpacity onPress={props.onClick} onLongPress={props.onHold}>
       <View style={styles.wrapper}>
         <View style={styles.left}>
           <View style={styles.badge}></View>
-          <MediumText style={styles.header}>{props.course.name}</MediumText>
+          <MediumText style={styles.header}>{courseDisplayName}</MediumText>
         </View>
         <SmallText style={styles.grade}>
           {props.course.grades[props.gradingPeriod]?.value ?? "NG"}
