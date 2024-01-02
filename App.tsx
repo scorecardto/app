@@ -140,6 +140,7 @@ export default function App() {
                     Color.defaultAccents[
                       appearance === "dark" ? "dark" : "default"
                     ],
+                  accentLabel: "red",
                 }}
               >
                 <Stack.Navigator initialRouteName={nextScreen}>

@@ -42,7 +42,7 @@ export default function CourseNameTextInput(props: {
           autoCorrect={false}
           maxLength={7}
           style={{
-            fontSize: 24,
+            fontSize: 20,
             fontFamily: "DMSans_500Medium",
           }}
         />
