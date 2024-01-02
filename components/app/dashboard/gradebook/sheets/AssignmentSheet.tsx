@@ -22,6 +22,8 @@ export default function AssignmentSheet(props: {
     props.currentEdits?.pointsEarned != null &&
     props.currentEdits?.pointsPossible != null;
 
+
+
   return (
     <View>
       <BottomSheetHeader>{props.assignment.name}</BottomSheetHeader>
@@ -43,7 +45,12 @@ export default function AssignmentSheet(props: {
                 }
               : props.assignment.grade
           }
-          originalGrade={props.assignment.grade}
+          originalGrade={isNumericGrade
+              ? {
+                  pointsEarned: props.assignment.points,
+                  pointsPossible: props.assignment.max,
+              }
+              : props.assignment.grade}
           edit={props.edit}
         />
         <SmallGradebookSheetTileGroup>

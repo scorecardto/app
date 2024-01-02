@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, {useRef, useState,  useContext} from "react";
 import { Text, Touchable, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext } from "scorecard-types";
@@ -34,6 +34,8 @@ export default function CourseScreen({ route, navigation }) {
 
   const { colors } = useTheme();
 
+  const [modifiedAvg, setModifiedAvg] = useState<number|null>(null)
+
   const sheets = useContext(BottomSheetContext);
 
   return (
@@ -55,7 +57,7 @@ export default function CourseScreen({ route, navigation }) {
         >
           <Header header={course.name}>
             <LargeGradeText
-              grade={course.grades[dataContext.gradeCategory]?.value || "NG"}
+              grade={""+(modifiedAvg ?? (course.grades[dataContext.gradeCategory]?.value || "NG"))}
               backgroundColor="#C5315D"
               textColor="#FFFFFF"
             />
@@ -63,7 +65,7 @@ export default function CourseScreen({ route, navigation }) {
         </TouchableOpacity>
 
         <View style={{}}>
-          <Gradebook course={course} />
+          <Gradebook course={course} setModifiedGrade={setModifiedAvg} />
         </View>
       </View>
       <View

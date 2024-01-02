@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {useCallback, useContext, useEffect, useMemo, useState} from "react";
 import { Assignment } from "scorecard-types";
 import TableRow from "./TableRow";
 import BottomSheetContext from "../../../util/BottomSheet/BottomSheetContext";
@@ -18,6 +18,21 @@ export default function AssignmentTableRow(props: {
   const [maxPoints, setMaxPoints] = useState(assignment.max);
   const [count, setCount] = useState(assignment.count);
   const [dropped, setDropped] = useState(assignment.dropped);
+
+    useEffect(() => {
+        if (grade !== assignment.grade || points !== assignment.points || maxPoints !== assignment.max || count !== assignment.count || dropped !== assignment.dropped) {
+            props.setModifiedAssignment({
+                ...assignment,
+                grade,
+                points,
+                max: maxPoints,
+                count,
+                dropped
+            })
+        } else {
+            props.setModifiedAssignment(null);
+        }
+    }, [grade, points, maxPoints, count, dropped]);
 
   const worth = (details: { count: number; dropped: boolean }) => {
     return details.dropped
