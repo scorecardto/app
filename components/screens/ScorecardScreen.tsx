@@ -142,7 +142,6 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
           });
         }}
       />
-      <Button title="Share" onPress={() => {}} />
     </View>
   );
 };
