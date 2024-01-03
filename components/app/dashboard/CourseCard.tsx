@@ -39,6 +39,8 @@ export default function CourseCard(props: {
     left: {
       flexDirection: "row",
       alignItems: "center",
+      flex: 1,
+      overflow: "hidden"
     },
     badge: {
       width: 56,
@@ -49,9 +51,11 @@ export default function CourseCard(props: {
     header: {
       paddingLeft: 24,
       color: colors.primary,
+      flex: 1,
     },
     grade: {
       marginRight: 24,
+      marginLeft: 6,
       fontSize: 16,
       color: colors.text,
     },
@@ -65,7 +69,7 @@ export default function CourseCard(props: {
       <View style={styles.wrapper}>
         <View style={styles.left}>
           <View style={styles.badge}></View>
-          <MediumText style={styles.header}>{courseDisplayName}</MediumText>
+          <MediumText numberOfLines={1} ellipsizeMode={"tail"} style={styles.header}>{courseDisplayName}</MediumText>
         </View>
         <SmallText style={styles.grade}>
           {props.course.grades[props.gradingPeriod]?.value ?? "NG"}
