@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CurrentGradesScreen from "./CurrentGradesScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Foundation from "@expo/vector-icons/Foundation";
+import ArchiveScreen from "./ArchiveScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -132,7 +133,7 @@ export default function ScorecardScreen() {
       />
       <Tab.Screen
         name="archive"
-        component={CurrentGradesScreen}
+        component={ArchiveScreen}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
