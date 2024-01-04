@@ -1,141 +1,150 @@
 import {
   View,
   Text,
-  Button,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
-import { NavigationProp } from "@react-navigation/native";
-import { Course, DataContext, GradebookRecord } from "scorecard-types";
-import CourseCard from "../app/dashboard/CourseCard";
-// import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
-import Storage from "expo-storage";
-import * as Haptics from "expo-haptics";
-import { fetchAllContent } from "../../lib/fetcher";
-import { MobileDataContext } from "../core/context/MobileDataContext";
-import LargeText from "../text/LargeText";
-import StatusText from "../text/StatusText";
-import Header from "../text/Header";
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import CurrentGradesScreen from "./CurrentGradesScreen";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import Foundation from "@expo/vector-icons/Foundation";
 
-const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
-  const dataContext = useContext(DataContext);
-  const mobileData = useContext(MobileDataContext);
+const Tab = createBottomTabNavigator();
 
-  const [openedCourseId, setOpenedCourseId] = useState(null as string | null);
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-
-    const url = mobileData.district;
-    const username = mobileData.username;
-    const password = mobileData.password;
-
-    const reportCard = fetchAllContent(url, username, password);
-
-    reportCard.then(async (data) => {
-      const gradeCategory =
-        Math.max(
-          ...data.courses.map((course) => course.grades.filter((g) => g).length)
-        ) - 1;
-
-      mobileData.setReferer(data.referer);
-      mobileData.setSessionId(data.sessionId);
-      mobileData.setDistrict(url);
-
-      dataContext.setData({
-        courses: data.courses,
-        gradeCategory,
-        date: Date.now(),
-        gradeCategoryNames: data.gradeCategoryNames,
-      });
-
-      await Storage.setItem({
-        key: "data",
-        value: JSON.stringify({
-          courses: data.courses,
-          gradeCategory,
-          date: Date.now(),
-          gradeCategoryNames: data.gradeCategoryNames,
-        }),
-      });
-
-      setRefreshing(false);
-    });
-  }, []);
-
+export default function ScorecardScreen() {
   return (
-    <View style={{flex: 1}}>
-      <Header header="Your Scorecard" subheader="Your Grades" />
+    <Tab.Navigator
+      tabBar={(props) => (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "#fff",
+            height: 84,
+            borderTopWidth: 0,
+            elevation: 0,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            paddingBottom: 20,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
+            shadowOpacity: 0.1,
+          }}
+        >
+          {props.state.routes.map((route, index) => {
+            const { options } = props.descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
 
-      {dataContext?.data?.courses && (
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          data={dataContext.data.courses}
-          renderItem={({ item }) => (
-            <CourseCard
-              onClick={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                props.navigation.navigate("course", {
-                  key: item.key,
-                });
-              }}
-              onHold={() => {}}
-              course={item}
-              gradingPeriod={dataContext.data?.gradeCategory || 0}
-            />
-          )}
-          keyExtractor={(item) => item.key}
-        />
+            const isFocused = props.state.index === index;
+
+            const onPress = () => {
+              const event = props.navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                props.navigation.navigate(route.name);
+              }
+            };
+
+            const onLongPress = () => {
+              props.navigation.emit({
+                type: "tabLongPress",
+                target: route.key,
+              });
+            };
+
+            return (
+              <TouchableWithoutFeedback
+                key={index}
+                accessibilityRole="button"
+                accessibilityState={isFocused ? { selected: true } : {}}
+                accessibilityLabel={options.tabBarAccessibilityLabel}
+                testID={options.tabBarTestID}
+                onPress={onPress}
+                onLongPress={onLongPress}
+              >
+                <View
+                  style={{
+                    paddingHorizontal: 40,
+                    paddingVertical: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {options?.tabBarIcon?.({
+                    focused: isFocused,
+                    size: 28,
+                    color: isFocused ? "#000" : "#666",
+                  })}
+                </View>
+              </TouchableWithoutFeedback>
+            );
+          })}
+        </View>
       )}
-
-      {/* <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}> */}
-      {/* {openedCourseId && (
-          // <CourseGradebook
-          //   courseId={openedCourseId}
-          //   currentGradingPeriod={dataContext.data.gradeCategory}
-          // />
-        )} */}
-      {/* </ActionSheet> */}
-
-      {/*
-
-      {dataContext?.data?.courses && (
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          data={dataContext.data.courses}
-          renderItem={({ item }) => (
-            <CourseCard
-              onClick={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                actionSheetRef.current?.show();
-                setOpenedCourseId(item.key);
-              }}
-              course={item}
-              gradingPeriod={dataContext.data.gradeCategory}
+    >
+      <Tab.Screen
+        name="profile"
+        component={CurrentGradesScreen}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused, size }) => (
+            <Ionicons
+              name="person-circle"
+              size={size}
+              color={focused ? "#000" : "#666"}
             />
-          )}
-          keyExtractor={(item) => item.key}
-        />
-      )}
-*/}
-      <Button
-        title="Reset Cache"
-        onPress={() => {
-          Storage.removeItem({
-            key: "data",
-          });
+          ),
         }}
       />
-    </View>
+      <Tab.Screen
+        name="current"
+        component={CurrentGradesScreen}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused, size }) => (
+            <Foundation
+              name="home"
+              size={size}
+              color={focused ? "#000" : "#666"}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="archive"
+        component={CurrentGradesScreen}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarIcon: ({ focused, size }) => (
+            <Ionicons
+              name="time"
+              size={size}
+              color={focused ? "#000" : "#666"}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
-};
-
-export default ScorecardScreen;
+}
