@@ -1,7 +1,10 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleProp, TextStyle } from "react-native";
 import React from "react";
 
-export default function SmallText(props) {
+export default function SmallText(props: {
+  children: React.ReactNode;
+  style?: StyleProp<any>;
+}) {
   return (
     <Text
       style={{

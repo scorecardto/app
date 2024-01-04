@@ -1,20 +1,23 @@
 import React, { useRef, useState, useContext } from "react";
-import { Text, Touchable, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext } from "scorecard-types";
 import Header from "../text/Header";
-import { RadialGradient } from "react-native-gradients";
+// import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { ThemeProvider, useTheme } from "@react-navigation/native";
-import Gradebook from "../app/dashboard/gradebook/Gradebook";
+// import Gradebook from "../app/dashboard/gradebook/Gradebook";
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
-import CourseEditSheet from "../app/course/CourseEditSheet";
+// import CourseEditSheet from "../app/course/CourseEditSheet";
 import { Theme } from "../../lib/Color";
 import color from "../../lib/Color";
-export default function CourseScreen({ route, navigation }) {
-  const { key } = route.params;
+import { RouteProp, NavigationProp } from "@react-navigation/native";
+import Gradebook from "../app/gradebook/Gradebook";
+import CourseEditSheet from "../app/course/CourseEditSheet";
+
+export default function CourseScreen(props: { route: any; navigation: any }) {
+  const { key } = props.route.params;
 
   const dataContext = React.useContext(DataContext);
 
@@ -66,7 +69,7 @@ export default function CourseScreen({ route, navigation }) {
         >
           <TouchableOpacity
             onPress={() => {
-              sheets.addSheet((close) => <CourseEditSheet course={course} />);
+              sheets?.addSheet((close) => <CourseEditSheet course={course} />);
             }}
           >
             <Header header={courseDisplayName}>
@@ -95,13 +98,13 @@ export default function CourseScreen({ route, navigation }) {
             height: "100%",
           }}
         >
-          <RadialGradient
+          {/* <RadialGradient
             x="50%"
             y="0"
             rx="384"
             ry="288"
             colorList={colorList}
-          ></RadialGradient>
+          ></RadialGradient> */}
         </View>
         <BottomSheetDisplay />
       </View>

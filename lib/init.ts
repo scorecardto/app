@@ -1,7 +1,6 @@
 import { DataProvider } from "scorecard-types";
 import { MobileDataProvider } from "../components/core/context/MobileDataContext";
-import { Storage } from "expo-storage";
-
+import Storage from "expo-storage";
 type NextScreen = "scorecard" | "account";
 
 export default async function initialize(

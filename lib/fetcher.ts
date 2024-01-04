@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { Options, RequestHeaders } from "redaxios";
 import Form from "form-data";
 import parse from "node-html-parser";
 import qs from "qs";
@@ -11,7 +11,9 @@ import {
   GradeCategoriesResponse,
   GradeCategory,
 } from "scorecard-types";
+// @ts-ignore
 import * as iso88592 from "iso-8859-2/iso-8859-2.mjs";
+// import CookieManager from "@react-native-cookies/cookies";
 
 const generateSessionId = () => {
   return [...Array(32)]
@@ -27,15 +29,25 @@ const toFormData = (obj: any) => {
   });
   return formData;
 };
+const toFormDataData = (obj: any) => {
+  const formData = new FormData();
+  Object.keys(obj).forEach((key) => {
+    formData.append(key, obj[key]);
+  });
+  return formData;
+};
 
 const fetchReportCard = async (
   host: string,
   username: string,
   password: string
 ): Promise<CourseResponse> => {
+  console.log("fetching report card");
+  console.log(host, username, password);
+
   const cookie = generateSessionId();
 
-  const ENTRY_POINT: AxiosRequestConfig = {
+  const ENTRY_POINT: Options = {
     url: `https://${host}/selfserve/EntryPointHomeAction.do?parent=false`,
     method: "GET",
     headers: {
@@ -48,7 +60,9 @@ const fetchReportCard = async (
 
   const entryPointResponse = await axios(ENTRY_POINT);
 
-  const ENTRY_POINT_LOGIN: AxiosRequestConfig = {
+  //   await CookieManager.clearAll();
+
+  const ENTRY_POINT_LOGIN: Options = {
     url: `https://${host}/selfserve/HomeLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "GET",
     headers: {
@@ -62,7 +76,9 @@ const fetchReportCard = async (
 
   const entryPointLoginResponse = await axios(ENTRY_POINT_LOGIN);
 
-  const HOME_LOGIN: AxiosRequestConfig = {
+  //   await CookieManager.clearAll();
+
+  const HOME_LOGIN: Options = {
     url: `https://${host}/selfserve/SignOnLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "POST",
     data: toFormData({
@@ -85,6 +101,8 @@ const fetchReportCard = async (
   // @ts-ignore
   const homeLoginResponse: string = (await axios(HOME_LOGIN)).data;
 
+  //   await CookieManager.clearAll();
+
   const homeLoginHtml = parse(homeLoginResponse);
 
   if (
@@ -100,7 +118,7 @@ const fetchReportCard = async (
     throw new Error("INCORRECT_USERNAME");
   }
 
-  const REPORT_CARDS: AxiosRequestConfig = {
+  const REPORT_CARDS: Options = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
     data: toFormData({
@@ -118,7 +136,16 @@ const fetchReportCard = async (
   // @ts-ignore
   const reportCardsResponse: string = (await axios(REPORT_CARDS)).data;
 
+  //   await CookieManager.clearAll();
+
   const reportCardsHtml = parse(reportCardsResponse);
+
+  if (
+    reportCardsHtml.querySelector("#pageMessageDiv.message.info")?.innerText ===
+    "Your session has expired.  Please use the Close button and log in again."
+  ) {
+    throw new Error("SESSION_EXPIRED");
+  }
 
   const courseElements = reportCardsHtml.querySelectorAll(
     ".studentGradingBottomLeft tr:not(:first-child) td:nth-child(4)"
@@ -177,16 +204,56 @@ const fetchReportCard = async (
   };
 };
 
+type XMLOptions = {
+  method?: string;
+  url?: string;
+  headers?: { [key: string]: string };
+  responseType?: XMLHttpRequestResponseType;
+  data?: FormData;
+};
+
+function makeXmlHttpRequest(options: XMLOptions) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+
+    xhr.open(options.method!, options.url!);
+
+    if (options.headers) {
+      Object.keys(options.headers).forEach((key) => {
+        // @ts-ignore
+        xhr.setRequestHeader(key, options.headers[key]);
+      });
+    }
+
+    if (options.responseType) {
+      xhr.responseType = options.responseType;
+    }
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(xhr.responseText);
+      } else {
+        reject(xhr.statusText);
+      }
+    };
+
+    xhr.onerror = () => {
+      reject(xhr.statusText);
+    };
+
+    xhr.send(options.data);
+  });
+}
 const fetchGradeCategoriesForCourse = async (
   host: string,
   sessionId: string,
   referer: string,
   course: Course
 ): Promise<GradeCategoriesResponse> => {
-  const ASSIGNMENTS: AxiosRequestConfig = {
+  const ASSIGNMENTS: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
     method: "POST",
-    data: toFormData({
+    data: toFormDataData({
       selectedIndexId: -1,
       selectedTable: "",
       smartFormName: "SmartForm",
@@ -203,16 +270,22 @@ const fetchGradeCategoriesForCourse = async (
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
     },
-    responseType: "arraybuffer",
+    responseType: "text",
   };
 
-  const assignmentsResponseRaw = await axios(ASSIGNMENTS);
+  const assignmentsResponseRaw = await makeXmlHttpRequest({
+    url: ASSIGNMENTS.url!,
+    method: ASSIGNMENTS.method,
+    headers: ASSIGNMENTS.headers,
+    responseType: ASSIGNMENTS.responseType,
+    data: ASSIGNMENTS.data,
+  });
+  // const assignmentsResponse = iso88592.decode(
+  //   // @ts-ignore
+  //   new Uint8Array(assignmentsResponseRaw.data)
+  // );
 
-  const assignmentsResponse = iso88592.decode(
-    new Uint8Array(assignmentsResponseRaw.data)
-  );
-
-  const assignmentsHtml = parse(assignmentsResponse);
+  const assignmentsHtml = parse(assignmentsResponseRaw as string);
 
   const categoryElements = assignmentsHtml.querySelectorAll(
     ".tablePanelContainer"
@@ -321,6 +394,8 @@ const fetchGradeCategoriesForCourse = async (
     };
   });
 
+  console.log(gradeCategories);
+
   const formData = {
     selectedIndexId: undefined,
     selectedTable: undefined,
@@ -328,15 +403,19 @@ const fetchGradeCategoriesForCourse = async (
     focusElement: "",
   };
 
-  gradeCategories.forEach((c) => {
-    formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_SortOrder`] = "";
-    formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_record_count`] =
-      c.assignments?.length;
-    formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_FilterMeta`] = {};
-    formData[`tableId_${c.id}`] = c.id;
-  });
+  // gradeCategories.forEach((c) => {
+  //   // @ts-ignore
+  //   formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_SortOrder`] = "";
+  //   // @ts-ignore
+  //   formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_record_count`] =
+  //     c.assignments?.length;
+  //   // @ts-ignore
+  //   formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_FilterMeta`] = {};
+  //   // @ts-ignore
+  //   formData[`tableId_${c.id}`] = c.id;
+  // });
 
-  const BACK_TO_REPORT_CARD: AxiosRequestConfig = {
+  const BACK_TO_REPORT_CARD: Options = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
     data: toFormData(formData),
@@ -349,7 +428,19 @@ const fetchGradeCategoriesForCourse = async (
     },
   };
 
-  await axios(BACK_TO_REPORT_CARD);
+  await makeXmlHttpRequest({
+    url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+    method: "POST",
+    headers: {
+      Referer: ASSIGNMENTS.url!,
+      Cookie: `JSESSIONID=${sessionId}`,
+      Connection: "keep-alive",
+      "Accept-Encoding": "gzip, deflate, br",
+      Accept: "*/*",
+    },
+    data: toFormDataData(formData),
+    responseType: "text",
+  });
 
   return {
     referer: BACK_TO_REPORT_CARD.url!,

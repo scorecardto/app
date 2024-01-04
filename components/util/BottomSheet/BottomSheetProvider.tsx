@@ -1,7 +1,9 @@
 import { useState } from "react";
 import BottomSheetContext, { Sheet } from "./BottomSheetContext";
 
-export default function BottomSheetProvider(props) {
+export default function BottomSheetProvider(props: {
+  children: React.ReactNode;
+}) {
   const [sheets, setSheets] = useState<Sheet[]>([]);
 
   const addSheet = (s: Sheet) => {

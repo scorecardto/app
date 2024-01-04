@@ -11,17 +11,17 @@ import { useEffect } from "react";
 import { fetchAllContent, fetchReportCard } from "../../lib/fetcher";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext, GradebookRecord } from "scorecard-types";
-import { Storage } from "expo-storage";
+import Storage from "expo-storage";
 
 const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const [url, setUrl] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const urlRef = useRef<ReactNative.TextInput>();
-  const usernameRef = useRef<ReactNative.TextInput>();
-  const passwordRef = useRef<ReactNative.TextInput>();
-  const buttonRef = useRef<View>();
+  const urlRef = useRef<ReactNative.TextInput>(null);
+  const usernameRef = useRef<ReactNative.TextInput>(null);
+  const passwordRef = useRef<ReactNative.TextInput>(null);
+  const buttonRef = useRef<View>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -31,60 +31,67 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   useEffect(() => {
     const opacity = loading ? 0.5 : 1;
 
-    urlRef.current.setNativeProps({ opacity });
-    usernameRef.current.setNativeProps({ opacity });
-    passwordRef.current.setNativeProps({ opacity });
+    urlRef.current?.setNativeProps({ opacity });
+    usernameRef.current?.setNativeProps({ opacity });
+    passwordRef.current?.setNativeProps({ opacity });
 
-    buttonRef.current.setNativeProps({ opacity });
+    buttonRef.current?.setNativeProps({ opacity });
 
     if (loading) {
       const reportCard = fetchAllContent(url, username, password);
 
-      reportCard.then(async (data) => {
-        const gradeCategory =
-          Math.max(
-            ...data.courses.map(
-              (course) => course.grades.filter((g) => g).length
-            )
-          ) - 1;
+      reportCard
+        .then(async (data) => {
+          const gradeCategory =
+            Math.max(
+              ...data.courses.map(
+                (course) => course.grades.filter((g) => g).length
+              )
+            ) - 1;
 
-        mobileData.setReferer(data.referer);
-        mobileData.setSessionId(data.sessionId);
-        mobileData.setDistrict(url);
-        mobileData.setUsername(username);
-        mobileData.setPassword(password);
+          mobileData.setReferer(data.referer);
+          mobileData.setSessionId(data.sessionId);
+          mobileData.setDistrict(url);
+          mobileData.setUsername(username);
+          mobileData.setPassword(password);
 
-        dataContext.setData({
-          courses: data.courses,
-          gradeCategory,
-          date: Date.now(),
-          gradeCategoryNames: data.gradeCategoryNames,
-        });
-
-        await Storage.setItem({
-          key: "login",
-          value: JSON.stringify({
-            host: url,
-            username,
-            password,
-          }),
-        });
-
-        await Storage.setItem({
-          key: "data",
-          value: JSON.stringify({
+          dataContext.setData({
             courses: data.courses,
             gradeCategory,
             date: Date.now(),
             gradeCategoryNames: data.gradeCategoryNames,
-          }),
-        });
+          });
 
-        props.navigation.reset({
-          index: 0,
-          routes: [{ name: "scorecard" }],
+          await Storage.setItem({
+            key: "login",
+            value: JSON.stringify({
+              host: url,
+              username,
+              password,
+            }),
+          });
+
+          await Storage.setItem({
+            key: "data",
+            value: JSON.stringify({
+              courses: data.courses,
+              gradeCategory,
+              date: Date.now(),
+              gradeCategoryNames: data.gradeCategoryNames,
+            }),
+          });
+
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: "scorecard" }],
+          });
+        })
+        .catch((e) => {
+          console.error(e);
+
+          setLoading(false);
+          alert("Invalid credentials");
         });
-      });
     }
   }, [loading]);
 
@@ -106,7 +113,7 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
             returnKeyType: "next",
             editable: !loading,
             onSubmitEditing(e) {
-              usernameRef.current.focus();
+              usernameRef.current?.focus();
             },
           }}
         />
@@ -120,7 +127,7 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
             returnKeyType: "next",
             editable: !loading,
             onSubmitEditing(e) {
-              passwordRef.current.focus();
+              passwordRef.current?.focus();
             },
           }}
         />

@@ -1,7 +1,10 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleProp } from "react-native";
 import React from "react";
 
-export default function MediumText(props) {
+export default function MediumText(props: {
+  children: React.ReactNode;
+  style?: StyleProp<any>;
+}) {
   return (
     <Text
       style={{

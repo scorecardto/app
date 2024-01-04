@@ -10,22 +10,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext, GradebookRecord } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
-import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 // import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
-import { Storage } from "expo-storage";
+import Storage from "expo-storage";
 import * as Haptics from "expo-haptics";
 import { fetchAllContent } from "../../lib/fetcher";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import LargeText from "../text/LargeText";
 import StatusText from "../text/StatusText";
 import Header from "../text/Header";
-import * as SMS from "expo-sms";
 
 const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const dataContext = useContext(DataContext);
   const mobileData = useContext(MobileDataContext);
-
-  const actionSheetRef = React.useRef<ActionSheetRef>(null);
 
   const [openedCourseId, setOpenedCourseId] = useState(null as string | null);
 
@@ -89,27 +85,23 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
                   key: item.key,
                 });
               }}
-              onHold={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-                setOpenedCourseId(item.key);
-                actionSheetRef.current.show();
-              }}
+              onHold={() => {}}
               course={item}
-              gradingPeriod={dataContext.data.gradeCategory}
+              gradingPeriod={dataContext.data?.gradeCategory || 0}
             />
           )}
           keyExtractor={(item) => item.key}
         />
       )}
 
-      <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}>
-        {/* {openedCourseId && (
+      {/* <ActionSheet ref={actionSheetRef} containerStyle={{ height: "80%" }}> */}
+      {/* {openedCourseId && (
           // <CourseGradebook
           //   courseId={openedCourseId}
           //   currentGradingPeriod={dataContext.data.gradeCategory}
           // />
         )} */}
-      </ActionSheet>
+      {/* </ActionSheet> */}
 
       {/*
 

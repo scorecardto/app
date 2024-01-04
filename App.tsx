@@ -1,8 +1,12 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Appearance, StyleSheet, Text, useColorScheme } from "react-native";
-import ScorecardScreen from "./components/screens/ScorecardScreen";
-import AccountScreen from "./components/screens/AccountScreen";
+import {
+  Appearance,
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+} from "react-native";
 import {
   MobileDataContext,
   MobileDataProvider,
@@ -19,19 +23,21 @@ import * as Font from "expo-font";
 import AnekKannada, {
   AnekKannada_400Regular,
 } from "@expo-google-fonts/anek-kannada";
-import CourseScreen from "./components/screens/CourseScreen";
-import { BottomSheetContext } from "@gorhom/bottom-sheet/lib/typescript/contexts";
-import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
 import * as SplashScreen from "expo-splash-screen";
 import {
   DMSans_400Regular,
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import initialize from "./lib/init";
-import AnimatedAppLoader from "./components/screens/loader/AnimatedAppLoader";
-
 import Constants from "expo-constants";
+import AccountScreen from "./components/screens/AccountScreen";
+import ScorecardScreen from "./components/screens/ScorecardScreen";
+import CourseScreen from "./components/screens/CourseScreen";
+import AnimatedAppLoader from "./components/screens/loader/AnimatedAppLoader";
+import initialize from "./lib/init";
+import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,7 +60,7 @@ export default function App() {
       setGradeCategory,
       courseSettings,
       setCourseSettings,
-      courseOrder: undefined,
+      courseOrder: [],
       setCourseOrder: () => {},
     }),
     [data, gradeCategory, setGradeCategory, courseSettings, setCourseSettings]
@@ -128,46 +134,48 @@ export default function App() {
       <MobileDataContext.Provider value={mobileData}>
         {appReady && (
           <AnimatedAppLoader image={require("./assets/splash.png")}>
-            <BottomSheetProvider>
-              <NavigationContainer
-                theme={{
-                  ...(appearance === "dark"
-                    ? Color.DarkTheme
-                    : Color.LightTheme),
-                  dark: appearance === "dark",
-                  // @ts-ignore
-                  accents:
-                    Color.AccentsMatrix[Color.defaultAccentLabel][
-                      appearance === "dark" ? "dark" : "default"
-                    ],
-                  accentLabel: "red",
-                }}
-              >
-                <Stack.Navigator initialRouteName={nextScreen}>
-                  <Stack.Screen
-                    name="account"
-                    component={AccountScreen}
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="scorecard"
-                    component={ScorecardScreen}
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="course"
-                    component={CourseScreen}
-                    options={{
-                      headerShown: false,
-                    }}
-                  />
-                </Stack.Navigator>
-              </NavigationContainer>
-            </BottomSheetProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <BottomSheetProvider>
+                <NavigationContainer
+                  theme={{
+                    ...(appearance === "dark"
+                      ? Color.DarkTheme
+                      : Color.LightTheme),
+                    dark: appearance === "dark",
+                    // @ts-ignore
+                    accents:
+                      Color.AccentsMatrix[Color.defaultAccentLabel][
+                        appearance === "dark" ? "dark" : "default"
+                      ],
+                    accentLabel: "red",
+                  }}
+                >
+                  <Stack.Navigator initialRouteName={nextScreen}>
+                    <Stack.Screen
+                      name="account"
+                      component={AccountScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="scorecard"
+                      component={ScorecardScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="course"
+                      component={CourseScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                  </Stack.Navigator>
+                </NavigationContainer>
+              </BottomSheetProvider>
+            </GestureHandlerRootView>
           </AnimatedAppLoader>
         )}
       </MobileDataContext.Provider>

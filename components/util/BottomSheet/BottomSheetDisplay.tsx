@@ -5,14 +5,14 @@ import BottomSheetBase from "@gorhom/bottom-sheet";
 import BottomSheetBackdrop from "./BottomSheetBackdrop";
 import { TouchableWithoutFeedback, View } from "react-native";
 
-export default function BottomSheetDisplay(props) {
+export default function BottomSheetDisplay(props: {}) {
   const sheets = useContext(BottomSheetContext);
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
   function onClose() {
-    if (sheets.sheets.length > 0 && sheets.next()) {
-      bottomSheetRef.current.expand();
+    if (sheets?.sheets && sheets?.sheets?.length > 0 && sheets.next()) {
+      bottomSheetRef?.current?.expand();
     }
   }
 
@@ -21,26 +21,26 @@ export default function BottomSheetDisplay(props) {
   );
 
   useEffect(() => {
-    if (sheets.sheets.length > 0) {
-      bottomSheetRef.current.expand();
+    if (sheets?.sheets && sheets.sheets.length > 0) {
+      bottomSheetRef?.current?.expand();
 
       setCurrentSheet(
         sheets.sheets[0]({
           close: () => {
-            bottomSheetRef.current.close();
+            bottomSheetRef?.current?.close();
           },
         })
       );
     } else {
       setCurrentSheet(undefined);
     }
-  }, [sheets.sheets]);
+  }, [sheets?.sheets]);
 
   return (
     <>
       <TouchableWithoutFeedback
         onPress={() => {
-          bottomSheetRef.current.close();
+          bottomSheetRef?.current?.close();
         }}
       >
         {currentSheet != null ? (

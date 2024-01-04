@@ -31,7 +31,8 @@ export default function CourseNameTextInput(props: {
           onFocus={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
 
-            ref.current.setNativeProps({
+            // @ts-ignore
+            ref.current?.setNativeProps({
               selection: {
                 start: 0,
                 end: props.value.length,

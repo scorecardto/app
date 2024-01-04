@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -26,6 +28,12 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.scorecardgrades.mobile</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+scorecard</string>
         </array>
       </dict>
     </array>
@@ -68,7 +76,9 @@
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
+    <key>UIUserInterfaceStyle</key>
+    <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
-    <true/>
+    <false/>
   </dict>
 </plist>

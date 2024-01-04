@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import Constants from "expo-constants";
 import { StyleSheet } from "react-native";
+
 export default function AnimatedSplashScreen(props: {
   children: React.ReactNode;
   image: any;
@@ -40,7 +41,8 @@ export default function AnimatedSplashScreen(props: {
             StyleSheet.absoluteFill,
             {
               opacity: animation,
-              backgroundColor: Constants.expoConfig.splash.backgroundColor,
+              backgroundColor:
+                Constants.expoConfig?.splash?.backgroundColor || "white",
             },
           ]}
         >
@@ -48,7 +50,7 @@ export default function AnimatedSplashScreen(props: {
             style={{
               width: "100%",
               height: "100%",
-              resizeMode: Constants.expoConfig.splash.resizeMode || "contain",
+              resizeMode: Constants.expoConfig?.splash?.resizeMode || "contain",
             }}
             source={props.image}
             onLoadEnd={onImageLoaded}
