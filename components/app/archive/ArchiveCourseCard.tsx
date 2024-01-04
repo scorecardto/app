@@ -16,6 +16,7 @@ export default function ArchiveCourseCard(props: {
         width: "100%",
         backgroundColor: "#fff",
         borderRadius: 10,
+        overflow: "hidden",
         marginBottom: 20,
         display: "flex",
         flexDirection: "column",
@@ -36,6 +37,7 @@ export default function ArchiveCourseCard(props: {
             props.course.name}
         </MediumText>
       </View>
+
       {new Array(props.cellCount / 4).fill(0).map((_, row) => {
         return (
           <View
