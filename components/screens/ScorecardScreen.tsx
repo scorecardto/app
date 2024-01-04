@@ -68,7 +68,7 @@ const ScorecardScreen = (props: { navigation: NavigationProp<any, any> }) => {
   }, []);
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <Header header="Your Scorecard" subheader="Your Grades" />
 
       {dataContext?.data?.courses && (
