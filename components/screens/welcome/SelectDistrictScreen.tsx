@@ -1,15 +1,21 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import { TextInput } from "../../input/TextInput";
 import axios from "redaxios";
-import { useTheme } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import { Image } from "expo-image";
 import useKeyboardVisisble from "../../util/hooks/useKeyboardVisible";
 
 const starred = require("../../../assets/starred.svg");
 
-export default function SelectDistrictScreen() {
+export default function SelectDistrictScreen(props: {
+  navigation: NavigationProp<any, any>;
+}) {
   const HEADER = "Select Your District";
   const FOOTER =
     "Your login info and grades are stored on your device and cannot be accessed by Scorecard.";
@@ -58,50 +64,58 @@ export default function SelectDistrictScreen() {
           })}
           renderItem={({ item, index }) => {
             return (
-              <View
-                style={{
-                  borderTopWidth: index !== 0 ? 1 : 0,
-                  borderTopColor: colors.borderNeutral,
-                  paddingHorizontal: 16,
-                  paddingVertical: 16,
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.navigate("connectAccount", {
+                    district: item,
+                  });
                 }}
               >
                 <View
                   style={{
-                    marginBottom: 4,
-                    flexDirection: "row",
-                    alignItems: "center",
+                    borderTopWidth: index !== 0 ? 1 : 0,
+                    borderTopColor: colors.borderNeutral,
+                    paddingHorizontal: 16,
+                    paddingVertical: 16,
                   }}
                 >
-                  <Text
+                  <View
                     style={{
-                      color: colors.primary,
-                      fontSize: 16,
-                      fontWeight: "500",
-                      marginRight: 8,
+                      marginBottom: 4,
+                      flexDirection: "row",
+                      alignItems: "center",
                     }}
                   >
-                    {item.name}
-                  </Text>
-                  {item.pinned && (
-                    <Image
-                      source={starred}
+                    <Text
                       style={{
-                        width: 16,
-                        aspectRatio: 1,
+                        color: colors.primary,
+                        fontSize: 16,
+                        fontWeight: "500",
+                        marginRight: 8,
                       }}
-                    />
-                  )}
+                    >
+                      {item.name}
+                    </Text>
+                    {item.pinned && (
+                      <Image
+                        source={starred}
+                        style={{
+                          width: 16,
+                          aspectRatio: 1,
+                        }}
+                      />
+                    )}
+                  </View>
+                  <Text
+                    style={{
+                      color: colors.text,
+                      fontSize: 14,
+                    }}
+                  >
+                    {item.url}
+                  </Text>
                 </View>
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontSize: 14,
-                  }}
-                >
-                  {item.url}
-                </Text>
-              </View>
+              </TouchableOpacity>
             );
           }}
         />

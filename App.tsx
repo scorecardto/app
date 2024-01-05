@@ -31,7 +31,7 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import { IBMPlexMono_400Regular } from "@expo-google-fonts/ibm-plex-mono";
 import Constants from "expo-constants";
-import AccountScreen from "./components/screens/AccountScreen";
+import ConnectAccountScreen from "./components/screens/ConnectAccountScreen";
 import ScorecardScreen from "./components/screens/ScorecardScreen";
 import CourseScreen from "./components/screens/CourseScreen";
 import AnimatedAppLoader from "./components/screens/loader/AnimatedAppLoader";
@@ -162,8 +162,8 @@ export default function App() {
                       }}
                     />
                     <Stack.Screen
-                      name="account"
-                      component={AccountScreen}
+                      name="connectAccount"
+                      component={ConnectAccountScreen}
                       options={{
                         headerShown: false,
                       }}

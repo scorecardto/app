@@ -14,7 +14,9 @@ import { DataContext, GradebookRecord } from "scorecard-types";
 import Storage from "expo-storage";
 import WelcomeScreenBanner from "../app/welcome/WelcomeScreenBanner";
 
-const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
+const ConnectAccountScreen = (props: {
+  navigation: NavigationProp<any, any>;
+}) => {
   const [url, setUrl] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -98,7 +100,7 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
 
   return (
     <View>
-      <WelcomeScreenBanner height={300} />
+      <WelcomeScreenBanner height={300} show={true} />
       <View
         style={{
           padding: 20,
@@ -165,4 +167,4 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   );
 };
 
-export default AccountScreen;
+export default ConnectAccountScreen;
