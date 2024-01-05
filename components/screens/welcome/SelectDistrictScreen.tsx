@@ -37,6 +37,7 @@ export default function SelectDistrictScreen(props: {
       header={HEADER}
       footerText={FOOTER}
       showBanner={!isKeyboardVisible}
+      monoLabel="Step 1 of 3"
     >
       <View>
         <TextInput

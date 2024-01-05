@@ -16,25 +16,25 @@ export default function WelcomeScreenBanner(props: {
     if (!props.show) {
       Animated.timing(positionAnimation, {
         toValue: 60,
-        duration: 200,
+        duration: 150,
         useNativeDriver: false,
       }).start();
 
       Animated.timing(opacityAnimation, {
         toValue: 0,
-        duration: 200,
+        duration: 150,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(positionAnimation, {
         toValue: props.height,
-        duration: 200,
+        duration: 150,
         useNativeDriver: false,
       }).start();
 
       Animated.timing(opacityAnimation, {
         toValue: 1,
-        duration: 200,
+        duration: 150,
         useNativeDriver: true,
       }).start();
     }

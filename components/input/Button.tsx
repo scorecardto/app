@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { StyleProp } from "react-native";
 import { forwardRef } from "react";
-
+import { useTheme } from "@react-navigation/native";
 const Button = forwardRef<
   View,
   {
@@ -21,39 +21,31 @@ const Button = forwardRef<
     disabled?: boolean;
   }
 >((props, ref) => {
+  const { colors } = useTheme();
+
+  const styles = StyleSheet.create({
+    wrapper: {
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      borderRadius: 5,
+      alignSelf: "center",
+      backgroundColor: colors.button,
+      borderWidth: 1,
+      borderBottomWidth: 2,
+      borderColor: colors.buttonBorder,
+    },
+    text: {
+      fontSize: 16,
+      color: "white",
+    },
+  });
   return (
-    <View style={props.style} ref={ref}>
+    <View style={styles.wrapper} ref={ref}>
       <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
-        <Text style={props.textStyle}>{props.children}</Text>
+        <Text style={styles.text}>{props.children}</Text>
       </TouchableOpacity>
     </View>
   );
 });
 
-const DefaultButtonStyle = StyleSheet.create({
-  default: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignSelf: "center",
-  },
-  defaultText: {
-    fontSize: 18,
-  },
-});
-
-const ButtonStyle = StyleSheet.create({
-  black: {
-    ...DefaultButtonStyle.default,
-    backgroundColor: "black",
-  },
-});
-
-const ButtonTextStyle = StyleSheet.create({
-  white: {
-    ...DefaultButtonStyle.defaultText,
-    color: "white",
-  },
-});
 export default Button;
-export { ButtonStyle, DefaultButtonStyle, ButtonTextStyle };

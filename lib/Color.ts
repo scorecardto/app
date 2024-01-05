@@ -106,6 +106,8 @@ interface Theme extends NativeTheme.Theme {
     text: string;
     border: string;
     notification: string;
+    button: string;
+    buttonBorder: string;
   };
   accents: {
     preview: string;
@@ -130,6 +132,8 @@ const MyLightTheme = {
     secondary: "#D5E8FA",
     secondaryNeutral: "#f4f4f4",
     card: "#FFF",
+    button: "#11A1F1",
+    buttonBorder: "#1585c2",
   },
 };
 
@@ -146,6 +150,8 @@ const MyDarkTheme = {
     secondary: "#D5E8FA",
     secondaryNeutral: "#DDD",
     card: "#1E213B",
+    button: "#11A1F1",
+    buttonBorder: "#098fd7",
   },
 };
 

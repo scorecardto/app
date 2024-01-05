@@ -10,9 +10,12 @@ export default function WelcomeScreen(props: {
   header: string;
   footerText: string;
   showBanner?: boolean;
+  monoLabel: string;
 }) {
+  const { colors } = useTheme();
   const styles = StyleSheet.create({
     wrapper: {
+      backgroundColor: colors.card,
       flex: 1,
       flexDirection: "column",
       justifyContent: "space-between",
@@ -40,7 +43,6 @@ export default function WelcomeScreen(props: {
 
   const windowHeight = Dimensions.get("window").height;
 
-  const { colors } = useTheme();
   return (
     <View style={styles.wrapper}>
       <View style={styles.top}>
@@ -49,7 +51,7 @@ export default function WelcomeScreen(props: {
           show={props.showBanner ?? true}
         />
         <View style={styles.heading}>
-          <MonoText style={{ color: colors.text }}>Step 1 of 3</MonoText>
+          <MonoText style={{ color: colors.text }}>{props.monoLabel}</MonoText>
           <LargeText style={styles.header}>{props.header}</LargeText>
         </View>
         <View style={styles.content}>{props.children}</View>

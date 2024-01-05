@@ -1,10 +1,10 @@
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import ReactNative from "react-native";
 import React from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import Button, { ButtonStyle, ButtonTextStyle } from "../input/Button";
+import Button from "../input/Button";
 import { useRef } from "react";
 import { TextInput } from "../input/TextInput";
 import { useEffect } from "react";
@@ -13,18 +13,26 @@ import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext, GradebookRecord } from "scorecard-types";
 import Storage from "expo-storage";
 import WelcomeScreenBanner from "../app/welcome/WelcomeScreenBanner";
-
+import WelcomeScreen from "../app/welcome/WelcomeScreen";
+import { useTheme } from "@react-navigation/native";
+import SmallText from "../text/SmallText";
+import useKeyboardVisible from "../util/hooks/useKeyboardVisible";
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
+  route: any;
 }) => {
-  const [url, setUrl] = useState("");
+  const HEADER = "Login with Frontline";
+  const FOOTER =
+    "Your login info and grades are stored on your device and cannot be accessed by Scorecard.";
+
+  const district = props.route.params.district;
+
+  const { accents } = useTheme();
+
+  const isKeyboardVisible = useKeyboardVisible();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const urlRef = useRef<ReactNative.TextInput>(null);
-  const usernameRef = useRef<ReactNative.TextInput>(null);
-  const passwordRef = useRef<ReactNative.TextInput>(null);
-  const buttonRef = useRef<View>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -32,16 +40,8 @@ const ConnectAccountScreen = (props: {
   const mobileData = React.useContext(MobileDataContext);
 
   useEffect(() => {
-    const opacity = loading ? 0.5 : 1;
-
-    urlRef.current?.setNativeProps({ opacity });
-    usernameRef.current?.setNativeProps({ opacity });
-    passwordRef.current?.setNativeProps({ opacity });
-
-    buttonRef.current?.setNativeProps({ opacity });
-
     if (loading) {
-      const reportCard = fetchAllContent(url, username, password);
+      const reportCard = fetchAllContent(district.url, username, password);
 
       reportCard
         .then(async (data) => {
@@ -54,7 +54,7 @@ const ConnectAccountScreen = (props: {
 
           mobileData.setReferer(data.referer);
           mobileData.setSessionId(data.sessionId);
-          mobileData.setDistrict(url);
+          mobileData.setDistrict(district.url);
           mobileData.setUsername(username);
           mobileData.setPassword(password);
 
@@ -68,7 +68,7 @@ const ConnectAccountScreen = (props: {
           await Storage.setItem({
             key: "login",
             value: JSON.stringify({
-              host: url,
+              host: district.url,
               username,
               password,
             }),
@@ -99,71 +99,50 @@ const ConnectAccountScreen = (props: {
   }, [loading]);
 
   return (
-    <View>
-      <WelcomeScreenBanner height={300} show={true} />
-      <View
-        style={{
-          padding: 20,
-          paddingTop: 0,
-        }}
-      >
-        <View>
-          <TextInput
-            label="Frontline URL"
-            value={url}
-            setValue={setUrl}
-            type="username"
-            ref={urlRef}
-            inputProps={{
-              returnKeyType: "next",
-              editable: !loading,
-              onSubmitEditing(e) {
-                usernameRef.current?.focus();
-              },
-            }}
-          />
-          <TextInput
-            ref={usernameRef}
-            label="Username"
-            value={username}
-            setValue={setUsername}
-            type="username"
-            inputProps={{
-              returnKeyType: "next",
-              editable: !loading,
-              onSubmitEditing(e) {
-                passwordRef.current?.focus();
-              },
-            }}
-          />
-          <TextInput
-            ref={passwordRef}
-            label="Password"
-            value={password}
-            setValue={setPassword}
-            type="password"
-            inputProps={{
-              returnKeyType: "done",
-              editable: !loading,
-              onSubmitEditing(e) {
-                setLoading(true);
-              },
-            }}
-          />
-          <Button
-            style={ButtonStyle.black}
-            textStyle={ButtonTextStyle.white}
-            ref={buttonRef}
-            disabled={loading}
-            onPress={() => {
-              setLoading(true);
-            }}
-          >
-            Continue
-          </Button>
-        </View>
+    <WelcomeScreen
+      header={HEADER}
+      footerText={FOOTER}
+      showBanner={!isKeyboardVisible}
+      monoLabel="Step 2 of 3"
+    >
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            props.navigation.navigate("selectDistrict");
+          }}
+        >
+          <View>
+            <SmallText>
+              You're logging with an {district.name} account.
+            </SmallText>
+            <SmallText
+              style={{
+                marginTop: 4,
+                marginBottom: 36,
+                color: accents.primary,
+                fontWeight: "600",
+                textDecorationLine: "underline",
+              }}
+            >
+              Edit your district.
+            </SmallText>
+          </View>
+        </TouchableOpacity>
+        <TextInput
+          label="Username"
+          setValue={setUsername}
+          value={username}
+          type="username"
+        />
+        <TextInput
+          label="Password"
+          setValue={setPassword}
+          value={password}
+          type="password"
+        />
+        <Button onPress={() => setLoading(true)}>Login</Button>
       </View>
-    </View>
+    </WelcomeScreen>
   );
 };
 
