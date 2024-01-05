@@ -17,6 +17,7 @@ import WelcomeScreen from "../app/welcome/WelcomeScreen";
 import { useTheme } from "@react-navigation/native";
 import SmallText from "../text/SmallText";
 import useKeyboardVisible from "../util/hooks/useKeyboardVisible";
+import LoadingOverlay from "./loader/LoadingOverlay";
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -99,50 +100,58 @@ const ConnectAccountScreen = (props: {
   }, [loading]);
 
   return (
-    <WelcomeScreen
-      header={HEADER}
-      footerText={FOOTER}
-      showBanner={!isKeyboardVisible}
-      monoLabel="Step 2 of 3"
+    <View
+      style={{
+        height: "100%",
+        width: "100%",
+      }}
     >
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            props.navigation.navigate("selectDistrict");
-          }}
-        >
-          <View>
-            <SmallText>
-              You're logging with an {district.name} account.
-            </SmallText>
-            <SmallText
-              style={{
-                marginTop: 4,
-                marginBottom: 36,
-                color: accents.primary,
-                fontWeight: "600",
-                textDecorationLine: "underline",
-              }}
-            >
-              Edit your district.
-            </SmallText>
-          </View>
-        </TouchableOpacity>
-        <TextInput
-          label="Username"
-          setValue={setUsername}
-          value={username}
-          type="username"
-        />
-        <TextInput
-          label="Password"
-          setValue={setPassword}
-          value={password}
-          type="password"
-        />
-        <Button onPress={() => setLoading(true)}>Login</Button>
-      </View>
-    </WelcomeScreen>
+      <LoadingOverlay show={loading} />
+      <WelcomeScreen
+        header={HEADER}
+        footerText={FOOTER}
+        showBanner={!isKeyboardVisible}
+        monoLabel="Step 2 of 3"
+      >
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              props.navigation.navigate("selectDistrict");
+            }}
+          >
+            <View>
+              <SmallText>
+                You're logging with an {district.name} account.
+              </SmallText>
+              <SmallText
+                style={{
+                  marginTop: 4,
+                  marginBottom: 36,
+                  color: accents.primary,
+                  fontWeight: "600",
+                  textDecorationLine: "underline",
+                }}
+              >
+                Edit your district.
+              </SmallText>
+            </View>
+          </TouchableOpacity>
+          <TextInput
+            label="Username"
+            setValue={setUsername}
+            value={username}
+            type="username"
+          />
+          <TextInput
+            label="Password"
+            setValue={setPassword}
+            value={password}
+            type="password"
+          />
+          <Button onPress={() => setLoading(true)}>Login</Button>
+        </View>
+      </WelcomeScreen>
+    </View>
   );
 };
 
