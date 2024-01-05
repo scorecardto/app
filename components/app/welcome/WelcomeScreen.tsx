@@ -36,7 +36,7 @@ export default function WelcomeScreen(props: {
     },
     header: {
       marginTop: 8,
-      fontSize: 32,
+      fontSize: 28,
       fontWeight: "bold",
     },
   });

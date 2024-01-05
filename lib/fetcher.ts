@@ -40,7 +40,8 @@ const toFormDataData = (obj: any) => {
 const fetchReportCard = async (
   host: string,
   username: string,
-  password: string
+  password: string,
+  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void
 ): Promise<CourseResponse> => {
   console.log("fetching report card");
   console.log(host, username, password);
@@ -116,6 +117,17 @@ const fetchReportCard = async (
     "The username or password you entered is invalid.  Please try again."
   ) {
     throw new Error("INCORRECT_USERNAME");
+  }
+
+  const name = JSON.parse(
+    homeLoginHtml.querySelector("#teamsSidekickJson")?.innerText || "{}"
+  ).userPersonName;
+
+  const firstName = name?.split(" ")?.[0];
+  const lastName = name?.split(" ")?.slice(1)?.join(" ");
+
+  if (onLoginSuccess) {
+    onLoginSuccess({ firstName, lastName });
   }
 
   const REPORT_CARDS: Options = {
@@ -452,9 +464,15 @@ const fetchGradeCategoriesForCourse = async (
 const fetchAllContent = async (
   host: string,
   username: string,
-  password: string
+  password: string,
+  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void
 ): Promise<AllContentResponse> => {
-  const reportCard = await fetchReportCard(host, username, password);
+  const reportCard = await fetchReportCard(
+    host,
+    username,
+    password,
+    onLoginSuccess
+  );
 
   const gradeCategories = reportCard.gradeCategoryNames;
 

@@ -40,6 +40,7 @@ import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvid
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SelectDistrictScreen from "./components/screens/welcome/SelectDistrictScreen";
+import AddPhoneNumberScreen from "./components/screens/welcome/AddPhoneNumberScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -164,6 +165,13 @@ export default function App() {
                     <Stack.Screen
                       name="connectAccount"
                       component={ConnectAccountScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="addPhoneNumber"
+                      component={AddPhoneNumberScreen}
                       options={{
                         headerShown: false,
                       }}

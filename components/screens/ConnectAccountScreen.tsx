@@ -42,7 +42,17 @@ const ConnectAccountScreen = (props: {
 
   useEffect(() => {
     if (loading) {
-      const reportCard = fetchAllContent(district.url, username, password);
+      const reportCard = fetchAllContent(
+        district.url,
+        username,
+        password,
+        (name) => {
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: "addPhoneNumber", params: { name } }],
+          });
+        }
+      );
 
       reportCard
         .then(async (data) => {
@@ -83,11 +93,6 @@ const ConnectAccountScreen = (props: {
               date: Date.now(),
               gradeCategoryNames: data.gradeCategoryNames,
             }),
-          });
-
-          props.navigation.reset({
-            index: 0,
-            routes: [{ name: "scorecard" }],
           });
         })
         .catch((e) => {
