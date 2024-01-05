@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import ReactNative from "react-native";
 import { StyleSheet } from "react-native";
-
+import { useTheme } from "@react-navigation/native";
 export const TextInput = forwardRef<
   ReactNative.TextInput,
   {
@@ -16,13 +16,38 @@ export const TextInput = forwardRef<
   const disableCorrections =
     props.type === "password" || props.type === "username";
 
+  const { colors } = useTheme();
+  const styles = StyleSheet.create({
+    wrapper: {
+      marginBottom: 10,
+    },
+    header: {
+      fontSize: 16,
+      marginBottom: 10,
+    },
+    input: {
+      paddingHorizontal: 16,
+      paddingVertical: 10,
+      backgroundColor: colors.backgroundNeutral,
+      borderRadius: 4,
+      marginBottom: 10,
+      fontSize: 16,
+      borderColor: colors.borderNeutral,
+      borderWidth: 1,
+      borderBottomWidth: 2,
+      color: colors.primary,
+    },
+  });
+
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.header}>{props.label}</Text>
+      {/* <Text style={styles.header}>{props.label}</Text> */}
       <ReactNative.TextInput
         ref={ref}
         style={styles.input}
         value={props.value}
+        placeholder={props.label}
+        placeholderTextColor={colors.text}
         onChangeText={props.setValue}
         {...(disableCorrections && {
           autoCapitalize: "none",
@@ -38,22 +63,4 @@ export const TextInput = forwardRef<
       />
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  wrapper: {
-    marginBottom: 10,
-  },
-  header: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  input: {
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    backgroundColor: "white",
-    borderRadius: 15,
-    marginBottom: 10,
-    fontSize: 20,
-  },
 });

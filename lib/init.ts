@@ -1,7 +1,7 @@
 import { DataProvider } from "scorecard-types";
 import { MobileDataProvider } from "../components/core/context/MobileDataContext";
 import Storage from "expo-storage";
-type NextScreen = "scorecard" | "account";
+type NextScreen = "scorecard" | "account" | "selectDistrict";
 
 export default async function initialize(
   dataContext: DataProvider,
@@ -31,9 +31,8 @@ export default async function initialize(
 
     dataContext.setCourseSettings(courseSettings || {});
 
-    return "account";
-    // return "scorecard";
+    return "scorecard";
   } else {
-    return "account";
+    return "selectDistrict";
   }
 }

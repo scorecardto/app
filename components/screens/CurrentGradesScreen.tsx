@@ -5,6 +5,7 @@ import {
   FlatList,
   RefreshControl,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
@@ -73,6 +74,23 @@ const CurrentGradesScreen = (props: {
     <View style={{ flex: 1 }}>
       <Header header="Your Scorecard" subheader="Your Grades" />
 
+      <TouchableOpacity
+        onPress={() => {
+          Storage.removeItem({
+            key: "data",
+          });
+        }}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: 12,
+          }}
+        >
+          Reset Cache
+        </Text>
+      </TouchableOpacity>
+
       {dataContext?.data?.courses && (
         <FlatList
           refreshControl={
@@ -128,14 +146,6 @@ const CurrentGradesScreen = (props: {
         />
       )}
 */}
-      <Button
-        title="Reset Cache"
-        onPress={() => {
-          Storage.removeItem({
-            key: "data",
-          });
-        }}
-      />
     </View>
   );
 };

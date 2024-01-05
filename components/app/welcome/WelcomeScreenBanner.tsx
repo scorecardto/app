@@ -12,9 +12,6 @@ export default function WelcomeScreenBanner(props: { height: number }) {
       style={{
         height: props.height,
         width: "100%",
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
-        zIndex: 100,
       }}
     >
       <View
@@ -37,7 +34,7 @@ export default function WelcomeScreenBanner(props: { height: number }) {
         />
       </View>
       <Svg.Svg height="100%" width="100%" viewBox="0 0 100 100">
-        <Svg.Circle cx="0" cy="0" r="65" fill={colors.secondary} />
+        <Svg.Circle cx="-10" cy="0" r="65" fill={colors.secondary} />
         <Svg.Circle cx="125" cy="0" r="100" fill={colors.secondary} />
       </Svg.Svg>
     </View>

@@ -29,6 +29,7 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import { IBMPlexMono_400Regular } from "@expo-google-fonts/ibm-plex-mono";
 import Constants from "expo-constants";
 import AccountScreen from "./components/screens/AccountScreen";
 import ScorecardScreen from "./components/screens/ScorecardScreen";
@@ -38,6 +39,7 @@ import initialize from "./lib/init";
 import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SelectDistrictScreen from "./components/screens/welcome/SelectDistrictScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -109,6 +111,7 @@ export default function App() {
         DMSans_400Regular: DMSans_400Regular,
         DMSans_500Medium: DMSans_500Medium,
         DMSans_700Bold: DMSans_700Bold,
+        IBMPlexMono_400Regular: IBMPlexMono_400Regular,
       });
 
       const nextScreenAsync = initialize(dataContext, mobileData);
@@ -151,6 +154,13 @@ export default function App() {
                   }}
                 >
                   <Stack.Navigator initialRouteName={nextScreen}>
+                    <Stack.Screen
+                      name="selectDistrict"
+                      component={SelectDistrictScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
                     <Stack.Screen
                       name="account"
                       component={AccountScreen}
