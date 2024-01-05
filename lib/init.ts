@@ -31,7 +31,8 @@ export default async function initialize(
 
     dataContext.setCourseSettings(courseSettings || {});
 
-    return "scorecard";
+    return "account";
+    // return "scorecard";
   } else {
     return "account";
   }

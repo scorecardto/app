@@ -12,6 +12,7 @@ import { fetchAllContent, fetchReportCard } from "../../lib/fetcher";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { DataContext, GradebookRecord } from "scorecard-types";
 import Storage from "expo-storage";
+import WelcomeScreenBanner from "../app/welcome/WelcomeScreenBanner";
 
 const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   const [url, setUrl] = useState("");
@@ -96,66 +97,69 @@ const AccountScreen = (props: { navigation: NavigationProp<any, any> }) => {
   }, [loading]);
 
   return (
-    <View
-      style={{
-        padding: 20,
-        paddingTop: 80,
-      }}
-    >
-      <View>
-        <TextInput
-          label="Frontline URL"
-          value={url}
-          setValue={setUrl}
-          type="username"
-          ref={urlRef}
-          inputProps={{
-            returnKeyType: "next",
-            editable: !loading,
-            onSubmitEditing(e) {
-              usernameRef.current?.focus();
-            },
-          }}
-        />
-        <TextInput
-          ref={usernameRef}
-          label="Username"
-          value={username}
-          setValue={setUsername}
-          type="username"
-          inputProps={{
-            returnKeyType: "next",
-            editable: !loading,
-            onSubmitEditing(e) {
-              passwordRef.current?.focus();
-            },
-          }}
-        />
-        <TextInput
-          ref={passwordRef}
-          label="Password"
-          value={password}
-          setValue={setPassword}
-          type="password"
-          inputProps={{
-            returnKeyType: "done",
-            editable: !loading,
-            onSubmitEditing(e) {
+    <View>
+      <WelcomeScreenBanner height={300} />
+      <View
+        style={{
+          padding: 20,
+          paddingTop: 0,
+        }}
+      >
+        <View>
+          <TextInput
+            label="Frontline URL"
+            value={url}
+            setValue={setUrl}
+            type="username"
+            ref={urlRef}
+            inputProps={{
+              returnKeyType: "next",
+              editable: !loading,
+              onSubmitEditing(e) {
+                usernameRef.current?.focus();
+              },
+            }}
+          />
+          <TextInput
+            ref={usernameRef}
+            label="Username"
+            value={username}
+            setValue={setUsername}
+            type="username"
+            inputProps={{
+              returnKeyType: "next",
+              editable: !loading,
+              onSubmitEditing(e) {
+                passwordRef.current?.focus();
+              },
+            }}
+          />
+          <TextInput
+            ref={passwordRef}
+            label="Password"
+            value={password}
+            setValue={setPassword}
+            type="password"
+            inputProps={{
+              returnKeyType: "done",
+              editable: !loading,
+              onSubmitEditing(e) {
+                setLoading(true);
+              },
+            }}
+          />
+          <Button
+            style={ButtonStyle.black}
+            textStyle={ButtonTextStyle.white}
+            ref={buttonRef}
+            disabled={loading}
+            onPress={() => {
               setLoading(true);
-            },
-          }}
-        />
-        <Button
-          style={ButtonStyle.black}
-          textStyle={ButtonTextStyle.white}
-          ref={buttonRef}
-          disabled={loading}
-          onPress={() => {
-            setLoading(true);
-          }}
-        >
-          Continue
-        </Button>
+            }}
+          >
+            Continue
+          </Button>
+        </View>
       </View>
     </View>
   );
