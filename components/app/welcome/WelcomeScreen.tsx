@@ -16,7 +16,6 @@ export default function WelcomeScreen(props: {
       flex: 1,
       flexDirection: "column",
       justifyContent: "space-between",
-      marginTop: props.showBanner ? 0 : 60,
     },
     heading: {
       paddingTop: 16,
@@ -45,7 +44,10 @@ export default function WelcomeScreen(props: {
   return (
     <View style={styles.wrapper}>
       <View style={styles.top}>
-        {props.showBanner && <WelcomeScreenBanner height={windowHeight / 3} />}
+        <WelcomeScreenBanner
+          height={windowHeight / 3}
+          show={props.showBanner ?? true}
+        />
         <View style={styles.heading}>
           <MonoText style={{ color: colors.text }}>Step 1 of 3</MonoText>
           <LargeText style={styles.header}>{props.header}</LargeText>
