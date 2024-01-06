@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "870859629353",
+    "project_id": "scorecardto",
+    "storage_bucket": "scorecardto.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:870859629353:android:42ba5afe771c210c968d38",
+        "android_client_info": {
+          "package_name": "com.scorecardgrades.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "870859629353-p4k4ptusm5irenbqu4grggodu1oulla4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYOqnlX1xuLNAe1fVCUJJOJAL5fwlwJk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "870859629353-p4k4ptusm5irenbqu4grggodu1oulla4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

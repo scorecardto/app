@@ -15,14 +15,16 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.scorecardgrades.mobile",
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.scorecardgrades.mobile"
+      "package": "com.scorecardgrades.mobile",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,6 +32,12 @@
     "extra": {
       "eas": {
         "projectId": "3ed66a98-6e32-4fc0-a3bd-3cdcab09aa47"
+      }
+    },
+    "plugins": ["@react-native-firebase/app"],
+    "expo-build-properties": {
+      "ios": {
+        "useFrameworks": "static"
       }
     }
   }
