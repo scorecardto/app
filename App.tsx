@@ -41,6 +41,7 @@ import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SelectDistrictScreen from "./components/screens/welcome/SelectDistrictScreen";
 import AddPhoneNumberScreen from "./components/screens/welcome/AddPhoneNumberScreen";
+import VerifyPhoneNumberScreen from "./components/screens/welcome/VerifyPhoneNumberScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -73,6 +74,15 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [referer, setReferer] = useState("");
   const [sessionId, setSessionId] = useState("");
+  const [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback] = useState(
+    () => {
+      return async (code: string) => {
+        console.log(
+          "Attempted to confirm phone number, but no callback was set."
+        );
+      };
+    }
+  );
 
   const mobileData = useMemo<MobileDataProvider>(
     () => ({
@@ -86,6 +96,8 @@ export default function App() {
       setReferer,
       sessionId,
       setSessionId,
+      confirmPhoneNumberCallback,
+      setConfirmPhoneNumberCallback,
     }),
     [
       district,
@@ -98,6 +110,8 @@ export default function App() {
       setReferer,
       sessionId,
       setSessionId,
+      confirmPhoneNumberCallback,
+      setConfirmPhoneNumberCallback,
     ]
   );
 
@@ -172,6 +186,13 @@ export default function App() {
                     <Stack.Screen
                       name="addPhoneNumber"
                       component={AddPhoneNumberScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="verifyPhoneNumber"
+                      component={VerifyPhoneNumberScreen}
                       options={{
                         headerShown: false,
                       }}

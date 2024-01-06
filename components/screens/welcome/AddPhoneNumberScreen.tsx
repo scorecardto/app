@@ -1,10 +1,12 @@
 import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import { TextInput } from "../../input/TextInput";
 import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
+import auth from "@react-native-firebase/auth";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
 
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -24,6 +26,34 @@ export default function AddPhoneNumberScreen(props: {
   const [modifiedLastName, setModifiedLastName] = useState(false);
 
   const [phoneNumber, setPhoneNumber] = useState("");
+
+  const mobileDataContext = useContext(MobileDataContext);
+  const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
+    mobileDataContext;
+
+  function finish() {
+    console.log(phoneNumber);
+
+    auth()
+      .signInWithPhoneNumber(phoneNumber)
+      .then((confirmation) => {
+        setConfirmPhoneNumberCallback(() => {
+          return async (c: string) => {
+            return confirmation.confirm(c);
+          };
+        });
+        props.navigation.navigate("verifyPhoneNumber", {
+          phoneNumber,
+          name: {
+            firstName,
+            lastName,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   return (
     <View
       style={{
@@ -77,7 +107,7 @@ export default function AddPhoneNumberScreen(props: {
           value={phoneNumber}
           type="phone-number"
         />
-        <Button onPress={() => {}}>Finish</Button>
+        <Button onPress={finish}>Finish</Button>
       </WelcomeScreen>
     </View>
   );
