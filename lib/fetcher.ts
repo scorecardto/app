@@ -13,7 +13,6 @@ import {
 } from "scorecard-types";
 // @ts-ignore
 import * as iso88592 from "iso-8859-2/iso-8859-2.mjs";
-// import CookieManager from "@react-native-cookies/cookies";
 
 const generateSessionId = () => {
   return [...Array(32)]
@@ -43,9 +42,6 @@ const fetchReportCard = async (
   password: string,
   onLoginSuccess?: (name: { firstName: string; lastName: string }) => void
 ): Promise<CourseResponse> => {
-  console.log("fetching report card");
-  console.log(host, username, password);
-
   const cookie = generateSessionId();
 
   const ENTRY_POINT: Options = {
@@ -61,14 +57,11 @@ const fetchReportCard = async (
 
   const entryPointResponse = await axios(ENTRY_POINT);
 
-  //   await CookieManager.clearAll();
-
   const ENTRY_POINT_LOGIN: Options = {
     url: `https://${host}/selfserve/HomeLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "GET",
     headers: {
       Referer: ENTRY_POINT.url!,
-      Cookie: `JSESSIONID=${cookie}`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
@@ -76,8 +69,6 @@ const fetchReportCard = async (
   };
 
   const entryPointLoginResponse = await axios(ENTRY_POINT_LOGIN);
-
-  //   await CookieManager.clearAll();
 
   const HOME_LOGIN: Options = {
     url: `https://${host}/selfserve/SignOnLoginAction.do?parent=false&teamsStaffUser=N`,
@@ -92,7 +83,6 @@ const fetchReportCard = async (
     }),
     headers: {
       Referer: ENTRY_POINT_LOGIN.url!,
-      Cookie: `JSESSIONID=${cookie}`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
@@ -101,8 +91,6 @@ const fetchReportCard = async (
 
   // @ts-ignore
   const homeLoginResponse: string = (await axios(HOME_LOGIN)).data;
-
-  //   await CookieManager.clearAll();
 
   const homeLoginHtml = parse(homeLoginResponse);
 
@@ -138,7 +126,6 @@ const fetchReportCard = async (
     }),
     headers: {
       Referer: HOME_LOGIN.url!,
-      Cookie: `JSESSIONID=${cookie}`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
@@ -147,8 +134,6 @@ const fetchReportCard = async (
 
   // @ts-ignore
   const reportCardsResponse: string = (await axios(REPORT_CARDS)).data;
-
-  //   await CookieManager.clearAll();
 
   const reportCardsHtml = parse(reportCardsResponse);
 
@@ -277,7 +262,6 @@ const fetchGradeCategoriesForCourse = async (
     }),
     headers: {
       Referer: referer,
-      Cookie: `JSESSIONID=${sessionId};`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
@@ -433,7 +417,6 @@ const fetchGradeCategoriesForCourse = async (
     data: toFormData(formData),
     headers: {
       Referer: ASSIGNMENTS.url!,
-      Cookie: `JSESSIONID=${sessionId}`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
@@ -445,7 +428,6 @@ const fetchGradeCategoriesForCourse = async (
     method: "POST",
     headers: {
       Referer: ASSIGNMENTS.url!,
-      Cookie: `JSESSIONID=${sessionId}`,
       Connection: "keep-alive",
       "Accept-Encoding": "gzip, deflate, br",
       Accept: "*/*",
