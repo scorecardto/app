@@ -8,28 +8,17 @@ import Button from "../../input/Button";
 import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
-export default function AddPhoneNumberScreen(props: {
+
+export default function AddNameScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
 }) {
-  const HEADER = "Create Your Scorecard";
-  const FOOTER = "We will never send you spam texts or give out your number.";
+  const HEADER = "Add Your Name";
+  const FOOTER = "This will be displayed in place of your name from Frontline.";
 
-  const [firstName, setFirstName] = useState(
-    props.route?.params?.name?.firstName
-  );
+  const [firstName, setFirstName] = useState("");
 
-  const [modifiedFirstName, setModifiedFirstName] = useState(false);
-
-  const [lastName, setLastName] = useState(props.route?.params?.name?.lastName);
-
-  const [modifiedLastName, setModifiedLastName] = useState(false);
-
-  const [phoneNumber, setPhoneNumber] = useState("");
-
-  const mobileDataContext = useContext(MobileDataContext);
-  const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
-    mobileDataContext;
+  const [lastName, setLastName] = useState("");
 
   function finish() {
     Storage.setItem({
@@ -38,27 +27,14 @@ export default function AddPhoneNumberScreen(props: {
         firstName,
         lastName,
       }),
-    });
-    auth()
-      .signInWithPhoneNumber(phoneNumber)
-      .then((confirmation) => {
-        setConfirmPhoneNumberCallback(() => {
-          return async (c: string) => {
-            return confirmation.confirm(c);
-          };
-        });
-        props.navigation.navigate("verifyPhoneNumber", {
-          phoneNumber,
-          name: {
-            firstName,
-            lastName,
-          },
-        });
-      })
-      .catch((err) => {
-        console.error(err);
+    }).then(() => {
+      props.navigation.reset({
+        index: 0,
+        routes: [{ name: "scorecard" }],
       });
+    });
   }
+
   return (
     <View
       style={{
@@ -70,9 +46,9 @@ export default function AddPhoneNumberScreen(props: {
         header={HEADER}
         footerText={FOOTER}
         showBanner={true}
-        monoLabel="Step 3 of 3"
+        monoLabel="Finish Setting Up"
       >
-        <MediumText style={{ marginBottom: 16 }}>Confirm your name</MediumText>
+        <MediumText style={{ marginBottom: 16 }}>Add your name</MediumText>
         <View
           style={{
             width: "100%",
@@ -85,11 +61,9 @@ export default function AddPhoneNumberScreen(props: {
               label="First Name"
               value={firstName}
               setValue={(v) => {
-                setModifiedFirstName(true);
                 setFirstName(v);
               }}
               type="first-name"
-              clearTextOnFocus={!modifiedFirstName}
             />
           </View>
           <View style={{ width: "100%", flexShrink: 1 }}>
@@ -97,21 +71,12 @@ export default function AddPhoneNumberScreen(props: {
               label="Last Name"
               value={lastName}
               setValue={(v) => {
-                setModifiedLastName(true);
                 setLastName(v);
               }}
               type="last-name"
-              clearTextOnFocus={!modifiedLastName}
             />
           </View>
         </View>
-        <MediumText style={{ marginBottom: 16 }}>Phone number</MediumText>
-        <TextInput
-          label="Your Phone Number"
-          setValue={setPhoneNumber}
-          value={phoneNumber}
-          type="phone-number"
-        />
         <Button onPress={finish}>Finish</Button>
       </WelcomeScreen>
     </View>

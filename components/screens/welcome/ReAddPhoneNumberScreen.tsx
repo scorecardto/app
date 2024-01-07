@@ -7,38 +7,22 @@ import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
 import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
-import Storage from "expo-storage";
-export default function AddPhoneNumberScreen(props: {
+
+export default function ReAddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
 }) {
-  const HEADER = "Create Your Scorecard";
+  const HEADER = "Login to Scorecard";
   const FOOTER = "We will never send you spam texts or give out your number.";
-
-  const [firstName, setFirstName] = useState(
-    props.route?.params?.name?.firstName
-  );
-
-  const [modifiedFirstName, setModifiedFirstName] = useState(false);
-
-  const [lastName, setLastName] = useState(props.route?.params?.name?.lastName);
-
-  const [modifiedLastName, setModifiedLastName] = useState(false);
 
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const mobileDataContext = useContext(MobileDataContext);
+
   const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
     mobileDataContext;
 
   function finish() {
-    Storage.setItem({
-      key: "name",
-      value: JSON.stringify({
-        firstName,
-        lastName,
-      }),
-    });
     auth()
       .signInWithPhoneNumber(phoneNumber)
       .then((confirmation) => {
@@ -49,10 +33,6 @@ export default function AddPhoneNumberScreen(props: {
         });
         props.navigation.navigate("verifyPhoneNumber", {
           phoneNumber,
-          name: {
-            firstName,
-            lastName,
-          },
         });
       })
       .catch((err) => {
@@ -70,41 +50,8 @@ export default function AddPhoneNumberScreen(props: {
         header={HEADER}
         footerText={FOOTER}
         showBanner={true}
-        monoLabel="Step 3 of 3"
+        monoLabel="Access Your Scorecard"
       >
-        <MediumText style={{ marginBottom: 16 }}>Confirm your name</MediumText>
-        <View
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <View style={{ width: "100%", marginRight: 10, flexShrink: 1 }}>
-            <TextInput
-              label="First Name"
-              value={firstName}
-              setValue={(v) => {
-                setModifiedFirstName(true);
-                setFirstName(v);
-              }}
-              type="first-name"
-              clearTextOnFocus={!modifiedFirstName}
-            />
-          </View>
-          <View style={{ width: "100%", flexShrink: 1 }}>
-            <TextInput
-              label="Last Name"
-              value={lastName}
-              setValue={(v) => {
-                setModifiedLastName(true);
-                setLastName(v);
-              }}
-              type="last-name"
-              clearTextOnFocus={!modifiedLastName}
-            />
-          </View>
-        </View>
         <MediumText style={{ marginBottom: 16 }}>Phone number</MediumText>
         <TextInput
           label="Your Phone Number"

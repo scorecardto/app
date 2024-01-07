@@ -1,16 +1,28 @@
 import { DataProvider } from "scorecard-types";
 import { MobileDataProvider } from "../components/core/context/MobileDataContext";
 import Storage from "expo-storage";
-type NextScreen = "scorecard" | "account" | "selectDistrict";
-
+import { FirebaseAuthTypes } from "@react-native-firebase/auth";
+type NextScreen =
+  | "scorecard"
+  | "account"
+  | "selectDistrict"
+  | "reAddPhoneNumber"
+  | "addPhoneNumber"
+  | "addName";
 export default async function initialize(
   dataContext: DataProvider,
-  mobileDataContext: MobileDataProvider
+  mobileDataContext: MobileDataProvider,
+  user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
   const loginAsync = Storage.getItem({ key: "login" });
   const dataAsync = Storage.getItem({ key: "data" });
+  const nameAsync = Storage.getItem({ key: "name" });
 
-  const [login, data] = await Promise.all([loginAsync, dataAsync]);
+  const [login, data, name] = await Promise.all([
+    loginAsync,
+    dataAsync,
+    nameAsync,
+  ]);
 
   if (login && data) {
     const { courses, gradeCategory, gradeCategoryNames, date, courseSettings } =
@@ -31,7 +43,15 @@ export default async function initialize(
 
     dataContext.setCourseSettings(courseSettings || {});
 
-    return "scorecard";
+    if (user && name) {
+      return "scorecard";
+    } else if (!user && name) {
+      return "reAddPhoneNumber";
+    } else if (user && !name) {
+      return "addName";
+    } else {
+      return "addPhoneNumber";
+    }
   } else {
     return "selectDistrict";
   }

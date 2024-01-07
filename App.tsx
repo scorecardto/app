@@ -42,6 +42,9 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SelectDistrictScreen from "./components/screens/welcome/SelectDistrictScreen";
 import AddPhoneNumberScreen from "./components/screens/welcome/AddPhoneNumberScreen";
 import VerifyPhoneNumberScreen from "./components/screens/welcome/VerifyPhoneNumberScreen";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import ReAddPhoneNumberScreen from "./components/screens/welcome/ReAddPhoneNumberScreen";
+import AddNameScreen from "./components/screens/welcome/AddNameScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -83,6 +86,19 @@ export default function App() {
       };
     }
   );
+
+  const [userReady, setUserReady] = useState(false);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    setUser(user);
+    if (!userReady) setUserReady(true);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
 
   const mobileData = useMemo<MobileDataProvider>(
     () => ({
@@ -129,19 +145,19 @@ export default function App() {
         IBMPlexMono_400Regular: IBMPlexMono_400Regular,
       });
 
-      const nextScreenAsync = initialize(dataContext, mobileData);
+      const nextScreenAsync = initialize(dataContext, mobileData, user);
 
       const [_, nextScreen] = await Promise.all([fontsAsync, nextScreenAsync]);
 
       setNextScreen(nextScreen);
 
-      await initialize(dataContext, mobileData);
+      setAppReady(true);
     }
 
-    prepare().then(() => {
-      setAppReady(true);
-    });
-  }, []);
+    if (userReady) {
+      prepare();
+    }
+  }, [userReady]);
 
   if (!appReady) {
     return null;
@@ -186,6 +202,20 @@ export default function App() {
                     <Stack.Screen
                       name="addPhoneNumber"
                       component={AddPhoneNumberScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="reAddPhoneNumber"
+                      component={ReAddPhoneNumberScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="addName"
+                      component={AddNameScreen}
                       options={{
                         headerShown: false,
                       }}
