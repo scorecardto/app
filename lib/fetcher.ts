@@ -390,8 +390,6 @@ const fetchGradeCategoriesForCourse = async (
     };
   });
 
-  console.log(gradeCategories);
-
   const formData = {
     selectedIndexId: undefined,
     selectedTable: undefined,

@@ -32,8 +32,6 @@ export default function AddPhoneNumberScreen(props: {
     mobileDataContext;
 
   function finish() {
-    console.log(phoneNumber);
-
     auth()
       .signInWithPhoneNumber(phoneNumber)
       .then((confirmation) => {
@@ -51,7 +49,7 @@ export default function AddPhoneNumberScreen(props: {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   }
   return (
