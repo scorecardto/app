@@ -51,8 +51,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const courseDisplayName =
     dataContext.courseSettings[course.key]?.displayName || course.name;
 
-  const modified = modifiedAvg != null;
-
   const colorList = [
     { offset: "0%", color: accents.gradientCenter, opacity: "1" },
     { offset: "100%", color: accents.gradientCenter, opacity: "0" },
