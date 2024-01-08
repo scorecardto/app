@@ -5,22 +5,29 @@ import TableRow from "./TableRow";
 
 export default function SummaryTable(props: {
   course: Course;
-  modified: { assignments: Assignment[] | null; average: number | null }[];
+  categories: GradeCategory[];
+  modified: { assignments: (Assignment|null)[] | null; average: number | null }[];
   changeGradeCategory: (category: number) => void;
 }) {
   return (
     <View>
-      {props.course.gradeCategories?.map((category, idx) => {
+      {props.categories.map((category, idx) => {
+        const testing = idx >= props.course.gradeCategories!.length;
+
+        const grade = ""+(props.modified[idx].average ?? category.average);
+
         return (
           <TableRow
             key={idx}
             name={category.name}
             red={{
+              name: testing,
               grade:
+                testing ||
                 !!props.modified[idx].assignments ||
                 props.modified[idx].average !== null,
             }}
-            grade={(props.modified[idx].average ?? category.average) + "%"}
+            grade={grade ? grade+"%" : "NG"}
             worth={"Worth " + category.weight.toString() + "%"}
             onPress={() => props.changeGradeCategory(idx)}
           />

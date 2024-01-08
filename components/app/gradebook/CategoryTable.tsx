@@ -15,12 +15,12 @@ export default function CategoryTable(props: {
   return (
     <View>
       {new Array(
-        (props.modifiedAssignments ?? props.category.assignments).length
+        (props.modifiedAssignments ?? props.category.assignments!).length
       )
         .fill(null)
         .map((assignment, idx) => {
           assignment =
-            props.category.assignments[idx] ?? props.modifiedAssignments[idx];
+            props.category.assignments![idx] ?? props.modifiedAssignments[idx];
 
           return (
             <AssignmentTableRow
