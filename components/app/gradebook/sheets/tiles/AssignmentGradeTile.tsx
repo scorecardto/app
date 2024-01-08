@@ -29,7 +29,7 @@ export default function AssignmentGradeTile(props: {
   grade: TileValue;
   testing: boolean;
   originalGrade: TileValue;
-  edit(e: AssignmentEdits): void;
+  edit(e: AssignmentEdits): boolean;
 }) {
   const textInputRef = useRef<TextInput>(null);
   const [inputValue, setInputValue] = useState(gradeToString(props.grade));
@@ -95,7 +95,7 @@ export default function AssignmentGradeTile(props: {
         pointsPossible: undefined,
       });
     } else {
-      const edit =
+      let edit: TileValue =
         typeof parsed === "object"
           ? {
               pointsEarned: parsed[0],
@@ -105,9 +105,11 @@ export default function AssignmentGradeTile(props: {
               pointsEarned: parsed,
               pointsPossible: 100,
             };
+      if (!props.edit(edit)) {
+        edit = props.originalGrade;
+      }
       setInputValue(gradeToString(edit));
       setTestingValue(gradeToString(edit));
-      props.edit(edit);
     }
   };
 

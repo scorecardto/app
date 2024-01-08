@@ -81,7 +81,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
                         grade={
                             course.grades[dataContext.gradeCategory]?.value || "NG"
                         }
-                        // TODO: should be colors.secondaryNeutral, but it's invisible w/o the gradient
+                        // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
                         backgroundColor={modifiedAvg ? colors.borderNeutral : accents.primary}
                         textColor={modifiedAvg ? colors.text : "#FFFFFF"}
                     />

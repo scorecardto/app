@@ -15,7 +15,7 @@ export default function AssignmentCountTile(props: {
   count: number;
   testing: boolean;
   originalCount: number;
-  edit(e: AssignmentEdits): void;
+  edit(e: AssignmentEdits): boolean;
 }) {
   const textInputRef = useRef<TextInput>(null);
   const [inputValue, setInputValue] = useState(props.count.toString());

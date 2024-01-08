@@ -15,7 +15,7 @@ import AssignmentTileTextInputFrame from "./AssignmentTileTextInputFrame";
 export default function AssignmentDroppedTile(props: {
   dropped: boolean;
   originalDropped: boolean;
-  edit(e: AssignmentEdits): void;
+  edit(e: AssignmentEdits): boolean;
 }) {
   const [testingValue, setTestingValue] = useState(props.dropped);
 
