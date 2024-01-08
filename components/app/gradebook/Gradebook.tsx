@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Dimensions, Text, View, ViewStyle } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
@@ -26,10 +26,10 @@ const { width: viewportWidth, height: viewportHeight } =
 
 export default function Gradebook(props: {
   course: Course;
-  setModifiedGrade(avg: number): void;
+  setModifiedGrade(avg: number|null): void;
 }) {
   const { accents, colors } = useTheme();
-  const ref = useRef<Carousel<GradeCategory>>(null);
+  const ref = useRef<Carousel<GradeCategory|null>>(null);
 
   //   const cardAnimation = useDynamicAnimation(() => ({
   //     opacity: 1,
@@ -42,12 +42,54 @@ export default function Gradebook(props: {
 
   const [animatingCard, setAnimatingCard] = useState(-1);
 
-  const [modifiedCategories, setModifiedCategories] = useState(
-    props.course.gradeCategories?.map((_) => {
+  type CategoryMod = {
+      assignments: (Assignment|null)[] | null,
+      average: number | null;
+  };
+
+  const [categories, setCategories] = useState(props.course.gradeCategories!);
+  const [modifiedCategories, setModifiedCategories] = useState<CategoryMod[]>(
+      categories.map((_) => {
       return { assignments: null, average: null };
     })
   );
-  const [numTestAssignments, setNumTestAssignments] = useState(0);
+  const [numTestAssignments, setNumTestAssignments] = useState(1);
+  const [numTestCats, setNumTestCats] = useState(1);
+
+  const updateAverage = (categoryMods: CategoryMod[], catIdx?: number) => {
+      const averages = averageAssignments(
+          categories,
+          categoryMods.map((c) => c.assignments)
+      );
+
+      if (catIdx) {
+          if (categoryMods[catIdx].assignments!.every(as => as === null)) {
+              categoryMods[catIdx].assignments = categoryMods[catIdx].average = null;
+          } else {
+              categoryMods[catIdx].average = averages[catIdx];
+          }
+      }
+
+      if (categoryMods.every(c=>c.assignments?.every(as=>as===null) ?? true) && categories.length == props.course.gradeCategories?.length) {
+          props.setModifiedGrade(null);
+      } else {
+          props.setModifiedGrade(
+              averageGradeCategories(
+                  categories.map((c, i) => {
+                      return {
+                          ...c,
+                          average: "" + (isNaN(averages[i]) ? c.average : averages[i] ?? c.average),
+                      };
+                  })
+              )
+          );
+      }
+  };
+
+  // when testing categories are added/removed, update the course average
+    useEffect(() => {
+        updateAverage(modifiedCategories);
+    }, [categories]);
 
   return (
     <View
@@ -57,7 +99,7 @@ export default function Gradebook(props: {
       }}
     >
       <Pagination
-        dotsLength={(props.course.gradeCategories?.length ?? 0) + 1}
+        dotsLength={(categories.length ?? 0) + 1}
         activeDotIndex={currentCard}
         containerStyle={{
           display: "flex",
@@ -78,20 +120,40 @@ export default function Gradebook(props: {
       />
       <Carousel
         ref={ref}
-        data={[null, ...(props.course.gradeCategories || [])]}
+        data={[null, ...(categories || [])]}
         renderItem={({ item, index }) => {
-          if (index === 0) {
+          if (!item) {
             return (
               <View>
                 <GradebookCard
                   key={index}
                   title="Summary"
                   bottom={["Weight: 100%"]}
-                  buttonAction={() => {}}
+                  buttonAction={() => {
+                      setCategories(oldCategories => {
+                          const newCategories = [...oldCategories];
+                          newCategories.push({
+                              name: "Test Category " + numTestCats,
+                              id: "",
+                              weight: 100,
+                              average: "",
+                              error: false,
+                              assignments: []
+                          });
+                          setNumTestCats(numTestCats + 1);
+                          return newCategories;
+                      });
+                      setModifiedCategories(oldCategories => {
+                            const newCategories = [...oldCategories];
+                            newCategories.push({ assignments: null, average: null });
+
+                            return newCategories;
+                      });
+                  }}
                 >
                   <SummaryTable
                     course={props.course}
-                    // @ts-ignore
+                    categories={categories}
                     modified={modifiedCategories}
                     changeGradeCategory={(c) => {
                       ref.current?.snapToItem(c + 1);
@@ -135,8 +197,8 @@ export default function Gradebook(props: {
                       ).fill(null);
                     }
 
-                    newCategories[catIdx].assignments.push({
-                      name: "Test Assignment " + (numTestAssignments + 1),
+                    newCategories[catIdx].assignments!.push({
+                      name: "Test Assignment " + numTestAssignments,
                       points: 100,
                       grade: "100%",
                       dropped: false,
@@ -161,61 +223,29 @@ export default function Gradebook(props: {
                       const newCategories = [...categories];
 
                       if (newCategories[catIdx].assignments !== null) {
-                        newCategories[catIdx].assignments.splice(idx, 1);
+                        newCategories[catIdx].assignments!.splice(idx, 1);
                       }
-                      if (
-                        newCategories[catIdx].assignments.every(
-                          (as) => as === null
-                        )
-                      ) {
-                        newCategories[catIdx].assignments = newCategories[
-                          catIdx
-                        ].average = null;
-                        props.setModifiedGrade(null);
-                      }
+
+                      updateAverage(newCategories, catIdx);
 
                       return newCategories;
                     });
                   }}
                   modifyAssignment={(a: Assignment, idx: number) => {
-                    setModifiedCategories((categories) => {
+                    setModifiedCategories((oldCategories) => {
                       const catIdx = index - 1;
-                      const newCategories = [...categories];
+                      const newCategories = [...oldCategories];
                       if (newCategories[catIdx].assignments === null) {
                         if (a === null) {
-                          return categories;
+                          return oldCategories;
                         }
                         newCategories[catIdx].assignments = new Array(
                           item.assignments.length
                         ).fill(null);
                       }
-                      newCategories[catIdx].assignments[idx] = a;
-                      if (
-                        newCategories[catIdx].assignments.every(
-                          (as) => as === null
-                        )
-                      ) {
-                        newCategories[catIdx].assignments = newCategories[
-                          catIdx
-                        ].average = null;
-                        props.setModifiedGrade(null);
-                      } else {
-                        const averages = averageAssignments(
-                          props.course.gradeCategories,
-                          newCategories.map((c) => c.assignments)
-                        );
-                        newCategories[catIdx].average = averages[catIdx];
-                        props.setModifiedGrade(
-                          averageGradeCategories(
-                            props.course.gradeCategories.map((c, i) => {
-                              return {
-                                ...c,
-                                average: "" + (averages[i] ?? c.average),
-                              };
-                            })
-                          )
-                        );
-                      }
+                      newCategories[catIdx].assignments![idx] = a;
+
+                      updateAverage(newCategories, catIdx);
 
                       return newCategories;
                     });

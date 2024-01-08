@@ -18,7 +18,7 @@ export default function AssignmentSheet(props: {
   close(): void;
   testing: boolean;
   removeAssignment(): void;
-  edit(e: AssignmentEdits): void;
+  edit(e: AssignmentEdits): boolean;
   currentEdits: AssignmentEdits;
 }) {
   const isNumericGrade =

@@ -84,19 +84,23 @@ export default function AssignmentTableRow(props: {
               currentEdits={currentEdits}
               removeAssignment={props.removeAssignment}
               edit={(edits) => {
+                  // returns whether the assignment was modified
+                  let ret = false;
                 if (
                   edits.pointsEarned != null ||
                   edits.pointsPossible != null
                 ) {
                   const rawGrade = edits.pointsEarned / edits.pointsPossible;
                   const rounded = Math.round(rawGrade * 1000) / 10;
-                  setGrade(rounded + "%");
-                  setPoints(edits.pointsEarned);
-                  setMaxPoints(edits.pointsPossible);
-                } else if (
-                  edits.pointsEarned === null &&
-                  edits.pointsPossible === null
-                ) {
+                  const grade = rounded+"%";
+                  setGrade(grade);
+                  setPoints(grade === assignment.grade ?
+                      assignment.points : edits.pointsEarned);
+                  setMaxPoints(grade === assignment.grade ?
+                      assignment.max : edits.pointsPossible);
+
+                  ret = grade !== assignment.grade;
+                } else {
                   setPoints(assignment.points);
                   setMaxPoints(assignment.max);
                   setGrade(assignment.grade);
@@ -104,15 +108,19 @@ export default function AssignmentTableRow(props: {
 
                 if (edits.count != null) {
                   setCount(edits.count);
-                } else if (edits.count === null) {
+                  ret = true;
+                } else {
                   setCount(assignment.count);
                 }
 
                 if (edits.dropped === true || edits.dropped === false) {
                   setDropped(edits.dropped);
-                } else if (edits.dropped === null) {
+                  ret = true;
+                } else {
                   setDropped(assignment.dropped);
                 }
+
+                return ret;
               }}
             />
           </>
