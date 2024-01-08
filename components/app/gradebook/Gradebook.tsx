@@ -29,7 +29,7 @@ export default function Gradebook(props: {
   setModifiedGrade(avg: number): void;
 }) {
   const { accents, colors } = useTheme();
-  const ref = useRef<Carousel<GradeCategory>>(null);
+  const ref = useRef<Carousel<GradeCategory|null>>(null);
 
   //   const cardAnimation = useDynamicAnimation(() => ({
   //     opacity: 1,
@@ -80,7 +80,7 @@ export default function Gradebook(props: {
         ref={ref}
         data={[null, ...(props.course.gradeCategories || [])]}
         renderItem={({ item, index }) => {
-          if (index === 0) {
+          if (!item) {
             return (
               <View>
                 <GradebookCard

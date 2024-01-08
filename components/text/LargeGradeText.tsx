@@ -14,7 +14,6 @@ export default function LargeGradeText(props: {
         paddingHorizontal: 16,
         paddingTop: 6,
         paddingBottom: 2,
-        marginTop: 18,
       }}
     >
       <Text
