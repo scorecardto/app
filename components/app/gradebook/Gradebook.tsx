@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import { Dimensions, Text, View, ViewStyle } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
@@ -20,6 +20,8 @@ import {
 } from "../../../lib/gradeTesting";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import { MotiView } from "moti";
+import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
+import AddCategorySheet from "./sheets/AddCategorySheet";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -28,7 +30,9 @@ export default function Gradebook(props: {
   course: Course;
   setModifiedGrade(avg: number | null): void;
 }) {
-  const { accents, colors } = useTheme();
+    const sheets = useContext(BottomSheetContext);
+
+    const { accents, colors } = useTheme();
   const ref = useRef<Carousel<GradeCategory | null>>(null);
 
   //   const cardAnimation = useDynamicAnimation(() => ({
@@ -137,25 +141,31 @@ export default function Gradebook(props: {
                   title="Summary"
                   bottom={["Weight: 100%"]}
                   buttonAction={() => {
-                    setCategories((oldCategories) => {
-                      const newCategories = [...oldCategories];
-                      newCategories.push({
-                        name: "Test Category " + numTestCats,
-                        id: "",
-                        weight: 100,
-                        average: "",
-                        error: false,
-                        assignments: [],
-                      });
-                      setNumTestCats(numTestCats + 1);
-                      return newCategories;
-                    });
-                    setModifiedCategories((oldCategories) => {
-                      const newCategories = [...oldCategories];
-                      newCategories.push({ assignments: null, average: null });
+                      sheets.addSheet(({ close }) => (
+                          <>
+                              <AddCategorySheet close={close} add={(weight) => {
+                                  setCategories((oldCategories) => {
+                                      const newCategories = [...oldCategories];
+                                      newCategories.push({
+                                          name: "Test Category " + numTestCats,
+                                          id: "",
+                                          weight: weight,
+                                          average: "",
+                                          error: false,
+                                          assignments: [],
+                                      });
+                                      setNumTestCats(numTestCats + 1);
+                                      return newCategories;
+                                  });
+                                  setModifiedCategories((oldCategories) => {
+                                      const newCategories = [...oldCategories];
+                                      newCategories.push({ assignments: null, average: null });
 
-                      return newCategories;
-                    });
+                                      return newCategories;
+                                  });
+                              }}/>
+                          </>
+                      ));
                   }}
                 >
                   <SummaryTable
