@@ -140,6 +140,8 @@ export default function Gradebook(props: {
                   key={index}
                   title="Summary"
                   bottom={["Weight: 100%"]}
+                  removable={false}
+                  remove={()=>{}}
                   buttonAction={() => {
                       sheets.addSheet(({ close }) => (
                           <>
@@ -203,6 +205,15 @@ export default function Gradebook(props: {
                 key={index}
                 title={item.name}
                 bottom={[`Weight: ${item.weight}%`]}
+                removable={index > props.course.gradeCategories!.length}
+                remove={() => {
+                    setCategories((oldCategories) => {
+                        return oldCategories.toSpliced(index-1, 1);
+                    });
+                    setModifiedCategories((oldCategories) => {
+                        return oldCategories.toSpliced(index-1, 1);
+                    });
+                }}
                 buttonAction={() => {
                   setModifiedCategories((categories) => {
                     const catIdx = index - 1;
