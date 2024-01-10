@@ -10,6 +10,7 @@ import CurrentGradesScreen from "./CurrentGradesScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Foundation from "@expo/vector-icons/Foundation";
 import ArchiveScreen from "./ArchiveScreen";
+import AccountScreen from "./account/AccountScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -100,10 +101,11 @@ export default function ScorecardScreen() {
           })}
         </View>
       )}
+      initialRouteName="current"
     >
       <Tab.Screen
-        name="profile"
-        component={CurrentGradesScreen}
+        name="account"
+        component={AccountScreen}
         options={{
           headerShown: false,
           tabBarShowLabel: false,
