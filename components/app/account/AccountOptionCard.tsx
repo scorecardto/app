@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
@@ -44,17 +44,19 @@ export default function AccountOptionCard(props: {
     },
   });
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.left}>
-        <View style={styles.iconWrapper}>
-          {/* @ts-ignore */}
-          <MaterialIcon name={props.icon} size={24} color={"#FFF"} />
+    <TouchableOpacity onPress={props.onPress}>
+      <View style={styles.wrapper}>
+        <View style={styles.left}>
+          <View style={styles.iconWrapper}>
+            {/* @ts-ignore */}
+            <MaterialIcon name={props.icon} size={24} color={"#FFF"} />
+          </View>
+          <View style={styles.labelWrapper}>
+            <SmallText style={styles.label}>{props.label}</SmallText>
+          </View>
         </View>
-        <View style={styles.labelWrapper}>
-          <SmallText style={styles.label}>{props.label}</SmallText>
-        </View>
+        <View></View>
       </View>
-      <View></View>
-    </View>
+    </TouchableOpacity>
   );
 }

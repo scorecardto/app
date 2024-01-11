@@ -3,16 +3,18 @@ import { Text, View } from "react-native";
 import Header from "../../text/Header";
 import AccountOptionCard from "../../app/account/AccountOptionCard";
 
-export default function AccountScreen() {
+export default function AccountScreen(props: { route: any; navigation: any }) {
   return (
     <View>
       <Header header="Account" />
 
       <View>
         <AccountOptionCard
-          label="Personal Info"
-          icon="account-search"
-          onPress={() => {}}
+          label="General"
+          icon="cog"
+          onPress={() => {
+            props.navigation.navigate("generalSettings");
+          }}
         />
 
         <AccountOptionCard

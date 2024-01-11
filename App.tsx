@@ -45,6 +45,8 @@ import VerifyPhoneNumberScreen from "./components/screens/welcome/VerifyPhoneNum
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import ReAddPhoneNumberScreen from "./components/screens/welcome/ReAddPhoneNumberScreen";
 import AddNameScreen from "./components/screens/welcome/AddNameScreen";
+import GeneralSettingsScreen from "./components/screens/account/GeneralSettingsScreen";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -225,6 +227,18 @@ export default function App() {
                       component={VerifyPhoneNumberScreen}
                       options={{
                         headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="generalSettings"
+                      component={GeneralSettingsScreen}
+                      options={{
+                        headerStyle: {
+                          backgroundColor: Color.LightTheme.colors.secondary,
+                        },
+                        headerBackTitle: "All Settings",
+                        headerTitle: "",
+                        headerShadowVisible: false,
                       }}
                     />
                     <Stack.Screen
