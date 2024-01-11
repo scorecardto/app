@@ -1,19 +1,22 @@
 import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
 import { TextInput } from "../../input/TextInput";
 import LockedTextInput from "../../input/LockedTextInput";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
 }) {
   const { colors } = useTheme();
-  const [firstName, setFirstName] = useState("");
+  const mobileData = useContext(MobileDataContext);
 
-  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState(mobileData.firstName);
+  const [lastName, setLastName] = useState(mobileData.lastName);
+
   return (
     <AccountSubpageScreen
       header="General"

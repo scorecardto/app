@@ -43,6 +43,12 @@ export default async function initialize(
 
     dataContext.setCourseSettings(courseSettings || {});
 
+    if (name) {
+      const { firstName, lastName } = JSON.parse(name);
+
+      mobileDataContext.setFirstName(firstName);
+      mobileDataContext.setLastName(lastName);
+    }
     if (user && name) {
       return "scorecard";
     } else if (!user && name) {

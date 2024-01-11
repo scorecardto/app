@@ -32,6 +32,8 @@ export default function AddPhoneNumberScreen(props: {
     mobileDataContext;
 
   function finish() {
+    mobileDataContext.setFirstName(firstName);
+    mobileDataContext.setLastName(lastName);
     Storage.setItem({
       key: "name",
       value: JSON.stringify({

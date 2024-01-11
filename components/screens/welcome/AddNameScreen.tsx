@@ -20,7 +20,12 @@ export default function AddNameScreen(props: {
 
   const [lastName, setLastName] = useState("");
 
+  const mobileData = useContext(MobileDataContext);
+
   function finish() {
+    mobileData.setFirstName(firstName);
+    mobileData.setLastName(lastName);
+
     Storage.setItem({
       key: "name",
       value: JSON.stringify({

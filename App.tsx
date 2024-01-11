@@ -79,6 +79,8 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [referer, setReferer] = useState("");
   const [sessionId, setSessionId] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback] = useState(
     () => {
       return async (code: string) => {
@@ -116,6 +118,10 @@ export default function App() {
       setSessionId,
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
+      firstName,
+      setFirstName,
+      lastName,
+      setLastName,
     }),
     [
       district,
@@ -130,6 +136,10 @@ export default function App() {
       setSessionId,
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
+      firstName,
+      setFirstName,
+      lastName,
+      setLastName,
     ]
   );
 

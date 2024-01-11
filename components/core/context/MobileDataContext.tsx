@@ -11,6 +11,10 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
   setSessionId: () => {},
   referer: "",
   setReferer: () => {},
+  firstName: "",
+  setFirstName: () => {},
+  lastName: "",
+  setLastName: () => {},
   confirmPhoneNumberCallback: async () => {},
   setConfirmPhoneNumberCallback: () => {},
 });
@@ -26,6 +30,10 @@ export interface MobileDataProvider {
   setSessionId: (sessionId: string) => void;
   referer: string;
   setReferer: (referer: string) => void;
+  firstName: string;
+  setFirstName: (firstName: string) => void;
+  lastName: string;
+  setLastName: (lastName: string) => void;
   confirmPhoneNumberCallback: (code: string) => Promise<any>;
   setConfirmPhoneNumberCallback: React.SetStateAction<any>;
 }
