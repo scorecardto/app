@@ -1,4 +1,5 @@
-import React from "react";
+import React, {Dispatch, SetStateAction} from "react";
+import {GradebookNotification, GradebookRecord} from "scorecard-types";
 
 export const MobileDataContext = React.createContext<MobileDataProvider>({
   district: "",
@@ -13,6 +14,8 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
   setReferer: () => {},
   confirmPhoneNumberCallback: async () => {},
   setConfirmPhoneNumberCallback: () => {},
+  notifications: [],
+  setNotifications: () => {},
 });
 
 export interface MobileDataProvider {
@@ -28,4 +31,6 @@ export interface MobileDataProvider {
   setReferer: (referer: string) => void;
   confirmPhoneNumberCallback: (code: string) => Promise<any>;
   setConfirmPhoneNumberCallback: React.SetStateAction<any>;
+  notifications: GradebookNotification[];
+  setNotifications: Dispatch<SetStateAction<GradebookNotification[]>>;
 }

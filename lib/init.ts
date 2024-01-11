@@ -1,7 +1,10 @@
-import { DataProvider } from "scorecard-types";
+import {DataProvider, GradebookNotification, GradebookRecord} from "scorecard-types";
 import { MobileDataProvider } from "../components/core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import {getNotifications} from "./notifications";
+import fetchAndStore from "./fetchAndStore";
+import {fetchAllContent} from "./fetcher";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -14,34 +17,24 @@ export default async function initialize(
   mobileDataContext: MobileDataProvider,
   user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
-  const loginAsync = Storage.getItem({ key: "login" });
-  const dataAsync = Storage.getItem({ key: "data" });
-  const nameAsync = Storage.getItem({ key: "name" });
+  const login = await Storage.getItem({ key: "login" });
+  const name = await Storage.getItem({ key: "name" });
+  const notifs = await Storage.getItem({ key: "notifs" });
+  const records = await Storage.getItem({ key: "records" });
+  const settings = await Storage.getItem({ key: "settings" });
 
-  const [login, data, name] = await Promise.all([
-    loginAsync,
-    dataAsync,
-    nameAsync,
-  ]);
+  if (login) {
+    dataContext.setCourseSettings(JSON.parse(settings ?? "{}"));
 
-  if (login && data) {
-    const { courses, gradeCategory, gradeCategoryNames, date, courseSettings } =
-      JSON.parse(data);
+    console.log("init records:", records);
+    dataContext.setData(JSON.parse(records ?? "[]")[0]);
+    mobileDataContext.setNotifications(JSON.parse(notifs ?? "[]"));
 
     const { username, password, host } = JSON.parse(login);
 
     mobileDataContext.setUsername(username);
     mobileDataContext.setPassword(password);
     mobileDataContext.setDistrict(host);
-
-    dataContext.setData({
-      courses,
-      gradeCategory,
-      gradeCategoryNames,
-      date,
-    });
-
-    dataContext.setCourseSettings(courseSettings || {});
 
     if (user && name) {
       return "scorecard";

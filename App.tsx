@@ -13,10 +13,10 @@ import {
 } from "./components/core/context/MobileDataContext";
 import { useEffect, useMemo, useState } from "react";
 import {
-  CourseSettings,
-  DataContext,
-  DataProvider,
-  GradebookRecord,
+    CourseSettings,
+    DataContext,
+    DataProvider, GradebookNotification,
+    GradebookRecord,
 } from "scorecard-types";
 import Color from "./lib/Color";
 import * as Font from "expo-font";
@@ -86,6 +86,7 @@ export default function App() {
       };
     }
   );
+  const [notifications, setNotifications] = useState([] as GradebookNotification[]);
 
   const [userReady, setUserReady] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
@@ -114,6 +115,8 @@ export default function App() {
       setSessionId,
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
+        notifications,
+        setNotifications,
     }),
     [
       district,
@@ -128,6 +131,8 @@ export default function App() {
       setSessionId,
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
+        notifications,
+        setNotifications
     ]
   );
 
