@@ -74,9 +74,6 @@ export function getNotifications(
             mutations[0].courseName ??
             "Unknown Course";
 
-        console.log(mutations[0]);
-        console.log(mutations[0].newAverage && mutations[0].oldAverage);
-
         mutations.forEach((mutation) => {
             if (mutation.grade && mutation.subject === "assignment") {
                 withValue.push(mutation);

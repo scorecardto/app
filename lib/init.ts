@@ -26,7 +26,6 @@ export default async function initialize(
   if (login) {
     dataContext.setCourseSettings(JSON.parse(settings ?? "{}"));
 
-    console.log("init records:", records);
     dataContext.setData(JSON.parse(records ?? "[]")[0]);
     mobileDataContext.setNotifications(JSON.parse(notifs ?? "[]"));
 

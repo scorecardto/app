@@ -37,7 +37,6 @@ export default async function fetchAndStore( data: AllContentResponse, mobileDat
         });
     }
 
-    console.log("set data:", newData);
     dataContext.setData(newData);
 
     await Storage.setItem({
