@@ -49,14 +49,16 @@ export default function Gradebook(props: {
   type CategoryMod = {
     assignments: (Assignment | null)[] | null;
     average: number | null;
+    exactAverage: number | null;
   };
 
   const [categories, setCategories] = useState(props.course.gradeCategories!);
   const [modifiedCategories, setModifiedCategories] = useState<CategoryMod[]>(
     categories.map((_) => {
-      return { assignments: null, average: null };
+      return { assignments: null, average: null, exactAverage: null };
     })
   );
+  const [exactAverages, setExactAverages] = useState<(number|null)[]>(averageAssignments(categories, []));
   const [numTestAssignments, setNumTestAssignments] = useState(1);
   const [numTestCats, setNumTestCats] = useState(1);
 
@@ -66,11 +68,12 @@ export default function Gradebook(props: {
       categoryMods.map((c) => c.assignments)
     );
 
-    if (catIdx) {
+    if (catIdx !== undefined) {
       if (categoryMods[catIdx].assignments!.every((as) => as === null)) {
-        categoryMods[catIdx].assignments = categoryMods[catIdx].average = null;
+        categoryMods[catIdx].assignments = categoryMods[catIdx].average = categoryMods[catIdx].exactAverage = null;
       } else {
-        categoryMods[catIdx].average = averages[catIdx];
+        categoryMods[catIdx].average = Math.round(averages[catIdx]);
+        categoryMods[catIdx].exactAverage = averages[catIdx];
       }
     }
 
@@ -97,10 +100,11 @@ export default function Gradebook(props: {
     }
   };
 
-  // when testing categories are added/removed, update the course average
+  // update the course average any time a test category is added/remove
+    // should NOT depend on modifiedCategories
   useEffect(() => {
     updateAverage(modifiedCategories);
-  }, [categories, modifiedCategories]);
+  }, [categories]);
 
   return (
     <View
@@ -139,7 +143,7 @@ export default function Gradebook(props: {
                 <GradebookCard
                   key={index}
                   title="Summary"
-                  bottom={["Weight: 100%"]}
+                  bottom={{"Weight": {text: "100%", red: false}}}
                   removable={false}
                   remove={()=>{}}
                   buttonAction={() => {
@@ -159,9 +163,15 @@ export default function Gradebook(props: {
                                       setNumTestCats(numTestCats + 1);
                                       return newCategories;
                                   });
+                                  setExactAverages((averages) => {
+                                        const newAverages = [...averages];
+                                        newAverages.push(null);
+
+                                        return newAverages;
+                                  })
                                   setModifiedCategories((oldCategories) => {
                                       const newCategories = [...oldCategories];
-                                      newCategories.push({ assignments: null, average: null });
+                                      newCategories.push({ assignments: null, average: null, exactAverage: null });
 
                                       return newCategories;
                                   });
@@ -190,6 +200,9 @@ export default function Gradebook(props: {
               </View>
             );
           }
+          const gradeText = ""+(modifiedCategories[index-1].average ?? item.average);
+          const testing = index > props.course.gradeCategories!.length;
+
           return (
             <MotiView
               animate={{
@@ -204,14 +217,18 @@ export default function Gradebook(props: {
               <GradebookCard
                 key={index}
                 title={item.name}
-                bottom={[`Weight: ${item.weight}%`]}
-                removable={index > props.course.gradeCategories!.length}
+                grade={{text: gradeText ? gradeText : "NG", red: testing || modifiedCategories[index-1].average !== null}}
+                bottom={{'Weight': {text: `${item.weight}%`, red: testing}, 'Exact Average': {text: `${(modifiedCategories[index-1].exactAverage ?? exactAverages[index-1])?.toFixed(2) ?? "NG"}`, red: testing || modifiedCategories[index-1].average !== null}}}
+                removable={testing}
                 remove={() => {
                     setCategories((oldCategories) => {
                         return oldCategories.toSpliced(index-1, 1);
                     });
                     setModifiedCategories((oldCategories) => {
                         return oldCategories.toSpliced(index-1, 1);
+                    });
+                    setExactAverages((oldAverages) => {
+                        return oldAverages.toSpliced(index-1, 1);
                     });
                 }}
                 buttonAction={() => {
@@ -236,6 +253,8 @@ export default function Gradebook(props: {
                     });
                     setNumTestAssignments(numTestAssignments + 1);
 
+                    updateAverage(newCategories, catIdx);
+
                     return newCategories;
                   });
                 }}
@@ -254,7 +273,7 @@ export default function Gradebook(props: {
                         newCategories[catIdx].assignments!.splice(idx, 1);
                       }
 
-                      // updateAverage(newCategories, catIdx);
+                      updateAverage(newCategories, catIdx);
 
                       return newCategories;
                     });
@@ -273,7 +292,7 @@ export default function Gradebook(props: {
                       }
                       newCategories[catIdx].assignments![idx] = a;
 
-                      // updateAverage(newCategories, catIdx);
+                      updateAverage(newCategories, catIdx);
 
                       return newCategories;
                     });

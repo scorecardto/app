@@ -10,8 +10,9 @@ import TinyText from "../../text/TinyText";
 
 export default function GradebookCard(props: {
   title: string;
+  grade?: {text: string, red: boolean};
   children: React.ReactNode;
-  bottom: string[];
+  bottom: {[idx: string]: {text: string, red: boolean}};
   buttonAction(): void;
   removable: boolean;
   remove(): void;
@@ -33,6 +34,10 @@ export default function GradebookCard(props: {
     },
     headerText: {
       fontSize: 20,
+    },
+    headerGrade: {
+      fontSize: 17,
+        color: props.grade?.red ? 'red' : undefined,
     },
     footer: {
       marginTop: 12,
@@ -56,33 +61,21 @@ export default function GradebookCard(props: {
         <ScrollView style={styles.wrapper}>
         <View style={styles.header}>
           <MediumText style={styles.headerText}>{props.title}</MediumText>
-          {/* <Pagination
-            dotsLength={props.totalCarouselLength}
-            activeDotIndex={props.index + 1}
-            containerStyle={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              paddingVertical: 0,
-              paddingHorizontal: 0,
-            }}
-            dotStyle={{
-              width: 6,
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: colors.primary,
-            }}
-            inactiveDotOpacity={0.3}
-            inactiveDotScale={1}
-          /> */}
+          {props.grade && (<MediumText style={styles.headerGrade}>{props.grade.text}</MediumText>)}
         </View>
         {props.children}
         <View style={styles.footer}>
           <View style={styles.footerLeft}>
-            {props.bottom.map((text, idx) => {
+            {Object.keys(props.bottom).map((key, idx) => {
               return (
                 <React.Fragment key={idx}>
-                  <SmallText style={styles.footerText}>{text}</SmallText>
+                  <View style={{flexDirection: 'row'}}>
+                    <SmallText style={styles.footerText}>{`${key}:`}&nbsp;</SmallText>
+                    <SmallText style={{
+                      ...styles.footerText,
+                      color: props.bottom[key].red ? 'red' : styles.footerText.color,
+                    }}>{props.bottom[key].text}</SmallText>
+                  </View>
                 </React.Fragment>
               );
             })}
