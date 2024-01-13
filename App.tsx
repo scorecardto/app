@@ -96,6 +96,9 @@ export default function App() {
     [] as GradebookNotification[]
   );
 
+  const [enableGradebookNotifications, setEnableGradebookNotifications] =
+    useState(false);
+
   const [userReady, setUserReady] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
 
@@ -129,6 +132,8 @@ export default function App() {
       setLastName,
       notifications,
       setNotifications,
+      enableGradebookNotifications,
+      setEnableGradebookNotifications,
     }),
     [
       district,
@@ -149,6 +154,8 @@ export default function App() {
       setLastName,
       notifications,
       setNotifications,
+      enableGradebookNotifications,
+      setEnableGradebookNotifications,
     ]
   );
 

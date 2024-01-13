@@ -9,6 +9,8 @@ import { useTheme } from "@react-navigation/native";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
 import LoginInputCard from "../../input/LoginInputCard";
+import ToggleInput from "../../input/ToggleInput";
+import Storage from "expo-storage";
 export default function GradebookSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -35,17 +37,19 @@ export default function GradebookSettingsScreen(props: {
         />
       </View>
       <View style={{ marginBottom: 36 }}>
-        <MediumText style={{ marginBottom: 16 }}>Your phone number</MediumText>
-        <SmallText style={{ marginBottom: 16, color: colors.text }}>
-          To edit, reset your account data.
-        </SmallText>
-        <LockedTextInput>+1 (555) 555-5555</LockedTextInput>
+        <MediumText style={{ marginBottom: 16 }}>Notifications</MediumText>
+        <ToggleInput
+          label="New Grades"
+          value={mobileData.enableGradebookNotifications}
+          setValue={(v) => {
+            mobileData.setEnableGradebookNotifications(v);
+            Storage.setItem({
+              key: "enableGradebookNotifications",
+              value: v ? "true" : "false",
+            });
+          }}
+        />
       </View>
-      <MediumText style={{ marginBottom: 16 }}>Reset Account Data</MediumText>
-      <SmallText style={{ marginBottom: 16, color: colors.text }}>
-        This clears data from your device, but does not delete your account.
-      </SmallText>
-      <DeleteInput onPress={() => {}}>Reset Account Data</DeleteInput>
     </AccountSubpageScreen>
   );
 }
