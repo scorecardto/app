@@ -16,6 +16,7 @@ import {
   CourseSettings,
   DataContext,
   DataProvider,
+  GradebookNotification,
   GradebookRecord,
 } from "scorecard-types";
 import Color from "./lib/Color";
@@ -91,6 +92,9 @@ export default function App() {
       };
     }
   );
+  const [notifications, setNotifications] = useState(
+    [] as GradebookNotification[]
+  );
 
   const [userReady, setUserReady] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
@@ -123,6 +127,8 @@ export default function App() {
       setFirstName,
       lastName,
       setLastName,
+      notifications,
+      setNotifications,
     }),
     [
       district,
@@ -141,6 +147,8 @@ export default function App() {
       setFirstName,
       lastName,
       setLastName,
+      notifications,
+      setNotifications,
     ]
   );
 

@@ -35,7 +35,7 @@ export function averageAssignments(
       }
     );
 
-    return Math.round(sum / count);
+    return sum / count;
   });
 }
 

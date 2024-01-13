@@ -18,6 +18,7 @@ import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
+import fetchAndStore from "../../../lib/fetchAndStore";
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -56,25 +57,9 @@ const ConnectAccountScreen = (props: {
 
       reportCard
         .then(async (data) => {
-          const gradeCategory =
-            Math.max(
-              ...data.courses.map(
-                (course) => course.grades.filter((g) => g).length
-              )
-            ) - 1;
-
-          mobileData.setReferer(data.referer);
-          mobileData.setSessionId(data.sessionId);
           mobileData.setDistrict(district.url);
           mobileData.setUsername(username);
           mobileData.setPassword(password);
-
-          dataContext.setData({
-            courses: data.courses,
-            gradeCategory,
-            date: Date.now(),
-            gradeCategoryNames: data.gradeCategoryNames,
-          });
 
           await Storage.setItem({
             key: "login",
@@ -85,15 +70,7 @@ const ConnectAccountScreen = (props: {
             }),
           });
 
-          await Storage.setItem({
-            key: "data",
-            value: JSON.stringify({
-              courses: data.courses,
-              gradeCategory,
-              date: Date.now(),
-              gradeCategoryNames: data.gradeCategoryNames,
-            }),
-          });
+          await fetchAndStore(data, mobileData, dataContext, false);
         })
         .catch((e) => {
           console.error(e);

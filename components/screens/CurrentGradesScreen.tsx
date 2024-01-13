@@ -19,6 +19,7 @@ import { MobileDataContext } from "../core/context/MobileDataContext";
 import LargeText from "../text/LargeText";
 import StatusText from "../text/StatusText";
 import Header from "../text/Header";
+import fetchAndStore from "../../lib/fetchAndStore";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -40,32 +41,7 @@ const CurrentGradesScreen = (props: {
     const reportCard = fetchAllContent(url, username, password);
 
     reportCard.then(async (data) => {
-      const gradeCategory =
-        Math.max(
-          ...data.courses.map((course) => course.grades.filter((g) => g).length)
-        ) - 1;
-
-      mobileData.setReferer(data.referer);
-      mobileData.setSessionId(data.sessionId);
-      mobileData.setDistrict(url);
-
-      dataContext.setData({
-        courses: data.courses,
-        gradeCategory,
-        date: Date.now(),
-        gradeCategoryNames: data.gradeCategoryNames,
-      });
-
-      await Storage.setItem({
-        key: "data",
-        value: JSON.stringify({
-          courses: data.courses,
-          gradeCategory,
-          date: Date.now(),
-          gradeCategoryNames: data.gradeCategoryNames,
-        }),
-      });
-
+      await fetchAndStore(data, mobileData, dataContext);
       setRefreshing(false);
     });
   }, []);
@@ -76,9 +52,11 @@ const CurrentGradesScreen = (props: {
 
       <TouchableOpacity
         onPress={() => {
-          Storage.removeItem({
-            key: "data",
-          });
+          Storage.getItem({ key: "records" })
+              .then(async (records) => {
+                if (!records) return;
+                await Storage.setItem({ key: "records", value: JSON.stringify(JSON.parse(records).slice(0, 1)) })
+              })
         }}
       >
         <Text
@@ -87,7 +65,7 @@ const CurrentGradesScreen = (props: {
             fontSize: 12,
           }}
         >
-          Reset Cache
+          Clear Record History
         </Text>
       </TouchableOpacity>
 
