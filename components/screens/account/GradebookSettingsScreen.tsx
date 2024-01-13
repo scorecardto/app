@@ -27,12 +27,23 @@ export default function GradebookSettingsScreen(props: {
       header="Gradebook"
       footerText="These are your general settings."
     >
-      <View style={{ marginBottom: 12 }}>
+      <View style={{ marginBottom: 24 }}>
         <MediumText style={{ marginBottom: 16 }}>Edit your login</MediumText>
         <LoginInputCard
-          onPressDistrict={() => {}}
-          onPressUsername={() => {}}
-          onPressPassword={() => {}}
+          onPressDistrict={() => {
+            props.navigation.navigate("editDistrict");
+          }}
+          onPressUsername={() => {
+            props.navigation.navigate("editConnectAccount", {
+              district: mobileData.district,
+            });
+          }}
+          onPressPassword={() => {
+            props.navigation.navigate("editConnectAccount", {
+              username: mobileData.username,
+              district: mobileData.district,
+            });
+          }}
           district={mobileData.district}
           username={mobileData.username}
         />
@@ -51,7 +62,7 @@ export default function GradebookSettingsScreen(props: {
           }}
         />
       </View>
-      <View style={{ marginBottom: 36 }}>
+      <View style={{ marginBottom: 24 }}>
         <MediumText style={{ marginBottom: 16 }}>
           Check for New Grades
         </MediumText>

@@ -6,9 +6,12 @@ import { Image } from "expo-image";
 
 const icon = require("../../../assets/icon.svg");
 
-export default function AccountSubpageBanner(props: { show: boolean }) {
+export default function AccountSubpageBanner(props: {
+  show: boolean;
+  padding?: boolean;
+}) {
   const windowHeight = Dimensions.get("window").height;
-  const height = windowHeight / 5;
+  const height = windowHeight / (props.padding ? 3.75 : 5);
 
   const positionAnimation = useMemo(() => new Animated.Value(height), []);
   const opacityAnimation = useMemo(() => new Animated.Value(1), []);
@@ -73,7 +76,7 @@ export default function AccountSubpageBanner(props: { show: boolean }) {
           <Image
             source={icon}
             style={{
-              height: "80%",
+              height: props.padding ? "60%" : "80%",
               aspectRatio: 1,
             }}
           />

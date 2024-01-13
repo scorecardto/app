@@ -13,12 +13,16 @@ export default function AddNameScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
 }) {
-  const HEADER = "Add Your Name";
+  const HEADER = props.route.params.editing
+    ? "Edit Your Name"
+    : "Add Your Name";
   const FOOTER = "This will be displayed in place of your name from Frontline.";
 
-  const [firstName, setFirstName] = useState("");
+  const [firstName, setFirstName] = useState(
+    props.route.params.firstName ?? ""
+  );
 
-  const [lastName, setLastName] = useState("");
+  const [lastName, setLastName] = useState(props.route.params.lastName ?? "");
 
   const mobileData = useContext(MobileDataContext);
 

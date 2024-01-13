@@ -11,6 +11,7 @@ export default function AccountSubpageScreen(props: {
   header: string;
   footerText: string;
   showBanner?: boolean;
+  padding?: boolean;
 }) {
   const { colors } = useTheme();
   const styles = StyleSheet.create({
@@ -44,7 +45,10 @@ export default function AccountSubpageScreen(props: {
   return (
     <View style={styles.wrapper}>
       <View style={styles.top}>
-        <AccountSubpageBanner show={props.showBanner ?? true} />
+        <AccountSubpageBanner
+          show={props.showBanner ?? true}
+          padding={props.padding}
+        />
         <View style={styles.heading}>
           <LargeText style={styles.header}>{props.header}</LargeText>
         </View>

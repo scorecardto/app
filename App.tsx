@@ -49,6 +49,8 @@ import AddNameScreen from "./components/screens/welcome/AddNameScreen";
 import GeneralSettingsScreen from "./components/screens/account/GeneralSettingsScreen";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import GradebookSettingsScreen from "./components/screens/account/GradebookSettingsScreen";
+import EditDistrictScreen from "./components/screens/account/EditDistrictScreen";
+import EditConnectAccountScreen from "./components/screens/account/EditConnectAccountScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -282,6 +284,30 @@ export default function App() {
                           backgroundColor: Color.LightTheme.colors.secondary,
                         },
                         headerBackTitle: "All Settings",
+                        headerTitle: "",
+                        headerShadowVisible: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="editDistrict"
+                      component={EditDistrictScreen}
+                      options={{
+                        headerStyle: {
+                          backgroundColor: Color.LightTheme.colors.secondary,
+                        },
+                        headerBackTitle: "Back",
+                        headerTitle: "",
+                        headerShadowVisible: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="editConnectAccount"
+                      component={EditConnectAccountScreen}
+                      options={{
+                        headerStyle: {
+                          backgroundColor: Color.LightTheme.colors.secondary,
+                        },
+                        headerBackTitle: "Back",
                         headerTitle: "",
                         headerShadowVisible: false,
                       }}
