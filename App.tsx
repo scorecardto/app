@@ -47,6 +47,7 @@ import ReAddPhoneNumberScreen from "./components/screens/welcome/ReAddPhoneNumbe
 import AddNameScreen from "./components/screens/welcome/AddNameScreen";
 import GeneralSettingsScreen from "./components/screens/account/GeneralSettingsScreen";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import GradebookSettingsScreen from "./components/screens/account/GradebookSettingsScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -242,6 +243,18 @@ export default function App() {
                     <Stack.Screen
                       name="generalSettings"
                       component={GeneralSettingsScreen}
+                      options={{
+                        headerStyle: {
+                          backgroundColor: Color.LightTheme.colors.secondary,
+                        },
+                        headerBackTitle: "All Settings",
+                        headerTitle: "",
+                        headerShadowVisible: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="gradebookSettings"
+                      component={GradebookSettingsScreen}
                       options={{
                         headerStyle: {
                           backgroundColor: Color.LightTheme.colors.secondary,

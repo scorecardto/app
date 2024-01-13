@@ -8,7 +8,8 @@ import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
-export default function GeneralSettingsScreen(props: {
+import LoginInputCard from "../../input/LoginInputCard";
+export default function GradebookSettingsScreen(props: {
   route: any;
   navigation: any;
 }) {
@@ -20,41 +21,19 @@ export default function GeneralSettingsScreen(props: {
 
   return (
     <AccountSubpageScreen
-      header="General"
+      header="Gradebook"
       footerText="These are your general settings."
     >
       <View style={{ marginBottom: 12 }}>
-        <MediumText style={{ marginBottom: 16 }}>Edit your name</MediumText>
-        <View
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <View style={{ width: "100%", marginRight: 10, flexShrink: 1 }}>
-            <TextInput
-              label="First Name"
-              value={firstName}
-              setValue={(v) => {
-                setFirstName(v);
-              }}
-              type="first-name"
-            />
-          </View>
-          <View style={{ width: "100%", flexShrink: 1 }}>
-            <TextInput
-              label="Last Name"
-              value={lastName}
-              setValue={(v) => {
-                setLastName(v);
-              }}
-              type="last-name"
-            />
-          </View>
-        </View>
+        <MediumText style={{ marginBottom: 16 }}>Edit your login</MediumText>
+        <LoginInputCard
+          onPressDistrict={() => {}}
+          onPressUsername={() => {}}
+          onPressPassword={() => {}}
+          district={mobileData.district}
+          username={mobileData.username}
+        />
       </View>
-
       <View style={{ marginBottom: 36 }}>
         <MediumText style={{ marginBottom: 16 }}>Your phone number</MediumText>
         <SmallText style={{ marginBottom: 16, color: colors.text }}>

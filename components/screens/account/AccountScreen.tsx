@@ -20,7 +20,9 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
         <AccountOptionCard
           label="Account Details"
           icon="key"
-          onPress={() => {}}
+          onPress={() => {
+            props.navigation.navigate("gradebookSettings");
+          }}
         />
 
         <AccountOptionCard
