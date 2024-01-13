@@ -37,7 +37,11 @@ export default async function initialize(
   if (login && !!JSON.parse(records ?? "[]")[0]) {
     dataContext.setCourseSettings(JSON.parse(settings ?? "{}"));
 
-    dataContext.setData(JSON.parse(records ?? "[]")[0]);
+    const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
+
+    dataContext.setData(data);
+    dataContext.setGradeCategory(data.gradeCategory);
+
     mobileDataContext.setNotifications(JSON.parse(notifs ?? "[]"));
 
     const { username, password, host } = JSON.parse(login);
