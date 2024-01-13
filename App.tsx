@@ -96,6 +96,9 @@ export default function App() {
     [] as GradebookNotification[]
   );
 
+  const [gradebookCheckInterval, setGradebookCheckInterval] =
+    useState("morning");
+
   const [enableGradebookNotifications, setEnableGradebookNotifications] =
     useState(false);
 
@@ -134,6 +137,8 @@ export default function App() {
       setNotifications,
       enableGradebookNotifications,
       setEnableGradebookNotifications,
+      gradebookCheckInterval,
+      setGradebookCheckInterval,
     }),
     [
       district,
@@ -156,6 +161,8 @@ export default function App() {
       setNotifications,
       enableGradebookNotifications,
       setEnableGradebookNotifications,
+      gradebookCheckInterval,
+      setGradebookCheckInterval,
     ]
   );
 

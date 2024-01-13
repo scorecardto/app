@@ -11,6 +11,7 @@ import DeleteInput from "../../input/DeleteInput";
 import LoginInputCard from "../../input/LoginInputCard";
 import ToggleInput from "../../input/ToggleInput";
 import Storage from "expo-storage";
+import SelectInput from "../../input/SelectInput";
 export default function GradebookSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -46,6 +47,35 @@ export default function GradebookSettingsScreen(props: {
             Storage.setItem({
               key: "enableGradebookNotifications",
               value: v ? "true" : "false",
+            });
+          }}
+        />
+      </View>
+      <View style={{ marginBottom: 36 }}>
+        <MediumText style={{ marginBottom: 16 }}>
+          Check for New Grades
+        </MediumText>
+        <SelectInput
+          options={[
+            {
+              label: "Every Morning",
+              value: "morning",
+            },
+            {
+              label: "Twice per Day",
+              value: "twice",
+            },
+            {
+              label: "Every Three Hours",
+              value: "three",
+            },
+          ]}
+          selected={mobileData.gradebookCheckInterval}
+          setSelected={(v) => {
+            mobileData.setGradebookCheckInterval(v);
+            Storage.setItem({
+              key: "gradebookCheckInterval",
+              value: v,
             });
           }}
         />

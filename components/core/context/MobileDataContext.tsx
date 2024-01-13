@@ -22,6 +22,8 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
   setNotifications: () => {},
   enableGradebookNotifications: false,
   setEnableGradebookNotifications: () => {},
+  gradebookCheckInterval: "morning",
+  setGradebookCheckInterval: () => {},
 });
 
 export interface MobileDataProvider {
@@ -45,4 +47,6 @@ export interface MobileDataProvider {
   setNotifications: Dispatch<SetStateAction<GradebookNotification[]>>;
   enableGradebookNotifications: boolean;
   setEnableGradebookNotifications: Dispatch<SetStateAction<boolean>>;
+  gradebookCheckInterval: string;
+  setGradebookCheckInterval: Dispatch<SetStateAction<string>>;
 }
