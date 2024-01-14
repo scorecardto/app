@@ -3,6 +3,7 @@ import React from "react";
 import LargeText from "./LargeText";
 import StatusText from "./StatusText";
 import { useTheme } from "@react-navigation/native";
+import HeaderBanner from "./HeaderBanner";
 
 export default function Header(props: {
   header: string;
@@ -13,8 +14,8 @@ export default function Header(props: {
 
   const styles = StyleSheet.create({
     container: {
-      marginTop: 84,
-      marginBottom: 42,
+      marginTop: 24,
+      marginBottom: 36,
       flexDirection: "column",
       alignItems: "center",
     },
@@ -30,12 +31,14 @@ export default function Header(props: {
   });
 
   return (
-    <View style={styles.container}>
-      <LargeText style={styles.header}>{props.header}</LargeText>
-      {props.subheader && (
-        <StatusText style={styles.subheader}>{props.subheader}</StatusText>
-      )}
-      {props.children}
+    <View>
+      <View style={styles.container}>
+        <LargeText style={styles.header}>{props.header}</LargeText>
+        {props.subheader && (
+          <StatusText style={styles.subheader}>{props.subheader}</StatusText>
+        )}
+        {props.children}
+      </View>
     </View>
   );
 }

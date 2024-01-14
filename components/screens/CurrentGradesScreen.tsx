@@ -24,6 +24,7 @@ import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 import GradeCategorySelectorSheet from "../app/dashboard/GradeCategorySelectorSheet";
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
 import { ActionSheetRef } from "react-native-actions-sheet";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -61,7 +62,7 @@ const CurrentGradesScreen = (props: {
   const onCurrentGradingPeriod =
     dataContext.gradeCategory === dataContext.data?.gradeCategory;
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <TouchableOpacity
         onPress={() => {
           selector.current?.show();
@@ -83,27 +84,6 @@ const CurrentGradesScreen = (props: {
               : "Tap to change grading period"
           }
         />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => {
-          Storage.getItem({ key: "records" }).then(async (records) => {
-            if (!records) return;
-            await Storage.setItem({
-              key: "records",
-              value: JSON.stringify(JSON.parse(records).slice(0, 1)),
-            });
-          });
-        }}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 12,
-          }}
-        >
-          Clear Record History
-        </Text>
       </TouchableOpacity>
 
       {dataContext?.data?.courses && (
@@ -129,8 +109,28 @@ const CurrentGradesScreen = (props: {
         />
       )}
 
+      <TouchableOpacity
+        onPress={() => {
+          Storage.getItem({ key: "records" }).then(async (records) => {
+            if (!records) return;
+            await Storage.setItem({
+              key: "records",
+              value: JSON.stringify(JSON.parse(records).slice(0, 1)),
+            });
+          });
+        }}
+      >
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: 12,
+          }}
+        >
+          Clear Record History
+        </Text>
+      </TouchableOpacity>
       <GradeCategorySelectorSheet ref={selector} />
-    </View>
+    </SafeAreaView>
   );
 };
 

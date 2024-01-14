@@ -5,6 +5,7 @@ import WelcomeScreenBanner from "../welcome/WelcomeScreenBanner";
 import MonoText from "../../text/MonoText";
 import { useTheme } from "@react-navigation/native";
 import AccountSubpageBanner from "./AccountSubpageBanner";
+import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 
 export default function AccountSubpageScreen(props: {
   children: React.ReactNode;
@@ -42,11 +43,13 @@ export default function AccountSubpageScreen(props: {
     },
   });
 
+  const usingKeyboard = useKeyboardVisible();
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.top}>
         <AccountSubpageBanner
-          show={props.showBanner ?? true}
+          show={(props.showBanner ?? true) && !usingKeyboard}
           padding={props.padding}
         />
         <View style={styles.heading}>

@@ -10,16 +10,15 @@ export default function AccountSubpageBanner(props: {
   show: boolean;
   padding?: boolean;
 }) {
-  const windowHeight = Dimensions.get("window").height;
-  const height = windowHeight / (props.padding ? 3.75 : 5);
+  const height = 150;
 
-  const positionAnimation = useMemo(() => new Animated.Value(height), []);
+  const heightAnimation = useMemo(() => new Animated.Value(height), []);
   const opacityAnimation = useMemo(() => new Animated.Value(1), []);
 
   useEffect(() => {
     if (!props.show) {
-      Animated.timing(positionAnimation, {
-        toValue: 60,
+      Animated.timing(heightAnimation, {
+        toValue: 0,
         duration: 150,
         useNativeDriver: false,
       }).start();
@@ -30,7 +29,7 @@ export default function AccountSubpageBanner(props: {
         useNativeDriver: true,
       }).start();
     } else {
-      Animated.timing(positionAnimation, {
+      Animated.timing(heightAnimation, {
         toValue: height,
         duration: 150,
         useNativeDriver: false,
@@ -51,7 +50,7 @@ export default function AccountSubpageBanner(props: {
       style={{
         height: 0,
         overflow: "visible",
-        marginBottom: positionAnimation,
+        marginBottom: heightAnimation,
       }}
     >
       <Animated.View
@@ -76,7 +75,7 @@ export default function AccountSubpageBanner(props: {
           <Image
             source={icon}
             style={{
-              height: props.padding ? "60%" : "80%",
+              height: props.padding ? 60 : 80,
               aspectRatio: 1,
             }}
           />

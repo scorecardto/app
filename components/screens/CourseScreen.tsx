@@ -1,7 +1,7 @@
-import React, { useRef, useState, useContext } from "react";
+import React, { useRef, useState, useContext, useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
-import { DataContext } from "scorecard-types";
+import { Course, DataContext } from "scorecard-types";
 import Header from "../text/Header";
 // import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
@@ -16,13 +16,64 @@ import { RouteProp, NavigationProp } from "@react-navigation/native";
 import Gradebook from "../app/gradebook/Gradebook";
 import CourseEditSheet from "../app/course/CourseEditSheet";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import {
+  fetchGradeCategoriesForCourse,
+  fetchReportCard,
+} from "../../lib/fetcher";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
 
   const dataContext = React.useContext(DataContext);
+  const mobileDataContext = React.useContext(MobileDataContext);
 
-  const course = dataContext.data?.courses.find((c) => c.key === key);
+  const [course, setCourse] = useState<Course | undefined>(undefined);
+
+  async function getCourse(): Promise<Course | undefined> {
+    if (dataContext.gradeCategory === dataContext.data?.gradeCategory) {
+      return dataContext.data?.courses.find((c) => c.key === key);
+    } else {
+      const course = dataContext.data?.courses.find((c) => c.key === key);
+
+      const alternateKey = course?.grades[dataContext.gradeCategory]?.key;
+
+      if (course == null || alternateKey == null) return undefined;
+
+      const reportCard = await fetchReportCard(
+        mobileDataContext.district,
+        mobileDataContext.username,
+        mobileDataContext.password
+      );
+
+      const categories = await fetchGradeCategoriesForCourse(
+        mobileDataContext.district,
+        reportCard.sessionId,
+        reportCard.referer,
+        {
+          ...course,
+          key: alternateKey || "",
+        }
+      );
+
+      return {
+        ...course,
+        gradeCategories: categories.gradeCategories,
+      };
+    }
+  }
+
+  useEffect(() => {
+    getCourse().then((course) => {
+      setCourse(course);
+    });
+  }, [dataContext.gradeCategory]);
+
+  const parentTheme = useTheme();
+
+  const [modifiedAvg, setModifiedAvg] = useState<number | null>(null);
+
+  const sheets = useContext(BottomSheetContext);
 
   if (course == null) {
     return (
@@ -32,7 +83,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     );
   }
 
-  const parentTheme = useTheme();
   const accentLabel =
     dataContext.courseSettings[course.key]?.accentColor ||
     color.defaultAccentLabel;
@@ -44,9 +94,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       color.AccentsMatrix[accentLabel][parentTheme.dark ? "dark" : "default"],
   };
   const { colors, accents } = theme;
-  const [modifiedAvg, setModifiedAvg] = useState<number | null>(null);
-
-  const sheets = useContext(BottomSheetContext);
 
   const courseDisplayName =
     dataContext.courseSettings[course.key]?.displayName || course.name;
@@ -57,7 +104,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   ];
   return (
     <ThemeProvider value={theme}>
-      <View
+      <SafeAreaView
         style={{
           height: "100%",
           backgroundColor: colors.backgroundNeutral,
@@ -74,26 +121,39 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             }}
           >
             <Header header={courseDisplayName}>
-                <View style={{flexDirection: 'row', gap: 15, marginTop: 18, alignItems: 'center'}}>
-                    <LargeGradeText
-                        grade={
-                            course.grades[dataContext.gradeCategory]?.value || "NG"
-                        }
-                        // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
-                        backgroundColor={modifiedAvg ? colors.borderNeutral : accents.primary}
-                        textColor={modifiedAvg ? colors.text : "#FFFFFF"}
-                    />
-                    {modifiedAvg && (<MaterialIcons
-                        name={"arrow-forward"}
-                        size={25}
-                        color={colors.text}
-                    />)}
-                    {modifiedAvg && (<LargeGradeText
-                        grade={`${modifiedAvg}`}
-                        backgroundColor={accents.primary}
-                        textColor="#FFFFFF"
-                    />)}
-                </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 15,
+                  marginTop: 18,
+                  alignItems: "center",
+                }}
+              >
+                <LargeGradeText
+                  grade={
+                    course.grades[dataContext.gradeCategory]?.value || "NG"
+                  }
+                  // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
+                  backgroundColor={
+                    modifiedAvg ? colors.borderNeutral : accents.primary
+                  }
+                  textColor={modifiedAvg ? colors.text : "#FFFFFF"}
+                />
+                {modifiedAvg && (
+                  <MaterialIcons
+                    name={"arrow-forward"}
+                    size={25}
+                    color={colors.text}
+                  />
+                )}
+                {modifiedAvg && (
+                  <LargeGradeText
+                    grade={`${modifiedAvg}`}
+                    backgroundColor={accents.primary}
+                    textColor="#FFFFFF"
+                  />
+                )}
+              </View>
             </Header>
           </TouchableOpacity>
 
@@ -119,7 +179,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
           ></RadialGradient> */}
         </View>
         <BottomSheetDisplay />
-      </View>
+      </SafeAreaView>
     </ThemeProvider>
   );
 }

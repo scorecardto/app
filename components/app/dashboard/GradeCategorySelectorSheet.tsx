@@ -29,7 +29,6 @@ const GradeCategorySelectorSheet = forwardRef(
         <BottomSheetHeader>Grading Period</BottomSheetHeader>
         {dataContext.data?.gradeCategoryNames.map((category, idx) => {
           const selected = idx === dataContext.gradeCategory;
-          console.log(dataContext.data?.gradeCategory);
 
           return (
             <View

@@ -2,10 +2,11 @@ import React from "react";
 import { Text, View } from "react-native";
 import Header from "../../text/Header";
 import AccountOptionCard from "../../app/account/AccountOptionCard";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AccountScreen(props: { route: any; navigation: any }) {
   return (
-    <View>
+    <SafeAreaView>
       <Header header="Account" />
 
       <View>
@@ -45,6 +46,6 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
           onPress={() => {}}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
