@@ -7,6 +7,7 @@ import { useTheme } from "@react-navigation/native";
 import CourseColorChanger from "./CourseColorChanger";
 import { Course, DataContext } from "scorecard-types";
 import { saveCourseSettings } from "../../../lib/saveCourseSettings";
+import { BottomSheetView } from "@gorhom/bottom-sheet";
 
 export default function CourseEditSheet(props: {
   course: Course;
@@ -54,11 +55,12 @@ export default function CourseEditSheet(props: {
     Keyboard.dismiss();
   }, [courseSettings]);
   return (
-    <View>
+    <BottomSheetView>
       <BottomSheetHeader>Course Details</BottomSheetHeader>
       <View
         style={{
           paddingHorizontal: 20,
+          paddingBottom: 14,
         }}
       >
         <CourseNameTextInput
@@ -84,6 +86,6 @@ export default function CourseEditSheet(props: {
           }}
         />
       </View>
-    </View>
+    </BottomSheetView>
   );
 }

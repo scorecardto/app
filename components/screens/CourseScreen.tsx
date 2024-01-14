@@ -180,8 +180,8 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             colorList={colorList}
           ></RadialGradient> */}
         </View>
-        <BottomSheetDisplay />
       </SafeAreaView>
+      <BottomSheetDisplay />
     </ThemeProvider>
   );
 }

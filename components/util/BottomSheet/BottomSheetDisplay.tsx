@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import BottomSheetContext from "./BottomSheetContext";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import BottomSheetBase from "@gorhom/bottom-sheet";
+import BottomSheetBase, { BottomSheetView } from "@gorhom/bottom-sheet";
 import BottomSheetBackdrop from "./BottomSheetBackdrop";
-import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
 
 export default function BottomSheetDisplay(props: {}) {
   const sheets = useContext(BottomSheetContext);
@@ -62,17 +62,18 @@ export default function BottomSheetDisplay(props: {}) {
               top: 0,
               left: 0,
               position: "absolute",
-              zIndex: 95,
             }}
           />
         ) : (
           <></>
         )}
       </TouchableWithoutFeedback>
+
       <BottomSheetBase
         keyboardBlurBehavior="restore"
         ref={bottomSheetRef}
-        snapPoints={["35%"]}
+        enableDynamicSizing={true}
+        // enablePanDownToClose={true}
         containerStyle={{
           zIndex: 100,
         }}
