@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Keyboard } from "react-native";
 import React from "react";
 import Color from "../../../lib/Color";
 import { useTheme } from "@react-navigation/native";

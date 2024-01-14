@@ -117,7 +117,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
         >
           <TouchableOpacity
             onPress={() => {
-              sheets?.addSheet((close) => <CourseEditSheet course={course} />);
+              sheets?.addSheet(({ close, setOnClose }) => (
+                <CourseEditSheet course={course} setOnClose={setOnClose} />
+              ));
             }}
           >
             <Header header={courseDisplayName}>

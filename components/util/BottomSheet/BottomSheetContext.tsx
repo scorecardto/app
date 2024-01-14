@@ -2,6 +2,7 @@ import React from "react";
 
 type SheetParams = {
   close(): void;
+  setOnClose(onClose: () => void): void;
 };
 
 type Sheet = (p: SheetParams) => React.ReactNode;

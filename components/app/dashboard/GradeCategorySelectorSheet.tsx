@@ -7,6 +7,7 @@ import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
+import { TextInput } from "react-native-gesture-handler";
 
 const starred = require("../../../assets/starred.svg");
 

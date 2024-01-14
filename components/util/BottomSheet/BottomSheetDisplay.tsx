@@ -3,14 +3,22 @@ import BottomSheetContext from "./BottomSheetContext";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import BottomSheetBase from "@gorhom/bottom-sheet";
 import BottomSheetBackdrop from "./BottomSheetBackdrop";
-import { TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, TouchableWithoutFeedback, View } from "react-native";
 
 export default function BottomSheetDisplay(props: {}) {
   const sheets = useContext(BottomSheetContext);
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
+  const [customOnClose, setCustomOnClose] = useState<(() => void) | undefined>(
+    undefined
+  );
+
   function onClose() {
+    customOnClose?.();
+
+    setCustomOnClose(undefined);
+
     if (sheets?.sheets && sheets?.sheets?.length > 0 && sheets.next()) {
       bottomSheetRef?.current?.expand();
     }
@@ -28,6 +36,9 @@ export default function BottomSheetDisplay(props: {}) {
         sheets.sheets[0]({
           close: () => {
             bottomSheetRef?.current?.close();
+          },
+          setOnClose: (onClose: () => void) => {
+            setCustomOnClose(onClose);
           },
         })
       );
@@ -59,9 +70,9 @@ export default function BottomSheetDisplay(props: {}) {
         )}
       </TouchableWithoutFeedback>
       <BottomSheetBase
+        keyboardBlurBehavior="restore"
         ref={bottomSheetRef}
         snapPoints={["35%"]}
-        enablePanDownToClose={true}
         containerStyle={{
           zIndex: 100,
         }}
@@ -69,8 +80,8 @@ export default function BottomSheetDisplay(props: {}) {
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
         }}
+        keyboardBehavior="interactive"
         onClose={onClose}
-        index={-1}
         backdropComponent={BottomSheetBackdrop}
       >
         {currentSheet}

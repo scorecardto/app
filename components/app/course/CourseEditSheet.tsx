@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import React, { useContext, useState } from "react";
+import { View, Text, Keyboard } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
 import SmallText from "../../text/SmallText";
@@ -8,7 +8,10 @@ import CourseColorChanger from "./CourseColorChanger";
 import { Course, DataContext } from "scorecard-types";
 import { saveCourseSettings } from "../../../lib/saveCourseSettings";
 
-export default function CourseEditSheet(props: { course: Course }) {
+export default function CourseEditSheet(props: {
+  course: Course;
+  setOnClose: (onClose: () => void) => void;
+}) {
   const { colors } = useTheme();
 
   const dataContext = useContext(DataContext);
@@ -18,6 +21,38 @@ export default function CourseEditSheet(props: { course: Course }) {
   const [name, setName] = useState(
     courseSettings.displayName || props.course.name
   );
+
+  const saveName = useCallback(
+    (n: string) => {
+      if (n === "") {
+        setName(props.course.name);
+        return;
+      }
+
+      const newSettings = {
+        ...dataContext.courseSettings,
+        [props.course.key]: {
+          ...courseSettings,
+          displayName: n,
+        },
+      };
+
+      dataContext.setCourseSettings(newSettings);
+
+      saveCourseSettings(newSettings);
+    },
+    [courseSettings]
+  );
+
+  useEffect(() => {
+    props.setOnClose(() => () => {
+      saveName(name);
+    });
+  }, [name]);
+
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, [courseSettings]);
   return (
     <View>
       <BottomSheetHeader>Course Details</BottomSheetHeader>
@@ -30,22 +65,7 @@ export default function CourseEditSheet(props: { course: Course }) {
           value={name}
           setValue={setName}
           onFinish={() => {
-            if (name === "") {
-              setName(props.course.name);
-              return;
-            }
-
-            const newSettings = {
-              ...dataContext.courseSettings,
-              [props.course.key]: {
-                ...courseSettings,
-                displayName: name,
-              },
-            };
-
-            dataContext.setCourseSettings(newSettings);
-
-            saveCourseSettings(newSettings);
+            saveName(name);
           }}
         />
         <CourseColorChanger

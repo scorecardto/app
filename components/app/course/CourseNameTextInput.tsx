@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTheme } from "@react-navigation/native";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
@@ -13,6 +13,7 @@ export default function CourseNameTextInput(props: {
   const { colors } = useTheme();
 
   const ref = useRef(null);
+
   return (
     <View>
       <SmallText style={{ fontSize: 16, marginBottom: 8 }}>Name</SmallText>
@@ -43,6 +44,7 @@ export default function CourseNameTextInput(props: {
             props.setValue(t);
           }}
           onEndEditing={props.onFinish}
+          onBlur={props.onFinish}
           returnKeyType="done"
           textContentType="none"
           autoCorrect={false}
