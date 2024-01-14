@@ -106,12 +106,14 @@ const EditConnectAccountScreen = (props: {
         <View>
           <TouchableOpacity
             onPress={() => {
-              props.navigation.navigate("editSelectDistrict");
+              props.navigation.navigate("editDistrict");
             }}
           >
             <View>
               <SmallText>
-                You're logging with an {district.name} account.
+                {district.name
+                  ? `You're logging with an {district.name} account.`
+                  : `You're logging in with your existing district.`}
               </SmallText>
               <SmallText
                 style={{

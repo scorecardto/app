@@ -63,6 +63,7 @@ export default function EditDistrictScreen(props: {
             type="username"
           />
           <FlatList
+            scrollEnabled={false}
             style={{
               borderWidth: 1,
               borderColor: colors.borderNeutral,
