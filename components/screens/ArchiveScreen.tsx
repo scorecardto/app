@@ -66,6 +66,7 @@ export default function ArchiveScreen() {
         </View>
       </ScrollView>
       <HeaderBanner
+        label="Archive"
         show={scrollProgress > 80}
         onPress={() => {
           scrollViewRef.current?.scrollTo({

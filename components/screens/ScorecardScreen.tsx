@@ -12,11 +12,13 @@ import Foundation from "@expo/vector-icons/Foundation";
 import ArchiveScreen from "./ArchiveScreen";
 import AccountScreen from "./account/AccountScreen";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
+import useFooterHeight from "../util/hooks/useFooterHeight";
 
 const Tab = createBottomTabNavigator();
 
 export default function ScorecardScreen() {
   const insets = React.useContext(SafeAreaInsetsContext);
+  const height = useFooterHeight();
   return (
     <Tab.Navigator
       tabBar={(props) => (
@@ -27,7 +29,7 @@ export default function ScorecardScreen() {
             left: 0,
             right: 0,
             backgroundColor: "#fff",
-            height: 68 + (insets?.bottom ?? 0) / 2,
+            height: height,
             borderTopWidth: 0,
             elevation: 0,
             display: "flex",

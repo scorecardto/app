@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 export default function HeaderBanner(props: {
   show: boolean;
   onPress: () => void;
+  label: string;
 }) {
   const { colors } = useTheme();
   const insets = React.useContext(SafeAreaInsetsContext);
@@ -61,7 +62,7 @@ export default function HeaderBanner(props: {
               fontSize: 18,
             }}
           >
-            Scorecard
+            {props.label}
           </Text>
         </MediumText>
       </TouchableOpacity>

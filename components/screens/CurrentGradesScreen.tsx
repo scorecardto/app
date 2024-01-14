@@ -6,6 +6,7 @@ import {
   RefreshControl,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
@@ -25,6 +26,8 @@ import GradeCategorySelectorSheet from "../app/dashboard/GradeCategorySelectorSh
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
 import { ActionSheetRef } from "react-native-actions-sheet";
 import { SafeAreaView } from "react-native-safe-area-context";
+import useFooterHeight from "../util/hooks/useFooterHeight";
+import HeaderBanner from "../text/HeaderBanner";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -61,75 +64,107 @@ const CurrentGradesScreen = (props: {
 
   const onCurrentGradingPeriod =
     dataContext.gradeCategory === dataContext.data?.gradeCategory;
+
+  const footerHeight = useFooterHeight();
+
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <TouchableOpacity
+    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <HeaderBanner
+        label={
+          dataContext.data?.gradeCategoryNames[dataContext.gradeCategory] ??
+          "Your Scorecard"
+        }
+        show={scrollProgress > 80}
         onPress={() => {
-          selector.current?.show();
-        }}
-      >
-        <Header
-          header={
-            onCurrentGradingPeriod
-              ? "Your Scorecard"
-              : dataContext.data?.gradeCategoryNames[
-                  dataContext.gradeCategory
-                ] ?? "Other Grading Period"
-          }
-          subheader={
-            onCurrentGradingPeriod
-              ? dataContext.data?.gradeCategoryNames[
-                  dataContext.gradeCategory || 0
-                ]
-              : "Tap to change grading period"
-          }
-        />
-      </TouchableOpacity>
-
-      {dataContext?.data?.courses && (
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          data={dataContext.data.courses}
-          renderItem={({ item }) => (
-            <CourseCard
-              onClick={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                props.navigation.navigate("course", {
-                  key: item.key,
-                });
-              }}
-              onHold={() => {}}
-              course={item}
-              gradingPeriod={dataContext.gradeCategory || 0}
-            />
-          )}
-          keyExtractor={(item) => item.key}
-        />
-      )}
-
-      <TouchableOpacity
-        onPress={() => {
-          Storage.getItem({ key: "records" }).then(async (records) => {
-            if (!records) return;
-            await Storage.setItem({
-              key: "records",
-              value: JSON.stringify(JSON.parse(records).slice(0, 1)),
-            });
+          scrollViewRef.current?.scrollTo({
+            y: 0,
+            animated: true,
           });
         }}
+      />
+      <ScrollView
+        style={{ height: "100%" }}
+        ref={scrollViewRef}
+        onScroll={(e) => {
+          setScrollProgress(e.nativeEvent.contentOffset.y);
+        }}
+        scrollEventThrottle={16}
       >
-        <Text
+        <View
           style={{
-            textAlign: "center",
-            fontSize: 12,
+            paddingBottom: footerHeight + 32,
           }}
         >
-          Clear Record History
-        </Text>
-      </TouchableOpacity>
-      <GradeCategorySelectorSheet ref={selector} />
+          <TouchableOpacity
+            onPress={() => {
+              selector.current?.show();
+            }}
+          >
+            <Header
+              header={
+                onCurrentGradingPeriod
+                  ? "Your Scorecard"
+                  : dataContext.data?.gradeCategoryNames[
+                      dataContext.gradeCategory
+                    ] ?? "Other Grading Period"
+              }
+              subheader={
+                onCurrentGradingPeriod
+                  ? dataContext.data?.gradeCategoryNames[
+                      dataContext.gradeCategory || 0
+                    ]
+                  : "Tap to change grading period"
+              }
+            />
+          </TouchableOpacity>
+
+          {dataContext?.data?.courses && (
+            <FlatList
+              scrollEnabled={false}
+              data={dataContext.data.courses}
+              renderItem={({ item }) => (
+                <CourseCard
+                  onClick={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    props.navigation.navigate("course", {
+                      key: item.key,
+                    });
+                  }}
+                  onHold={() => {}}
+                  course={item}
+                  gradingPeriod={dataContext.gradeCategory || 0}
+                />
+              )}
+              keyExtractor={(item) => item.key}
+            />
+          )}
+
+          <TouchableOpacity
+            onPress={() => {
+              Storage.getItem({ key: "records" }).then(async (records) => {
+                if (!records) return;
+                await Storage.setItem({
+                  key: "records",
+                  value: JSON.stringify(JSON.parse(records).slice(0, 1)),
+                });
+              });
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 12,
+              }}
+            >
+              Clear Record History
+            </Text>
+          </TouchableOpacity>
+          <GradeCategorySelectorSheet ref={selector} />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
