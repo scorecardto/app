@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { Course, DataContext } from "scorecard-types";
 import Header from "../text/Header";
-// import { RadialGradient } from "react-native-gradients";
+import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { ThemeProvider, useTheme } from "@react-navigation/native";
 // import Gradebook from "../app/dashboard/gradebook/Gradebook";
@@ -172,13 +172,13 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             height: "100%",
           }}
         >
-          {/* <RadialGradient
+          <RadialGradient
             x="50%"
             y="0"
             rx="384"
             ry="288"
             colorList={colorList}
-          ></RadialGradient> */}
+          ></RadialGradient>
         </View>
       </SafeAreaView>
       <BottomSheetDisplay />

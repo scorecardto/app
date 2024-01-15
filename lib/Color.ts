@@ -16,7 +16,7 @@ const AccentsMatrix: {
     dark: {
       preview: "#FF505A",
       primary: "#D72B3F",
-      gradientCenter: "#FFDDE3",
+      gradientCenter: "#971726",
       secondary: "#3C1D27",
     },
   },
@@ -30,7 +30,7 @@ const AccentsMatrix: {
     dark: {
       preview: "#FF9950",
       primary: "#FF7135",
-      gradientCenter: "#FFD6C9",
+      gradientCenter: "#C35200",
       secondary: "#4C2B13",
     },
   },
@@ -44,7 +44,7 @@ const AccentsMatrix: {
     dark: {
       preview: "#FFD465",
       primary: "#FFA800",
-      gradientCenter: "#FFF3C9",
+      gradientCenter: "#A57D17",
       secondary: "#352C12",
     },
   },
@@ -58,7 +58,7 @@ const AccentsMatrix: {
     dark: {
       preview: "#1CE082",
       primary: "#00874F",
-      gradientCenter: "#C7FFE7",
+      gradientCenter: "#1A7D42",
       secondary: "#143232",
     },
   },
@@ -72,7 +72,7 @@ const AccentsMatrix: {
     dark: {
       preview: "#4A93FF",
       primary: "#2B99D7",
-      gradientCenter: "#D7F5FF",
+      gradientCenter: "#1174BB",
       secondary: "#1A3249",
     },
   },
@@ -86,7 +86,7 @@ const AccentsMatrix: {
     dark: {
       preview: "#BA49FF",
       primary: "#AD79EE",
-      gradientCenter: "#D6C7FF",
+      gradientCenter: "#6726B9",
       secondary: "#371A49",
     },
   },
