@@ -52,6 +52,7 @@ import GradebookSettingsScreen from "./components/screens/account/GradebookSetti
 import EditDistrictScreen from "./components/screens/account/EditDistrictScreen";
 import EditConnectAccountScreen from "./components/screens/account/EditConnectAccountScreen";
 import UserRank from "./lib/types/UserRank";
+import InviteOthersScreen from "./components/screens/InviteOthersScreen";
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
@@ -322,6 +323,13 @@ export default function App() {
                     <Stack.Screen
                       name="course"
                       component={CourseScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="inviteOthers"
+                      component={InviteOthersScreen}
                       options={{
                         headerShown: false,
                       }}

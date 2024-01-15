@@ -31,12 +31,18 @@
     },
     "extra": {
       "eas": {
-        "projectId": "3ed66a98-6e32-4fc0-a3bd-3cdcab09aa47"
+        "projectId": "6bea7059-7418-45b5-979f-2df2a8758239"
       }
     },
     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Find and invite friends to Scorecard"
+        }
+      ],
       [
         "expo-build-properties",
         {

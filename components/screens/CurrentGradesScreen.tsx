@@ -29,6 +29,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
 import HeaderBanner from "../text/HeaderBanner";
 import InviteOthersCard from "../app/dashboard/InviteOthersCard";
+import MoreFeaturesSheet from "../app/vip/MoreFeaturesSheet";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -71,109 +72,117 @@ const CurrentGradesScreen = (props: {
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const sheets = useContext(BottomSheetContext);
+
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-      <HeaderBanner
-        label={
-          dataContext.data?.gradeCategoryNames[dataContext.gradeCategory] ??
-          "Your Scorecard"
-        }
-        show={scrollProgress > 80}
-        onPress={() => {
-          scrollViewRef.current?.scrollTo({
-            y: 0,
-            animated: true,
-          });
-        }}
-      />
-      <ScrollView
-        style={{ height: "100%" }}
-        ref={scrollViewRef}
-        onScroll={(e) => {
-          setScrollProgress(e.nativeEvent.contentOffset.y);
-        }}
-        scrollEventThrottle={16}
-      >
-        <View
-          style={{
-            paddingBottom: footerHeight + 32,
+    <>
+      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+        <HeaderBanner
+          label={
+            dataContext.data?.gradeCategoryNames[dataContext.gradeCategory] ??
+            "Your Scorecard"
+          }
+          show={scrollProgress > 80}
+          onPress={() => {
+            scrollViewRef.current?.scrollTo({
+              y: 0,
+              animated: true,
+            });
           }}
+        />
+        <ScrollView
+          style={{ height: "100%" }}
+          ref={scrollViewRef}
+          onScroll={(e) => {
+            setScrollProgress(e.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}
         >
-          <TouchableOpacity
-            onPress={() => {
-              selector.current?.show();
+          <View
+            style={{
+              paddingBottom: footerHeight + 32,
             }}
           >
-            <Header
-              header={
-                onCurrentGradingPeriod
-                  ? "Your Scorecard"
-                  : dataContext.data?.gradeCategoryNames[
-                      dataContext.gradeCategory
-                    ] ?? "Other Grading Period"
-              }
-              subheader={
-                onCurrentGradingPeriod
-                  ? dataContext.data?.gradeCategoryNames[
-                      dataContext.gradeCategory || 0
-                    ]
-                  : "Tap to change grading period"
-              }
-            />
-          </TouchableOpacity>
-
-          {mobileData.userRank === "DEFAULT" && (
-            <InviteOthersCard
-              invitesLeft={3}
-              onClick={() => {}}
-              onHold={() => {}}
-            />
-          )}
-          {dataContext?.data?.courses && (
-            <FlatList
-              scrollEnabled={false}
-              data={dataContext.data.courses}
-              renderItem={({ item }) => (
-                <CourseCard
-                  onClick={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    props.navigation.navigate("course", {
-                      key: item.key,
-                    });
-                  }}
-                  onHold={() => {}}
-                  course={item}
-                  gradingPeriod={dataContext.gradeCategory || 0}
-                />
-              )}
-              keyExtractor={(item) => item.key}
-            />
-          )}
-
-          <TouchableOpacity
-            onPress={() => {
-              Storage.getItem({ key: "records" }).then(async (records) => {
-                if (!records) return;
-                await Storage.setItem({
-                  key: "records",
-                  value: JSON.stringify(JSON.parse(records).slice(0, 1)),
-                });
-              });
-            }}
-          >
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 12,
+            <TouchableOpacity
+              onPress={() => {
+                selector.current?.show();
               }}
             >
-              Clear Record History
-            </Text>
-          </TouchableOpacity>
-          <GradeCategorySelectorSheet ref={selector} />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+              <Header
+                header={
+                  onCurrentGradingPeriod
+                    ? "Your Scorecard"
+                    : dataContext.data?.gradeCategoryNames[
+                        dataContext.gradeCategory
+                      ] ?? "Other Grading Period"
+                }
+                subheader={
+                  onCurrentGradingPeriod
+                    ? dataContext.data?.gradeCategoryNames[
+                        dataContext.gradeCategory || 0
+                      ]
+                    : "Tap to change grading period"
+                }
+              />
+            </TouchableOpacity>
+
+            {mobileData.userRank === "DEFAULT" && (
+              <InviteOthersCard
+                invitesLeft={3}
+                onClick={() => {
+                  sheets?.addSheet(() => {
+                    return <MoreFeaturesSheet />;
+                  });
+                }}
+                onHold={() => {}}
+              />
+            )}
+            {dataContext?.data?.courses && (
+              <FlatList
+                scrollEnabled={false}
+                data={dataContext.data.courses}
+                renderItem={({ item }) => (
+                  <CourseCard
+                    onClick={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      props.navigation.navigate("course", {
+                        key: item.key,
+                      });
+                    }}
+                    onHold={() => {}}
+                    course={item}
+                    gradingPeriod={dataContext.gradeCategory || 0}
+                  />
+                )}
+                keyExtractor={(item) => item.key}
+              />
+            )}
+
+            <TouchableOpacity
+              onPress={() => {
+                Storage.getItem({ key: "records" }).then(async (records) => {
+                  if (!records) return;
+                  await Storage.setItem({
+                    key: "records",
+                    value: JSON.stringify(JSON.parse(records).slice(0, 1)),
+                  });
+                });
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 12,
+                }}
+              >
+                Clear Record History
+              </Text>
+            </TouchableOpacity>
+            <GradeCategorySelectorSheet ref={selector} />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 };
 
