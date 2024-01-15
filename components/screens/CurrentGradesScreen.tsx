@@ -28,6 +28,7 @@ import { ActionSheetRef } from "react-native-actions-sheet";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
 import HeaderBanner from "../text/HeaderBanner";
+import InviteOthersCard from "../app/dashboard/InviteOthersCard";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -121,6 +122,13 @@ const CurrentGradesScreen = (props: {
             />
           </TouchableOpacity>
 
+          {mobileData.userRank === "DEFAULT" && (
+            <InviteOthersCard
+              invitesLeft={3}
+              onClick={() => {}}
+              onHold={() => {}}
+            />
+          )}
           {dataContext?.data?.courses && (
             <FlatList
               scrollEnabled={false}

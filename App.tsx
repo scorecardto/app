@@ -51,7 +51,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import GradebookSettingsScreen from "./components/screens/account/GradebookSettingsScreen";
 import EditDistrictScreen from "./components/screens/account/EditDistrictScreen";
 import EditConnectAccountScreen from "./components/screens/account/EditConnectAccountScreen";
-
+import UserRank from "./lib/types/UserRank";
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
@@ -106,6 +106,7 @@ export default function App() {
 
   const [userReady, setUserReady] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+  const [userRank, setUserRank] = useState<UserRank>("DEFAULT");
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setUser(user);
@@ -141,6 +142,8 @@ export default function App() {
       setEnableGradebookNotifications,
       gradebookCheckInterval,
       setGradebookCheckInterval,
+      userRank,
+      setUserRank,
     }),
     [
       district,
@@ -165,6 +168,8 @@ export default function App() {
       setEnableGradebookNotifications,
       gradebookCheckInterval,
       setGradebookCheckInterval,
+      userRank,
+      setUserRank,
     ]
   );
 
