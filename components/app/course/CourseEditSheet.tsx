@@ -49,7 +49,7 @@ export default function CourseEditSheet(props: {
     props.setOnClose(() => () => {
       saveName(name);
     });
-  }, [name]);
+  }, [name, courseSettings]);
 
   useEffect(() => {
     Keyboard.dismiss();

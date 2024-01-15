@@ -43,6 +43,7 @@ export default function AccountSubpageScreen(props: {
       marginTop: 8,
       fontSize: 28,
       fontWeight: "bold",
+      color: colors.primary,
     },
     topScrollHeader: {
       backgroundColor: colors.secondary,

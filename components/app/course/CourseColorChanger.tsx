@@ -17,7 +17,11 @@ export default function CourseColorChanger(props: {
         marginBottom: 20,
       }}
     >
-      <SmallText style={{ fontSize: 16, marginBottom: 8 }}>Color</SmallText>
+      <SmallText
+        style={{ fontSize: 16, marginBottom: 8, color: theme.colors.primary }}
+      >
+        Color
+      </SmallText>
       <View
         style={{
           display: "flex",

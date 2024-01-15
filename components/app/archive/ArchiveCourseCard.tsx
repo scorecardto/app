@@ -14,7 +14,7 @@ export default function ArchiveCourseCard(props: {
     <View
       style={{
         width: "100%",
-        backgroundColor: "#fff",
+        backgroundColor: colors.card,
         borderRadius: 10,
         overflow: "hidden",
         marginBottom: 20,
@@ -31,6 +31,7 @@ export default function ArchiveCourseCard(props: {
         <MediumText
           style={{
             fontSize: 16,
+            color: colors.primary,
           }}
         >
           {data.courseSettings[props.course.key]?.displayName ||
@@ -66,7 +67,7 @@ export default function ArchiveCourseCard(props: {
                     style={{
                       padding: 8,
                       width: "100%",
-                      backgroundColor: "white",
+                      backgroundColor: colors.card,
                       height: 52,
                     }}
                   >

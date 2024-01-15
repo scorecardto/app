@@ -24,7 +24,9 @@ export default function GeneralSettingsScreen(props: {
       footerText="These are your general settings."
     >
       <View style={{ marginBottom: 12 }}>
-        <MediumText style={{ marginBottom: 16 }}>Edit your name</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Edit your name
+        </MediumText>
         <View
           style={{
             width: "100%",
@@ -56,13 +58,17 @@ export default function GeneralSettingsScreen(props: {
       </View>
 
       <View style={{ marginBottom: 36 }}>
-        <MediumText style={{ marginBottom: 16 }}>Your phone number</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Your phone number
+        </MediumText>
         <SmallText style={{ marginBottom: 16, color: colors.text }}>
           To edit, reset your account data.
         </SmallText>
         <LockedTextInput>+1 (555) 555-5555</LockedTextInput>
       </View>
-      <MediumText style={{ marginBottom: 16 }}>Reset Account Data</MediumText>
+      <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+        Reset Account Data
+      </MediumText>
       <SmallText style={{ marginBottom: 16, color: colors.text }}>
         This clears data from your device, but does not delete your account.
       </SmallText>

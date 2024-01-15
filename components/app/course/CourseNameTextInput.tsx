@@ -16,7 +16,11 @@ export default function CourseNameTextInput(props: {
 
   return (
     <View>
-      <SmallText style={{ fontSize: 16, marginBottom: 8 }}>Name</SmallText>
+      <SmallText
+        style={{ fontSize: 16, marginBottom: 8, color: colors.primary }}
+      >
+        Name
+      </SmallText>
       <View
         style={{
           backgroundColor: colors.backgroundNeutral,
@@ -52,6 +56,7 @@ export default function CourseNameTextInput(props: {
           style={{
             fontSize: 20,
             fontFamily: "DMSans_500Medium",
+            color: colors.primary,
             paddingVertical: 16,
           }}
         />

@@ -4,11 +4,14 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import BottomSheetBase, { BottomSheetView } from "@gorhom/bottom-sheet";
 import BottomSheetBackdrop from "./BottomSheetBackdrop";
 import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
+import { useTheme } from "@react-navigation/native";
 
 export default function BottomSheetDisplay(props: {}) {
   const sheets = useContext(BottomSheetContext);
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
+
+  const { colors } = useTheme();
 
   const [customOnClose, setCustomOnClose] = useState<(() => void) | undefined>(
     undefined
@@ -78,6 +81,7 @@ export default function BottomSheetDisplay(props: {}) {
           zIndex: 100,
         }}
         backgroundStyle={{
+          backgroundColor: colors.card,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,
         }}

@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
-import BottomSheetBase from "@gorhom/bottom-sheet";
+import BottomSheetBase, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Assignment } from "scorecard-types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import AssignmentEdits from "../../../../lib/types/AssignmentEdits";
@@ -26,7 +26,7 @@ export default function AssignmentSheet(props: {
     props.currentEdits?.pointsPossible != null;
 
   return (
-    <View>
+    <BottomSheetView>
       <BottomSheetHeader>{props.assignment.name!}</BottomSheetHeader>
       <View
         style={{
@@ -99,6 +99,6 @@ export default function AssignmentSheet(props: {
           />
         </View> */}
       </View>
-    </View>
+    </BottomSheetView>
   );
 }

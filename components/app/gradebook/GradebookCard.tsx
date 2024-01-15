@@ -1,6 +1,6 @@
-import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import React from "react";
-import {useTheme} from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
 // import AddButton from "./AddButton";
@@ -10,9 +10,9 @@ import TinyText from "../../text/TinyText";
 
 export default function GradebookCard(props: {
   title: string;
-  grade?: {text: string, red: boolean};
+  grade?: { text: string; red: boolean };
   children: React.ReactNode;
-  bottom: {[idx: string]: {text: string, red: boolean}};
+  bottom: { [idx: string]: { text: string; red: boolean } };
   buttonAction(): void;
   removable: boolean;
   remove(): void;
@@ -34,10 +34,11 @@ export default function GradebookCard(props: {
     },
     headerText: {
       fontSize: 20,
+      color: colors.primary,
     },
     headerGrade: {
       fontSize: 17,
-        color: props.grade?.red ? 'red' : undefined,
+      color: props.grade?.red ? "red" : colors.primary,
     },
     footer: {
       marginTop: 12,
@@ -57,11 +58,15 @@ export default function GradebookCard(props: {
   });
 
   return (
-      <View>
-        <ScrollView style={styles.wrapper}>
+    <View>
+      <ScrollView style={styles.wrapper}>
         <View style={styles.header}>
           <MediumText style={styles.headerText}>{props.title}</MediumText>
-          {props.grade && (<MediumText style={styles.headerGrade}>{props.grade.text}</MediumText>)}
+          {props.grade && (
+            <MediumText style={styles.headerGrade}>
+              {props.grade.text}
+            </MediumText>
+          )}
         </View>
         {props.children}
         <View style={styles.footer}>
@@ -69,12 +74,20 @@ export default function GradebookCard(props: {
             {Object.keys(props.bottom).map((key, idx) => {
               return (
                 <React.Fragment key={idx}>
-                  <View style={{flexDirection: 'row'}}>
-                    <SmallText style={styles.footerText}>{`${key}:`}&nbsp;</SmallText>
-                    <SmallText style={{
-                      ...styles.footerText,
-                      color: props.bottom[key].red ? 'red' : styles.footerText.color,
-                    }}>{props.bottom[key].text}</SmallText>
+                  <View style={{ flexDirection: "row" }}>
+                    <SmallText style={styles.footerText}>
+                      {`${key}:`}&nbsp;
+                    </SmallText>
+                    <SmallText
+                      style={{
+                        ...styles.footerText,
+                        color: props.bottom[key].red
+                          ? "red"
+                          : styles.footerText.color,
+                      }}
+                    >
+                      {props.bottom[key].text}
+                    </SmallText>
                   </View>
                 </React.Fragment>
               );
@@ -83,31 +96,42 @@ export default function GradebookCard(props: {
           <AddButton onPress={props.buttonAction} />
         </View>
       </ScrollView>
-        {props.removable && (
-            <TouchableOpacity style={{
-              borderColor: 'red',
-              borderStyle: 'solid',
-              borderWidth: 0.5,
-              borderRadius: 24,
-              display: 'flex',
-              flexDirection: 'row',
-              alignSelf: 'flex-start',
-              alignItems: 'center',
-              marginTop: 10,
-              marginLeft: 3,
-            }} onPress={props.remove}>
-              <TinyText style={{
-                color: 'red',
-                paddingVertical: 8,
-                paddingLeft: 12,
-                paddingRight: 6,
-              }}>Remove</TinyText>
-              <MaterialIcons style={{
-                color: 'red',
-                paddingRight: 8,
-              }} name={"delete"} size={12} />
-            </TouchableOpacity>
-        )}
-      </View>
+      {props.removable && (
+        <TouchableOpacity
+          style={{
+            borderColor: "red",
+            borderStyle: "solid",
+            borderWidth: 0.5,
+            borderRadius: 24,
+            display: "flex",
+            flexDirection: "row",
+            alignSelf: "flex-start",
+            alignItems: "center",
+            marginTop: 10,
+            marginLeft: 3,
+          }}
+          onPress={props.remove}
+        >
+          <TinyText
+            style={{
+              color: "red",
+              paddingVertical: 8,
+              paddingLeft: 12,
+              paddingRight: 6,
+            }}
+          >
+            Remove
+          </TinyText>
+          <MaterialIcons
+            style={{
+              color: "red",
+              paddingRight: 8,
+            }}
+            name={"delete"}
+            size={12}
+          />
+        </TouchableOpacity>
+      )}
+    </View>
   );
 }

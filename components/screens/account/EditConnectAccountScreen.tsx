@@ -30,7 +30,7 @@ const EditConnectAccountScreen = (props: {
 
   const district = props.route.params.district;
 
-  const { accents } = useTheme();
+  const { accents, colors } = useTheme();
 
   const isKeyboardVisible = useKeyboardVisible();
 
@@ -110,9 +110,13 @@ const EditConnectAccountScreen = (props: {
             }}
           >
             <View>
-              <SmallText>
+              <SmallText
+                style={{
+                  color: colors.primary,
+                }}
+              >
                 {district.name
-                  ? `You're logging with an {district.name} account.`
+                  ? `You're logging with an ${district.name} account.`
                   : `You're logging in with your existing district.`}
               </SmallText>
               <SmallText

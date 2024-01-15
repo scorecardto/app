@@ -28,7 +28,9 @@ export default function GradebookSettingsScreen(props: {
       footerText="These are your general settings."
     >
       <View style={{ marginBottom: 24 }}>
-        <MediumText style={{ marginBottom: 16 }}>Edit your login</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Edit your login
+        </MediumText>
         <LoginInputCard
           onPressDistrict={() => {
             props.navigation.navigate("editDistrict");
@@ -49,7 +51,9 @@ export default function GradebookSettingsScreen(props: {
         />
       </View>
       <View style={{ marginBottom: 36 }}>
-        <MediumText style={{ marginBottom: 16 }}>Notifications</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Notifications
+        </MediumText>
         <ToggleInput
           label="New Grades"
           value={mobileData.enableGradebookNotifications}
@@ -63,7 +67,7 @@ export default function GradebookSettingsScreen(props: {
         />
       </View>
       <View style={{ marginBottom: 24 }}>
-        <MediumText style={{ marginBottom: 16 }}>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
           Check for New Grades
         </MediumText>
         <SelectInput

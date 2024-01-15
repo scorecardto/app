@@ -13,12 +13,13 @@ import ArchiveScreen from "./ArchiveScreen";
 import AccountScreen from "./account/AccountScreen";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
-
+import { useTheme } from "@react-navigation/native";
 const Tab = createBottomTabNavigator();
 
 export default function ScorecardScreen() {
   const insets = React.useContext(SafeAreaInsetsContext);
   const height = useFooterHeight();
+  const { colors } = useTheme();
   return (
     <Tab.Navigator
       tabBar={(props) => (
@@ -28,7 +29,7 @@ export default function ScorecardScreen() {
             bottom: 0,
             left: 0,
             right: 0,
-            backgroundColor: "#fff",
+            backgroundColor: colors.card,
             height: height,
             borderTopWidth: 0,
             elevation: 0,
@@ -97,7 +98,7 @@ export default function ScorecardScreen() {
                   {options?.tabBarIcon?.({
                     focused: isFocused,
                     size: 28,
-                    color: isFocused ? "#000" : "#666",
+                    color: isFocused ? colors.primary : colors.text,
                   })}
                 </View>
               </TouchableWithoutFeedback>
@@ -117,7 +118,7 @@ export default function ScorecardScreen() {
             <Ionicons
               name="person-circle"
               size={size}
-              color={focused ? "#000" : "#666"}
+              color={focused ? colors.primary : colors.text}
             />
           ),
         }}
@@ -132,7 +133,7 @@ export default function ScorecardScreen() {
             <Foundation
               name="home"
               size={size}
-              color={focused ? "#000" : "#666"}
+              color={focused ? colors.primary : colors.text}
             />
           ),
         }}
@@ -147,7 +148,7 @@ export default function ScorecardScreen() {
             <Ionicons
               name="time"
               size={size}
-              color={focused ? "#000" : "#666"}
+              color={focused ? colors.primary : colors.text}
             />
           ),
         }}

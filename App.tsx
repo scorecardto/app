@@ -200,6 +200,17 @@ export default function App() {
     return null;
   }
 
+  const headerOptions = {
+    headerStyle: {
+      backgroundColor:
+        appearance === "dark"
+          ? Color.DarkTheme.colors.secondary
+          : Color.LightTheme.colors.secondary,
+    },
+    headerShadowVisible: false,
+    headerTitle: "",
+  };
+
   return (
     <DataContext.Provider value={dataContext}>
       <MobileDataContext.Provider value={mobileData}>
@@ -268,48 +279,32 @@ export default function App() {
                       name="generalSettings"
                       component={GeneralSettingsScreen}
                       options={{
-                        headerStyle: {
-                          backgroundColor: Color.LightTheme.colors.secondary,
-                        },
+                        ...headerOptions,
                         headerBackTitle: "All Settings",
-                        headerTitle: "",
-                        headerShadowVisible: false,
                       }}
                     />
                     <Stack.Screen
                       name="gradebookSettings"
                       component={GradebookSettingsScreen}
                       options={{
-                        headerStyle: {
-                          backgroundColor: Color.LightTheme.colors.secondary,
-                        },
+                        ...headerOptions,
                         headerBackTitle: "All Settings",
-                        headerTitle: "",
-                        headerShadowVisible: false,
                       }}
                     />
                     <Stack.Screen
                       name="editDistrict"
                       component={EditDistrictScreen}
                       options={{
-                        headerStyle: {
-                          backgroundColor: Color.LightTheme.colors.secondary,
-                        },
+                        ...headerOptions,
                         headerBackTitle: "Back",
-                        headerTitle: "",
-                        headerShadowVisible: false,
                       }}
                     />
                     <Stack.Screen
                       name="editConnectAccount"
                       component={EditConnectAccountScreen}
                       options={{
-                        headerStyle: {
-                          backgroundColor: Color.LightTheme.colors.secondary,
-                        },
+                        ...headerOptions,
                         headerBackTitle: "Back",
-                        headerTitle: "",
-                        headerShadowVisible: false,
                       }}
                     />
                     <Stack.Screen
