@@ -31,13 +31,15 @@ const AssignmentTileTextInput = forwardRef(
           <BottomSheetTextInput
             ref={ref}
             value={props.value}
+            clearTextOnFocus={true}
             onFocus={() => {
-              setFocus(true);
               props.setValue("");
+              setFocus(true);
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             }}
             onBlur={() => {
               setFocus(false);
+              props.onFinish();
             }}
             onChangeText={(t) => {
               props.setValue(t);
