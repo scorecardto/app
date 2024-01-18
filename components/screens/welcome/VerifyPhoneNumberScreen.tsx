@@ -50,7 +50,7 @@ export default function VerifyPhoneNumberScreen(props: {
             label="Verification Code"
             setValue={setCode}
             value={code}
-            type="phone-number"
+            type="verification-code"
           />
           <Button
             onPress={() => {

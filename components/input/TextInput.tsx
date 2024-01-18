@@ -9,7 +9,13 @@ export const TextInput = forwardRef<
     label: string;
     value: string;
     setValue: (text: string) => void;
-    type: "username" | "password" | "phone-number" | "first-name" | "last-name";
+    type:
+      | "username"
+      | "password"
+      | "phone-number"
+      | "first-name"
+      | "last-name"
+      | "verification-code";
     inputProps?: ReactNative.TextInputProps;
     clearTextOnFocus?: boolean;
   }
@@ -63,7 +69,14 @@ export const TextInput = forwardRef<
         {...(props.type === "password" && {
           secureTextEntry: true,
         })}
-        keyboardType={props.type === "phone-number" ? "phone-pad" : "default"}
+        returnKeyType={"done"}
+        keyboardType={
+          props.type === "phone-number"
+            ? "phone-pad"
+            : props.type === "verification-code"
+            ? "number-pad"
+            : "default"
+        }
         autoComplete={
           props.type === "phone-number"
             ? "tel"
@@ -80,6 +93,8 @@ export const TextInput = forwardRef<
             ? "givenName"
             : props.type === "last-name"
             ? "familyName"
+            : props.type === "verification-code"
+            ? "oneTimeCode"
             : "none"
         }
         {...props.inputProps}

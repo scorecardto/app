@@ -2,7 +2,8 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "autoIncrement": true
     },
     "development-simulator": {
       "developmentClient": true,
@@ -12,8 +13,11 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "autoIncrement": true
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true
+    }
   }
 }
