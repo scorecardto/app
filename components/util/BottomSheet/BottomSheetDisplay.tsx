@@ -81,7 +81,7 @@ export default function BottomSheetDisplay(props: {}) {
                   top: 0,
                   left: 0,
                   position: "absolute",
-                  zIndex: currentSheet != null ? 999 : -1,
+                  zIndex: currentSheet != null ? 9 : -1,
                 }}
               >
                 <></>
@@ -94,7 +94,11 @@ export default function BottomSheetDisplay(props: {}) {
             keyboardBlurBehavior="restore"
             ref={bottomSheetRef}
             enableDynamicSizing={true}
+            enableContentPanningGesture={true}
             enablePanDownToClose={true}
+            handleStyle={{
+              borderBottomColor: "red",
+            }}
             containerStyle={{
               zIndex: 100,
             }}
