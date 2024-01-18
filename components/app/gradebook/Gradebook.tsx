@@ -204,8 +204,6 @@ export default function Gradebook(props: {
                       setTimeout(() => {
                         setAnimatingCard(-1);
                       }, 300);
-
-                      Haptics.selectionAsync();
                     }}
                   />
                 </GradebookCard>

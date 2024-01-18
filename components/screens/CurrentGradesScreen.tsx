@@ -147,7 +147,6 @@ const CurrentGradesScreen = (props: {
                       props.navigation.navigate("course", {
                         key: item.key,
                       });
-                      Haptics.selectionAsync();
                     }}
                     onHold={() => {}}
                     course={item}

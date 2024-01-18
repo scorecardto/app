@@ -29,6 +29,9 @@ export default function ScorecardScreen() {
       }}
     >
       <Tab.Navigator
+        screenOptions={{
+          lazy: false,
+        }}
         tabBar={(props) => (
           <View
             style={{

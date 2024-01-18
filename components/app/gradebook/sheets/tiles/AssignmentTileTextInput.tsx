@@ -35,7 +35,6 @@ const AssignmentTileTextInput = forwardRef(
             onFocus={() => {
               props.setValue("");
               setFocus(true);
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             }}
             onBlur={() => {
               setFocus(false);
