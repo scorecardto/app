@@ -181,7 +181,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
           ></RadialGradient>
         </View>
       </SafeAreaView>
-      <BottomSheetDisplay />
     </ThemeProvider>
   );
 }

@@ -53,6 +53,7 @@ import EditDistrictScreen from "./components/screens/account/EditDistrictScreen"
 import EditConnectAccountScreen from "./components/screens/account/EditConnectAccountScreen";
 import UserRank from "./lib/types/UserRank";
 import InviteOthersScreen from "./components/screens/InviteOthersScreen";
+import BottomSheetDisplay from "./components/util/BottomSheet/BottomSheetDisplay";
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
@@ -238,6 +239,7 @@ export default function App() {
                     accentLabel: "red",
                   }}
                 >
+                  <BottomSheetDisplay />
                   <Stack.Navigator initialRouteName={nextScreen}>
                     <Stack.Screen
                       name="selectDistrict"

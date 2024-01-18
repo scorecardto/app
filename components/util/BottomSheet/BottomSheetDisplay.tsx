@@ -3,7 +3,13 @@ import BottomSheetContext from "./BottomSheetContext";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import BottomSheetBase, { BottomSheetView } from "@gorhom/bottom-sheet";
 import BottomSheetBackdrop from "./BottomSheetBackdrop";
-import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Keyboard,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 export default function BottomSheetDisplay(props: {}) {
@@ -18,13 +24,13 @@ export default function BottomSheetDisplay(props: {}) {
   );
 
   function onClose() {
-    customOnClose?.();
-
-    setCustomOnClose(undefined);
-
     if (sheets?.sheets && sheets?.sheets?.length > 0 && sheets.next()) {
       bottomSheetRef?.current?.expand();
     }
+
+    customOnClose?.();
+
+    setCustomOnClose(undefined);
   }
 
   const [currentSheet, setCurrentSheet] = useState<React.ReactNode | undefined>(
@@ -52,45 +58,59 @@ export default function BottomSheetDisplay(props: {}) {
 
   return (
     <>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          bottomSheetRef?.current?.close();
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+          top: 0,
+          left: 0,
+          position: "absolute",
+          zIndex: currentSheet != null ? 999 : -1,
         }}
       >
-        {currentSheet != null ? (
-          <View
-            style={{
-              height: "100%",
-              width: "100%",
-              top: 0,
-              left: 0,
-              position: "absolute",
+        <>
+          {currentSheet != null ? (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  bottomSheetRef?.current?.close();
+                }}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  top: 0,
+                  left: 0,
+                  position: "absolute",
+                  zIndex: currentSheet != null ? 999 : -1,
+                }}
+              >
+                <></>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <></>
+          )}
+          <BottomSheetBase
+            keyboardBlurBehavior="restore"
+            ref={bottomSheetRef}
+            enableDynamicSizing={true}
+            enablePanDownToClose={true}
+            containerStyle={{
+              zIndex: 100,
             }}
-          />
-        ) : (
-          <></>
-        )}
-      </TouchableWithoutFeedback>
-
-      <BottomSheetBase
-        keyboardBlurBehavior="restore"
-        ref={bottomSheetRef}
-        enableDynamicSizing={true}
-        // enablePanDownToClose={true}
-        containerStyle={{
-          zIndex: 100,
-        }}
-        backgroundStyle={{
-          backgroundColor: colors.card,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-        }}
-        keyboardBehavior="interactive"
-        onClose={onClose}
-        backdropComponent={BottomSheetBackdrop}
-      >
-        {currentSheet}
-      </BottomSheetBase>
+            backgroundStyle={{
+              backgroundColor: colors.card,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+            }}
+            keyboardBehavior="interactive"
+            onClose={onClose}
+            backdropComponent={BottomSheetBackdrop}
+          >
+            {currentSheet}
+          </BottomSheetBase>
+        </>
+      </View>
     </>
   );
 }

@@ -161,7 +161,6 @@ export default function ScorecardScreen() {
           }}
         />
       </Tab.Navigator>
-      <BottomSheetDisplay />
     </View>
   );
 }
