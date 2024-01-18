@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
-import { Dimensions, Text, View, ViewStyle } from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Dimensions, FlatList, Text, View, ViewStyle } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
 import CategoryTable from "./CategoryTable";
@@ -30,9 +30,9 @@ export default function Gradebook(props: {
   course: Course;
   setModifiedGrade(avg: number | null): void;
 }) {
-    const sheets = useContext(BottomSheetContext);
+  const sheets = useContext(BottomSheetContext);
 
-    const { accents, colors } = useTheme();
+  const { accents, colors } = useTheme();
   const ref = useRef<Carousel<GradeCategory | null>>(null);
 
   //   const cardAnimation = useDynamicAnimation(() => ({
@@ -58,7 +58,9 @@ export default function Gradebook(props: {
       return { assignments: null, average: null, exactAverage: null };
     })
   );
-  const [exactAverages, setExactAverages] = useState<(number|null)[]>(averageAssignments(categories, []));
+  const [exactAverages, setExactAverages] = useState<(number | null)[]>(
+    averageAssignments(categories, [])
+  );
   const [numTestAssignments, setNumTestAssignments] = useState(1);
   const [numTestCats, setNumTestCats] = useState(1);
 
@@ -70,7 +72,10 @@ export default function Gradebook(props: {
 
     if (catIdx !== undefined) {
       if (categoryMods[catIdx].assignments!.every((as) => as === null)) {
-        categoryMods[catIdx].assignments = categoryMods[catIdx].average = categoryMods[catIdx].exactAverage = null;
+        categoryMods[catIdx].assignments =
+          categoryMods[catIdx].average =
+          categoryMods[catIdx].exactAverage =
+            null;
       } else {
         categoryMods[catIdx].average = Math.round(averages[catIdx]);
         categoryMods[catIdx].exactAverage = averages[catIdx];
@@ -101,7 +106,7 @@ export default function Gradebook(props: {
   };
 
   // update the course average any time a test category is added/remove
-    // should NOT depend on modifiedCategories
+  // should NOT depend on modifiedCategories
   useEffect(() => {
     updateAverage(modifiedCategories);
   }, [categories]);
@@ -143,41 +148,48 @@ export default function Gradebook(props: {
                 <GradebookCard
                   key={index}
                   title="Summary"
-                  bottom={{"Weight": {text: "100%", red: false}}}
+                  bottom={{ Weight: { text: "100%", red: false } }}
                   removable={false}
-                  remove={()=>{}}
+                  remove={() => {}}
                   buttonAction={() => {
-                      sheets.addSheet(({ close }) => (
-                          <>
-                              <AddCategorySheet close={close} add={(weight) => {
-                                  setCategories((oldCategories) => {
-                                      const newCategories = [...oldCategories];
-                                      newCategories.push({
-                                          name: "Test Category " + numTestCats,
-                                          id: "",
-                                          weight: weight,
-                                          average: "",
-                                          error: false,
-                                          assignments: [],
-                                      });
-                                      setNumTestCats(numTestCats + 1);
-                                      return newCategories;
-                                  });
-                                  setExactAverages((averages) => {
-                                        const newAverages = [...averages];
-                                        newAverages.push(null);
+                    sheets.addSheet(({ close }) => (
+                      <>
+                        <AddCategorySheet
+                          close={close}
+                          add={(weight) => {
+                            setCategories((oldCategories) => {
+                              const newCategories = [...oldCategories];
+                              newCategories.push({
+                                name: "Test Category " + numTestCats,
+                                id: "",
+                                weight: weight,
+                                average: "",
+                                error: false,
+                                assignments: [],
+                              });
+                              setNumTestCats(numTestCats + 1);
+                              return newCategories;
+                            });
+                            setExactAverages((averages) => {
+                              const newAverages = [...averages];
+                              newAverages.push(null);
 
-                                        return newAverages;
-                                  })
-                                  setModifiedCategories((oldCategories) => {
-                                      const newCategories = [...oldCategories];
-                                      newCategories.push({ assignments: null, average: null, exactAverage: null });
+                              return newAverages;
+                            });
+                            setModifiedCategories((oldCategories) => {
+                              const newCategories = [...oldCategories];
+                              newCategories.push({
+                                assignments: null,
+                                average: null,
+                                exactAverage: null,
+                              });
 
-                                      return newCategories;
-                                  });
-                              }}/>
-                          </>
-                      ));
+                              return newCategories;
+                            });
+                          }}
+                        />
+                      </>
+                    ));
                   }}
                 >
                   <SummaryTable
@@ -200,36 +212,53 @@ export default function Gradebook(props: {
               </View>
             );
           }
-          const gradeText = ""+(modifiedCategories[index-1].average ?? item.average);
+          const gradeText =
+            "" + (modifiedCategories[index - 1].average ?? item.average);
           const testing = index > props.course.gradeCategories!.length;
 
           return (
-            <MotiView
-              animate={{
-                opacity:
-                  index - 1 === animatingCard || animatingCard === -1 ? 1 : 0.2,
-              }}
-              transition={{
-                type: "timing",
-                duration: 0,
-              }}
+            <View
+            // animate={{
+            //   opacity:
+            //     index - 1 === animatingCard || animatingCard === -1 ? 1 : 0.2,
+            // }}
+            // transition={{
+            //   type: "timing",
+            //   duration: 0,
+            // }}
             >
               <GradebookCard
                 key={index}
                 title={item.name}
-                grade={{text: gradeText ? gradeText : "NG", red: testing || modifiedCategories[index-1].average !== null}}
-                bottom={{'Weight': {text: `${item.weight}%`, red: testing}, 'Exact Average': {text: `${(modifiedCategories[index-1].exactAverage ?? exactAverages[index-1])?.toFixed(2) ?? "NG"}`, red: testing || modifiedCategories[index-1].average !== null}}}
+                grade={{
+                  text: gradeText ? gradeText : "NG",
+                  red:
+                    testing || modifiedCategories[index - 1].average !== null,
+                }}
+                bottom={{
+                  Weight: { text: `${item.weight}%`, red: testing },
+                  "Exact Average": {
+                    text: `${
+                      (
+                        modifiedCategories[index - 1].exactAverage ??
+                        exactAverages[index - 1]
+                      )?.toFixed(2) ?? "NG"
+                    }`,
+                    red:
+                      testing || modifiedCategories[index - 1].average !== null,
+                  },
+                }}
                 removable={testing}
                 remove={() => {
-                    setCategories((oldCategories) => {
-                        return oldCategories.toSpliced(index-1, 1);
-                    });
-                    setModifiedCategories((oldCategories) => {
-                        return oldCategories.toSpliced(index-1, 1);
-                    });
-                    setExactAverages((oldAverages) => {
-                        return oldAverages.toSpliced(index-1, 1);
-                    });
+                  setCategories((oldCategories) => {
+                    return oldCategories.toSpliced(index - 1, 1);
+                  });
+                  setModifiedCategories((oldCategories) => {
+                    return oldCategories.toSpliced(index - 1, 1);
+                  });
+                  setExactAverages((oldAverages) => {
+                    return oldAverages.toSpliced(index - 1, 1);
+                  });
                 }}
                 buttonAction={() => {
                   setModifiedCategories((categories) => {
@@ -299,7 +328,7 @@ export default function Gradebook(props: {
                   }}
                 />
               </GradebookCard>
-            </MotiView>
+            </View>
           );
         }}
         sliderWidth={viewportWidth}

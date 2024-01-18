@@ -25,6 +25,7 @@ const GradeCategorySelectorSheet = forwardRef(
           borderTopRightRadius: 24,
           paddingTop: 8,
           paddingBottom: 16,
+          backgroundColor: colors.card,
         }}
       >
         <BottomSheetHeader>Grading Period</BottomSheetHeader>
@@ -58,6 +59,7 @@ const GradeCategorySelectorSheet = forwardRef(
                 >
                   <SmallText
                     style={{
+                      color: colors.primary,
                       paddingVertical: 16,
                     }}
                   >

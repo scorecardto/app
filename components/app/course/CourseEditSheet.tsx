@@ -8,6 +8,7 @@ import CourseColorChanger from "./CourseColorChanger";
 import { Course, DataContext } from "scorecard-types";
 import { saveCourseSettings } from "../../../lib/saveCourseSettings";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
+import Color from "../../../lib/Color";
 
 export default function CourseEditSheet(props: {
   course: Course;
@@ -22,6 +23,8 @@ export default function CourseEditSheet(props: {
   const [name, setName] = useState(
     courseSettings.displayName || props.course.name
   );
+
+  const accentColor = courseSettings.accentColor || Color.defaultAccentLabel;
 
   const saveName = useCallback(
     (n: string) => {
@@ -71,6 +74,7 @@ export default function CourseEditSheet(props: {
           }}
         />
         <CourseColorChanger
+          value={accentColor}
           onChange={(accentLabel) => {
             const newSettings = {
               ...dataContext.courseSettings,

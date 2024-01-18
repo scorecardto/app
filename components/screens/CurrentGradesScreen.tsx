@@ -144,10 +144,10 @@ const CurrentGradesScreen = (props: {
                 renderItem={({ item }) => (
                   <CourseCard
                     onClick={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                       props.navigation.navigate("course", {
                         key: item.key,
                       });
+                      Haptics.selectionAsync();
                     }}
                     onHold={() => {}}
                     course={item}

@@ -7,6 +7,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 export default function CourseColorChanger(props: {
+  value: string;
   onChange: (accentLabel: string) => void;
 }) {
   const theme = useTheme();
@@ -50,7 +51,7 @@ export default function CourseColorChanger(props: {
                       colors[theme.dark ? "dark" : "default"].preview,
                   }}
                 >
-                  {accentLabel === theme.accentLabel && (
+                  {accentLabel === props.value && (
                     <MaterialIcons
                       name="check"
                       size={20}
