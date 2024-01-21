@@ -25,6 +25,11 @@ const gradeToString = (grade: TileValue) => {
     : `${grade.pointsEarned} / ${grade.pointsPossible}`;
 };
 
+function roundGrade(grade: TileValue): string {
+  return typeof grade === "string"
+    ? grade
+    : Math.round((grade.pointsEarned / grade.pointsPossible) * 100) + "%";
+}
 export default function AssignmentGradeTile(props: {
   grade: TileValue;
   testing: boolean;
@@ -34,6 +39,7 @@ export default function AssignmentGradeTile(props: {
   const textInputRef = useRef<TextInput>(null);
   const [inputValue, setInputValue] = useState(gradeToString(props.grade));
   const [testingValue, setTestingValue] = useState(gradeToString(props.grade));
+  const [roundedValue, setRoundedValue] = useState(roundGrade(props.grade));
 
   const parseText = (value: string) => {
     const clean = value.replace(/[^0-9.\/%]/g, "").trim();
@@ -81,6 +87,13 @@ export default function AssignmentGradeTile(props: {
 
     const numeric = parseFloat(clean);
 
+    if (
+      props.grade?.pointsPossible !== 100 &&
+      numeric <= props.grade?.pointsPossible
+    ) {
+      return [numeric, props.grade?.pointsPossible];
+    }
+
     return isNaN(numeric) ? -1 : numeric;
   };
 
@@ -94,6 +107,7 @@ export default function AssignmentGradeTile(props: {
         pointsEarned: undefined,
         pointsPossible: undefined,
       });
+      setRoundedValue(roundGrade(props.originalGrade));
     } else {
       let edit: TileValue =
         typeof parsed === "object"
@@ -105,8 +119,12 @@ export default function AssignmentGradeTile(props: {
               pointsEarned: parsed,
               pointsPossible: 100,
             };
+
       if (!props.edit(edit)) {
         edit = props.originalGrade;
+        setRoundedValue(roundGrade(props.originalGrade));
+      } else {
+        setRoundedValue(roundGrade(edit));
       }
       setInputValue(gradeToString(edit));
       setTestingValue(gradeToString(edit));
@@ -115,12 +133,6 @@ export default function AssignmentGradeTile(props: {
 
   const { colors } = useTheme();
 
-  const roundedValue =
-    typeof props.grade === "string"
-      ? props.grade
-      : Math.round(
-          (props.grade.pointsEarned / props.grade.pointsPossible) * 100
-        ) + "%";
   return (
     <LargeGradebookSheetTile
       onPress={() => {

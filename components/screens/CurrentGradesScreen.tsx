@@ -66,9 +66,10 @@ const CurrentGradesScreen = (props: {
     if (!lastUpdated) return null;
 
     if (now - lastUpdated < 1000 * 60 * 60) {
-      return `Updated ${Math.floor(
-        (now - lastUpdated) / 1000 / 60
-      )} minutes ago`;
+      const mins = Math.floor((now - lastUpdated) / 1000 / 60);
+
+      if (mins === 0) return `Your grades are fresh out of the oven`;
+      return `Updated ${mins} minute${mins === 1 ? "" : "s"} ago`;
     }
 
     if (now - lastUpdated < 1000 * 60 * 60 * 24) {
