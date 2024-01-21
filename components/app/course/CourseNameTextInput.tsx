@@ -42,9 +42,7 @@ export default function CourseNameTextInput(props: {
               },
             });
           }}
-          onChangeText={(t) => {
-            props.setValue(t);
-          }}
+          onChangeText={props.setValue}
           onEndEditing={props.onFinish}
           onBlur={props.onFinish}
           returnKeyType="done"

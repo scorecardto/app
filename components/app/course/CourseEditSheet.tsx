@@ -1,5 +1,11 @@
 import { View, Text, Keyboard } from "react-native";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
 import SmallText from "../../text/SmallText";
@@ -18,7 +24,10 @@ export default function CourseEditSheet(props: {
 
   const dataContext = useContext(DataContext);
 
-  const courseSettings = dataContext.courseSettings[props.course.key] || {};
+  const courseSettings = useMemo(
+    () => dataContext.courseSettings[props.course.key] || {},
+    [dataContext.courseSettings]
+  );
 
   const [name, setName] = useState(
     courseSettings.displayName || props.course.name
@@ -49,12 +58,6 @@ export default function CourseEditSheet(props: {
   );
 
   useEffect(() => {
-    props.setOnClose(() => () => {
-      saveName(name);
-    });
-  }, [name, courseSettings]);
-
-  useEffect(() => {
     Keyboard.dismiss();
   }, [courseSettings]);
   return (
@@ -68,7 +71,9 @@ export default function CourseEditSheet(props: {
       >
         <CourseNameTextInput
           value={name}
-          setValue={setName}
+          setValue={(n) => {
+            setName(n);
+          }}
           onFinish={() => {
             saveName(name);
           }}
