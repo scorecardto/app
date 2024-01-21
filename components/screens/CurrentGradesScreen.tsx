@@ -48,7 +48,7 @@ const CurrentGradesScreen = (props: {
     const lastUpdated = dataContext.data.date;
     const now = new Date().getTime();
 
-    if (!lastUpdated) return null;
+    if (!lastUpdated) return "No Data";
 
     if (now - lastUpdated < 1000 * 60 * 10) {
       return "Up To Date";
@@ -63,7 +63,7 @@ const CurrentGradesScreen = (props: {
     const lastUpdated = dataContext.data.date;
     const now = new Date().getTime();
 
-    if (!lastUpdated) return null;
+    if (!lastUpdated) return "No Data";
 
     if (now - lastUpdated < 1000 * 60 * 60) {
       const mins = Math.floor((now - lastUpdated) / 1000 / 60);
@@ -90,6 +90,7 @@ const CurrentGradesScreen = (props: {
 
     return `Updated on ${new Date(lastUpdated).toLocaleDateString()}`;
   }, [dataContext.data?.date]);
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
@@ -121,6 +122,13 @@ const CurrentGradesScreen = (props: {
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  const showLastUpdated = scrollProgress < -80 && !refreshing;
+
+  useEffect(() => {
+    if (showLastUpdated || refreshing) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  }, [showLastUpdated, refreshing]);
   const sheets = useContext(BottomSheetContext);
 
   return (
@@ -162,7 +170,7 @@ const CurrentGradesScreen = (props: {
             >
               <Header
                 header={
-                  scrollProgress < -80
+                  showLastUpdated
                     ? lastUpdatedHeader
                     : onCurrentGradingPeriod
                     ? "Your Scorecard"
@@ -171,7 +179,7 @@ const CurrentGradesScreen = (props: {
                       ] ?? "Other Grading Period"
                 }
                 subheader={
-                  scrollProgress < -80
+                  showLastUpdated
                     ? updatedSubheader
                     : onCurrentGradingPeriod
                     ? dataContext.data?.gradeCategoryNames[
