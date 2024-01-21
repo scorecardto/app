@@ -31,7 +31,13 @@ export default function AssignmentDroppedTile(props: {
         setTestingValue(!testingValue);
       }}
     >
-      <SmallText>Dropped</SmallText>
+      <SmallText
+        style={{
+          color: colors.primary,
+        }}
+      >
+        Dropped
+      </SmallText>
       <AssignmentTileTextInputFrame>
         <Text
           style={{

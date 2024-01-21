@@ -1,4 +1,10 @@
-import {View, Text, TextInput, TextInputProps, TouchableOpacity} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+} from "react-native";
 import React, { useRef, useState } from "react";
 import AssignmentEdits from "../../../../../lib/types/AssignmentEdits";
 import LargeGradebookSheetTile from "./LargeGradebookSheetTile";
@@ -18,18 +24,18 @@ export default function AssignmentRemoveTile(props: {
   const { colors } = useTheme();
 
   return (
-      <TouchableOpacity onPress={props.removeAssignment}>
-          <SmallGradebookSheetTile>
-              <SmallText
-                  style={{
-                      textAlign: "center",
-                      width: "100%",
-                  }}
-              >
-                  Remove
-              </SmallText>
-
-          </SmallGradebookSheetTile>
-      </TouchableOpacity>
+    <TouchableOpacity onPress={props.removeAssignment}>
+      <SmallGradebookSheetTile>
+        <SmallText
+          style={{
+            color: colors.primary,
+            textAlign: "center",
+            width: "100%",
+          }}
+        >
+          Remove Assignment
+        </SmallText>
+      </SmallGradebookSheetTile>
+    </TouchableOpacity>
   );
 }

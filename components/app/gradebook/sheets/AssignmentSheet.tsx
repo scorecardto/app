@@ -12,6 +12,8 @@ import AssignmentDroppedTile from "./tiles/AssignmentDroppedTile";
 import MediumText from "../../../text/MediumText";
 import BottomSheetHeader from "../../../util/BottomSheet/BottomSheetHeader";
 import AssignmentRemoveTile from "./tiles/AssignmentRemoveTile";
+import AssignmentDueDateTile from "./tiles/AssignmentDueDateTile";
+import AssignmentAssignDateTile from "./tiles/AssignmentAssignDateTile";
 
 export default function AssignmentSheet(props: {
   assignment: Assignment;
@@ -30,56 +32,61 @@ export default function AssignmentSheet(props: {
       <BottomSheetHeader>{props.assignment.name!}</BottomSheetHeader>
       <View
         style={{
-          flexDirection: "row",
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
           padding: 12,
+          width: "100%",
+          marginBottom: 20,
         }}
       >
-        <AssignmentGradeTile
-          grade={
-            isNumericGrade
-              ? {
-                  pointsEarned: props.currentEdits.pointsEarned,
-                  pointsPossible: props.currentEdits.pointsPossible,
-                }
-              : props.assignment.grade
-          }
-          testing={props.testing}
-          originalGrade={
-            isNumericGrade
-              ? {
-                  pointsEarned: props.assignment.points,
-                  pointsPossible: props.assignment.max,
-                }
-              : props.assignment.grade
-          }
-          edit={props.edit}
-        />
-        <SmallGradebookSheetTileGroup>
-          <AssignmentCountTile
-            count={props.currentEdits.count ?? props.assignment.count}
+        <View
+          style={{
+            flexDirection: "row",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <AssignmentGradeTile
+            grade={
+              isNumericGrade
+                ? {
+                    pointsEarned: props.currentEdits.pointsEarned,
+                    pointsPossible: props.currentEdits.pointsPossible,
+                  }
+                : props.assignment.grade
+            }
             testing={props.testing}
-            originalCount={props.assignment.count}
+            originalGrade={
+              isNumericGrade
+                ? {
+                    pointsEarned: props.assignment.points,
+                    pointsPossible: props.assignment.max,
+                  }
+                : props.assignment.grade
+            }
             edit={props.edit}
           />
-          {props.testing ? (
-            <AssignmentRemoveTile
-              removeAssignment={() => {
-                props.removeAssignment();
-                props.close();
-              }}
-            />
-          ) : (
-            <AssignmentDroppedTile
-              dropped={props.currentEdits.dropped ?? props.assignment.dropped}
-              originalDropped={props.assignment.dropped}
+          <SmallGradebookSheetTileGroup>
+            <AssignmentCountTile
+              count={props.currentEdits.count ?? props.assignment.count}
+              testing={props.testing}
+              originalCount={props.assignment.count}
               edit={props.edit}
             />
-          )}
-        </SmallGradebookSheetTileGroup>
-        {/* <View
+            {props.testing ? (
+              <AssignmentRemoveTile
+                removeAssignment={() => {
+                  props.removeAssignment();
+                  props.close();
+                }}
+              />
+            ) : (
+              <AssignmentDroppedTile
+                dropped={props.currentEdits.dropped ?? props.assignment.dropped}
+                originalDropped={props.assignment.dropped}
+                edit={props.edit}
+              />
+            )}
+          </SmallGradebookSheetTileGroup>
+          {/* <View
           style={{
             flexShrink: 1,
             flexGrow: 0,
@@ -98,6 +105,25 @@ export default function AssignmentSheet(props: {
             edit={props.edit}
           />
         </View> */}
+        </View>
+        {props.testing ? (
+          <></>
+        ) : (
+          <View
+            style={{
+              flexDirection: "row",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ marginHorizontal: 8, flex: 1 }}>
+              <AssignmentAssignDateTile assignment={props.assignment} />
+            </View>
+            <View style={{ marginHorizontal: 8, flex: 1 }}>
+              <AssignmentDueDateTile assignment={props.assignment} />
+            </View>
+          </View>
+        )}
       </View>
     </BottomSheetView>
   );

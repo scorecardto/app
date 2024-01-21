@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext, GradebookRecord } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
@@ -30,6 +30,7 @@ import useFooterHeight from "../util/hooks/useFooterHeight";
 import HeaderBanner from "../text/HeaderBanner";
 import InviteOthersCard from "../app/dashboard/InviteOthersCard";
 import MoreFeaturesSheet from "../app/vip/MoreFeaturesSheet";
+import parseCourseKey from "../../lib/parseCourseKey";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -41,6 +42,53 @@ const CurrentGradesScreen = (props: {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const lastUpdatedHeader = useMemo(() => {
+    if (!dataContext.data) return null;
+
+    const lastUpdated = dataContext.data.date;
+    const now = new Date().getTime();
+
+    if (!lastUpdated) return null;
+
+    if (now - lastUpdated < 1000 * 60 * 10) {
+      return "Up To Date";
+    }
+
+    return "Pull To Refresh";
+  }, [dataContext.data?.date]);
+
+  const updatedSubheader = useMemo(() => {
+    if (!dataContext.data) return null;
+
+    const lastUpdated = dataContext.data.date;
+    const now = new Date().getTime();
+
+    if (!lastUpdated) return null;
+
+    if (now - lastUpdated < 1000 * 60 * 60) {
+      return `Updated ${Math.floor(
+        (now - lastUpdated) / 1000 / 60
+      )} minutes ago`;
+    }
+
+    if (now - lastUpdated < 1000 * 60 * 60 * 24) {
+      return `Updated ${Math.floor(
+        (now - lastUpdated) / 1000 / 60 / 60
+      )} hours ago`;
+    }
+
+    if (now - lastUpdated < 1000 * 60 * 60 * 24 * 2) {
+      return "Updated yesterday";
+    }
+
+    if (now - lastUpdated < 1000 * 60 * 60 * 24 * 7) {
+      return `Updated ${Math.floor(
+        (now - lastUpdated) / 1000 / 60 / 60 / 24
+      )} days ago`;
+    }
+
+    return `Updated on ${new Date(lastUpdated).toLocaleDateString()}`;
+  }, [dataContext.data?.date]);
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
@@ -91,6 +139,9 @@ const CurrentGradesScreen = (props: {
           }}
         />
         <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           style={{ height: "100%" }}
           ref={scrollViewRef}
           onScroll={(e) => {
@@ -110,14 +161,18 @@ const CurrentGradesScreen = (props: {
             >
               <Header
                 header={
-                  onCurrentGradingPeriod
+                  scrollProgress < -80
+                    ? lastUpdatedHeader
+                    : onCurrentGradingPeriod
                     ? "Your Scorecard"
                     : dataContext.data?.gradeCategoryNames[
                         dataContext.gradeCategory
                       ] ?? "Other Grading Period"
                 }
                 subheader={
-                  onCurrentGradingPeriod
+                  scrollProgress < -80
+                    ? updatedSubheader
+                    : onCurrentGradingPeriod
                     ? dataContext.data?.gradeCategoryNames[
                         dataContext.gradeCategory || 0
                       ]
@@ -140,7 +195,23 @@ const CurrentGradesScreen = (props: {
             {dataContext?.data?.courses && (
               <FlatList
                 scrollEnabled={false}
-                data={dataContext.data.courses}
+                data={dataContext.data.courses.sort((a: Course, b: Course) => {
+                  const aPrd = parseCourseKey(a.key)?.dayCodeIndex;
+                  const bPrd = parseCourseKey(b.key)?.dayCodeIndex;
+
+                  if (aPrd && bPrd) {
+                    if (aPrd > bPrd) return 1;
+                    if (aPrd < bPrd) return -1;
+                  } else if (aPrd) {
+                    return -1;
+                  } else if (bPrd) {
+                    return 1;
+                  } else {
+                    return a.key.localeCompare(b.key);
+                  }
+
+                  return 0;
+                })}
                 renderItem={({ item }) => (
                   <CourseCard
                     onClick={() => {
@@ -160,11 +231,13 @@ const CurrentGradesScreen = (props: {
             <TouchableOpacity
               onPress={() => {
                 Storage.getItem({ key: "records" }).then(async (records) => {
-                  if (!records) return;
-                  await Storage.setItem({
-                    key: "records",
-                    value: JSON.stringify(JSON.parse(records).slice(0, 1)),
-                  });
+                  // if (!records) return;
+                  // await Storage.setItem({
+                  //   key: "records",
+                  //   value: JSON.stringify(JSON.parse(records).slice(0, 1)),
+                  // });
+                  await Storage.removeItem({ key: "records" });
+                  await Storage.removeItem({ key: "login" });
                 });
               }}
             >

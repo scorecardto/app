@@ -10,7 +10,6 @@ import SmallText from "../../../../text/SmallText";
 import * as Haptics from "expo-haptics";
 import AssignmentTileTextInput from "./AssignmentTileTextInput";
 import SmallGradebookSheetTile from "./SmallGradebookSheetTile";
-
 export default function AssignmentCountTile(props: {
   count: number;
   testing: boolean;
@@ -21,6 +20,7 @@ export default function AssignmentCountTile(props: {
   const [inputValue, setInputValue] = useState(props.count.toString());
   const [testingValue, setTestingValue] = useState(props.count);
 
+  const { colors } = useTheme();
   const parseText = (value: string) => {
     const numeric = parseInt(value.trim());
 
@@ -51,7 +51,13 @@ export default function AssignmentCountTile(props: {
         textInputRef.current?.focus();
       }}
     >
-      <SmallText>Weight</SmallText>
+      <SmallText
+        style={{
+          color: colors.primary,
+        }}
+      >
+        Weight
+      </SmallText>
       <AssignmentTileTextInput
         value={inputValue}
         ref={textInputRef}

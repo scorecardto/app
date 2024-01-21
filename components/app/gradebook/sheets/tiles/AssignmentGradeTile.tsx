@@ -115,6 +115,12 @@ export default function AssignmentGradeTile(props: {
 
   const { colors } = useTheme();
 
+  const roundedValue =
+    typeof props.grade === "string"
+      ? props.grade
+      : Math.round(
+          (props.grade.pointsEarned / props.grade.pointsPossible) * 100
+        ) + "%";
   return (
     <LargeGradebookSheetTile
       onPress={() => {
@@ -123,6 +129,7 @@ export default function AssignmentGradeTile(props: {
     >
       <SmallText
         style={{
+          color: colors.primary,
           marginBottom: 10,
         }}
       >
@@ -144,7 +151,9 @@ export default function AssignmentGradeTile(props: {
           color: colors.text,
         }}
       >
-        Rounds to 94%
+        {roundedValue != null && roundedValue != ""
+          ? `Rounds to ${roundedValue}`
+          : "No grade yet"}
       </SmallText>
     </LargeGradebookSheetTile>
   );
