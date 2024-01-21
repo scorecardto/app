@@ -31,7 +31,7 @@ export default function AssignmentTableRow(props: {
     if (
       props.testing ||
       grade !== assignment.grade ||
-      points !== assignment.points ||
+      points?.toString() !== assignment.points?.toString() ||
       maxPoints !== assignment.max ||
       count !== assignment.count ||
       dropped !== assignment.dropped
