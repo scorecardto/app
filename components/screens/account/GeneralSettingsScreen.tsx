@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
 import { TextInput } from "../../input/TextInput";
@@ -8,12 +8,22 @@ import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
+
+import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
 }) {
   const { colors } = useTheme();
   const mobileData = useContext(MobileDataContext);
+
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      setUser(user);
+    });
+  }, []);
 
   const [firstName, setFirstName] = useState(mobileData.firstName);
   const [lastName, setLastName] = useState(mobileData.lastName);
@@ -64,7 +74,9 @@ export default function GeneralSettingsScreen(props: {
         <SmallText style={{ marginBottom: 16, color: colors.text }}>
           To edit, reset your account data.
         </SmallText>
-        <LockedTextInput>+1 (555) 555-5555</LockedTextInput>
+        <LockedTextInput>
+          {user?.phoneNumber || "You have not signed in with a phone number."}
+        </LockedTextInput>
       </View>
       <MediumText style={{ marginBottom: 16, color: colors.primary }}>
         Reset Account Data

@@ -42,11 +42,12 @@ const CurrentGradesScreen = (props: {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const [currentTime, setCurrentTime] = useState(Date.now());
   const lastUpdatedHeader = useMemo(() => {
     if (!dataContext.data) return null;
 
     const lastUpdated = dataContext.data.date;
-    const now = new Date().getTime();
+    const now = currentTime;
 
     if (!lastUpdated) return "No Data";
 
@@ -55,13 +56,13 @@ const CurrentGradesScreen = (props: {
     }
 
     return "Pull To Refresh";
-  }, [dataContext.data?.date]);
+  }, [dataContext.data?.date, currentTime]);
 
   const updatedSubheader = useMemo(() => {
     if (!dataContext.data) return null;
 
     const lastUpdated = dataContext.data.date;
-    const now = new Date().getTime();
+    const now = currentTime;
 
     if (!lastUpdated) return "No Data";
 
@@ -89,7 +90,7 @@ const CurrentGradesScreen = (props: {
     }
 
     return `Updated on ${new Date(lastUpdated).toLocaleDateString()}`;
-  }, [dataContext.data?.date]);
+  }, [dataContext.data?.date, currentTime]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -104,6 +105,16 @@ const CurrentGradesScreen = (props: {
       await fetchAndStore(data, mobileData, dataContext);
       setRefreshing(false);
     });
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000 * 10);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const selector = useRef<ActionSheetRef>(null);

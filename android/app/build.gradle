@@ -81,7 +81,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.scorecardgrades.mobile"
+    namespace 'com.scorecardgrades.mobile'
     defaultConfig {
         applicationId 'com.scorecardgrades.mobile'
         minSdkVersion rootProject.ext.minSdkVersion

@@ -29,47 +29,49 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const mobileDataContext = React.useContext(MobileDataContext);
 
   const [course, setCourse] = useState<Course | undefined>(
-    dataContext.data?.courses.find((c) => c.key === key)
+    dataContext.gradeCategory === dataContext.data?.gradeCategory
+      ? dataContext.data?.courses.find((c) => c.key === key)
+      : undefined
   );
 
-  // async function getCourse(): Promise<Course | undefined> {
-  //   if (dataContext.gradeCategory === dataContext.data?.gradeCategory) {
-  //     return dataContext.data?.courses.find((c) => c.key === key);
-  //   } else {
-  //     const course = dataContext.data?.courses.find((c) => c.key === key);
+  async function getCourse(): Promise<Course | undefined> {
+    if (dataContext.gradeCategory === dataContext.data?.gradeCategory) {
+      return dataContext.data?.courses.find((c) => c.key === key);
+    } else {
+      const course = dataContext.data?.courses.find((c) => c.key === key);
 
-  //     const alternateKey = course?.grades[dataContext.gradeCategory]?.key;
+      const alternateKey = course?.grades[dataContext.gradeCategory]?.key;
 
-  //     if (course == null || alternateKey == null) return undefined;
+      if (course == null || alternateKey == null) return undefined;
 
-  //     const reportCard = await fetchReportCard(
-  //       mobileDataContext.district,
-  //       mobileDataContext.username,
-  //       mobileDataContext.password
-  //     );
+      const reportCard = await fetchReportCard(
+        mobileDataContext.district,
+        mobileDataContext.username,
+        mobileDataContext.password
+      );
 
-  //     const categories = await fetchGradeCategoriesForCourse(
-  //       mobileDataContext.district,
-  //       reportCard.sessionId,
-  //       reportCard.referer,
-  //       {
-  //         ...course,
-  //         key: alternateKey || "",
-  //       }
-  //     );
+      const categories = await fetchGradeCategoriesForCourse(
+        mobileDataContext.district,
+        reportCard.sessionId,
+        reportCard.referer,
+        {
+          ...course,
+          key: alternateKey || "",
+        }
+      );
 
-  //     return {
-  //       ...course,
-  //       gradeCategories: categories.gradeCategories,
-  //     };
-  //   }
-  // }
+      return {
+        ...course,
+        gradeCategories: categories.gradeCategories,
+      };
+    }
+  }
 
-  // useEffect(() => {
-  //   getCourse().then((course) => {
-  //     setCourse(course);
-  //   });
-  // }, [dataContext.gradeCategory]);
+  useEffect(() => {
+    getCourse().then((course) => {
+      setCourse(course);
+    });
+  }, [dataContext.gradeCategory]);
 
   const parentTheme = useTheme();
 

@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import CurrentGradesScreen from "./CurrentGradesScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Foundation from "@expo/vector-icons/Foundation";
@@ -15,6 +15,7 @@ import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
 import { useTheme } from "@react-navigation/native";
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 const Tab = createBottomTabNavigator();
 
 export default function ScorecardScreen() {
@@ -116,6 +117,7 @@ export default function ScorecardScreen() {
             })}
           </View>
         )}
+        // tabBarPosition="bottom"
         initialRouteName="current"
       >
         <Tab.Screen
