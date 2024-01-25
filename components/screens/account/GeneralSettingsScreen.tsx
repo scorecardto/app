@@ -8,15 +8,18 @@ import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
+import RNRestart from "react-native-restart";
 
 import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
 import Storage from "expo-storage";
+import {DataContext} from "scorecard-types";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
 }) {
   const { colors } = useTheme();
   const mobileData = useContext(MobileDataContext);
+  const dataContext = useContext(DataContext);
 
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
@@ -86,11 +89,11 @@ export default function GeneralSettingsScreen(props: {
         This clears data from your device, but does not delete your account.
       </SmallText>
       <DeleteInput onPress={async () => {
-        await Storage.removeItem({ key: "login" });
-        await Storage.removeItem({ key: "name" });
-        await Storage.removeItem({ key: "notifs" });
-        await Storage.removeItem({ key: "records" });
-        await Storage.removeItem({ key: "settings" });
+        for (const key of await Storage.getAllKeys()) {
+          await Storage.removeItem({key});
+        }
+
+        RNRestart.restart();
       }}>Reset Account Data</DeleteInput>
     </AccountSubpageScreen>
   );
