@@ -38,7 +38,7 @@ export default function AssignmentGradeTile(props: {
 }) {
   const textInputRef = useRef<TextInput>(null);
   const [inputValue, setInputValue] = useState(gradeToString(props.grade));
-  const [testingValue, setTestingValue] = useState(gradeToString(props.grade));
+  const [isEditing, setIsEditing] = useState(false);
   const [roundedValue, setRoundedValue] = useState(roundGrade(props.grade));
 
   const parseText = (value: string) => {
@@ -98,11 +98,12 @@ export default function AssignmentGradeTile(props: {
   };
 
   const onFinishEditing = () => {
+    setIsEditing(false);
+
     const parsed = parseText(inputValue);
 
     if (parsed === -1) {
       setInputValue(gradeToString(props.originalGrade));
-      setTestingValue(gradeToString(props.originalGrade));
       props.edit({
         pointsEarned: undefined,
         pointsPossible: undefined,
@@ -122,12 +123,10 @@ export default function AssignmentGradeTile(props: {
 
       if (!props.edit(edit)) {
         edit = props.originalGrade;
-        setRoundedValue(roundGrade(props.originalGrade));
-      } else {
-        setRoundedValue(roundGrade(edit));
       }
+
+      setRoundedValue(roundGrade(edit));
       setInputValue(gradeToString(edit));
-      setTestingValue(gradeToString(edit));
     }
   };
 
@@ -148,13 +147,16 @@ export default function AssignmentGradeTile(props: {
         Exact Grade
       </SmallText>
       <AssignmentTileTextInput
-        value={inputValue}
+        value={isEditing ? inputValue : (inputValue || "NG")}
         ref={textInputRef}
         edited={
-          props.testing || testingValue !== gradeToString(props.originalGrade)
+          props.testing || inputValue !== gradeToString(props.originalGrade)
         }
         onFinish={onFinishEditing}
-        placeholder={gradeToString(props.originalGrade)}
+        onStart={() => setIsEditing(true)}
+        placeholder={gradeToString(props.originalGrade) || "NG"}
+        illegalCharacters={/[^0-9/.]/g}
+        maxLength={7}
         setValue={setInputValue}
       />
       <SmallText

@@ -64,6 +64,8 @@ export default function AssignmentCountTile(props: {
         edited={props.testing || testingValue !== props.originalCount}
         onFinish={onFinishEditing}
         placeholder={props.originalCount.toString()}
+        illegalCharacters={/[^0-9]/g}
+        maxLength={3}
         setValue={setInputValue}
       />
     </SmallGradebookSheetTile>

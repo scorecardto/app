@@ -46,7 +46,7 @@ export default function AssignmentSheet(props: {
         >
           <AssignmentGradeTile
             grade={
-              isNumericGrade
+              isNumericGrade && props.currentEdits.pointsEarned != null && props.currentEdits.pointsPossible != null
                 ? {
                     pointsEarned: props.currentEdits.pointsEarned,
                     pointsPossible: props.currentEdits.pointsPossible,
@@ -55,10 +55,10 @@ export default function AssignmentSheet(props: {
             }
             testing={props.testing}
             originalGrade={
-              isNumericGrade
+              isNumericGrade && props.assignment.points != null && props.assignment.scale != null
                 ? {
                     pointsEarned: props.assignment.points,
-                    pointsPossible: props.assignment.max,
+                    pointsPossible: props.assignment.scale,
                   }
                 : props.assignment.grade
             }

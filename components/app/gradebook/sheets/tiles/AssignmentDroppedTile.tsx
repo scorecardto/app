@@ -43,6 +43,7 @@ export default function AssignmentDroppedTile(props: {
           style={{
             color:
               testingValue !== props.originalDropped ? "red" : colors.primary,
+              marginVertical: -2,
           }}
         >
           {testingValue ? "yes" : "no"}

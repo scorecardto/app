@@ -274,7 +274,7 @@ export default function Gradebook(props: {
                       points: 100,
                       grade: "100%",
                       dropped: false,
-                      max: 100,
+                      scale: 100,
                       count: 1,
                       error: false,
                     });
