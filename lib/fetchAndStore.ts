@@ -3,7 +3,7 @@ import {AllContentResponse, DataProvider, GradebookNotification, GradebookRecord
 import {MobileDataProvider} from "../components/core/context/MobileDataContext";
 import {getNotifications} from "./notifications";
 
-export default async function fetchAndStore( data: AllContentResponse, mobileData: MobileDataProvider, dataContext: DataProvider, checkNotifs=true) {
+export default async function fetchAndStore( data: AllContentResponse, mobileData: MobileDataProvider, dataContext: DataProvider, checkNotifs=true, updateGradeCategory=true) {
     const gradeCategory =
         Math.max(
             ...data.courses.map((course) => course.grades.filter((g) => g).length)
@@ -38,6 +38,7 @@ export default async function fetchAndStore( data: AllContentResponse, mobileDat
     }
 
     dataContext.setData(newData);
+    if (updateGradeCategory) dataContext.setGradeCategory(gradeCategory);
 
     await Storage.setItem({
         key: "records",

@@ -69,9 +69,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   }
 
   useEffect(() => {
-    getCourse().then((course) => {
-      setCourse(course);
-    });
+    getCourse().then(setCourse);
   }, [dataContext.gradeCategory]);
 
   const parentTheme = useTheme();

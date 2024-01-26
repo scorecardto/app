@@ -90,7 +90,7 @@ const CurrentGradesScreen = (props: {
     const reportCard = fetchAllContent(url, username, password);
 
     reportCard.then(async (data) => {
-      await fetchAndStore(data, mobileData, dataContext);
+      await fetchAndStore(data, mobileData, dataContext, true, false);
       setRefreshing(false);
     });
   }, []);
