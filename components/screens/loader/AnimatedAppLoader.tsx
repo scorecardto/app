@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Asset } from "expo-asset";
+import React, {useEffect, useState} from "react";
+import {Asset} from "expo-asset";
 import AnimatedSplashScreen from "./AnimatedSplashScreen";
 
 export default function AnimatedAppLoader(props: {

@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, FlatList, Text, View, ViewStyle } from "react-native";
-import { Assignment, Course, GradeCategory } from "scorecard-types";
+import React, {useContext, useEffect, useRef, useState} from "react";
+import {Dimensions, View} from "react-native";
+import {Assignment, Course, GradeCategory} from "scorecard-types";
 import GradebookCard from "./GradebookCard";
 import CategoryTable from "./CategoryTable";
 // import Carousel, { Pagination } from "react-native-snap-carousel";
@@ -11,15 +11,10 @@ import SummaryTable from "./SummaryTable";
 //   MotiView,
 //   useDynamicAnimation,
 // } from "moti";
-import { useTheme } from "@react-navigation/native";
-import * as Haptics from "expo-haptics";
+import {useTheme} from "@react-navigation/native";
 // import { set } from "react-native-reanimated";
-import {
-  averageGradeCategories,
-  averageAssignments,
-} from "../../../lib/gradeTesting";
-import Carousel, { Pagination } from "react-native-snap-carousel";
-import { MotiView } from "moti";
+import {averageAssignments, averageGradeCategories,} from "../../../lib/gradeTesting";
+import Carousel, {Pagination} from "react-native-snap-carousel";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
 

@@ -1,13 +1,7 @@
-import { View, Text } from "react-native";
-import React, {
-  ForwardRefExoticComponent,
-  Ref,
-  forwardRef,
-  useState,
-} from "react";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import * as Haptics from "expo-haptics";
-import { useTheme } from "@react-navigation/native";
+import {View} from "react-native";
+import React, {forwardRef, Ref, useState,} from "react";
+import {BottomSheetTextInput} from "@gorhom/bottom-sheet";
+import {useTheme} from "@react-navigation/native";
 import AssignmentTileTextInputFrame from "./AssignmentTileTextInputFrame";
 
 const AssignmentTileTextInput = forwardRef(

@@ -1,21 +1,10 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Keyboard,
-  KeyboardAvoidingView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import {FlatList, KeyboardAvoidingView, Text, TouchableOpacity, View,} from "react-native";
+import React, {useEffect, useState} from "react";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
-import { TextInput } from "../../input/TextInput";
+import {TextInput} from "../../input/TextInput";
 import axios from "redaxios";
-import {
-  NavigationProp,
-  useNavigation,
-  useTheme,
-} from "@react-navigation/native";
-import { Image } from "expo-image";
+import {NavigationProp, useTheme,} from "@react-navigation/native";
+import {Image} from "expo-image";
 import useKeyboardVisisble from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
 
@@ -29,6 +18,7 @@ export default function SelectDistrictScreen(props: {
     "Your login info and grades are stored on your device and cannot be accessed by Scorecard.";
 
   const [districts, setDistricts] = useState<any>([]);
+  const [test, setTest] = useState(0);
 
   useEffect(() => {
     axios.get("https://scorecardgrades.com/api/districts").then((value) => {
@@ -56,12 +46,12 @@ export default function SelectDistrictScreen(props: {
         monoLabel="Step 1 of 3"
       >
         <View>
-          <TextInput
-            label="Search for your school or district"
-            setValue={() => {}}
-            value=""
-            type="username"
-          />
+            <TextInput
+                label="Search for your school or district"
+                setValue={() => {}}
+                value=""
+                type="username"
+            />
           <FlatList
             style={{
               borderWidth: 1,

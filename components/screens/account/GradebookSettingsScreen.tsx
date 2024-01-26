@@ -1,17 +1,14 @@
-import { View, Text } from "react-native";
-import React, { useContext, useState } from "react";
+import {View} from "react-native";
+import React, {useContext, useState} from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
-import { TextInput } from "../../input/TextInput";
-import LockedTextInput from "../../input/LockedTextInput";
-import SmallText from "../../text/SmallText";
-import { useTheme } from "@react-navigation/native";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
-import DeleteInput from "../../input/DeleteInput";
+import {useTheme} from "@react-navigation/native";
+import {MobileDataContext} from "../../core/context/MobileDataContext";
 import LoginInputCard from "../../input/LoginInputCard";
 import ToggleInput from "../../input/ToggleInput";
 import Storage from "expo-storage";
 import SelectInput from "../../input/SelectInput";
+
 export default function GradebookSettingsScreen(props: {
   route: any;
   navigation: any;

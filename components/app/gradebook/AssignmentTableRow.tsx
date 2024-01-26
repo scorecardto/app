@@ -1,12 +1,5 @@
-import { View, Text } from "react-native";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Assignment } from "scorecard-types";
+import React, {useContext, useEffect, useState,} from "react";
+import {Assignment} from "scorecard-types";
 import TableRow from "./TableRow";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AssignmentSheet from "./sheets/AssignmentSheet";

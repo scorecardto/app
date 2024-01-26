@@ -1,8 +1,7 @@
-import { View, Text, Animated } from "react-native";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {Animated, StyleSheet, View} from "react-native";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import * as SplashScreen from "expo-splash-screen";
 import Constants from "expo-constants";
-import { StyleSheet } from "react-native";
 
 export default function AnimatedSplashScreen(props: {
   children: React.ReactNode;
