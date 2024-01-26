@@ -14,6 +14,7 @@ export default function AssignmentTileTextInputFrame(props: {
         paddingVertical: 8,
         alignSelf: "flex-start",
         borderRadius: 8,
+          overflow: 'visible',
       }}
     >
       {props.children}

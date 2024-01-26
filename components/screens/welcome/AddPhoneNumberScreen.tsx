@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import React, { useContext, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
@@ -9,6 +9,7 @@ import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { phone } from "phone";
+
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;

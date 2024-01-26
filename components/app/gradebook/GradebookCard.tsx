@@ -35,10 +35,12 @@ export default function GradebookCard(props: {
     headerText: {
       fontSize: 20,
       color: colors.primary,
+      flex: 1,
     },
     headerGrade: {
       fontSize: 17,
       color: props.grade?.red ? "red" : colors.primary,
+      marginLeft: 6,
     },
     footer: {
       marginTop: 12,
@@ -61,7 +63,7 @@ export default function GradebookCard(props: {
     <View>
       <ScrollView style={styles.wrapper}>
         <View style={styles.header}>
-          <MediumText style={styles.headerText}>{props.title}</MediumText>
+          <MediumText numberOfLines={2} ellipsizeMode={"tail"} style={styles.headerText}>{props.title}</MediumText>
           {props.grade && (
             <MediumText style={styles.headerGrade}>
               {props.grade.text}

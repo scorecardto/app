@@ -1,31 +1,19 @@
-import {
-  View,
-  Text,
-  Button,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { NavigationProp } from "@react-navigation/native";
-import { Course, DataContext, GradebookRecord } from "scorecard-types";
+import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, View,} from "react-native";
+import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
+import {NavigationProp} from "@react-navigation/native";
+import {Course, DataContext} from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
 // import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
 import Storage from "expo-storage";
 import * as Haptics from "expo-haptics";
-import { fetchAllContent } from "../../lib/fetcher";
-import { MobileDataContext } from "../core/context/MobileDataContext";
-import LargeText from "../text/LargeText";
-import StatusText from "../text/StatusText";
+import {fetchAllContent} from "../../lib/fetcher";
+import {MobileDataContext} from "../core/context/MobileDataContext";
 import Header from "../text/Header";
 import fetchAndStore from "../../lib/fetchAndStore";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 import GradeCategorySelectorSheet from "../app/dashboard/GradeCategorySelectorSheet";
-import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
-import { ActionSheetRef } from "react-native-actions-sheet";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {ActionSheetRef} from "react-native-actions-sheet";
+import {SafeAreaView} from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
 import HeaderBanner from "../text/HeaderBanner";
 import InviteOthersCard from "../app/dashboard/InviteOthersCard";

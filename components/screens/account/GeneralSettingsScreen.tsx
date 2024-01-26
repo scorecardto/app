@@ -1,21 +1,26 @@
-import { View, Text } from "react-native";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import {Alert, View} from "react-native";
+import React, {useContext, useEffect, useState} from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
-import { TextInput } from "../../input/TextInput";
+import {TextInput} from "../../input/TextInput";
 import LockedTextInput from "../../input/LockedTextInput";
 import SmallText from "../../text/SmallText";
-import { useTheme } from "@react-navigation/native";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
+import {useTheme} from "@react-navigation/native";
+import {MobileDataContext} from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
 
-import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
+import {firebase, FirebaseAuthTypes} from "@react-native-firebase/auth";
+import {DataContext} from "scorecard-types";
+import Storage from "expo-storage";
+import {reloadApp} from "../../../lib/reloadApp";
+
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
 }) {
   const { colors } = useTheme();
   const mobileData = useContext(MobileDataContext);
+  const dataContext = useContext(DataContext);
 
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
@@ -84,7 +89,30 @@ export default function GeneralSettingsScreen(props: {
       <SmallText style={{ marginBottom: 16, color: colors.text }}>
         This clears data from your device, but does not delete your account.
       </SmallText>
-      <DeleteInput onPress={() => {}}>Reset Account Data</DeleteInput>
+      <DeleteInput onPress={async () => {
+        Alert.prompt(
+            "Reset Local Data",
+            "You will need to sign in again to access Scorecard.",
+            [
+              {
+                text: "Cancel",
+                style: "cancel",
+                isPreferred: true,
+              },
+              {
+                text: "Reset",
+                style: "destructive",
+                onPress: async () => {
+                  for (const key of ['name', 'login', 'enableGradebookNotifications', 'gradebookCheckInterval', 'notifs', 'records', 'settings']) {
+                    await Storage.removeItem({key});
+                  }
+
+                  reloadApp();
+                }
+              }
+            ],
+            'default');
+      }}>Reset Account Data</DeleteInput>
     </AccountSubpageScreen>
   );
 }

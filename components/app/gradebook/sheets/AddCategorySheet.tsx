@@ -1,5 +1,5 @@
-import React, {useRef, useState} from "react";
-import {Button, TextInput, View} from "react-native";
+import React, {useState} from "react";
+import {Button, View} from "react-native";
 import BottomSheetHeader from "../../../util/BottomSheet/BottomSheetHeader";
 import {BottomSheetTextInput} from "@gorhom/bottom-sheet";
 import {useTheme} from "@react-navigation/native";

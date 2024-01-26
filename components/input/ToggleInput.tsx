@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Switch } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useTheme } from "@react-navigation/native";
+import {StyleSheet, Switch, Text, View} from "react-native";
+import React, {useEffect, useState} from "react";
+import {useTheme} from "@react-navigation/native";
 
 export default function ToggleInput(props: {
   label: string;

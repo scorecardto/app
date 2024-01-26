@@ -1,12 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  Appearance,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-} from "react-native";
+import { useColorScheme } from "react-native";
 import {
   MobileDataContext,
   MobileDataProvider,
@@ -15,15 +9,12 @@ import { useEffect, useMemo, useState } from "react";
 import {
   CourseSettings,
   DataContext,
-  DataProvider,
   GradebookNotification,
   GradebookRecord,
 } from "scorecard-types";
 import Color from "./lib/Color";
 import * as Font from "expo-font";
-import AnekKannada, {
-  AnekKannada_400Regular,
-} from "@expo-google-fonts/anek-kannada";
+import { AnekKannada_400Regular } from "@expo-google-fonts/anek-kannada";
 import * as SplashScreen from "expo-splash-screen";
 import {
   DMSans_400Regular,
@@ -31,7 +22,6 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import { IBMPlexMono_400Regular } from "@expo-google-fonts/ibm-plex-mono";
-import Constants from "expo-constants";
 import ConnectAccountScreen from "./components/screens/welcome/ConnectAccountScreen";
 import ScorecardScreen from "./components/screens/ScorecardScreen";
 import CourseScreen from "./components/screens/CourseScreen";
@@ -47,7 +37,6 @@ import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import ReAddPhoneNumberScreen from "./components/screens/welcome/ReAddPhoneNumberScreen";
 import AddNameScreen from "./components/screens/welcome/AddNameScreen";
 import GeneralSettingsScreen from "./components/screens/account/GeneralSettingsScreen";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import GradebookSettingsScreen from "./components/screens/account/GradebookSettingsScreen";
 import EditDistrictScreen from "./components/screens/account/EditDistrictScreen";
 import EditConnectAccountScreen from "./components/screens/account/EditConnectAccountScreen";
@@ -57,6 +46,7 @@ import BottomSheetDisplay from "./components/util/BottomSheet/BottomSheetDisplay
 import Toast from "react-native-toast-message";
 import ToastConfig from "./components/util/ToastConfig";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
 SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();

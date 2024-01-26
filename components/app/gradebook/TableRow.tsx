@@ -59,7 +59,7 @@ export default function TableRow(props: {
       <TouchableOpacity style={styles.content} onPress={props.onPress}>
         <SmallText style={styles.name}>{props.name}</SmallText>
         <View style={styles.right}>
-          <SmallText style={styles.grade}>{props.grade}</SmallText>
+          <SmallText style={styles.grade}>{props.grade || "NG"}</SmallText>
           <SmallText style={styles.worth}>{props.worth}</SmallText>
         </View>
       </TouchableOpacity>

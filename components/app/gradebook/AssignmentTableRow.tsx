@@ -1,12 +1,5 @@
-import { View, Text } from "react-native";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { Assignment } from "scorecard-types";
+import React, {useContext, useEffect, useState,} from "react";
+import {Assignment} from "scorecard-types";
 import TableRow from "./TableRow";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AssignmentSheet from "./sheets/AssignmentSheet";
@@ -23,7 +16,7 @@ export default function AssignmentTableRow(props: {
 
   const [grade, setGrade] = useState(assignment.grade);
   const [points, setPoints] = useState(assignment.points);
-  const [maxPoints, setMaxPoints] = useState(assignment.max);
+  const [maxPoints, setMaxPoints] = useState(assignment.scale);
   const [count, setCount] = useState(assignment.count);
   const [dropped, setDropped] = useState(assignment.dropped);
 
@@ -32,7 +25,7 @@ export default function AssignmentTableRow(props: {
       props.testing ||
       grade !== assignment.grade ||
       points?.toString() !== assignment.points?.toString() ||
-      maxPoints !== assignment.max ||
+      maxPoints !== assignment.scale ||
       count !== assignment.count ||
       dropped !== assignment.dropped
     ) {
@@ -40,7 +33,7 @@ export default function AssignmentTableRow(props: {
         ...assignment,
         grade,
         points,
-        max: maxPoints,
+        scale: maxPoints,
         count,
         dropped,
       });
@@ -101,21 +94,29 @@ export default function AssignmentTableRow(props: {
                   );
                   setMaxPoints(
                     grade === assignment.grade
-                      ? assignment.max
+                      ? assignment.scale
                       : edits.pointsPossible
                   );
 
-                  ret = grade !== assignment.grade;
+                  ret = ret || grade !== assignment.grade;
+                } else {
+                    setGrade(assignment.grade);
+                    setPoints(assignment.points);
+                    setMaxPoints(assignment.scale);
                 }
 
                 if (edits.count != null) {
                   setCount(edits.count);
-                  ret = true;
+                  ret = ret || edits.count !== assignment.count;
+                } else {
+                    setCount(assignment.count);
                 }
 
                 if (edits.dropped === true || edits.dropped === false) {
                   setDropped(edits.dropped);
-                  ret = true;
+                  ret = ret || edits.dropped !== assignment.dropped;
+                } else {
+                    setDropped(assignment.dropped);
                 }
 
                 return ret;

@@ -1,25 +1,20 @@
-import { Text, TouchableOpacity, View } from "react-native";
-import ReactNative from "react-native";
-import React from "react";
-import { NavigationProp } from "@react-navigation/native";
-import { useState } from "react";
-import { StyleSheet } from "react-native";
+import ReactNative, { TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { NavigationProp, useTheme } from "@react-navigation/native";
 import Button from "../../input/Button";
-import { useRef } from "react";
 import { TextInput } from "../../input/TextInput";
-import { useEffect } from "react";
-import { fetchAllContent, fetchReportCard } from "../../../lib/fetcher";
+import { fetchAllContent } from "../../../lib/fetcher";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
-import { DataContext, GradebookRecord } from "scorecard-types";
+import { DataContext } from "scorecard-types";
 import Storage from "expo-storage";
-import WelcomeScreenBanner from "../../app/welcome/WelcomeScreenBanner";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
-import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import fetchAndStore from "../../../lib/fetchAndStore";
 import Toast from "react-native-toast-message";
+import updateKey from "../../../Root";
+
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;

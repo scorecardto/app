@@ -1,21 +1,9 @@
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Keyboard,
-  KeyboardAvoidingView,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import WelcomeScreen from "../../app/welcome/WelcomeScreen";
-import { TextInput } from "../../input/TextInput";
+import {FlatList, KeyboardAvoidingView, Text, TouchableOpacity, View,} from "react-native";
+import React, {useEffect, useState} from "react";
+import {TextInput} from "../../input/TextInput";
 import axios from "redaxios";
-import {
-  NavigationProp,
-  useNavigation,
-  useTheme,
-} from "@react-navigation/native";
-import { Image } from "expo-image";
+import {NavigationProp, useTheme,} from "@react-navigation/native";
+import {Image} from "expo-image";
 import useKeyboardVisisble from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";

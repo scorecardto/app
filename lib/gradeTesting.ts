@@ -22,8 +22,8 @@ export function averageAssignments(
 
         if (def) {
           const exact =
-            assignment.points && assignment.max
-              ? (assignment.points / assignment.max) * 100
+            assignment.points && assignment.scale
+              ? (assignment.points / assignment.scale) * 100
               : undefined;
 
           if (def === "msg") def = "0";

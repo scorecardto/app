@@ -1,13 +1,7 @@
-import { View, Text } from "react-native";
-import React, {
-  ForwardRefExoticComponent,
-  Ref,
-  forwardRef,
-  useState,
-} from "react";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import * as Haptics from "expo-haptics";
-import { useTheme } from "@react-navigation/native";
+import {View} from "react-native";
+import React, {forwardRef, Ref, useState,} from "react";
+import {BottomSheetTextInput} from "@gorhom/bottom-sheet";
+import {useTheme} from "@react-navigation/native";
 import AssignmentTileTextInputFrame from "./AssignmentTileTextInputFrame";
 
 const AssignmentTileTextInput = forwardRef(
@@ -15,9 +9,12 @@ const AssignmentTileTextInput = forwardRef(
     props: {
       value: string;
       setValue(s: string): void;
+      onStart?(): void;
       onFinish(): void;
       edited: boolean;
       placeholder: string;
+      illegalCharacters: any;
+      maxLength?: number;
     },
     ref: Ref<any>
   ) => {
@@ -34,21 +31,22 @@ const AssignmentTileTextInput = forwardRef(
             clearTextOnFocus={true}
             onFocus={() => {
               props.setValue("");
+              props.onStart && props.onStart();
               setFocus(true);
             }}
             onBlur={() => {
               setFocus(false);
               props.onFinish();
             }}
-            onChangeText={(t) => {
-              props.setValue(t);
+            onChangeText={(text) => {
+                props.setValue(text.replace(props.illegalCharacters, ""));
             }}
             onEndEditing={props.onFinish}
             keyboardType="numbers-and-punctuation"
             returnKeyType="done"
             textContentType="none"
             autoCorrect={false}
-            maxLength={7}
+            maxLength={props.maxLength}
             style={{
               fontVariant: ["tabular-nums"],
               color: props.edited && !focus ? "red" : colors.primary,
