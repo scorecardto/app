@@ -40,11 +40,11 @@ const Button = forwardRef<
     },
   });
   return (
-    <View style={styles.wrapper} ref={ref}>
-      <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
+    <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
+      <View style={styles.wrapper} ref={ref}>
         <Text style={styles.text}>{props.children}</Text>
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 });
 
