@@ -12,7 +12,7 @@ import DeleteInput from "../../input/DeleteInput";
 import {firebase, FirebaseAuthTypes} from "@react-native-firebase/auth";
 import {DataContext} from "scorecard-types";
 import Storage from "expo-storage";
-import {reloadApp} from "../../../Root";
+import {reloadApp} from "../../../lib/reloadApp";
 
 export default function GeneralSettingsScreen(props: {
   route: any;
@@ -103,7 +103,7 @@ export default function GeneralSettingsScreen(props: {
                 text: "Reset",
                 style: "destructive",
                 onPress: async () => {
-                  for (const key of ['name', 'login', 'enableGradebookNotifications', 'gradebookCheckInterval', 'notifs', 'records', 'settings']/*await Storage.getAllKeys()*/) {
+                  for (const key of ['name', 'login', 'enableGradebookNotifications', 'gradebookCheckInterval', 'notifs', 'records', 'settings']) {
                     await Storage.removeItem({key});
                   }
 
