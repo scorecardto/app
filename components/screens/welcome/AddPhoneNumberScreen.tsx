@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import ReactNative, { View } from "react-native";
 import React, { useContext, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
@@ -9,6 +9,7 @@ import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { phone } from "phone";
+import Toast from "react-native-toast-message";
 
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -35,6 +36,7 @@ export default function AddPhoneNumberScreen(props: {
 
   const [loading, setLoading] = useState(false);
 
+  const phoneNumberRef = React.useRef<ReactNative.TextInput>(null);
   function finish() {
     setLoading((l) => {
       if (l) return l;
@@ -55,6 +57,16 @@ export default function AddPhoneNumberScreen(props: {
           !formattedPhoneNumber.isValid ||
           !formattedPhoneNumber.phoneNumber
         ) {
+          setPhoneNumber("");
+          phoneNumberRef.current?.focus();
+
+          Toast.show({
+            type: "info",
+            text1: "Invalid Phone Number",
+            text2:
+              "Please use a valid phone number. You'll need to verify with a text code.",
+          });
+
           return false;
         }
 
@@ -133,6 +145,7 @@ export default function AddPhoneNumberScreen(props: {
           label="Your Phone Number"
           setValue={setPhoneNumber}
           value={phoneNumber}
+          ref={phoneNumberRef}
           type="phone-number"
         />
         <Button onPress={finish}>Finish</Button>
