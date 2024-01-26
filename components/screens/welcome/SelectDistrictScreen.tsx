@@ -41,6 +41,8 @@ export default function SelectDistrictScreen(props: {
   const isKeyboardVisible = useKeyboardVisisble();
 
   const [loading, setLoading] = useState(false);
+
+  const [districtSearch, setDistrictSearch] = useState("");
   return (
     <KeyboardAvoidingView
       style={{
@@ -58,8 +60,8 @@ export default function SelectDistrictScreen(props: {
         <View>
           <TextInput
             label="Search for your school or district"
-            setValue={() => {}}
-            value=""
+            setValue={setDistrictSearch}
+            value={districtSearch}
             type="username"
           />
           <FlatList
@@ -70,12 +72,32 @@ export default function SelectDistrictScreen(props: {
               backgroundColor: colors.card,
             }}
             data={districts.sort((a: any, b: any) => {
-              if (a.pinned && !b.pinned) {
+              if (a.pinned && !b.pinned && !districtSearch) {
                 return -1;
-              } else if (!a.pinned && b.pinned) {
+              } else if (!a.pinned && b.pinned && !districtSearch) {
                 return 1;
               } else {
-                return a.name.localeCompare(b.name);
+                if (districtSearch) {
+                  const aName = a.name.toLowerCase();
+                  const bName = b.name.toLowerCase();
+
+                  const aIndex = aName.indexOf(districtSearch.toLowerCase());
+                  const bIndex = bName.indexOf(districtSearch.toLowerCase());
+
+                  if (aIndex !== -1 && bIndex !== -1) {
+                    if (aIndex < bIndex) return -1;
+                    else if (aIndex > bIndex) return 1;
+                    else return aName.localeCompare(bName);
+                  } else if (aIndex !== -1 && bIndex === -1) {
+                    return -1;
+                  } else if (aIndex === -1 && bIndex !== -1) {
+                    return 1;
+                  } else {
+                    return aName.localeCompare(bName);
+                  }
+                } else {
+                  return a.name.localeCompare(b.name);
+                }
               }
             })}
             renderItem={({ item, index }) => {

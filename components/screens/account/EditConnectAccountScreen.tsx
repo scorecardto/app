@@ -20,6 +20,7 @@ import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import fetchAndStore from "../../../lib/fetchAndStore";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
+import Toast from "react-native-toast-message";
 const EditConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -41,6 +42,9 @@ const EditConnectAccountScreen = (props: {
 
   const dataContext = React.useContext(DataContext);
   const mobileData = React.useContext(MobileDataContext);
+
+  const usernameRef = useRef<ReactNative.TextInput>(null);
+  const passwordRef = useRef<ReactNative.TextInput>(null);
 
   useEffect(() => {
     if (loading) {
@@ -81,14 +85,42 @@ const EditConnectAccountScreen = (props: {
 
           await fetchAndStore(data, mobileData, dataContext, false);
         })
-        .catch((e) => {
-          console.error(e);
+        .catch((e: Error) => {
+          if (e.message === "INCORRECT_PASSWORD") {
+            setLoading(false);
+            setPassword("");
+            Toast.show({
+              type: "info",
+              text1: "Incorrect password",
+              text2:
+                "Enter the password you use to log into Frontline. Too many incorrect attempts will lock you out of your account.",
+              visibilityTime: 5000,
+              position: "top",
+            });
+            passwordRef.current?.focus();
+            return;
+          } else if (e.message === "INCORRECT_USERNAME") {
+            setLoading(false);
+            setUsername("");
+            setPassword("");
 
-          setLoading(false);
-          alert("Invalid credentials");
+            Toast.show({
+              type: "info",
+              text1: "Incorrect username",
+              text2: "Enter the username you use to log into Frontline.",
+              visibilityTime: 5000,
+              position: "top",
+            });
+
+            usernameRef.current?.focus();
+
+            return;
+          } else {
+            setLoading(false);
+          }
         });
     }
-  }, [loading]);
+  }, [loading, username, password, district.url]);
 
   return (
     <View
@@ -137,12 +169,14 @@ const EditConnectAccountScreen = (props: {
             setValue={setUsername}
             value={username}
             type="username"
+            ref={usernameRef}
           />
           <TextInput
             label="Password"
             setValue={setPassword}
             value={password}
             type="password"
+            ref={passwordRef}
           />
           <Button onPress={() => setLoading(true)}>Login</Button>
         </View>

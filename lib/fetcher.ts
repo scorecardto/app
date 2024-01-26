@@ -90,9 +90,9 @@ const fetchReportCard = async (
   };
 
   // @ts-ignore
-  const homeLoginResponse: string = (await axios(HOME_LOGIN)).data;
+  const homeLoginResponse = await axios(HOME_LOGIN);
 
-  const homeLoginHtml = parse(homeLoginResponse);
+  const homeLoginHtml = parse(homeLoginResponse.data as string);
 
   if (
     homeLoginHtml.querySelector("span.error")?.innerText ===
@@ -102,7 +102,9 @@ const fetchReportCard = async (
   }
   if (
     homeLoginHtml.querySelector("span.error")?.innerText ===
-    "The username or password you entered is invalid.  Please try again."
+      "The username or password you entered is invalid.  Please try again." ||
+    homeLoginHtml.querySelector("span.error")?.innerText ===
+      "Invalid User ID or Password! "
   ) {
     throw new Error("INCORRECT_USERNAME");
   }

@@ -7,6 +7,7 @@ import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
 import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
+import phone from "phone";
 
 export default function ReAddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -22,22 +23,41 @@ export default function ReAddPhoneNumberScreen(props: {
   const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
     mobileDataContext;
 
+  const [loading, setLoading] = useState(false);
+
   function finish() {
-    auth()
-      .signInWithPhoneNumber(phoneNumber)
-      .then((confirmation) => {
-        setConfirmPhoneNumberCallback(() => {
-          return async (c: string) => {
-            return confirmation.confirm(c);
-          };
-        });
-        props.navigation.navigate("verifyPhoneNumber", {
-          phoneNumber,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    setLoading((l) => {
+      if (l) return l;
+      else {
+        const formattedPhoneNumber = phone(phoneNumber);
+
+        if (
+          !formattedPhoneNumber.isValid ||
+          !formattedPhoneNumber.phoneNumber
+        ) {
+          return false;
+        }
+
+        auth()
+          .signInWithPhoneNumber(phoneNumber)
+          .then((confirmation) => {
+            setConfirmPhoneNumberCallback(() => {
+              return async (c: string) => {
+                return confirmation.confirm(c);
+              };
+            });
+            props.navigation.navigate("verifyPhoneNumber", {
+              phoneNumber,
+            });
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+
+        return true;
+      }
+    });
   }
   return (
     <View

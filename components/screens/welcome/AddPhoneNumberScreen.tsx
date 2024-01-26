@@ -8,6 +8,7 @@ import Button from "../../input/Button";
 import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
+import { phone } from "phone";
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -31,35 +32,54 @@ export default function AddPhoneNumberScreen(props: {
   const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
     mobileDataContext;
 
+  const [loading, setLoading] = useState(false);
+
   function finish() {
-    mobileDataContext.setFirstName(firstName);
-    mobileDataContext.setLastName(lastName);
-    Storage.setItem({
-      key: "name",
-      value: JSON.stringify({
-        firstName,
-        lastName,
-      }),
-    });
-    auth()
-      .signInWithPhoneNumber(phoneNumber)
-      .then((confirmation) => {
-        setConfirmPhoneNumberCallback(() => {
-          return async (c: string) => {
-            return confirmation.confirm(c);
-          };
-        });
-        props.navigation.navigate("verifyPhoneNumber", {
-          phoneNumber,
-          name: {
+    setLoading((l) => {
+      if (l) return l;
+      else {
+        mobileDataContext.setFirstName(firstName);
+        mobileDataContext.setLastName(lastName);
+        Storage.setItem({
+          key: "name",
+          value: JSON.stringify({
             firstName,
             lastName,
-          },
+          }),
         });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+
+        const formattedPhoneNumber = phone(phoneNumber);
+
+        if (
+          !formattedPhoneNumber.isValid ||
+          !formattedPhoneNumber.phoneNumber
+        ) {
+          return false;
+        }
+
+        auth()
+          .signInWithPhoneNumber(formattedPhoneNumber.phoneNumber)
+          .then((confirmation) => {
+            setConfirmPhoneNumberCallback(() => {
+              return async (c: string) => {
+                return confirmation.confirm(c);
+              };
+            });
+            props.navigation.navigate("verifyPhoneNumber", {
+              phoneNumber,
+              name: {
+                firstName,
+                lastName,
+              },
+            });
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+        return true;
+      }
+    });
   }
   return (
     <View
