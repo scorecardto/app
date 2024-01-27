@@ -25,6 +25,7 @@ export default async function initialize(
   const name = await Storage.getItem({ key: "name" });
   const notifs = await Storage.getItem({ key: "notifs" });
   const records = await Storage.getItem({ key: "records" });
+  const oldCourseStates = await Storage.getItem({ key: "oldCourseStates" });
   const settings = await Storage.getItem({ key: "settings" });
   const enableGradebookNotifications = await Storage.getItem({
     key: "enableGradebookNotifications",
@@ -43,6 +44,8 @@ export default async function initialize(
     dataContext.setGradeCategory(data.gradeCategory);
 
     mobileDataContext.setNotifications(JSON.parse(notifs ?? "[]"));
+
+    mobileDataContext.setOldCourseStates(JSON.parse(oldCourseStates ?? "{}"));
 
     const { username, password, host } = JSON.parse(login);
 

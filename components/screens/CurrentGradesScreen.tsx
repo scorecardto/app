@@ -1,24 +1,32 @@
-import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, View,} from "react-native";
-import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
-import {NavigationProp} from "@react-navigation/native";
-import {Course, DataContext} from "scorecard-types";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { NavigationProp } from "@react-navigation/native";
+import { Course, DataContext } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
 // import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
 import Storage from "expo-storage";
 import * as Haptics from "expo-haptics";
-import {fetchAllContent} from "../../lib/fetcher";
-import {MobileDataContext} from "../core/context/MobileDataContext";
+import { fetchAllContent } from "../../lib/fetcher";
+import { MobileDataContext } from "../core/context/MobileDataContext";
 import Header from "../text/Header";
 import fetchAndStore from "../../lib/fetchAndStore";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 import GradeCategorySelectorSheet from "../app/dashboard/GradeCategorySelectorSheet";
-import {ActionSheetRef} from "react-native-actions-sheet";
-import {SafeAreaView} from "react-native-safe-area-context";
+import { ActionSheetRef } from "react-native-actions-sheet";
+import { SafeAreaView } from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
 import HeaderBanner from "../text/HeaderBanner";
 import InviteOthersCard from "../app/dashboard/InviteOthersCard";
 import MoreFeaturesSheet from "../app/vip/MoreFeaturesSheet";
 import parseCourseKey from "../../lib/parseCourseKey";
+import captureCourseState from "../../lib/captureCourseState";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -170,7 +178,7 @@ const CurrentGradesScreen = (props: {
               <Header
                 header={
                   showLastUpdated
-                    ? lastUpdatedHeader
+                    ? lastUpdatedHeader ?? "No Data"
                     : onCurrentGradingPeriod
                     ? "Your Scorecard"
                     : dataContext.data?.gradeCategoryNames[
@@ -179,7 +187,7 @@ const CurrentGradesScreen = (props: {
                 }
                 subheader={
                   showLastUpdated
-                    ? updatedSubheader
+                    ? updatedSubheader ?? "No Data"
                     : onCurrentGradingPeriod
                     ? dataContext.data?.gradeCategoryNames[
                         dataContext.gradeCategory || 0
@@ -193,8 +201,8 @@ const CurrentGradesScreen = (props: {
               <InviteOthersCard
                 invitesLeft={3}
                 onClick={() => {
-                  sheets?.addSheet(() => {
-                    return <MoreFeaturesSheet />;
+                  sheets?.addSheet(({ close }) => {
+                    return <MoreFeaturesSheet close={close} />;
                   });
                 }}
                 onHold={() => {}}
@@ -220,18 +228,25 @@ const CurrentGradesScreen = (props: {
 
                   return 0;
                 })}
-                renderItem={({ item }) => (
-                  <CourseCard
-                    onClick={() => {
-                      props.navigation.navigate("course", {
-                        key: item.key,
-                      });
-                    }}
-                    onHold={() => {}}
-                    course={item}
-                    gradingPeriod={dataContext.gradeCategory || 0}
-                  />
-                )}
+                renderItem={({ item }) => {
+                  return (
+                    <CourseCard
+                      onClick={() => {
+                        props.navigation.navigate("course", {
+                          key: item.key,
+                        });
+                      }}
+                      newGrades={
+                        mobileData.oldCourseStates[item.key] &&
+                        JSON.stringify(mobileData.oldCourseStates[item.key]) !==
+                          JSON.stringify(captureCourseState(item))
+                      }
+                      onHold={() => {}}
+                      course={item}
+                      gradingPeriod={dataContext.gradeCategory || 0}
+                    />
+                  );
+                }}
                 keyExtractor={(item) => item.key}
               />
             )}

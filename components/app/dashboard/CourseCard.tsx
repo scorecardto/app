@@ -11,11 +11,13 @@ import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import color from "../../../lib/Color";
+import LinearGradient from "react-native-linear-gradient";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
   onClick: () => void;
   onHold: () => void;
+  newGrades?: boolean;
 }) {
   const { colors, dark } = useTheme();
 
@@ -26,7 +28,7 @@ export default function CourseCard(props: {
 
   const styles = StyleSheet.create({
     wrapper: {
-      backgroundColor: colors.card,
+      backgroundColor: "transparent",
       borderRadius: 12,
       overflow: "hidden",
       marginBottom: 10,
@@ -40,7 +42,7 @@ export default function CourseCard(props: {
       flexDirection: "row",
       alignItems: "center",
       flex: 1,
-      overflow: "hidden"
+      overflow: "hidden",
     },
     badge: {
       width: 56,
@@ -64,17 +66,45 @@ export default function CourseCard(props: {
   const courseDisplayName =
     courseSettings[props.course.key]?.displayName || props.course.name;
 
+  const inner = (
+    <>
+      <View style={styles.left}>
+        <View style={styles.badge}></View>
+        <MediumText
+          numberOfLines={1}
+          ellipsizeMode={"tail"}
+          style={styles.header}
+        >
+          {courseDisplayName}
+        </MediumText>
+      </View>
+      <SmallText style={styles.grade}>
+        {props.newGrades
+          ? "New Grades"
+          : props.course.grades[props.gradingPeriod]?.value ?? "NG"}
+      </SmallText>
+    </>
+  );
   return (
     <TouchableOpacity onPress={props.onClick} onLongPress={props.onHold}>
-      <View style={styles.wrapper}>
-        <View style={styles.left}>
-          <View style={styles.badge}></View>
-          <MediumText numberOfLines={1} ellipsizeMode={"tail"} style={styles.header}>{courseDisplayName}</MediumText>
+      {props.newGrades ? (
+        <LinearGradient
+          style={styles.wrapper}
+          colors={[
+            colors.card,
+            color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
+              .gradientCenter,
+          ]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        >
+          {inner}
+        </LinearGradient>
+      ) : (
+        <View style={[styles.wrapper, { backgroundColor: colors.card }]}>
+          {inner}
         </View>
-        <SmallText style={styles.grade}>
-          {props.course.grades[props.gradingPeriod]?.value ?? "NG"}
-        </SmallText>
-      </View>
+      )}
     </TouchableOpacity>
   );
 }

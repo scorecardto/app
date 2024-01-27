@@ -10,6 +10,7 @@ import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { phone } from "phone";
 import Toast from "react-native-toast-message";
+import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -94,6 +95,8 @@ export default function AddPhoneNumberScreen(props: {
       }
     });
   }
+
+  const keyboardVisible = useKeyboardVisible();
   return (
     <View
       style={{
@@ -104,7 +107,7 @@ export default function AddPhoneNumberScreen(props: {
       <WelcomeScreen
         header={HEADER}
         footerText={FOOTER}
-        showBanner={true}
+        showBanner={!keyboardVisible}
         monoLabel="Step 3 of 3"
       >
         <MediumText style={{ marginBottom: 16 }}>Confirm your name</MediumText>

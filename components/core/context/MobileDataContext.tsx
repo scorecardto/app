@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { GradebookNotification, GradebookRecord } from "scorecard-types";
 import UserRank from "../../../lib/types/UserRank";
+import CourseStateRecord from "../../../lib/types/CourseStateRecord";
 
 export const MobileDataContext = React.createContext<MobileDataProvider>({
   district: "",
@@ -27,6 +28,8 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
   setGradebookCheckInterval: () => {},
   userRank: "DEFAULT",
   setUserRank: () => {},
+  oldCourseStates: {},
+  setOldCourseStates: () => {},
 });
 
 export interface MobileDataProvider {
@@ -54,4 +57,6 @@ export interface MobileDataProvider {
   setGradebookCheckInterval: Dispatch<SetStateAction<string>>;
   userRank: UserRank;
   setUserRank: Dispatch<SetStateAction<UserRank>>;
+  oldCourseStates: CourseStateRecord;
+  setOldCourseStates: Dispatch<SetStateAction<CourseStateRecord>>;
 }

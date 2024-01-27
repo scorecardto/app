@@ -99,6 +99,8 @@ export default function App() {
   const [enableGradebookNotifications, setEnableGradebookNotifications] =
     useState(false);
 
+  const [oldCourseStates, setOldCourseStates] = useState({});
+
   const [userReady, setUserReady] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [userRank, setUserRank] = useState<UserRank>("DEFAULT");
@@ -152,6 +154,8 @@ export default function App() {
       setGradebookCheckInterval,
       userRank,
       setUserRank,
+      oldCourseStates,
+      setOldCourseStates,
     }),
     [
       district,
@@ -178,6 +182,8 @@ export default function App() {
       setGradebookCheckInterval,
       userRank,
       setUserRank,
+      oldCourseStates,
+      setOldCourseStates,
     ]
   );
 

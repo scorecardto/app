@@ -22,6 +22,8 @@ import {
 } from "../../lib/fetcher";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import Storage from "expo-storage";
+import captureCourseState from "../../lib/captureCourseState";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -70,6 +72,22 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
   useEffect(() => {
     getCourse().then((course) => {
+      setTimeout(() => {
+        if (course == null) return;
+
+        const oldCourseStates = {
+          ...mobileDataContext.oldCourseStates,
+          [key]: captureCourseState(course),
+        };
+
+        mobileDataContext.setOldCourseStates(oldCourseStates);
+
+        Storage.setItem({
+          key: "oldCourseStates",
+          value: JSON.stringify(oldCourseStates),
+        });
+      }, 1500);
+
       setCourse(course);
     });
   }, [dataContext.gradeCategory]);

@@ -8,6 +8,9 @@ import Button from "../../input/Button";
 import auth from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import phone from "phone";
+import ReactNative from "react-native";
+import Toast from "react-native-toast-message";
+import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 
 export default function ReAddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -25,6 +28,8 @@ export default function ReAddPhoneNumberScreen(props: {
 
   const [loading, setLoading] = useState(false);
 
+  const phoneNumberRef = React.useRef<ReactNative.TextInput>(null);
+
   function finish() {
     setLoading((l) => {
       if (l) return l;
@@ -33,13 +38,22 @@ export default function ReAddPhoneNumberScreen(props: {
 
         if (
           !formattedPhoneNumber.isValid ||
-          !formattedPhoneNumber.phoneNumber
+          !formattedPhoneNumber.phoneNumber ||
+          formattedPhoneNumber.phoneNumber == null
         ) {
-          return false;
+          setPhoneNumber("");
+          phoneNumberRef.current?.focus();
+
+          Toast.show({
+            type: "info",
+            text1: "Invalid Phone Number",
+            text2:
+              "Please use a valid phone number. You'll need to verify with a text code.",
+          });
         }
 
         auth()
-          .signInWithPhoneNumber(phoneNumber)
+          .signInWithPhoneNumber(formattedPhoneNumber.phoneNumber!)
           .then((confirmation) => {
             setConfirmPhoneNumberCallback(() => {
               return async (c: string) => {
@@ -59,6 +73,8 @@ export default function ReAddPhoneNumberScreen(props: {
       }
     });
   }
+
+  const keyboardVisible = useKeyboardVisible();
   return (
     <View
       style={{
@@ -69,7 +85,7 @@ export default function ReAddPhoneNumberScreen(props: {
       <WelcomeScreen
         header={HEADER}
         footerText={FOOTER}
-        showBanner={true}
+        showBanner={!keyboardVisible}
         monoLabel="Access Your Scorecard"
       >
         <MediumText style={{ marginBottom: 16 }}>Phone number</MediumText>
@@ -78,6 +94,7 @@ export default function ReAddPhoneNumberScreen(props: {
           setValue={setPhoneNumber}
           value={phoneNumber}
           type="phone-number"
+          ref={phoneNumberRef}
         />
         <Button onPress={finish}>Finish</Button>
       </WelcomeScreen>
