@@ -12,7 +12,8 @@ export default async function fetchAndStore(
   data: AllContentResponse,
   mobileData: MobileDataProvider,
   dataContext: DataProvider,
-  checkNotifs = true
+  checkNotifs = true,
+  updateGradeCategory = true
 ) {
   const gradeCategory =
     Math.max(
