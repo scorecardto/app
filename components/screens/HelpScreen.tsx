@@ -97,20 +97,28 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
           repo: 'app',
         })
         .then((res) => {
-          Toast.show({
-            type: "info",
-            text1: "Feedback Sent",
-            text2: "Thanks for improving Scorecard!",
-          });
-          props.navigation.goBack();
+          if (res.data.success) {
+            Toast.show({
+              type: "info",
+              text1: "Feedback Sent",
+              text2: "Thanks for improving Scorecard!",
+            });
+
+            props.navigation.goBack();
+          } else {
+            Toast.show({
+              type: "info",
+              text1: "Error",
+              text2: "There was an error sending your message: "+res.data.error,
+            });
+          }
         })
         .catch((err) => {
           Toast.show({
             type: "info",
             text1: "Error",
-            text2: "There was an error sending your message.",
-          });
-          console.log(err);
+            text2: "There was an error sending your message",
+          })
         });
     }
   }, [loading]);
