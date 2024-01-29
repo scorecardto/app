@@ -94,6 +94,7 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
               }
             : {}),
           token: userToken,
+          repo: 'app',
         })
         .then((res) => {
           Toast.show({
