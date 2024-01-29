@@ -12,6 +12,8 @@ import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import color from "../../../lib/Color";
 import LinearGradient from "react-native-linear-gradient";
+import colorLib from "color";
+
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -92,8 +94,12 @@ export default function CourseCard(props: {
           style={styles.wrapper}
           colors={[
             colors.card,
-            color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
-              .gradientCenter,
+            colorLib(
+              color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
+                .gradientCenter
+            )
+              .mix(colorLib(colors.card), 0.5)
+              .hex(),
           ]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}

@@ -1,5 +1,5 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import React, { useRef, useState, useContext, useEffect, useMemo } from "react";
+import { Animated, Text, TouchableOpacity, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { Course, DataContext } from "scorecard-types";
 import Header from "../text/Header";
@@ -24,6 +24,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import Storage from "expo-storage";
 import captureCourseState from "../../lib/captureCourseState";
+import GradeStateChangesCard from "../app/gradebook/GradeStateChangesCard";
+import Button from "../input/Button";
+import BottomSheetButton from "../input/BottomSheetButton";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -36,6 +39,10 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       ? dataContext.data?.courses.find((c) => c.key === key)
       : undefined
   );
+  const [playUpdateAnimation, setPlayUpdateAnimation] = useState(false);
+  const [showNormalCourseInfo, setShowNormalCourseInfo] = useState(false);
+  const [showGradeStateChanges, setShowGradeStateChanges] = useState(false);
+  const [gradeText, setGradeText] = useState("NG");
 
   async function getCourse(): Promise<Course | undefined> {
     if (dataContext.gradeCategory === dataContext.data?.gradeCategory) {
@@ -71,6 +78,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   }
 
   useEffect(() => {
+    setShowNormalCourseInfo(false);
     getCourse().then((course) => {
       setTimeout(() => {
         if (course == null) return;
@@ -92,11 +100,45 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     });
   }, [dataContext.gradeCategory]);
 
+  useEffect(() => {
+    if (!course) return;
+
+    const stateChange =
+      mobileDataContext.oldCourseStates[key] &&
+      JSON.stringify(mobileDataContext.oldCourseStates[key]) !==
+        JSON.stringify(captureCourseState(course));
+
+    if (stateChange) {
+      setShowGradeStateChanges(true);
+      setGradeText(mobileDataContext.oldCourseStates[key].average);
+      setModifiedAvg(course.grades[dataContext.gradeCategory]?.value || "NG");
+    } else {
+      setGradeText(course.grades[dataContext.gradeCategory]?.value || "NG");
+      setShowNormalCourseInfo(true);
+    }
+  }, [course]);
+
   const parentTheme = useTheme();
 
-  const [modifiedAvg, setModifiedAvg] = useState<number | null>(null);
+  const [modifiedAvg, setModifiedAvg] = useState<string | null>(null);
 
   const sheets = useContext(BottomSheetContext);
+
+  const normalViewOpacity = useMemo(() => new Animated.Value(0), []);
+  const normalViewTranslateY = useMemo(() => new Animated.Value(0), []);
+
+  useEffect(() => {
+    Animated.timing(normalViewOpacity, {
+      toValue: showNormalCourseInfo ? 1 : 0,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(normalViewTranslateY, {
+      toValue: showNormalCourseInfo ? 0 : 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [showNormalCourseInfo]);
 
   if (course == null) {
     return (
@@ -155,9 +197,8 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
                 }}
               >
                 <LargeGradeText
-                  grade={
-                    course.grades[dataContext.gradeCategory]?.value || "NG"
-                  }
+                  // animated={true}
+                  grade={gradeText}
                   // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
                   backgroundColor={
                     modifiedAvg ? colors.borderNeutral : accents.primary
@@ -182,9 +223,42 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             </Header>
           </TouchableOpacity>
 
-          <View style={{}}>
-            <Gradebook course={course} setModifiedGrade={setModifiedAvg} />
-          </View>
+          {showGradeStateChanges && (
+            <View>
+              <GradeStateChangesCard
+                course={course}
+                onFinished={() => {
+                  setShowNormalCourseInfo(true);
+                  setShowGradeStateChanges(false);
+                  setGradeText(modifiedAvg || "NG");
+                  setModifiedAvg(null);
+                }}
+              />
+            </View>
+          )}
+          <Animated.View
+            style={{
+              opacity: normalViewOpacity.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 1],
+              }),
+              transform: [
+                {
+                  translateY: normalViewTranslateY.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, -20],
+                  }),
+                },
+              ],
+            }}
+          >
+            <Gradebook
+              course={course}
+              setModifiedGrade={(n) => {
+                setModifiedAvg(n == null ? null : `${n}`);
+              }}
+            />
+          </Animated.View>
         </View>
         <View
           style={{

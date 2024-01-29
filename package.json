@@ -22,6 +22,7 @@
     "@react-navigation/native-stack": "^6.9.17",
     "@shopify/flash-list": "1.4.3",
     "@types/react-native-snap-carousel": "^3.8.10",
+    "color": "^4.2.3",
     "expo": "~49.0.15",
     "expo-build-properties": "~0.8.3",
     "expo-contacts": "~12.2.0",
@@ -56,6 +57,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/color": "^3.0.6",
     "@types/qs": "^6.9.11",
     "@types/react": "~18.2.14",
     "@types/react-native": "^0.73.0",

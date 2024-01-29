@@ -1,18 +1,18 @@
-import {Alert, View} from "react-native";
-import React, {useContext, useEffect, useState} from "react";
+import { Alert, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
-import {TextInput} from "../../input/TextInput";
+import { TextInput } from "../../input/TextInput";
 import LockedTextInput from "../../input/LockedTextInput";
 import SmallText from "../../text/SmallText";
-import {useTheme} from "@react-navigation/native";
-import {MobileDataContext} from "../../core/context/MobileDataContext";
+import { useTheme } from "@react-navigation/native";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
 
-import {firebase, FirebaseAuthTypes} from "@react-native-firebase/auth";
-import {DataContext} from "scorecard-types";
+import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { DataContext } from "scorecard-types";
 import Storage from "expo-storage";
-import {reloadApp} from "../../../lib/reloadApp";
+import { reloadApp } from "../../../lib/reloadApp";
 
 export default function GeneralSettingsScreen(props: {
   route: any;
@@ -89,8 +89,9 @@ export default function GeneralSettingsScreen(props: {
       <SmallText style={{ marginBottom: 16, color: colors.text }}>
         This clears data from your device, but does not delete your account.
       </SmallText>
-      <DeleteInput onPress={async () => {
-        Alert.prompt(
+      <DeleteInput
+        onPress={async () => {
+          Alert.prompt(
             "Reset Local Data",
             "You will need to sign in again to access Scorecard.",
             [
@@ -103,16 +104,31 @@ export default function GeneralSettingsScreen(props: {
                 text: "Reset",
                 style: "destructive",
                 onPress: async () => {
-                  for (const key of ['name', 'login', 'enableGradebookNotifications', 'gradebookCheckInterval', 'notifs', 'records', 'settings']) {
-                    await Storage.removeItem({key});
+                  for (const key of [
+                    "name",
+                    "login",
+                    "enableGradebookNotifications",
+                    "gradebookCheckInterval",
+                    "notifs",
+                    "records",
+                    "settings",
+                    "oldCourseStates",
+                  ]) {
+                    await Storage.removeItem({ key });
                   }
 
+                  firebase.auth().signOut();
+
                   reloadApp();
-                }
-              }
+                },
+              },
             ],
-            'default');
-      }}>Reset Account Data</DeleteInput>
+            "default"
+          );
+        }}
+      >
+        Reset Account Data
+      </DeleteInput>
     </AccountSubpageScreen>
   );
 }

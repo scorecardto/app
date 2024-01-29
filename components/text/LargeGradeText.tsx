@@ -5,7 +5,10 @@ export default function LargeGradeText(props: {
   grade: string;
   backgroundColor: string;
   textColor: string;
+  // animated?: boolean;
 }) {
+  // const useAnimatedNumber = props.animated && !isNaN(Number(props.grade));
+
   return (
     <View
       style={{

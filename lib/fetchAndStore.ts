@@ -7,13 +7,14 @@ import {
 } from "scorecard-types";
 import { MobileDataProvider } from "../components/core/context/MobileDataContext";
 import { getNotifications } from "./notifications";
+import CourseStateRecord from "./types/CourseStateRecord";
+import captureCourseState from "./captureCourseState";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
   mobileData: MobileDataProvider,
   dataContext: DataProvider,
-  checkNotifs = true,
-  updateGradeCategory = true
+  updateCourseStates: boolean
 ) {
   const gradeCategory =
     Math.max(
@@ -35,6 +36,21 @@ export default async function fetchAndStore(
   };
 
   dataContext.setData(newData);
+
+  if (updateCourseStates) {
+    const oldCourseStates: CourseStateRecord = {};
+
+    for (const course of newData.courses) {
+      oldCourseStates[course.key] = captureCourseState(course);
+    }
+
+    mobileData.setOldCourseStates(oldCourseStates);
+
+    await Storage.setItem({
+      key: "oldCourseStates",
+      value: JSON.stringify(oldCourseStates),
+    });
+  }
 
   await Storage.setItem({
     key: "records",

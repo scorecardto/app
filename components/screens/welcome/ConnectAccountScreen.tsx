@@ -69,7 +69,7 @@ const ConnectAccountScreen = (props: {
             }),
           });
 
-          await fetchAndStore(data, mobileData, dataContext, false);
+          await fetchAndStore(data, mobileData, dataContext, true);
         })
         .catch((e: Error) => {
           if (e.message === "INCORRECT_PASSWORD") {

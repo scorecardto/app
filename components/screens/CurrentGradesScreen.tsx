@@ -98,7 +98,7 @@ const CurrentGradesScreen = (props: {
     const reportCard = fetchAllContent(url, username, password);
 
     reportCard.then(async (data) => {
-      await fetchAndStore(data, mobileData, dataContext, true, false);
+      await fetchAndStore(data, mobileData, dataContext, false);
       setRefreshing(false);
     });
   }, []);
@@ -197,7 +197,7 @@ const CurrentGradesScreen = (props: {
               />
             </TouchableOpacity>
 
-            {mobileData.userRank === "DEFAULT" && (
+            {/* {mobileData.userRank === "DEFAULT" && (
               <InviteOthersCard
                 invitesLeft={3}
                 onClick={() => {
@@ -207,7 +207,7 @@ const CurrentGradesScreen = (props: {
                 }}
                 onHold={() => {}}
               />
-            )}
+            )} */}
             {dataContext?.data?.courses && (
               <FlatList
                 scrollEnabled={false}
@@ -251,7 +251,7 @@ const CurrentGradesScreen = (props: {
               />
             )}
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 Storage.getItem({ key: "records" }).then(async (records) => {
                   // if (!records) return;
@@ -272,7 +272,7 @@ const CurrentGradesScreen = (props: {
               >
                 Clear Record History
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <GradeCategorySelectorSheet ref={selector} />
           </View>
         </ScrollView>
