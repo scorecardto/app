@@ -23,6 +23,7 @@ export default function WelcomeScreen(props: {
     heading: {
       paddingTop: 16,
       paddingHorizontal: 32,
+      color: colors.primary,
     },
     top: {
       flex: 1,

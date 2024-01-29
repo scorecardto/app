@@ -20,7 +20,10 @@ import {
   fetchGradeCategoriesForCourse,
   fetchReportCard,
 } from "../../lib/fetcher";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import Storage from "expo-storage";
 import captureCourseState from "../../lib/captureCourseState";
@@ -167,14 +170,44 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     { offset: "0%", color: accents.gradientCenter, opacity: "1" },
     { offset: "100%", color: accents.gradientCenter, opacity: "0" },
   ];
+
+  const insets = useSafeAreaInsets();
   return (
     <ThemeProvider value={theme}>
       <SafeAreaView
         style={{
           height: "100%",
           backgroundColor: colors.backgroundNeutral,
+          position: "relative",
         }}
       >
+        <TouchableOpacity
+          onPress={() => props.navigation.goBack()}
+          style={{
+            zIndex: 50,
+            position: "absolute",
+            top: insets.top + 12,
+            left: 0,
+          }}
+        >
+          <View>
+            <View
+              style={{
+                paddingRight: 16,
+                paddingVertical: 16,
+                paddingLeft: 8,
+                borderTopRightRadius: 32,
+                borderBottomRightRadius: 32,
+              }}
+            >
+              <MaterialIcons
+                name="chevron-left"
+                size={36}
+                color={colors.text}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
         <View
           style={{
             zIndex: 1,
