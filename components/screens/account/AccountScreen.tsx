@@ -32,18 +32,34 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
           onPress={() => {}}
         />
 
-        <AccountOptionCard label="Help" icon="help-circle" onPress={() => {}} />
+        <AccountOptionCard
+          label="Help"
+          icon="help-circle"
+          onPress={() => {
+            props.navigation.navigate("help", {
+              reason: "help",
+            });
+          }}
+        />
 
         <AccountOptionCard
           label="Report a Bug"
           icon="flag"
-          onPress={() => {}}
+          onPress={() => {
+            props.navigation.navigate("help", {
+              reason: "bug",
+            });
+          }}
         />
 
         <AccountOptionCard
           label="Suggest a Feature"
           icon="heart-plus"
-          onPress={() => {}}
+          onPress={() => {
+            props.navigation.navigate("help", {
+              reason: "suggestion",
+            });
+          }}
         />
       </View>
     </SafeAreaView>

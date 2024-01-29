@@ -46,6 +46,7 @@ import BottomSheetDisplay from "./components/util/BottomSheet/BottomSheetDisplay
 import Toast from "react-native-toast-message";
 import ToastConfig from "./components/util/ToastConfig";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import HelpScreen from "./components/screens/HelpScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -349,6 +350,14 @@ export default function App() {
                           headerShown: false,
                         }}
                       />
+                      <Stack.Screen
+                      name="help"
+                      component={HelpScreen}
+                      options={{
+                        ...headerOptions,
+                        headerBackTitle: "Back",
+                      }}
+                    />
                     </Stack.Navigator>
                     <ToastConfig />
                   </NavigationContainer>
