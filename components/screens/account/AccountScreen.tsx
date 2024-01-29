@@ -25,12 +25,12 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
             props.navigation.navigate("gradebookSettings");
           }}
         />
-
+        {/* 
         <AccountOptionCard
           label="Appearance"
           icon="palette"
           onPress={() => {}}
-        />
+        /> */}
 
         <AccountOptionCard
           label="Help"

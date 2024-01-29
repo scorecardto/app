@@ -1,11 +1,12 @@
-import {StyleSheet, Switch, Text, View} from "react-native";
-import React, {useEffect, useState} from "react";
-import {useTheme} from "@react-navigation/native";
+import { StyleSheet, Switch, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { useTheme } from "@react-navigation/native";
 
 export default function ToggleInput(props: {
   label: string;
   value: boolean;
   setValue: (v: boolean) => void;
+  disabled?: boolean;
 }) {
   const [enabled, setEnabled] = useState(props.value);
 
@@ -41,9 +42,10 @@ export default function ToggleInput(props: {
     <View style={styles.wrapper}>
       <Text style={styles.text}>{props.label}</Text>
       <Switch
+        disabled={props.disabled}
         value={enabled}
         onValueChange={(v) => {
-          setEnabled(v);
+          if (!props.disabled) setEnabled(v);
         }}
         thumbColor={"#FFF"}
         trackColor={{

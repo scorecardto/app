@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import * as Contacts from "expo-contacts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../text/Header";
@@ -12,6 +12,10 @@ import ToggleInput from "../input/ToggleInput";
 import SmallText from "../text/SmallText";
 import { LongTextInput } from "../input/LongTextInput";
 import Button from "../input/Button";
+import axios from "redaxios";
+import { firebase } from "@react-native-firebase/auth";
+import Toast from "react-native-toast-message";
+import { MobileDataContext } from "../core/context/MobileDataContext";
 export default function HelpScreen(props: { route: any; navigation: any }) {
   const { colors } = useTheme();
 
@@ -47,65 +51,150 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
 
   const [shareLogin, setShareLogin] = useState(false);
   const [urgent, setUrgent] = useState(false);
+
+  const [message, setMessage] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [userToken, setUserToken] = useState<string | undefined>(undefined);
+
+  const mobileData = useContext(MobileDataContext);
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        user.getIdToken().then(function (idToken) {
+          setUserToken(idToken);
+        });
+      }
+    });
+  });
+  useEffect(() => {
+    if (loading) {
+      if (!userToken) {
+        Toast.show({
+          type: "info",
+          text1: "Error",
+          text2: "You must be logged in to send a message.",
+        });
+      }
+
+      axios
+        .post("https://scorecardgrades.com/api/feedback", {
+          reason: reason.toUpperCase(),
+          firstName: mobileData.firstName.substring(0, 50),
+          lastName: mobileData.lastName.substring(0, 50),
+          message: message.substring(0, 5000),
+          respondToMe: allowUserContact,
+          urgent: urgent,
+          ...(shareLogin
+            ? {
+                username: mobileData.username,
+                password: mobileData.password,
+                district: mobileData.district,
+              }
+            : {}),
+          token: userToken,
+        })
+        .then((res) => {
+          Toast.show({
+            type: "info",
+            text1: "Feedback Sent",
+            text2: "Thanks for improving Scorecard!",
+          });
+          props.navigation.goBack();
+        })
+        .catch((err) => {
+          Toast.show({
+            type: "info",
+            text1: "Error",
+            text2: "There was an error sending your message.",
+          });
+          console.log(err);
+        });
+    }
+  }, [loading]);
   return (
     <AccountSubpageScreen
       header={headerText}
       footerText="Use this form to communicate directly with the Scorecard team."
     >
-      <ToggleInput
-        label="Respond to Me"
-        value={allowUserContact}
-        setValue={(v) => {
-          setAllowUserContact(v);
-        }}
-      />
-      <SmallText style={{ marginTop: 4, color: colors.text }}>
-        If you enable this option, we will text you with questions, answers, or
-        follow-ups.
-      </SmallText>
-
-      <View style={{ marginTop: 40 }}>
-        <LongTextInput label={bodyPlaceholder} value="" setValue={() => {}} />
-      </View>
-
-      <Button onPress={() => {}}>Send</Button>
-
-      <Text
+      <View
         style={{
-          marginTop: 40,
-          marginBottom: 10,
-          fontSize: 16,
-          textAlign: "center",
-          color: colors.text,
+          opacity: loading ? 0.5 : 1,
         }}
       >
-        Other Options
-      </Text>
-      <View style={{ marginTop: 20 }}>
         <ToggleInput
-          label="This Issue is Urgent"
-          value={urgent}
+          label="Respond to Me"
+          value={allowUserContact}
+          disabled={loading}
           setValue={(v) => {
-            setUrgent(v);
+            setAllowUserContact(v);
           }}
         />
         <SmallText style={{ marginTop: 4, color: colors.text }}>
-          Select if this is preventing you from using Scorecard.
+          If enabled, we may contact you via text. Your phone number and name
+          will be shared regardless of this setting.
         </SmallText>
-      </View>
-      <View style={{ marginTop: 40 }}>
-        <ToggleInput
-          label="Share My Login Info"
-          value={shareLogin}
-          setValue={(v) => {
-            setShareLogin(v);
+
+        <View style={{ marginTop: 40 }}>
+          <LongTextInput
+            label={bodyPlaceholder}
+            value={message}
+            setValue={(v) => {
+              setMessage(v);
+            }}
+            disabled={loading}
+          />
+        </View>
+
+        <Button
+          disabled={loading || !message}
+          onPress={() => {
+            setLoading(true);
           }}
-        />
-        <SmallText style={{ marginTop: 4, color: colors.text }}>
-          The Scorecard team cannot see your grades without this enabled. If
-          your bug involves a grade data issue, you may want to enable this
-          option.
-        </SmallText>
+        >
+          Send
+        </Button>
+
+        <Text
+          style={{
+            marginTop: 40,
+            marginBottom: 10,
+            fontSize: 16,
+            textAlign: "center",
+            color: colors.text,
+          }}
+        >
+          Other Options
+        </Text>
+        <View style={{ marginTop: 20 }}>
+          <ToggleInput
+            disabled={loading}
+            label="This Issue is Urgent"
+            value={urgent}
+            setValue={(v) => {
+              setUrgent(v);
+            }}
+          />
+          <SmallText style={{ marginTop: 4, color: colors.text }}>
+            Select if this is preventing you from using Scorecard.
+          </SmallText>
+        </View>
+        <View style={{ marginTop: 40 }}>
+          <ToggleInput
+            disabled={loading}
+            label="Share My Login Info"
+            value={shareLogin}
+            setValue={(v) => {
+              setShareLogin(v);
+            }}
+          />
+          <SmallText style={{ marginTop: 4, color: colors.text }}>
+            The Scorecard team cannot see your grades without this enabled. If
+            your bug involves a grade data issue, you may want to enable this
+            option.
+          </SmallText>
+        </View>
       </View>
     </AccountSubpageScreen>
   );

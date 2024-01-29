@@ -9,6 +9,7 @@ export const LongTextInput = forwardRef<
     label: string;
     value: string;
     setValue: (text: string) => void;
+    disabled?: boolean;
   }
 >((props, ref) => {
   const { colors } = useTheme();
@@ -41,11 +42,16 @@ export const LongTextInput = forwardRef<
       <ReactNative.TextInput
         ref={ref}
         style={styles.input}
-        value={props.value}
+        multiline={true}
         placeholder={props.label}
         placeholderTextColor={colors.text}
-        onChangeText={props.setValue}
+        onChangeText={(v) => {
+          if (!props.disabled) props.setValue(v);
+        }}
+        editable={!props.disabled}
         returnKeyType={"done"}
+        // press button to submit, not to make a new line
+        blurOnSubmit={true}
       />
     </View>
   );

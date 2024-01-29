@@ -1,9 +1,9 @@
-import {View} from "react-native";
-import React, {useContext, useState} from "react";
+import { View } from "react-native";
+import React, { useContext, useState } from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
-import {useTheme} from "@react-navigation/native";
-import {MobileDataContext} from "../../core/context/MobileDataContext";
+import { useTheme } from "@react-navigation/native";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
 import LoginInputCard from "../../input/LoginInputCard";
 import ToggleInput from "../../input/ToggleInput";
 import Storage from "expo-storage";
@@ -47,7 +47,7 @@ export default function GradebookSettingsScreen(props: {
           username={mobileData.username}
         />
       </View>
-      <View style={{ marginBottom: 36 }}>
+      {/* <View style={{ marginBottom: 36 }}>
         <MediumText style={{ marginBottom: 16, color: colors.primary }}>
           Notifications
         </MediumText>
@@ -91,7 +91,7 @@ export default function GradebookSettingsScreen(props: {
             });
           }}
         />
-      </View>
+      </View> */}
     </AccountSubpageScreen>
   );
 }
