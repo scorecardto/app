@@ -103,8 +103,6 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
               text1: "Feedback Sent",
               text2: "Thanks for improving Scorecard!",
             });
-
-            props.navigation.goBack();
           } else {
             Toast.show({
               type: "info",
@@ -119,7 +117,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
             text1: "Error",
             text2: "There was an error sending your message",
           })
-        });
+        })
+        .finally(props.navigation.goBack);
     }
   }, [loading]);
   return (
