@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "9"
+      "buildNumber": "12"
     },
     "android": {
       "adaptiveIcon": {

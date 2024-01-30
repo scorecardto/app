@@ -1,12 +1,14 @@
-import {View} from "react-native";
-import React, {useContext, useState} from "react";
-import {NavigationProp} from "@react-navigation/native";
+import { View } from "react-native";
+import React, { useContext, useState } from "react";
+import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
-import {TextInput} from "../../input/TextInput";
+import { TextInput } from "../../input/TextInput";
 import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
-import {MobileDataContext} from "../../core/context/MobileDataContext";
-
+import { MobileDataContext } from "../../core/context/MobileDataContext";
+import SmallText from "../../text/SmallText";
+import { useTheme } from "@react-navigation/native";
+import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 export default function VerifyPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -23,6 +25,10 @@ export default function VerifyPhoneNumberScreen(props: {
   const mobileDataContext = useContext(MobileDataContext);
   const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
     mobileDataContext;
+
+  const { colors } = useTheme();
+
+  const isKeyboardVisible = useKeyboardVisible();
   return (
     <View
       style={{
@@ -33,16 +39,17 @@ export default function VerifyPhoneNumberScreen(props: {
       <WelcomeScreen
         header={HEADER}
         footerText={FOOTER}
-        showBanner={true}
+        showBanner={!isKeyboardVisible}
         monoLabel="Step 3.5 of 3"
       >
-        <MediumText style={{ marginBottom: 16 }}>
-          Can you feel it? You're at the very last step.
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          We sent a verification code to:
         </MediumText>
-        <MediumText style={{ marginBottom: 16 }}>
-          We sent a verification code to your phone number:
-        </MediumText>
-        <MediumText style={{ marginBottom: 16 }}>{phoneNumber}</MediumText>
+        <SmallText
+          style={{ marginBottom: 32, fontSize: 16, color: colors.text }}
+        >
+          {phoneNumber}
+        </SmallText>
 
         <View style={{}}>
           <TextInput

@@ -23,7 +23,6 @@ export default function WelcomeScreen(props: {
     heading: {
       paddingTop: 16,
       paddingHorizontal: 32,
-      color: colors.primary,
     },
     top: {
       flex: 1,
@@ -39,6 +38,7 @@ export default function WelcomeScreen(props: {
       marginTop: 8,
       fontSize: 28,
       fontWeight: "bold",
+      color: colors.primary,
     },
   });
 

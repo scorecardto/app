@@ -11,7 +11,8 @@ import phone from "phone";
 import ReactNative from "react-native";
 import Toast from "react-native-toast-message";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
-
+import { useTheme } from "@react-navigation/native";
+import LoadingOverlay from "../loader/LoadingOverlay";
 export default function ReAddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -67,6 +68,11 @@ export default function ReAddPhoneNumberScreen(props: {
           })
           .catch((err) => {
             console.error(err);
+            Toast.show({
+              type: "info",
+              text1: "Error",
+              text2: err.message,
+            });
           });
 
         return true;
@@ -75,6 +81,9 @@ export default function ReAddPhoneNumberScreen(props: {
   }
 
   const keyboardVisible = useKeyboardVisible();
+
+  const { colors } = useTheme();
+
   return (
     <View
       style={{
@@ -88,7 +97,10 @@ export default function ReAddPhoneNumberScreen(props: {
         showBanner={!keyboardVisible}
         monoLabel="Access Your Scorecard"
       >
-        <MediumText style={{ marginBottom: 16 }}>Phone number</MediumText>
+        <LoadingOverlay show={loading} />
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Phone number
+        </MediumText>
         <TextInput
           label="Your Phone Number"
           setValue={setPhoneNumber}

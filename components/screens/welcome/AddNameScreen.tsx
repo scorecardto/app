@@ -1,17 +1,18 @@
-import {View} from "react-native";
-import React, {useContext, useState} from "react";
-import {NavigationProp} from "@react-navigation/native";
+import { View } from "react-native";
+import React, { useContext, useState } from "react";
+import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
-import {TextInput} from "../../input/TextInput";
+import { TextInput } from "../../input/TextInput";
 import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
-import {MobileDataContext} from "../../core/context/MobileDataContext";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
-
+import { useTheme } from "@react-navigation/native";
 export default function AddNameScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
 }) {
+  const { colors } = useTheme();
   const HEADER = props.route.params.editing
     ? "Edit Your Name"
     : "Add Your Name";
@@ -56,7 +57,9 @@ export default function AddNameScreen(props: {
         showBanner={true}
         monoLabel="Finish Setting Up"
       >
-        <MediumText style={{ marginBottom: 16 }}>Add your name</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Add your name
+        </MediumText>
         <View
           style={{
             width: "100%",

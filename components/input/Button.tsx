@@ -25,6 +25,9 @@ const Button = forwardRef<
 
   const styles = StyleSheet.create({
     wrapper: {
+      alignSelf: "center",
+    },
+    button: {
       paddingHorizontal: 18,
       paddingVertical: 12,
       borderRadius: 5,
@@ -40,8 +43,12 @@ const Button = forwardRef<
     },
   });
   return (
-    <TouchableOpacity onPress={props.onPress} disabled={props.disabled}>
-      <View style={styles.wrapper} ref={ref}>
+    <TouchableOpacity
+      onPress={props.onPress}
+      disabled={props.disabled}
+      style={styles.wrapper}
+    >
+      <View style={styles.button} ref={ref}>
         <Text style={styles.text}>{props.children}</Text>
       </View>
     </TouchableOpacity>

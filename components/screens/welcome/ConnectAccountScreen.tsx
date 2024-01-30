@@ -25,7 +25,7 @@ const ConnectAccountScreen = (props: {
 
   const district = props.route.params.district;
 
-  const { accents } = useTheme();
+  const { accents, colors } = useTheme();
 
   const isKeyboardVisible = useKeyboardVisible();
 
@@ -129,7 +129,11 @@ const ConnectAccountScreen = (props: {
             }}
           >
             <View>
-              <SmallText>
+              <SmallText
+                style={{
+                  color: colors.primary,
+                }}
+              >
                 You're logging with an {district.name} account.
               </SmallText>
               <SmallText

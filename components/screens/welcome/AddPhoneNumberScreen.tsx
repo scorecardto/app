@@ -11,6 +11,8 @@ import Storage from "expo-storage";
 import { phone } from "phone";
 import Toast from "react-native-toast-message";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
+import { useTheme } from "@react-navigation/native";
+import LoadingOverlay from "../loader/LoadingOverlay";
 
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -74,6 +76,8 @@ export default function AddPhoneNumberScreen(props: {
         auth()
           .signInWithPhoneNumber(formattedPhoneNumber.phoneNumber)
           .then((confirmation) => {
+            console.log(confirmation);
+
             setConfirmPhoneNumberCallback(() => {
               return async (c: string) => {
                 return confirmation.confirm(c);
@@ -90,11 +94,18 @@ export default function AddPhoneNumberScreen(props: {
           })
           .catch((err) => {
             console.error(err);
+            Toast.show({
+              type: "info",
+              text1: "Error",
+              text2: err.message,
+            });
           });
         return true;
       }
     });
   }
+
+  const { colors } = useTheme();
 
   const keyboardVisible = useKeyboardVisible();
   return (
@@ -104,13 +115,16 @@ export default function AddPhoneNumberScreen(props: {
         width: "100%",
       }}
     >
+      <LoadingOverlay show={loading} />
       <WelcomeScreen
         header={HEADER}
         footerText={FOOTER}
         showBanner={!keyboardVisible}
         monoLabel="Step 3 of 3"
       >
-        <MediumText style={{ marginBottom: 16 }}>Confirm your name</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Confirm your name
+        </MediumText>
         <View
           style={{
             width: "100%",
@@ -143,7 +157,9 @@ export default function AddPhoneNumberScreen(props: {
             />
           </View>
         </View>
-        <MediumText style={{ marginBottom: 16 }}>Phone number</MediumText>
+        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+          Phone number
+        </MediumText>
         <TextInput
           label="Your Phone Number"
           setValue={setPhoneNumber}

@@ -1,6 +1,7 @@
 import {
   FlatList,
   KeyboardAvoidingView,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -40,7 +41,7 @@ export default function SelectDistrictScreen(props: {
 
   const [districtSearch, setDistrictSearch] = useState("");
   return (
-    <KeyboardAvoidingView
+    <ScrollView
       style={{
         height: "100%",
         width: "100%",
@@ -61,6 +62,7 @@ export default function SelectDistrictScreen(props: {
             type="username"
           />
           <FlatList
+            scrollEnabled={false}
             style={{
               borderWidth: 1,
               borderColor: colors.borderNeutral,
@@ -160,6 +162,6 @@ export default function SelectDistrictScreen(props: {
           />
         </View>
       </WelcomeScreen>
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
