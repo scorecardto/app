@@ -13,7 +13,7 @@ import { useTheme } from "@react-navigation/native";
 import color from "../../../lib/Color";
 import LinearGradient from "react-native-linear-gradient";
 import colorLib from "color";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -51,6 +51,9 @@ export default function CourseCard(props: {
       height: 56,
       backgroundColor:
         color.AccentsMatrix[accentLabel][dark ? "dark" : "default"].primary,
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
     },
     header: {
       paddingLeft: 24,
@@ -68,10 +71,23 @@ export default function CourseCard(props: {
   const courseDisplayName =
     courseSettings[props.course.key]?.displayName || props.course.name;
 
+  const courseGlyph = courseSettings[props.course.key]?.glyph || undefined;
   const inner = (
     <>
       <View style={styles.left}>
-        <View style={styles.badge}></View>
+        <View style={styles.badge}>
+          {courseGlyph ? (
+            <MaterialCommunityIcons
+              // @ts-ignore
+
+              name={courseGlyph}
+              size={24}
+              color={"#FFFFFF"}
+            />
+          ) : (
+            <></>
+          )}
+        </View>
         <MediumText
           numberOfLines={1}
           ellipsizeMode={"tail"}

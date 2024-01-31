@@ -15,6 +15,7 @@ import { Course, DataContext } from "scorecard-types";
 import { saveCourseSettings } from "../../../lib/saveCourseSettings";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import Color from "../../../lib/Color";
+import CourseGlyphChanger from "./CourseGlyphChanger";
 
 export default function CourseEditSheet(props: {
   course: Course;
@@ -34,6 +35,8 @@ export default function CourseEditSheet(props: {
   );
 
   const accentColor = courseSettings.accentColor || Color.defaultAccentLabel;
+
+  const glyph = courseSettings.glyph || undefined;
 
   const saveName = useCallback(
     (n: string) => {
@@ -86,6 +89,22 @@ export default function CourseEditSheet(props: {
               [props.course.key]: {
                 ...courseSettings,
                 accentColor: accentLabel,
+              },
+            };
+
+            dataContext.setCourseSettings(newSettings);
+
+            saveCourseSettings(newSettings);
+          }}
+        />
+        <CourseGlyphChanger
+          value={glyph}
+          onChange={(newGlyph) => {
+            const newSettings = {
+              ...dataContext.courseSettings,
+              [props.course.key]: {
+                ...courseSettings,
+                glyph: newGlyph,
               },
             };
 
