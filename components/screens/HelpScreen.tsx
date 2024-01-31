@@ -16,6 +16,7 @@ import axios from "redaxios";
 import { firebase } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import { MobileDataContext } from "../core/context/MobileDataContext";
+import LoadingOverlay from "./loader/LoadingOverlay";
 export default function HelpScreen(props: { route: any; navigation: any }) {
   const { colors } = useTheme();
 
@@ -94,7 +95,7 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
               }
             : {}),
           token: userToken,
-          repo: 'app',
+          repo: "app",
         })
         .then((res) => {
           if (res.data.success) {
@@ -107,7 +108,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
             Toast.show({
               type: "info",
               text1: "Error",
-              text2: "There was an error sending your message: "+res.data.error,
+              text2:
+                "There was an error sending your message: " + res.data.error,
             });
           }
         })
@@ -116,94 +118,97 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
             type: "info",
             text1: "Error",
             text2: "There was an error sending your message",
-          })
+          });
         })
         .finally(props.navigation.goBack);
     }
   }, [loading]);
   return (
-    <AccountSubpageScreen
-      header={headerText}
-      footerText="Use this form to communicate directly with the Scorecard team."
-    >
-      <View
-        style={{
-          opacity: loading ? 0.5 : 1,
-        }}
+    <>
+      <LoadingOverlay show={loading} />
+      <AccountSubpageScreen
+        header={headerText}
+        footerText="Use this form to communicate directly with the Scorecard team."
       >
-        <ToggleInput
-          label="Respond to Me"
-          value={allowUserContact}
-          disabled={loading}
-          setValue={(v) => {
-            setAllowUserContact(v);
-          }}
-        />
-        <SmallText style={{ marginTop: 4, color: colors.text }}>
-          If enabled, we may contact you via text. Your phone number and name
-          will be shared regardless of this setting.
-        </SmallText>
-
-        <View style={{ marginTop: 40 }}>
-          <LongTextInput
-            label={bodyPlaceholder}
-            value={message}
-            setValue={(v) => {
-              setMessage(v);
-            }}
-            disabled={loading}
-          />
-        </View>
-
-        <Button
-          disabled={loading || !message}
-          onPress={() => {
-            setLoading(true);
-          }}
-        >
-          Send
-        </Button>
-
-        <Text
+        <View
           style={{
-            marginTop: 40,
-            marginBottom: 10,
-            fontSize: 16,
-            textAlign: "center",
-            color: colors.text,
+            opacity: loading ? 0.5 : 1,
           }}
         >
-          Other Options
-        </Text>
-        <View style={{ marginTop: 20 }}>
           <ToggleInput
+            label="Respond to Me"
+            value={allowUserContact}
             disabled={loading}
-            label="This Issue is Urgent"
-            value={urgent}
             setValue={(v) => {
-              setUrgent(v);
+              setAllowUserContact(v);
             }}
           />
           <SmallText style={{ marginTop: 4, color: colors.text }}>
-            Select if this is preventing you from using Scorecard.
+            If enabled, we may contact you via text. Your phone number and name
+            will be shared regardless of this setting.
           </SmallText>
-        </View>
-        <View style={{ marginTop: 40 }}>
-          <ToggleInput
-            disabled={loading}
-            label="Share My Login Info"
-            value={shareLogin}
-            setValue={(v) => {
-              setShareLogin(v);
+
+          <View style={{ marginTop: 40 }}>
+            <LongTextInput
+              label={bodyPlaceholder}
+              value={message}
+              setValue={(v) => {
+                setMessage(v);
+              }}
+              disabled={loading}
+            />
+          </View>
+
+          <Button
+            disabled={loading || !message}
+            onPress={() => {
+              setLoading(true);
             }}
-          />
-          <SmallText style={{ marginTop: 4, color: colors.text }}>
-            The Scorecard team cannot see your grades without this enabled. If
-            your bug involves a grade data issue, you may want to enable this
-            option.
-          </SmallText>
+          >
+            Send
+          </Button>
+
+          <Text
+            style={{
+              marginTop: 40,
+              marginBottom: 10,
+              fontSize: 16,
+              textAlign: "center",
+              color: colors.text,
+            }}
+          >
+            Other Options
+          </Text>
+          <View style={{ marginTop: 20 }}>
+            <ToggleInput
+              disabled={loading}
+              label="This Issue is Urgent"
+              value={urgent}
+              setValue={(v) => {
+                setUrgent(v);
+              }}
+            />
+            <SmallText style={{ marginTop: 4, color: colors.text }}>
+              Select if this is preventing you from using Scorecard.
+            </SmallText>
+          </View>
+          <View style={{ marginTop: 40 }}>
+            <ToggleInput
+              disabled={loading}
+              label="Share My Login Info"
+              value={shareLogin}
+              setValue={(v) => {
+                setShareLogin(v);
+              }}
+            />
+            <SmallText style={{ marginTop: 4, color: colors.text }}>
+              The Scorecard team cannot see your grades without this enabled. If
+              your bug involves a grade data issue, you may want to enable this
+              option.
+            </SmallText>
+          </View>
         </View>
-      </View>
-    </AccountSubpageScreen>
+      </AccountSubpageScreen>
+    </>
   );
 }

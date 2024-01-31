@@ -41,127 +41,129 @@ export default function SelectDistrictScreen(props: {
 
   const [districtSearch, setDistrictSearch] = useState("");
   return (
-    <ScrollView
-      style={{
-        height: "100%",
-        width: "100%",
-      }}
-    >
+    <>
       <LoadingOverlay show={loading} />
-      <WelcomeScreen
-        header={HEADER}
-        footerText={FOOTER}
-        showBanner={!isKeyboardVisible}
-        monoLabel="Step 1 of 3"
+      <ScrollView
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
       >
-        <View>
-          <TextInput
-            label="Search for your school or district"
-            setValue={setDistrictSearch}
-            value={districtSearch}
-            type="username"
-          />
-          <FlatList
-            scrollEnabled={false}
-            style={{
-              borderWidth: 1,
-              borderColor: colors.borderNeutral,
-              borderRadius: 4,
-              backgroundColor: colors.card,
-            }}
-            data={districts.sort((a: any, b: any) => {
-              if (a.pinned && !b.pinned && !districtSearch) {
-                return -1;
-              } else if (!a.pinned && b.pinned && !districtSearch) {
-                return 1;
-              } else {
-                if (districtSearch) {
-                  const aName = a.name.toLowerCase();
-                  const bName = b.name.toLowerCase();
-
-                  const aIndex = aName.indexOf(districtSearch.toLowerCase());
-                  const bIndex = bName.indexOf(districtSearch.toLowerCase());
-
-                  if (aIndex !== -1 && bIndex !== -1) {
-                    if (aIndex < bIndex) return -1;
-                    else if (aIndex > bIndex) return 1;
-                    else return aName.localeCompare(bName);
-                  } else if (aIndex !== -1 && bIndex === -1) {
-                    return -1;
-                  } else if (aIndex === -1 && bIndex !== -1) {
-                    return 1;
-                  } else {
-                    return aName.localeCompare(bName);
-                  }
+        <WelcomeScreen
+          header={HEADER}
+          footerText={FOOTER}
+          showBanner={!isKeyboardVisible}
+          monoLabel="Step 1 of 3"
+        >
+          <View>
+            <TextInput
+              label="Search for your school or district"
+              setValue={setDistrictSearch}
+              value={districtSearch}
+              type="username"
+            />
+            <FlatList
+              scrollEnabled={false}
+              style={{
+                borderWidth: 1,
+                borderColor: colors.borderNeutral,
+                borderRadius: 4,
+                backgroundColor: colors.card,
+              }}
+              data={districts.sort((a: any, b: any) => {
+                if (a.pinned && !b.pinned && !districtSearch) {
+                  return -1;
+                } else if (!a.pinned && b.pinned && !districtSearch) {
+                  return 1;
                 } else {
-                  return a.name.localeCompare(b.name);
-                }
-              }
-            })}
-            renderItem={({ item, index }) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    setLoading(true);
+                  if (districtSearch) {
+                    const aName = a.name.toLowerCase();
+                    const bName = b.name.toLowerCase();
 
-                    setTimeout(() => {
-                      setLoading(false);
-                      props.navigation.navigate("connectAccount", {
-                        district: item,
-                      });
-                    }, 1000);
-                  }}
-                >
-                  <View
-                    style={{
-                      borderTopWidth: index !== 0 ? 1 : 0,
-                      borderTopColor: colors.borderNeutral,
-                      paddingHorizontal: 16,
-                      paddingVertical: 16,
+                    const aIndex = aName.indexOf(districtSearch.toLowerCase());
+                    const bIndex = bName.indexOf(districtSearch.toLowerCase());
+
+                    if (aIndex !== -1 && bIndex !== -1) {
+                      if (aIndex < bIndex) return -1;
+                      else if (aIndex > bIndex) return 1;
+                      else return aName.localeCompare(bName);
+                    } else if (aIndex !== -1 && bIndex === -1) {
+                      return -1;
+                    } else if (aIndex === -1 && bIndex !== -1) {
+                      return 1;
+                    } else {
+                      return aName.localeCompare(bName);
+                    }
+                  } else {
+                    return a.name.localeCompare(b.name);
+                  }
+                }
+              })}
+              renderItem={({ item, index }) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setLoading(true);
+
+                      setTimeout(() => {
+                        setLoading(false);
+                        props.navigation.navigate("connectAccount", {
+                          district: item,
+                        });
+                      }, 1000);
                     }}
                   >
                     <View
                       style={{
-                        marginBottom: 4,
-                        flexDirection: "row",
-                        alignItems: "center",
+                        borderTopWidth: index !== 0 ? 1 : 0,
+                        borderTopColor: colors.borderNeutral,
+                        paddingHorizontal: 16,
+                        paddingVertical: 16,
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          color: colors.primary,
-                          fontSize: 16,
-                          fontWeight: "500",
-                          marginRight: 8,
+                          marginBottom: 4,
+                          flexDirection: "row",
+                          alignItems: "center",
                         }}
                       >
-                        {item.name}
-                      </Text>
-                      {item.pinned && (
-                        <Image
-                          source={starred}
+                        <Text
                           style={{
-                            width: 16,
-                            aspectRatio: 1,
+                            color: colors.primary,
+                            fontSize: 16,
+                            fontWeight: "500",
+                            marginRight: 8,
                           }}
-                        />
-                      )}
+                        >
+                          {item.name}
+                        </Text>
+                        {item.pinned && (
+                          <Image
+                            source={starred}
+                            style={{
+                              width: 16,
+                              aspectRatio: 1,
+                            }}
+                          />
+                        )}
+                      </View>
+                      <Text
+                        style={{
+                          color: colors.text,
+                          fontSize: 14,
+                        }}
+                      >
+                        {item.url}
+                      </Text>
                     </View>
-                    <Text
-                      style={{
-                        color: colors.text,
-                        fontSize: 14,
-                      }}
-                    >
-                      {item.url}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-          />
-        </View>
-      </WelcomeScreen>
-    </ScrollView>
+                  </TouchableOpacity>
+                );
+              }}
+            />
+          </View>
+        </WelcomeScreen>
+      </ScrollView>
+    </>
   );
 }

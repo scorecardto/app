@@ -1,6 +1,18 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useMemo } from "react";
 import { Animated } from "react-native";
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator,
+} from "react-native-indicators";
+
 export default function LoadingOverlay(props: { show: boolean }) {
   const styles = StyleSheet.create({
     wrapper: {
@@ -9,12 +21,6 @@ export default function LoadingOverlay(props: { show: boolean }) {
       height: "100%",
       backgroundColor: "rgba(0,0,0,0.5)",
       zIndex: 100,
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      justifyContent: "center",
-      alignItems: "center",
     },
   });
 
@@ -41,9 +47,18 @@ export default function LoadingOverlay(props: { show: boolean }) {
       style={[styles.wrapper, { opacity }]}
       pointerEvents={props.show ? "auto" : "none"}
     >
-      <View>
-        <Text style={{ color: "white", fontSize: 20 }}>Loading...</Text>
-      </View>
+      {/* <View
+        style={{
+          width: 100,
+          height: 100,
+          borderRadius: 20,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      > */}
+      <MaterialIndicator color="white" size={60} />
+      {/* </View> */}
     </Animated.View>
   );
 }

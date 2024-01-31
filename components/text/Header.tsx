@@ -20,6 +20,7 @@ export default function Header(props: {
       alignItems: "center",
     },
     header: {
+      overflow: "hidden",
       textAlign: "center",
       color: colors.primary,
     },
@@ -33,7 +34,14 @@ export default function Header(props: {
   return (
     <View>
       <View style={styles.container}>
-        <LargeText style={styles.header}>{props.header}</LargeText>
+        <LargeText
+          textProps={{
+            numberOfLines: 1,
+          }}
+          style={styles.header}
+        >
+          {props.header}
+        </LargeText>
         {props.subheader && (
           <StatusText style={styles.subheader}>{props.subheader}</StatusText>
         )}

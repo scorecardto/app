@@ -91,13 +91,13 @@ export default function ReAddPhoneNumberScreen(props: {
         width: "100%",
       }}
     >
+      <LoadingOverlay show={loading} />
       <WelcomeScreen
         header={HEADER}
         footerText={FOOTER}
         showBanner={!keyboardVisible}
         monoLabel="Access Your Scorecard"
       >
-        <LoadingOverlay show={loading} />
         <MediumText style={{ marginBottom: 16, color: colors.primary }}>
           Phone number
         </MediumText>

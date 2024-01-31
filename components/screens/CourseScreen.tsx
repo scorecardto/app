@@ -30,6 +30,10 @@ import captureCourseState from "../../lib/captureCourseState";
 import GradeStateChangesCard from "../app/gradebook/GradeStateChangesCard";
 import Button from "../input/Button";
 import BottomSheetButton from "../input/BottomSheetButton";
+import CourseCornerButton from "../app/course/CourseCornerButton";
+import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContainer";
+import parseCourseKey from "../../lib/parseCourseKey";
+import StatusText from "../text/StatusText";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -172,6 +176,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   ];
 
   const insets = useSafeAreaInsets();
+
+  const keyInfo = parseCourseKey(key);
+
   return (
     <ThemeProvider value={theme}>
       <SafeAreaView
@@ -181,33 +188,15 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
           position: "relative",
         }}
       >
-        <TouchableOpacity
-          onPress={() => props.navigation.goBack()}
-          style={{
-            zIndex: 50,
-            position: "absolute",
-            top: insets.top + 12,
-            left: 0,
-          }}
-        >
-          <View>
-            <View
-              style={{
-                paddingRight: 16,
-                paddingVertical: 16,
-                paddingLeft: 8,
-                borderTopRightRadius: 32,
-                borderBottomRightRadius: 32,
-              }}
-            >
-              <MaterialIcons
-                name="chevron-left"
-                size={36}
-                color={colors.text}
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
+        <CourseCornerButtonContainer>
+          <CourseCornerButton
+            side="left"
+            icon="chevron-left"
+            iconSize={30}
+            onPress={() => props.navigation.goBack()}
+          />
+        </CourseCornerButtonContainer>
+
         <View
           style={{
             zIndex: 1,
@@ -220,40 +209,49 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
               ));
             }}
           >
-            <Header header={courseDisplayName}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 15,
-                  marginTop: 18,
-                  alignItems: "center",
-                }}
+            <View style={{ marginHorizontal: 64 }}>
+              <Header
+                header={courseDisplayName}
+                subheader={
+                  courseDisplayName !== course.name
+                    ? undefined
+                    : "Tap to add a name and color"
+                }
               >
-                <LargeGradeText
-                  // animated={true}
-                  grade={gradeText}
-                  // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
-                  backgroundColor={
-                    modifiedAvg ? colors.borderNeutral : accents.primary
-                  }
-                  textColor={modifiedAvg ? colors.text : "#FFFFFF"}
-                />
-                {modifiedAvg && (
-                  <MaterialIcons
-                    name={"arrow-forward"}
-                    size={25}
-                    color={colors.text}
-                  />
-                )}
-                {modifiedAvg && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 15,
+                    marginTop: 20,
+                    alignItems: "center",
+                  }}
+                >
                   <LargeGradeText
-                    grade={`${modifiedAvg}`}
-                    backgroundColor={accents.primary}
-                    textColor="#FFFFFF"
+                    // animated={true}
+                    grade={gradeText}
+                    // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
+                    backgroundColor={
+                      modifiedAvg ? colors.borderNeutral : accents.primary
+                    }
+                    textColor={modifiedAvg ? colors.text : "#FFFFFF"}
                   />
-                )}
-              </View>
-            </Header>
+                  {modifiedAvg && (
+                    <MaterialIcons
+                      name={"arrow-forward"}
+                      size={25}
+                      color={colors.text}
+                    />
+                  )}
+                  {modifiedAvg && (
+                    <LargeGradeText
+                      grade={`${modifiedAvg}`}
+                      backgroundColor={accents.primary}
+                      textColor="#FFFFFF"
+                    />
+                  )}
+                </View>
+              </Header>
+            </View>
           </TouchableOpacity>
 
           {showGradeStateChanges && (

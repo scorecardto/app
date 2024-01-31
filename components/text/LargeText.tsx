@@ -1,9 +1,10 @@
-import { View, Text, StyleProp } from "react-native";
+import { View, Text, StyleProp, TextProps } from "react-native";
 import React from "react";
 
 export default function LargeText(props: {
   children: React.ReactNode;
   style?: StyleProp<any>;
+  textProps?: TextProps;
 }) {
   return (
     <Text
@@ -13,6 +14,7 @@ export default function LargeText(props: {
         fontFamily: "DMSans_700Bold",
         ...props.style,
       }}
+      {...props.textProps}
     >
       {props.children}
     </Text>
