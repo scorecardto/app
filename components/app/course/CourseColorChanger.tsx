@@ -27,6 +27,7 @@ export default function CourseColorChanger(props: {
         style={{
           display: "flex",
           flexDirection: "row",
+          flexWrap: "wrap",
         }}
       >
         {Object.entries(Color.AccentsMatrix).map(
@@ -42,8 +43,12 @@ export default function CourseColorChanger(props: {
                   style={{
                     height: 40,
                     width: 40,
-                    borderRadius: 20,
+                    borderRadius: 5,
                     marginRight: 8,
+                    borderColor: "rgba(0,0,0,0.2)",
+                    borderWidth: 1,
+                    borderBottomWidth: 2,
+                    marginBottom: 8,
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
