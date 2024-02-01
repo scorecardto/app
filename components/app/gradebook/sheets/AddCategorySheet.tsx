@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, View} from "react-native";
 import BottomSheetHeader from "../../../util/BottomSheet/BottomSheetHeader";
-import {BottomSheetTextInput} from "@gorhom/bottom-sheet";
+import {BottomSheetTextInput, BottomSheetView} from "@gorhom/bottom-sheet";
 import {useTheme} from "@react-navigation/native";
 import SmallText from "../../../text/SmallText";
 
@@ -14,7 +14,7 @@ export default function AddCategorySheet(props: {
     const {colors} = useTheme();
 
     return (
-        <View>
+        <BottomSheetView>
             <BottomSheetHeader>Add Category</BottomSheetHeader>
             <View style={{ padding: 12, marginLeft: 10 }}>
                 <SmallText
@@ -44,6 +44,6 @@ export default function AddCategorySheet(props: {
                     props.close();
                 }}/>
             </View>
-        </View>
+        </BottomSheetView>
     )
 }
