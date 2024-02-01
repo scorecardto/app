@@ -45,7 +45,7 @@ export default async function initialize(
 
     mobileDataContext.setNotifications(JSON.parse(notifs ?? "[]"));
 
-    mobileDataContext.setOldCourseStates(JSON.parse(oldCourseStates ?? "{}"));
+    // mobileDataContext.setOldCourseStates(JSON.parse(oldCourseStates ?? "{}"));
 
     const { username, password, host } = JSON.parse(login);
 

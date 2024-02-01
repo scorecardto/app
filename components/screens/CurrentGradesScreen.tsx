@@ -6,7 +6,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { Course, DataContext } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
@@ -27,6 +34,8 @@ import InviteOthersCard from "../app/dashboard/InviteOthersCard";
 import MoreFeaturesSheet from "../app/vip/MoreFeaturesSheet";
 import parseCourseKey from "../../lib/parseCourseKey";
 import captureCourseState from "../../lib/captureCourseState";
+import RefreshIndicator from "../app/dashboard/RefreshIndicator";
+import RefreshStatus from "../../lib/types/RefreshStatus";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -65,7 +74,7 @@ const CurrentGradesScreen = (props: {
     if (now - lastUpdated < 1000 * 60 * 60) {
       const mins = Math.floor((now - lastUpdated) / 1000 / 60);
 
-      if (mins === 0) return `Your grades are fresh out of the oven`;
+      if (mins <= 0) return `Your grades are fresh out of the oven`;
       return `Updated ${mins} minute${mins === 1 ? "" : "s"} ago`;
     }
 
@@ -95,7 +104,15 @@ const CurrentGradesScreen = (props: {
     const username = mobileData.username;
     const password = mobileData.password;
 
-    const reportCard = fetchAllContent(url, username, password);
+    const reportCard = fetchAllContent(
+      url,
+      username,
+      password,
+      undefined,
+      (s: RefreshStatus) => {
+        mobileData.setRefreshStatus(s);
+      }
+    );
 
     reportCard.then(async (data) => {
       await fetchAndStore(data, mobileData, dataContext, false);
@@ -136,10 +153,27 @@ const CurrentGradesScreen = (props: {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   }, [showLastUpdated, refreshing]);
+
   const sheets = useContext(BottomSheetContext);
+
+  const [showRefreshControl, setShowRefreshControl] = useState(false);
+
+  const MINS_TO_REFRESH = 60;
+
+  useEffect(() => {
+    const lastUpdated = dataContext.data?.date;
+    if (refreshing || !lastUpdated) return;
+
+    const mins = Math.floor((Date.now() - lastUpdated) / 1000 / 60);
+
+    if (mins > MINS_TO_REFRESH) {
+      onRefresh();
+    }
+  }, [currentTime, dataContext.data?.date, refreshing, showRefreshControl]);
 
   return (
     <>
+      <RefreshIndicator />
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <HeaderBanner
           label={
@@ -156,7 +190,20 @@ const CurrentGradesScreen = (props: {
         />
         <ScrollView
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              style={refreshing && !showRefreshControl ? { opacity: 0 } : {}}
+              refreshing={showRefreshControl}
+              onRefresh={() => {
+                if (refreshing) return;
+
+                setShowRefreshControl(true);
+                onRefresh();
+
+                setTimeout(() => {
+                  setShowRefreshControl(false);
+                }, 100);
+              }}
+            />
           }
           style={{ height: "100%" }}
           ref={scrollViewRef}

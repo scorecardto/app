@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { GradebookNotification, GradebookRecord } from "scorecard-types";
 import UserRank from "../../../lib/types/UserRank";
 import CourseStateRecord from "../../../lib/types/CourseStateRecord";
+import RefreshStatus from "../../../lib/types/RefreshStatus";
 
 export const MobileDataContext = React.createContext<MobileDataProvider>({
   district: "",
@@ -30,6 +31,13 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
   setUserRank: () => {},
   oldCourseStates: {},
   setOldCourseStates: () => {},
+  refreshStatus: {
+    status: "No Data to Load",
+    taskRemaining: 0,
+    tasksCompleted: 0,
+    type: "IDLE",
+  },
+  setRefreshStatus: () => {},
 });
 
 export interface MobileDataProvider {
@@ -59,4 +67,6 @@ export interface MobileDataProvider {
   setUserRank: Dispatch<SetStateAction<UserRank>>;
   oldCourseStates: CourseStateRecord;
   setOldCourseStates: Dispatch<SetStateAction<CourseStateRecord>>;
+  refreshStatus: RefreshStatus;
+  setRefreshStatus: Dispatch<SetStateAction<RefreshStatus>>;
 }

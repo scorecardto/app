@@ -13,6 +13,7 @@ import {
 } from "scorecard-types";
 // @ts-ignore
 import * as iso88592 from "iso-8859-2/iso-8859-2.mjs";
+import RefreshStatus from "./types/RefreshStatus";
 
 const generateSessionId = () => {
   return [...Array(32)]
@@ -40,9 +41,17 @@ const fetchReportCard = async (
   host: string,
   username: string,
   password: string,
-  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void
+  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void,
+  onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<CourseResponse> => {
   const cookie = generateSessionId();
+
+  onStatusUpdate?.({
+    tasksCompleted: 0,
+    taskRemaining: 10,
+    status: "Getting New Grades...",
+    type: "LOGGING_IN",
+  });
 
   const ENTRY_POINT: Options = {
     url: `https://${host}/selfserve/EntryPointHomeAction.do?parent=false`,
@@ -447,13 +456,15 @@ const fetchAllContent = async (
   host: string,
   username: string,
   password: string,
-  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void
+  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void,
+  onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<AllContentResponse> => {
   const reportCard = await fetchReportCard(
     host,
     username,
     password,
-    onLoginSuccess
+    onLoginSuccess,
+    onStatusUpdate
   );
 
   const gradeCategories = reportCard.gradeCategoryNames;
@@ -462,8 +473,16 @@ const fetchAllContent = async (
     host,
     reportCard.sessionId,
     reportCard.referer,
-    reportCard.courses
+    reportCard.courses,
+    onStatusUpdate
   );
+
+  onStatusUpdate?.({
+    status: "Done",
+    type: "IDLE",
+    tasksCompleted: 0,
+    taskRemaining: 0,
+  });
 
   return {
     ...assignmentsAllCoursesResponse,
@@ -475,7 +494,8 @@ const fetchGradeCategoriesForCourses = async (
   host: string,
   sessionId: string,
   oldReferer: string,
-  courses: Course[]
+  courses: Course[],
+  onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<AllCoursesResponse> => {
   const all: Course[] = [];
 
@@ -483,6 +503,14 @@ const fetchGradeCategoriesForCourses = async (
 
   for (let i = 0; i < courses.length; i++) {
     const course = courses[i];
+
+    onStatusUpdate?.({
+      tasksCompleted: i + 1,
+      taskRemaining: courses.length + 1,
+      status: "Updating COURSE_NAME",
+      type: "GETTING_COURSES",
+      courseKey: course.key,
+    });
 
     const assignmentsResponse = await fetchGradeCategoriesForCourse(
       host,

@@ -47,6 +47,7 @@ import Toast from "react-native-toast-message";
 import ToastConfig from "./components/util/ToastConfig";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import HelpScreen from "./components/screens/HelpScreen";
+import RefreshStatus from "./lib/types/RefreshStatus";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -106,6 +107,13 @@ export default function App() {
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [userRank, setUserRank] = useState<UserRank>("DEFAULT");
 
+  const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>({
+    status: "No Data to Load",
+    taskRemaining: 0,
+    tasksCompleted: 0,
+    type: "IDLE",
+  });
+
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setUser(user);
     if (!userReady) setUserReady(true);
@@ -157,6 +165,8 @@ export default function App() {
       setUserRank,
       oldCourseStates,
       setOldCourseStates,
+      refreshStatus,
+      setRefreshStatus,
     }),
     [
       district,
@@ -185,6 +195,8 @@ export default function App() {
       setUserRank,
       oldCourseStates,
       setOldCourseStates,
+      refreshStatus,
+      setRefreshStatus,
     ]
   );
 
@@ -351,13 +363,13 @@ export default function App() {
                         }}
                       />
                       <Stack.Screen
-                      name="help"
-                      component={HelpScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "Back",
-                      }}
-                    />
+                        name="help"
+                        component={HelpScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "Back",
+                        }}
+                      />
                     </Stack.Navigator>
                     <ToastConfig />
                   </NavigationContainer>

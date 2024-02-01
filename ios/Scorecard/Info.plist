@@ -54,9 +54,17 @@
           <string>com.googleusercontent.apps.870859629353-p4k4ptusm5irenbqu4grggodu1oulla4</string>
         </array>
       </dict>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>scorecardto.firebaseapp.com</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>13</string>
+    <string>15</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
