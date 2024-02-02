@@ -19,7 +19,10 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "15"
+      "buildNumber": "15",
+      "infoPlist": {
+        "UIBackgroundModes": ["remote-notification", "fetch"]
+      }
     },
     "android": {
       "adaptiveIcon": {
