@@ -86,8 +86,10 @@ export default function CourseEditSheet(props: {
         />
         <CourseGlyphChanger
           value={glyph}
-          onChange={(glyph) => {
-              setCourseSetting(dataContext, props.course.key, {glyph});
+          onChange={(newGlyph) => {
+              if (glyph == newGlyph) newGlyph = "";
+
+              setCourseSetting(dataContext, props.course.key, {glyph: newGlyph});
           }}
         />
       </ScrollView>
