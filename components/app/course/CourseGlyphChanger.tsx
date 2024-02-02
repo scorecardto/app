@@ -27,6 +27,15 @@ export default function CourseGlyphChanger(props: {
     "shape",
     "calculator-variant",
     "console",
+    "brush",
+    "music",
+    "book-open-blank-variant",
+    "beaker",
+    "basketball",
+    "tennis",
+    "football",
+    "arm-flex",
+    "code-braces",
   ];
 
   // const a=  <MaterialCommunityIcons name=""/>;
