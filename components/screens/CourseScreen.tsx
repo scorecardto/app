@@ -1,4 +1,11 @@
-import React, { useRef, useState, useContext, useEffect, useMemo } from "react";
+import React, {
+  useRef,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  Suspense,
+} from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
 import { MobileDataContext } from "../core/context/MobileDataContext";
 import { Course, DataContext } from "scorecard-types";
@@ -6,14 +13,13 @@ import Header from "../text/Header";
 import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { ThemeProvider, useTheme } from "@react-navigation/native";
-// import Gradebook from "../app/dashboard/gradebook/Gradebook";
+import Gradebook from "../app/gradebook/Gradebook";
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 // import CourseEditSheet from "../app/course/CourseEditSheet";
 import { Theme } from "../../lib/Color";
 import color from "../../lib/Color";
 import { RouteProp, NavigationProp } from "@react-navigation/native";
-import Gradebook from "../app/gradebook/Gradebook";
 import CourseEditSheet from "../app/course/CourseEditSheet";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
@@ -34,6 +40,7 @@ import CourseCornerButton from "../app/course/CourseCornerButton";
 import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContainer";
 import parseCourseKey from "../../lib/parseCourseKey";
 import StatusText from "../text/StatusText";
+import LoadingOverlay from "./loader/LoadingOverlay";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -41,11 +48,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const dataContext = React.useContext(DataContext);
   const mobileDataContext = React.useContext(MobileDataContext);
 
-  const [course, setCourse] = useState<Course | undefined>(
-    dataContext.gradeCategory === dataContext.data?.gradeCategory
-      ? dataContext.data?.courses.find((c) => c.key === key)
-      : undefined
-  );
+  const [course, setCourse] = useState<Course | undefined>(undefined);
   const [playUpdateAnimation, setPlayUpdateAnimation] = useState(false);
   const [showNormalCourseInfo, setShowNormalCourseInfo] = useState(false);
   const [showGradeStateChanges, setShowGradeStateChanges] = useState(false);
@@ -137,7 +140,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   useEffect(() => {
     Animated.timing(normalViewOpacity, {
       toValue: showNormalCourseInfo ? 1 : 0,
-      duration: 500,
+      duration: 300,
       useNativeDriver: true,
     }).start();
     Animated.timing(normalViewTranslateY, {
@@ -146,6 +149,8 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       useNativeDriver: true,
     }).start();
   }, [showNormalCourseInfo]);
+
+  const insets = useSafeAreaInsets();
 
   if (course == null) {
     return (
@@ -175,8 +180,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     { offset: "100%", color: accents.gradientCenter, opacity: "0" },
   ];
 
-  const insets = useSafeAreaInsets();
-
   const keyInfo = parseCourseKey(key);
 
   return (
@@ -188,108 +191,110 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
           position: "relative",
         }}
       >
-        <CourseCornerButtonContainer>
+        {/* <CourseCornerButtonContainer>
           <CourseCornerButton
             side="left"
             icon="chevron-left"
             iconSize={30}
             onPress={() => props.navigation.goBack()}
           />
-        </CourseCornerButtonContainer>
+        </CourseCornerButtonContainer> */}
 
         <View
           style={{
             zIndex: 1,
           }}
         >
-          <TouchableOpacity
-            onPress={() => {
-              sheets?.addSheet(({ close, setOnClose }) => (
-                <CourseEditSheet course={course} setOnClose={setOnClose} />
-              ));
-            }}
-          >
-            <View style={{ marginHorizontal: 64 }}>
-              <Header
-                header={courseDisplayName}
-                subheader={
-                  courseDisplayName !== course.name
-                    ? undefined
-                    : "Tap to add a name and color"
-                }
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 15,
-                    marginTop: 20,
-                    alignItems: "center",
-                  }}
+          <Suspense fallback={<LoadingOverlay show={true} />}>
+            <TouchableOpacity
+              onPress={() => {
+                sheets?.addSheet(({ close, setOnClose }) => (
+                  <CourseEditSheet course={course} setOnClose={setOnClose} />
+                ));
+              }}
+            >
+              <View style={{ marginHorizontal: 64 }}>
+                <Header
+                  header={courseDisplayName}
+                  subheader={
+                    courseDisplayName !== course.name
+                      ? undefined
+                      : "Tap to add a name and color"
+                  }
                 >
-                  <LargeGradeText
-                    // animated={true}
-                    grade={gradeText}
-                    // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
-                    backgroundColor={
-                      modifiedAvg ? colors.borderNeutral : accents.primary
-                    }
-                    textColor={modifiedAvg ? colors.text : "#FFFFFF"}
-                  />
-                  {modifiedAvg && (
-                    <MaterialIcons
-                      name={"arrow-forward"}
-                      size={25}
-                      color={colors.text}
-                    />
-                  )}
-                  {modifiedAvg && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 15,
+                      marginTop: 20,
+                      alignItems: "center",
+                    }}
+                  >
                     <LargeGradeText
-                      grade={`${modifiedAvg}`}
-                      backgroundColor={accents.primary}
-                      textColor="#FFFFFF"
+                      // animated={true}
+                      grade={gradeText}
+                      // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
+                      backgroundColor={
+                        modifiedAvg ? colors.borderNeutral : accents.primary
+                      }
+                      textColor={modifiedAvg ? colors.text : "#FFFFFF"}
                     />
-                  )}
-                </View>
-              </Header>
-            </View>
-          </TouchableOpacity>
+                    {modifiedAvg && (
+                      <MaterialIcons
+                        name={"arrow-forward"}
+                        size={25}
+                        color={colors.text}
+                      />
+                    )}
+                    {modifiedAvg && (
+                      <LargeGradeText
+                        grade={`${modifiedAvg}`}
+                        backgroundColor={accents.primary}
+                        textColor="#FFFFFF"
+                      />
+                    )}
+                  </View>
+                </Header>
+              </View>
+            </TouchableOpacity>
 
-          {showGradeStateChanges && (
-            <View>
-              <GradeStateChangesCard
+            {showGradeStateChanges && (
+              <View>
+                <GradeStateChangesCard
+                  course={course}
+                  onFinished={() => {
+                    setShowNormalCourseInfo(true);
+                    setShowGradeStateChanges(false);
+                    setGradeText(modifiedAvg || "NG");
+                    setModifiedAvg(null);
+                  }}
+                />
+              </View>
+            )}
+            <Animated.View
+              style={{
+                opacity: normalViewOpacity.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0, 1],
+                }),
+                transform: [
+                  {
+                    translateY: normalViewTranslateY.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, -20],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <Gradebook
                 course={course}
-                onFinished={() => {
-                  setShowNormalCourseInfo(true);
-                  setShowGradeStateChanges(false);
-                  setGradeText(modifiedAvg || "NG");
-                  setModifiedAvg(null);
+                setModifiedGrade={(n) => {
+                  setModifiedAvg(n == null ? null : `${n}`);
                 }}
               />
-            </View>
-          )}
-          <Animated.View
-            style={{
-              opacity: normalViewOpacity.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
-              transform: [
-                {
-                  translateY: normalViewTranslateY.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, -20],
-                  }),
-                },
-              ],
-            }}
-          >
-            <Gradebook
-              course={course}
-              setModifiedGrade={(n) => {
-                setModifiedAvg(n == null ? null : `${n}`);
-              }}
-            />
-          </Animated.View>
+            </Animated.View>
+          </Suspense>
         </View>
         <View
           style={{

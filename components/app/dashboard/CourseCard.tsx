@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
+  Animated,
   Appearance,
   StyleSheet,
   Text,
@@ -14,6 +15,8 @@ import color from "../../../lib/Color";
 import LinearGradient from "react-native-linear-gradient";
 import colorLib from "color";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Swipeable } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -33,7 +36,6 @@ export default function CourseCard(props: {
       backgroundColor: "transparent",
       borderRadius: 12,
       overflow: "hidden",
-      marginBottom: 10,
       marginHorizontal: 12,
       flexDirection: "row",
       justifyContent: "space-between",
@@ -72,6 +74,9 @@ export default function CourseCard(props: {
     courseSettings[props.course.key]?.displayName || props.course.name;
 
   const courseGlyph = courseSettings[props.course.key]?.glyph || undefined;
+
+  const swipeRef = React.useRef<Swipeable>(null);
+
   const inner = (
     <>
       <View style={styles.left}>
@@ -103,30 +108,132 @@ export default function CourseCard(props: {
       </SmallText>
     </>
   );
+
+  const [show, setShow] = useState(true);
+  const [playedVibration, setPlayedVibration] = useState(false);
   return (
-    <TouchableOpacity onPress={props.onClick} onLongPress={props.onHold}>
-      {props.newGrades ? (
-        <LinearGradient
-          style={styles.wrapper}
-          colors={[
-            colors.card,
-            colorLib(
-              color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
-                .gradientCenter
-            )
-              .mix(colorLib(colors.card), 0.5)
-              .hex(),
-          ]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-        >
-          {inner}
-        </LinearGradient>
-      ) : (
-        <View style={[styles.wrapper, { backgroundColor: colors.card }]}>
-          {inner}
-        </View>
-      )}
+    <TouchableOpacity
+      onPress={props.onClick}
+      onLongPress={props.onHold}
+      style={{
+        marginBottom: 10,
+      }}
+    >
+      <Swipeable
+        ref={swipeRef}
+        onEnded={(o) => {
+          // @ts-ignore
+          if (o.nativeEvent.x > 200) {
+            props.onClick();
+            setShow(false);
+
+            setTimeout(() => {
+              setShow(true);
+            }, 600);
+          }
+
+          setTimeout(() => {
+            swipeRef.current?.close();
+          }, 100);
+        }}
+        renderLeftActions={(progress, dragX) => {
+          const trans = dragX.interpolate({
+            inputRange: [0, 50, 100, 101],
+            outputRange: [-60, -30, 0, 0],
+          });
+
+          const opacity = dragX.interpolate({
+            inputRange: [0, 20, 100, 101],
+            outputRange: [0, 0, 1, 1],
+          });
+
+          const scale = dragX.interpolate({
+            inputRange: [0, 95, 100],
+            outputRange: [0.5, 0.7, 1],
+            extrapolate: "clamp",
+          });
+
+          const vibrate = dragX.interpolate({
+            inputRange: [0, 99, 100, 101],
+            outputRange: [0, 0, 1, 0],
+          });
+
+          dragX.addListener(({ value }) => {
+            if (Math.floor(value) > 100) {
+              setPlayedVibration((prev) => {
+                if (!prev) {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                }
+                return true;
+              });
+            } else {
+              setPlayedVibration(false);
+            }
+          });
+          return (
+            <Animated.View
+              style={[
+                {
+                  width: 80,
+                  height: "100%",
+                  paddingLeft: 18,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                },
+                {
+                  transform: [{ translateX: trans }, { scale: scale }],
+                  opacity: opacity,
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  color: colors.text,
+                  fontWeight: "bold",
+                  fontSize: 16,
+                }}
+              >
+                Open
+              </Text>
+            </Animated.View>
+          );
+        }}
+        overshootLeft={true}
+      >
+        {props.newGrades ? (
+          <LinearGradient
+            colors={[
+              colors.card,
+              colorLib(
+                color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
+                  .gradientCenter
+              )
+                .mix(colorLib(colors.card), 0.5)
+                .hex(),
+            ]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[
+              styles.wrapper,
+              {
+                opacity: show ? 1 : 0,
+              },
+            ]}
+          >
+            {inner}
+          </LinearGradient>
+        ) : (
+          <View
+            style={[
+              styles.wrapper,
+              { backgroundColor: colors.card, opacity: show ? 1 : 0 },
+            ]}
+          >
+            {inner}
+          </View>
+        )}
+      </Swipeable>
     </TouchableOpacity>
   );
 }

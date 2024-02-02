@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
-import {Dimensions, View} from "react-native";
-import {Assignment, Course, GradeCategory} from "scorecard-types";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Dimensions, Text, View } from "react-native";
+import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
 import CategoryTable from "./CategoryTable";
 // import Carousel, { Pagination } from "react-native-snap-carousel";
@@ -11,17 +11,20 @@ import SummaryTable from "./SummaryTable";
 //   MotiView,
 //   useDynamicAnimation,
 // } from "moti";
-import {useTheme} from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 // import { set } from "react-native-reanimated";
-import {averageAssignments, averageGradeCategories,} from "../../../lib/gradeTesting";
-import Carousel, {Pagination} from "react-native-snap-carousel";
+import {
+  averageAssignments,
+  averageGradeCategories,
+} from "../../../lib/gradeTesting";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
 
-export default function Gradebook(props: {
+function Gradebook(props: {
   course: Course;
   setModifiedGrade(avg: number | null): void;
 }) {
@@ -135,7 +138,7 @@ export default function Gradebook(props: {
       />
       <Carousel
         ref={ref}
-        data={[null, ...(categories || [])]}
+        data={[null, ...categories]}
         renderItem={({ item, index }) => {
           if (!item) {
             return (
@@ -147,7 +150,7 @@ export default function Gradebook(props: {
                   removable={false}
                   remove={() => {}}
                   buttonAction={() => {
-                    sheets.addSheet(({ close }) => (
+                    sheets?.addSheet(({ close }) => (
                       <>
                         <AddCategorySheet
                           close={close}
@@ -168,7 +171,6 @@ export default function Gradebook(props: {
                             setExactAverages((averages) => {
                               const newAverages = [...averages];
                               newAverages.push(null);
-
                               return newAverages;
                             });
                             setModifiedCategories((oldCategories) => {
@@ -178,7 +180,6 @@ export default function Gradebook(props: {
                                 average: null,
                                 exactAverage: null,
                               });
-
                               return newCategories;
                             });
                           }}
@@ -195,7 +196,6 @@ export default function Gradebook(props: {
                       ref.current?.snapToItem(c + 1);
                       setAnimatedIndex(c + 1);
                       setAnimatingCard(c);
-
                       setTimeout(() => {
                         setAnimatingCard(-1);
                       }, 300);
@@ -208,7 +208,6 @@ export default function Gradebook(props: {
           const gradeText =
             "" + (modifiedCategories[index - 1].average ?? item.average);
           const testing = index > props.course.gradeCategories!.length;
-
           return (
             <View
             // animate={{
@@ -257,13 +256,11 @@ export default function Gradebook(props: {
                   setModifiedCategories((categories) => {
                     const catIdx = index - 1;
                     const newCategories = [...categories];
-
                     if (newCategories[catIdx].assignments === null) {
                       newCategories[catIdx].assignments = new Array(
-                        item.assignments.length
+                        item?.assignments?.length
                       ).fill(null);
                     }
-
                     newCategories[catIdx].assignments!.push({
                       name: "Test Assignment " + numTestAssignments,
                       points: 100,
@@ -274,9 +271,7 @@ export default function Gradebook(props: {
                       error: false,
                     });
                     setNumTestAssignments(numTestAssignments + 1);
-
                     updateAverage(newCategories, catIdx);
-
                     return newCategories;
                   });
                 }}
@@ -290,13 +285,10 @@ export default function Gradebook(props: {
                     setModifiedCategories((categories) => {
                       const catIdx = index - 1;
                       const newCategories = [...categories];
-
                       if (newCategories[catIdx].assignments !== null) {
                         newCategories[catIdx].assignments!.splice(idx, 1);
                       }
-
                       updateAverage(newCategories, catIdx);
-
                       return newCategories;
                     });
                   }}
@@ -309,13 +301,11 @@ export default function Gradebook(props: {
                           return oldCategories;
                         }
                         newCategories[catIdx].assignments = new Array(
-                          item.assignments.length
+                          item?.assignments?.length
                         ).fill(null);
                       }
                       newCategories[catIdx].assignments![idx] = a;
-
                       updateAverage(newCategories, catIdx);
-
                       return newCategories;
                     });
                   }}
@@ -339,3 +329,6 @@ export default function Gradebook(props: {
     </View>
   );
 }
+
+const GradebookMemo = React.memo(Gradebook);
+export default GradebookMemo;
