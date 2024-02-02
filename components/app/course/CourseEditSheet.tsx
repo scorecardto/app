@@ -1,4 +1,4 @@
-import { View, Text, Keyboard } from "react-native";
+import {View, Text, Keyboard, ScrollView, Dimensions} from "react-native";
 import React, {
   useCallback,
   useContext,
@@ -12,10 +12,11 @@ import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import CourseColorChanger from "./CourseColorChanger";
 import { Course, DataContext } from "scorecard-types";
-import { saveCourseSettings } from "../../../lib/saveCourseSettings";
+import { setCourseSetting } from "../../../lib/setCourseSetting";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import Color from "../../../lib/Color";
 import CourseGlyphChanger from "./CourseGlyphChanger";
+import CourseHiddenToggle from "./CourseHiddenToggle";
 
 export default function CourseEditSheet(props: {
   course: Course;
@@ -38,24 +39,13 @@ export default function CourseEditSheet(props: {
 
   const glyph = courseSettings.glyph || undefined;
 
-  const saveName = useCallback(
-    (n: string) => {
+  const saveName = useCallback((n: string) => {
       if (n === "") {
         setName(props.course.name);
         return;
       }
 
-      const newSettings = {
-        ...dataContext.courseSettings,
-        [props.course.key]: {
-          ...courseSettings,
-          displayName: n,
-        },
-      };
-
-      dataContext.setCourseSettings(newSettings);
-
-      saveCourseSettings(newSettings);
+      setCourseSetting(dataContext, props.course.key, {displayName: n});
     },
     [courseSettings]
   );
@@ -66,10 +56,11 @@ export default function CourseEditSheet(props: {
   return (
     <BottomSheetView>
       <BottomSheetHeader>Course Details</BottomSheetHeader>
-      <View
+      <ScrollView
         style={{
           paddingHorizontal: 20,
           paddingBottom: 14,
+            height: Dimensions.get('window').height * 0.75,
         }}
       >
         <CourseNameTextInput
@@ -81,39 +72,25 @@ export default function CourseEditSheet(props: {
             saveName(name);
           }}
         />
+        <CourseHiddenToggle
+            value={courseSettings.hidden ?? false}
+            onChange={(hidden) => {
+                setCourseSetting(dataContext, props.course.key, {hidden});
+            }}
+        />
         <CourseColorChanger
           value={accentColor}
-          onChange={(accentLabel) => {
-            const newSettings = {
-              ...dataContext.courseSettings,
-              [props.course.key]: {
-                ...courseSettings,
-                accentColor: accentLabel,
-              },
-            };
-
-            dataContext.setCourseSettings(newSettings);
-
-            saveCourseSettings(newSettings);
+          onChange={(accentColor) => {
+              setCourseSetting(dataContext, props.course.key, {accentColor});
           }}
         />
         <CourseGlyphChanger
           value={glyph}
-          onChange={(newGlyph) => {
-            const newSettings = {
-              ...dataContext.courseSettings,
-              [props.course.key]: {
-                ...courseSettings,
-                glyph: newGlyph,
-              },
-            };
-
-            dataContext.setCourseSettings(newSettings);
-
-            saveCourseSettings(newSettings);
+          onChange={(glyph) => {
+              setCourseSetting(dataContext, props.course.key, {glyph});
           }}
         />
-      </View>
+      </ScrollView>
     </BottomSheetView>
   );
 }

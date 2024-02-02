@@ -65,6 +65,8 @@ export default function BottomSheetDisplay(props: {}) {
           top: 0,
           left: 0,
           position: "absolute",
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
           zIndex: currentSheet != null ? 999 : -1,
         }}
       >
@@ -90,29 +92,29 @@ export default function BottomSheetDisplay(props: {}) {
           ) : (
             <></>
           )}
-          <BottomSheetBase
-            keyboardBlurBehavior="restore"
-            ref={bottomSheetRef}
-            enableDynamicSizing={true}
-            enableContentPanningGesture={true}
-            enablePanDownToClose={true}
-            handleStyle={{
-              borderBottomColor: "red",
-            }}
-            containerStyle={{
-              zIndex: 100,
-            }}
-            backgroundStyle={{
-              backgroundColor: colors.card,
-              borderTopLeftRadius: 24,
-              borderTopRightRadius: 24,
-            }}
-            keyboardBehavior="interactive"
-            onClose={onClose}
-            backdropComponent={BottomSheetBackdrop}
-          >
-            {currentSheet}
-          </BottomSheetBase>
+            <BottomSheetBase
+                keyboardBlurBehavior="restore"
+                ref={bottomSheetRef}
+                enableDynamicSizing={true}
+                enableContentPanningGesture={true}
+                enablePanDownToClose={true}
+                handleStyle={{
+                    borderBottomColor: "red",
+                }}
+                containerStyle={{
+                    zIndex: 100,
+                }}
+                backgroundStyle={{
+                    backgroundColor: colors.card,
+                    borderTopLeftRadius: 24,
+                    borderTopRightRadius: 24,
+                }}
+                keyboardBehavior="interactive"
+                onClose={onClose}
+                backdropComponent={BottomSheetBackdrop}
+            >
+                {currentSheet}
+            </BottomSheetBase>
         </>
       </View>
     </>

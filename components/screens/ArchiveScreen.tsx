@@ -1,6 +1,6 @@
 import {ScrollView, View} from "react-native";
 import React, {useContext, useRef, useState} from "react";
-import {useTheme} from "@react-navigation/native";
+import {NavigationProp, useTheme} from "@react-navigation/native";
 import Header from "../text/Header";
 import {DataContext} from "scorecard-types";
 import ArchiveCourseCard from "../app/archive/ArchiveCourseCard";
@@ -8,7 +8,9 @@ import ArchiveDemoTable from "../app/archive/ArchiveDemoTable";
 import {SafeAreaView} from "react-native-safe-area-context";
 import HeaderBanner from "../text/HeaderBanner";
 
-export default function ArchiveScreen() {
+export default function ArchiveScreen(props: {
+    navigation: NavigationProp<any, any>;
+}) {
   const { colors } = useTheme();
 
   const data = useContext(DataContext);
@@ -57,6 +59,7 @@ export default function ArchiveScreen() {
               return (
                 <ArchiveCourseCard
                   course={course}
+                  navigation={props.navigation}
                   key={idx}
                   cellCount={cellCount}
                 />
