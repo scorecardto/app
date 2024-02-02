@@ -115,33 +115,9 @@ export default function CourseCard(props: {
   const [show, setShow] = useState(true);
   const [playedVibration, setPlayedVibration] = useState(false);
 
-  const heightAnimation = React.useRef(new Animated.Value(1)).current;
-  const [hiding, setHiding] = useState(false);
-
-  useEffect(() => {
-    if (hiding) {
-      Animated.timing(heightAnimation, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: false,
-      }).start(() => {
-        setShow(false);
-      });
-    } else {
-      Animated.timing(heightAnimation, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: false,
-      }).start();
-    }
-  }, [hiding]);
   return (
     <Animated.View
       style={{
-        height: heightAnimation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 66],
-        }),
         overflow: "hidden",
       }}
     >
@@ -167,8 +143,7 @@ export default function CourseCard(props: {
 
             // @ts-ignore
             if (o.nativeEvent.translationX < -100) {
-              setHiding(true);
-              // setCourseSetting(dataContext, props.course.key, { hidden: true });
+              setCourseSetting(dataContext, props.course.key, { hidden: true });
               setShow(false);
 
               setTimeout(() => {

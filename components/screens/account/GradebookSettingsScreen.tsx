@@ -34,13 +34,17 @@ export default function GradebookSettingsScreen(props: {
           }}
           onPressUsername={() => {
             props.navigation.navigate("editConnectAccount", {
-              district: mobileData.district,
+              district: {
+                url: mobileData.district,
+              },
             });
           }}
           onPressPassword={() => {
             props.navigation.navigate("editConnectAccount", {
               username: mobileData.username,
-              district: mobileData.district,
+              district: {
+                url: mobileData.district,
+              },
             });
           }}
           district={mobileData.district}

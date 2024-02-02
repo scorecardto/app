@@ -1,10 +1,12 @@
 import {
+  Animated,
   FlatList,
   RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
+  Vibration,
 } from "react-native";
 import React, {
   useCallback,
@@ -171,6 +173,64 @@ const CurrentGradesScreen = (props: {
     }
   }, [currentTime, dataContext.data?.date, refreshing, showRefreshControl]);
 
+  const shownCourses = useMemo(() => {
+    if (!dataContext.data?.courses) return [];
+
+    return dataContext.data?.courses.filter((course) => {
+      const hidden = dataContext.courseSettings[course.key]?.hidden;
+
+      return !hidden;
+    });
+  }, [dataContext.data?.courses, dataContext.courseSettings]);
+
+  const oldShownCourses = useRef(shownCourses);
+
+  const [updateIndex, setUpdateIndex] = useState(0);
+  const changeIndex = useMemo(() => {
+    const old = oldShownCourses.current;
+    const current = shownCourses;
+
+    // console.log(JSON.stringify(old) === JSON.stringify(current));
+
+    let index = -1;
+
+    for (let i = 0; i < (dataContext.data?.courses?.length || 0); i++) {
+      const key = dataContext.data?.courses?.[i]?.key;
+      const inOld = old.find((c) => c.key === key);
+      const inCurrent = current.find((c) => c.key === key);
+
+      if (inOld && !inCurrent) {
+        index = i;
+        break;
+      }
+      if (!inOld && inCurrent) {
+        oldShownCourses.current = shownCourses;
+        setUpdateIndex(updateIndex + 1);
+        return;
+      }
+    }
+
+    return index;
+  }, [shownCourses, updateIndex]);
+
+  const translateY = useMemo(() => new Animated.Value(0), []);
+
+  useEffect(() => {
+    if (changeIndex === -1) {
+      translateY.setValue(0);
+      return;
+    }
+
+    Animated.timing(translateY, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      oldShownCourses.current = shownCourses;
+      setUpdateIndex(updateIndex + 1);
+    });
+  }, [changeIndex]);
+
   return (
     <>
       <RefreshIndicator />
@@ -255,10 +315,14 @@ const CurrentGradesScreen = (props: {
                 onHold={() => {}}
               />
             )} */}
+
             {dataContext?.data?.courses && (
               <FlatList
+                style={{
+                  paddingBottom: 66,
+                }}
                 scrollEnabled={false}
-                data={dataContext.data.courses.filter(c=>!dataContext.courseSettings[c.key]?.hidden).sort((a: Course, b: Course) => {
+                data={dataContext.data?.courses.sort((a: Course, b: Course) => {
                   const aPrd = parseCourseKey(a.key)?.dayCodeIndex;
                   const bPrd = parseCourseKey(b.key)?.dayCodeIndex;
 
@@ -275,23 +339,45 @@ const CurrentGradesScreen = (props: {
 
                   return 0;
                 })}
-                renderItem={({ item }) => {
+                renderItem={({ item, index }) => {
+                  const hidden = dataContext.courseSettings[item.key]?.hidden;
+
+                  if (hidden) return null;
+
                   return (
-                    <CourseCard
-                      onClick={() => {
-                        props.navigation.navigate("course", {
-                          key: item.key,
-                        });
-                      }}
-                      newGrades={
-                        mobileData.oldCourseStates[item.key] &&
-                        JSON.stringify(mobileData.oldCourseStates[item.key]) !==
-                          JSON.stringify(captureCourseState(item))
+                    <Animated.View
+                      style={
+                        changeIndex !== -1 && index > changeIndex
+                          ? {
+                              transform: [
+                                {
+                                  translateY: translateY.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [66, 0],
+                                  }),
+                                },
+                              ],
+                            }
+                          : []
                       }
-                      onHold={() => {}}
-                      course={item}
-                      gradingPeriod={dataContext.gradeCategory || 0}
-                    />
+                    >
+                      <CourseCard
+                        onClick={() => {
+                          props.navigation.navigate("course", {
+                            key: item.key,
+                          });
+                        }}
+                        newGrades={
+                          mobileData.oldCourseStates[item.key] &&
+                          JSON.stringify(
+                            mobileData.oldCourseStates[item.key]
+                          ) !== JSON.stringify(captureCourseState(item))
+                        }
+                        onHold={() => {}}
+                        course={item}
+                        gradingPeriod={dataContext.gradeCategory || 0}
+                      />
+                    </Animated.View>
                   );
                 }}
                 keyExtractor={(item) => item.key}
