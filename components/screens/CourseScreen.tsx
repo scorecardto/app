@@ -191,14 +191,14 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
           position: "relative",
         }}
       >
-        {/* <CourseCornerButtonContainer>
+        <CourseCornerButtonContainer>
           <CourseCornerButton
             side="left"
             icon="chevron-left"
             iconSize={30}
             onPress={() => props.navigation.goBack()}
           />
-        </CourseCornerButtonContainer> */}
+        </CourseCornerButtonContainer>
 
         <View
           style={{
