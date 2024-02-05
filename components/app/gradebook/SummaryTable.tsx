@@ -6,7 +6,7 @@ import TableRow from "./TableRow";
 export default function SummaryTable(props: {
   course: Course;
   categories: GradeCategory[];
-  modified: { assignments: (Assignment|null)[] | null; average: number | null }[];
+  modified: { assignments: (Assignment|null)[] | null; average: string | null }[];
   changeGradeCategory: (category: number) => void;
 }) {
   return (
@@ -14,7 +14,7 @@ export default function SummaryTable(props: {
       {props.categories.map((category, idx) => {
         const testing = idx >= props.course.gradeCategories!.length;
 
-        const grade = ""+(props.modified[idx].average ?? category.average);
+        const grade = props.modified[idx].average ?? category.average;
 
         return (
           <TableRow
@@ -27,7 +27,7 @@ export default function SummaryTable(props: {
                 !!props.modified[idx].assignments ||
                 props.modified[idx].average !== null,
             }}
-            grade={grade ? grade+"%" : "NG"}
+            grade={grade && grade !== "NG" ? grade+"%" : "NG"}
             worth={"Worth " + category.weight.toString() + "%"}
             onPress={() => props.changeGradeCategory(idx)}
           />

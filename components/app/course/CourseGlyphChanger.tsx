@@ -36,6 +36,7 @@ export default function CourseGlyphChanger(props: {
     "football",
     "arm-flex",
     "code-braces",
+    "drama-masks"
   ];
 
   // const a=  <MaterialCommunityIcons name=""/>;

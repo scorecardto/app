@@ -289,9 +289,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             >
               <Gradebook
                 course={course}
-                setModifiedGrade={(n) => {
-                  setModifiedAvg(n == null ? null : `${n}`);
-                }}
+                setModifiedGrade={setModifiedAvg}
               />
             </Animated.View>
           </Suspense>

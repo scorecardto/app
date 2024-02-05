@@ -26,7 +26,7 @@ const { width: viewportWidth, height: viewportHeight } =
 
 function Gradebook(props: {
   course: Course;
-  setModifiedGrade(avg: number | null): void;
+  setModifiedGrade(avg: string | null): void;
 }) {
   const sheets = useContext(BottomSheetContext);
 
@@ -46,8 +46,8 @@ function Gradebook(props: {
 
   type CategoryMod = {
     assignments: (Assignment | null)[] | null;
-    average: number | null;
-    exactAverage: number | null;
+    average: string | null;
+    exactAverage: string | null;
   };
 
   const [categories, setCategories] = useState(props.course.gradeCategories!);
@@ -56,8 +56,8 @@ function Gradebook(props: {
       return { assignments: null, average: null, exactAverage: null };
     })
   );
-  const [exactAverages, setExactAverages] = useState<(number | null)[]>(
-    averageAssignments(categories, [])
+  const [exactAverages, setExactAverages] = useState<(string | null)[]>(
+    averageAssignments(categories, []).map(i=>i?.toFixed(2))
   );
   const [numTestAssignments, setNumTestAssignments] = useState(1);
   const [numTestCats, setNumTestCats] = useState(1);
@@ -75,8 +75,12 @@ function Gradebook(props: {
           categoryMods[catIdx].exactAverage =
             null;
       } else {
-        categoryMods[catIdx].average = Math.round(averages[catIdx]);
-        categoryMods[catIdx].exactAverage = averages[catIdx];
+        if (isNaN(averages[catIdx])) {
+            categoryMods[catIdx].average = categoryMods[catIdx].exactAverage = "NG";
+        } else {
+          categoryMods[catIdx].average = ''+Math.round(averages[catIdx]);
+          categoryMods[catIdx].exactAverage = averages[catIdx].toFixed(2);
+        }
       }
     }
 
@@ -88,18 +92,17 @@ function Gradebook(props: {
     ) {
       props.setModifiedGrade(null);
     } else {
-      props.setModifiedGrade(
-        averageGradeCategories(
+      const avg = averageGradeCategories(
           categories.map((c, i) => {
             return {
               ...c,
               average:
-                "" +
-                (isNaN(averages[i]) ? c.average : averages[i] ?? c.average),
+                  "" +
+                  (isNaN(averages[i]) ? "" : averages[i] ?? c.average),
             };
           })
-        )
       );
+      props.setModifiedGrade(isNaN(avg) ? "NG" : ''+avg);
     }
   };
 
@@ -231,10 +234,8 @@ function Gradebook(props: {
                   Weight: { text: `${item.weight}%`, red: testing },
                   "Exact Average": {
                     text: `${
-                      (
-                        modifiedCategories[index - 1].exactAverage ??
-                        exactAverages[index - 1]
-                      )?.toFixed(2) ?? "NG"
+                      modifiedCategories[index - 1].exactAverage ??
+                      exactAverages[index - 1]
                     }`,
                     red:
                       testing || modifiedCategories[index - 1].average !== null,
