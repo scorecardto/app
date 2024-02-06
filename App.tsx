@@ -5,7 +5,7 @@ import {
   MobileDataContext,
   MobileDataProvider,
 } from "./components/core/context/MobileDataContext";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   CourseSettings,
   DataContext,
@@ -48,6 +48,7 @@ import ToastConfig from "./components/util/ToastConfig";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import HelpScreen from "./components/screens/HelpScreen";
 import RefreshStatus from "./lib/types/RefreshStatus";
+import RefreshIndicator from "./components/app/dashboard/RefreshIndicator";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -265,6 +266,7 @@ export default function App() {
                       accentLabel: "red",
                     }}
                   >
+                    <RefreshIndicator />
                     <BottomSheetDisplay />
                     <Stack.Navigator initialRouteName={nextScreen}>
                       <Stack.Screen
