@@ -96,7 +96,7 @@ export default function GradeStateChangesCard(props: {
         (g) =>
           !oldCategory?.assignments.find(
             (og) => og.name === g.name && og.grade === g.grade
-          )
+          ) && g.grade !== ""
       );
 
       return newGrades.map((g) => ({
