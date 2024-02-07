@@ -272,7 +272,7 @@ const CurrentGradesScreen = (props: {
             {dataContext?.data?.courses && (
               <FlatList
                 scrollEnabled={false}
-                data={dataContext.data.courses.filter(c=>!dataContext.courseSettings[c.key]?.hidden).sort((a: Course, b: Course) => {
+                data={dataContext.data.courses.sort((a: Course, b: Course) => {
                   const aPrd = parseCourseKey(a.key)?.dayCodeIndex;
                   const bPrd = parseCourseKey(b.key)?.dayCodeIndex;
 

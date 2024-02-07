@@ -49,7 +49,7 @@ const fetchReportCard = async (
   onStatusUpdate?.({
     tasksCompleted: 0,
     taskRemaining: 10,
-    status: "Getting New Grades...",
+    status: "Connecting to Frontline...",
     type: "LOGGING_IN",
   });
 
@@ -129,6 +129,13 @@ const fetchReportCard = async (
     onLoginSuccess({ firstName, lastName });
   }
 
+  onStatusUpdate?.({
+    tasksCompleted: 1,
+    taskRemaining: 10,
+    status: "Getting New Grades...",
+    type: "LOGGING_IN",
+  });
+
   const REPORT_CARDS: Options = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
@@ -158,13 +165,6 @@ const fetchReportCard = async (
   const courseElements = reportCardsHtml.querySelectorAll(
     ".studentGradingBottomLeft tr:not(:first-child) td:nth-child(4)"
   );
-
-  onStatusUpdate?.({
-    tasksCompleted: 0,
-    taskRemaining: courseElements.length+1,
-    status: "Getting New Grades...",
-    type: "LOGGING_IN",
-  });
 
   const columnNames: string[] = [];
 
