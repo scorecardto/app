@@ -109,7 +109,7 @@ export default function BottomSheetDisplay(props: {}) {
                     borderTopLeftRadius: 24,
                     borderTopRightRadius: 24,
                 }}
-                keyboardBehavior="interactive"
+                keyboardBehavior="extend"
                 onClose={onClose}
                 backdropComponent={BottomSheetBackdrop}
             >

@@ -60,7 +60,7 @@ export default function CourseEditSheet(props: {
         style={{
           paddingHorizontal: 20,
           paddingBottom: 14,
-            height: Dimensions.get('window').height * 0.75,
+            height: Dimensions.get('window').height * 0.65,
         }}
       >
         <CourseNameTextInput
