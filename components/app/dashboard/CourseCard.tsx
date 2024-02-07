@@ -17,7 +17,7 @@ import colorLib from "color";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
-import { setCourseSetting } from "../../../lib/setCourseSetting";
+import {setCourseSetting, updateCourseSettings} from "../../../lib/setCourseSetting";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -119,18 +119,24 @@ export default function CourseCard(props: {
   const [hiding, setHiding] = useState(false);
 
   useEffect(() => {
+    const duration = 200;
     if (hiding) {
       Animated.timing(heightAnimation, {
         toValue: 0,
-        duration: 200,
+        duration,
         useNativeDriver: false,
       }).start(() => {
         setShow(false);
       });
+
+      setTimeout(() => {
+        setShow(true);
+        updateCourseSettings(dataContext);
+      }, duration)
     } else {
       Animated.timing(heightAnimation, {
         toValue: 1,
-        duration: 200,
+        duration,
         useNativeDriver: false,
       }).start();
     }
@@ -168,12 +174,9 @@ export default function CourseCard(props: {
             // @ts-ignore
             if (o.nativeEvent.translationX < -100) {
               setHiding(true);
-              // setCourseSetting(dataContext, props.course.key, { hidden: true });
               setShow(false);
 
-              setTimeout(() => {
-                setShow(true);
-              }, 600);
+              setCourseSetting(dataContext, props.course.key, { hidden: true }, false);
             }
 
             setTimeout(() => {
