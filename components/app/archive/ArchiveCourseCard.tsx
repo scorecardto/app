@@ -50,7 +50,9 @@ export default function ArchiveCourseCard(props: {
               <TouchableOpacity
                   style={{
                       borderRadius: 10,
-                      padding: 10,
+                      paddingVertical: 5,
+                      paddingHorizontal: 10,
+                      marginTop: -4,
                       backgroundColor: colors.backgroundNeutral,
                       borderColor: colors.borderNeutral,
                       borderWidth: 1.75,
@@ -59,11 +61,10 @@ export default function ArchiveCourseCard(props: {
                       setCourseSetting(data, props.course.key, {hidden: false});
                   }}
               >
-                  <MaterialCommunityIcon
-                      name={'eye'}
-                      size={16}
-                      color={colors.text}
-                  />
+                  <Text style={{
+                      color: colors.text,
+                      fontSize: 10,
+                  }}>Unhide</Text>
               </TouchableOpacity>
           }
       </View>
