@@ -38,6 +38,8 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
     type: "IDLE",
   },
   setRefreshStatus: () => {},
+  invitedNumbers: null,
+  setInvitedNumbers: () => {},
 });
 
 export interface MobileDataProvider {
@@ -69,4 +71,6 @@ export interface MobileDataProvider {
   setOldCourseStates: Dispatch<SetStateAction<CourseStateRecord>>;
   refreshStatus: RefreshStatus;
   setRefreshStatus: Dispatch<SetStateAction<RefreshStatus>>;
+  invitedNumbers: string[] | null;
+  setInvitedNumbers: Dispatch<SetStateAction<string[] | null>>;
 }

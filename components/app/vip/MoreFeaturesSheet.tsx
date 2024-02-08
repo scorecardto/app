@@ -12,13 +12,36 @@ import { BottomSheetView } from "@gorhom/bottom-sheet";
 import FeatureCard from "./FeatureCard";
 import BottomSheetButton from "../../input/BottomSheetButton";
 import * as Contacts from "expo-contacts";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
+import Storage from "expo-storage";
 
 export default function MoreFeaturesSheet(props: { close: () => void }) {
   const navigation = React.useContext(NavigationContext);
 
   const { colors } = useTheme();
 
-  const dataContext = useContext(DataContext);
+  const mobileData = useContext(MobileDataContext);
+
+  useEffect(() => {
+    if (mobileData.invitedNumbers === null) {
+      //       (async () => {
+      // Storage.setItem({
+      //         key: "invitedNumbers",
+      //         value: JSON.stringify([]),
+      //       });
+      //       })();
+
+      setTimeout(() => {
+        mobileData.setInvitedNumbers([]);
+      }, 1000);
+    } else {
+      // Storage.removeItem({
+      //   key: "invitedNumbers",
+      // });
+
+      mobileData.setInvitedNumbers(null);
+    }
+  }, []);
 
   return (
     <BottomSheetView>

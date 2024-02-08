@@ -15,7 +15,6 @@ export default function CourseColorChanger(props: {
     <View
       style={{
         marginTop: 20,
-        marginBottom: 20,
       }}
     >
       <SmallText

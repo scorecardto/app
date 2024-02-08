@@ -12,14 +12,13 @@ import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import color from "../../../lib/Color";
 import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";
-export default function InviteOthersCard(props: {
-  invitesLeft: number;
-  onClick: () => void;
-  onHold: () => void;
-}) {
+import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
+import MoreFeaturesSheet from "../vip/MoreFeaturesSheet";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
+export default function InviteOthersCard(props: { show: boolean }) {
   const { colors, dark } = useTheme();
 
-  const { courseSettings } = useContext(DataContext);
+  const { invitedNumbers } = useContext(MobileDataContext);
 
   const accentLabel = "yellow";
 
@@ -61,8 +60,25 @@ export default function InviteOthersCard(props: {
       color: colors.text,
     },
   });
+
+  const sheets = useContext(BottomSheetContext);
+
+  const leftText = invitedNumbers === null ? "Customize" : "More Features";
+
+  const rightText =
+    invitedNumbers === null
+      ? "tap me"
+      : invitedNumbers.length === 1
+      ? "1 invite left"
+      : "tap to invite";
   return (
-    <TouchableOpacity onPress={props.onClick} onLongPress={props.onHold}>
+    <TouchableOpacity
+      onPress={() => {
+        sheets?.addSheet((p) => {
+          return <MoreFeaturesSheet close={p.close} />;
+        });
+      }}
+    >
       <View style={styles.wrapper}>
         <View style={styles.left}>
           <View style={styles.badge}>
@@ -73,12 +89,10 @@ export default function InviteOthersCard(props: {
             ellipsizeMode={"tail"}
             style={styles.header}
           >
-            More Features
+            {leftText}
           </MediumText>
         </View>
-        <SmallText style={styles.grade}>
-          {props.invitesLeft} invites left
-        </SmallText>
+        <SmallText style={styles.grade}>{rightText}</SmallText>
       </View>
     </TouchableOpacity>
   );

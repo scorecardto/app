@@ -106,6 +106,7 @@ export default function App() {
   const [userReady, setUserReady] = useState(false);
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
   const [userRank, setUserRank] = useState<UserRank>("DEFAULT");
+  const [invitedNumbers, setInvitedNumbers] = useState<string[] | null>(null);
 
   const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>({
     status: "No Data to Load",
@@ -167,6 +168,8 @@ export default function App() {
       setOldCourseStates,
       refreshStatus,
       setRefreshStatus,
+      invitedNumbers,
+      setInvitedNumbers,
     }),
     [
       district,
@@ -197,6 +200,8 @@ export default function App() {
       setOldCourseStates,
       refreshStatus,
       setRefreshStatus,
+      invitedNumbers,
+      setInvitedNumbers,
     ]
   );
 

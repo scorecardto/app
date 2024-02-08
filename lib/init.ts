@@ -30,10 +30,19 @@ export default async function initialize(
   const enableGradebookNotifications = await Storage.getItem({
     key: "enableGradebookNotifications",
   });
+  const invitedNumbers = await Storage.getItem({
+    key: "invitedNumbers",
+  });
 
   mobileDataContext.setEnableGradebookNotifications(
     enableGradebookNotifications === "true"
   );
+
+  if (invitedNumbers) {
+    mobileDataContext.setInvitedNumbers(JSON.parse(invitedNumbers));
+  } else {
+    mobileDataContext.setInvitedNumbers(null);
+  }
 
   if (login && !!JSON.parse(records ?? "[]")[0]) {
     dataContext.setCourseSettings(JSON.parse(settings ?? "{}"));

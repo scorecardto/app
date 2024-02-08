@@ -38,6 +38,7 @@ import parseCourseKey from "../../lib/parseCourseKey";
 import captureCourseState from "../../lib/captureCourseState";
 import RefreshIndicator from "../app/dashboard/RefreshIndicator";
 import RefreshStatus from "../../lib/types/RefreshStatus";
+import { getFeatureFlag } from "../../lib/featureFlag";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -304,17 +305,9 @@ const CurrentGradesScreen = (props: {
               />
             </TouchableOpacity>
 
-            {/* {mobileData.userRank === "DEFAULT" && (
-              <InviteOthersCard
-                invitesLeft={3}
-                onClick={() => {
-                  sheets?.addSheet(({ close }) => {
-                    return <MoreFeaturesSheet close={close} />;
-                  });
-                }}
-                onHold={() => {}}
-              />
-            )} */}
+            <InviteOthersCard
+              show={getFeatureFlag("SHOW_CUSTOMIZE_CARD", mobileData.userRank)}
+            />
 
             {dataContext?.data?.courses && (
               <FlatList
