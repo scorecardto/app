@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View } from "react-native";
+import {Dimensions, FlatList, ScrollView, Text, View} from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import TableRow from "./TableRow";
 
@@ -10,29 +10,31 @@ export default function SummaryTable(props: {
   changeGradeCategory: (category: number) => void;
 }) {
   return (
-    <View>
-      {props.categories.map((category, idx) => {
-        const testing = idx >= props.course.gradeCategories!.length;
+    <ScrollView
+        style={{maxHeight: Dimensions.get('window').height-367}}
+        alwaysBounceVertical={false}
+    >
+        {props.categories.map((item, index)  => {
+            const testing = index >= props.course.gradeCategories!.length;
+            const grade = props.modified[index].average ?? item.average;
 
-        const grade = props.modified[idx].average ?? category.average;
-
-        return (
-          <TableRow
-            key={idx}
-            name={category.name}
-            red={{
-              name: testing,
-              grade:
-                testing ||
-                !!props.modified[idx].assignments ||
-                props.modified[idx].average !== null,
-            }}
-            grade={grade && grade !== "NG" ? grade+"%" : "NG"}
-            worth={"Worth " + category.weight.toString() + "%"}
-            onPress={() => props.changeGradeCategory(idx)}
-          />
-        );
-      })}
-    </View>
+            return (
+                <TableRow
+                    key={index}
+                    name={item.name}
+                    red={{
+                        name: testing,
+                        grade:
+                            testing ||
+                            !!props.modified[index].assignments ||
+                            props.modified[index].average !== null,
+                    }}
+                    grade={grade && grade !== "NG" ? grade+"%" : "NG"}
+                    worth={"Worth " + item.weight.toString() + "%"}
+                    onPress={() => props.changeGradeCategory(index)}
+                />
+            );
+        })}
+    </ScrollView>
   );
 }

@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {Dimensions, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import MediumText from "../../text/MediumText";
@@ -23,7 +23,6 @@ export default function GradebookCard(props: {
     wrapper: {
       backgroundColor: colors.card,
       borderRadius: 12,
-      maxHeight: 500,
     },
     header: {
       paddingVertical: 24,
@@ -61,7 +60,7 @@ export default function GradebookCard(props: {
 
   return (
     <View>
-      <ScrollView style={styles.wrapper}>
+      <View style={styles.wrapper}>
         <View style={styles.header}>
           <MediumText numberOfLines={2} ellipsizeMode={"tail"} style={styles.headerText}>{props.title}</MediumText>
           {props.grade && (
@@ -97,7 +96,7 @@ export default function GradebookCard(props: {
           </View>
           <AddButton onPress={props.buttonAction} />
         </View>
-      </ScrollView>
+      </View>
       {props.removable && (
         <TouchableOpacity
           style={{

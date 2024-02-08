@@ -173,7 +173,7 @@ function Gradebook(props: {
                             });
                             setExactAverages((averages) => {
                               const newAverages = [...averages];
-                              newAverages.push(null);
+                              newAverages.push("NG");
                               return newAverages;
                             });
                             setModifiedCategories((oldCategories) => {
@@ -243,15 +243,9 @@ function Gradebook(props: {
                 }}
                 removable={testing}
                 remove={() => {
-                  setCategories((oldCategories) => {
-                    return oldCategories.toSpliced(index - 1, 1);
-                  });
-                  setModifiedCategories((oldCategories) => {
-                    return oldCategories.toSpliced(index - 1, 1);
-                  });
-                  setExactAverages((oldAverages) => {
-                    return oldAverages.toSpliced(index - 1, 1);
-                  });
+                  setCategories((oldCategories) => {oldCategories.splice(index - 1, 1); return [...oldCategories];});
+                  setModifiedCategories((oldCategories) => {oldCategories.splice(index - 1, 1); return [...oldCategories];});
+                  setExactAverages((oldAverages) => {oldAverages.splice(index - 1, 1); return [...oldAverages];});
                 }}
                 buttonAction={() => {
                   setModifiedCategories((categories) => {
