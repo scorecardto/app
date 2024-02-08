@@ -49,7 +49,7 @@ const fetchReportCard = async (
   onStatusUpdate?.({
     tasksCompleted: 0,
     taskRemaining: 10,
-    status: "Getting New Grades...",
+    status: "Connecting to Frontline...",
     type: "LOGGING_IN",
   });
 
@@ -64,7 +64,7 @@ const fetchReportCard = async (
     },
   };
 
-  const entryPointResponse = await axios(ENTRY_POINT);
+  await axios(ENTRY_POINT);
 
   const ENTRY_POINT_LOGIN: Options = {
     url: `https://${host}/selfserve/HomeLoginAction.do?parent=false&teamsStaffUser=N`,
@@ -77,9 +77,9 @@ const fetchReportCard = async (
     },
   };
 
-  const entryPointLoginResponse = await axios(ENTRY_POINT_LOGIN);
+  await axios(ENTRY_POINT_LOGIN);
 
-  const HOME_LOGIN: Options = {
+  const HOME_LOGIN = {
     url: `https://${host}/selfserve/SignOnLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "POST",
     data: toFormData({
@@ -128,6 +128,13 @@ const fetchReportCard = async (
   if (onLoginSuccess) {
     onLoginSuccess({ firstName, lastName });
   }
+
+  onStatusUpdate?.({
+    tasksCompleted: 1,
+    taskRemaining: 10,
+    status: "Getting New Grades...",
+    type: "LOGGING_IN",
+  });
 
   const REPORT_CARDS: Options = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
@@ -246,7 +253,10 @@ function makeXmlHttpRequest(options: XMLOptions) {
     };
 
     xhr.onerror = () => {
-      reject(xhr.statusText);
+      // if status is 0, app was likely backgrounded,
+      // so we just want to try again and keep going
+      if (xhr.status === 0) makeXmlHttpRequest(options).then(resolve, reject);
+      else reject(xhr.statusText);
     };
 
     xhr.send(options.data);
@@ -280,13 +290,7 @@ const fetchGradeCategoriesForCourse = async (
     responseType: "text",
   };
 
-  const assignmentsResponseRaw = await makeXmlHttpRequest({
-    url: ASSIGNMENTS.url!,
-    method: ASSIGNMENTS.method,
-    headers: ASSIGNMENTS.headers,
-    responseType: ASSIGNMENTS.responseType,
-    data: ASSIGNMENTS.data,
-  });
+  const assignmentsResponseRaw = await makeXmlHttpRequest(ASSIGNMENTS);
   // const assignmentsResponse = iso88592.decode(
   //   // @ts-ignore
   //   new Uint8Array(assignmentsResponseRaw.data)
@@ -420,10 +424,11 @@ const fetchGradeCategoriesForCourse = async (
   //   formData[`tableId_${c.id}`] = c.id;
   // });
 
-  const BACK_TO_REPORT_CARD: Options = {
+  const BACK_TO_REPORT_CARD: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
-    data: toFormData(formData),
+    data: toFormDataData(formData),
+    responseType: "text",
     headers: {
       Referer: ASSIGNMENTS.url!,
       Connection: "keep-alive",
@@ -432,18 +437,7 @@ const fetchGradeCategoriesForCourse = async (
     },
   };
 
-  await makeXmlHttpRequest({
-    url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
-    method: "POST",
-    headers: {
-      Referer: ASSIGNMENTS.url!,
-      Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
-    },
-    data: toFormDataData(formData),
-    responseType: "text",
-  });
+  await makeXmlHttpRequest(BACK_TO_REPORT_CARD);
 
   return {
     referer: BACK_TO_REPORT_CARD.url!,
@@ -459,21 +453,27 @@ const fetchAllContent = async (
   onLoginSuccess?: (name: { firstName: string; lastName: string }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<AllContentResponse> => {
-  const reportCard = await fetchReportCard(
-    host,
-    username,
-    password,
-    onLoginSuccess,
-    onStatusUpdate
-  );
-
+  let reportCard;
+  while (!reportCard) {
+    try {
+      reportCard = await fetchReportCard(
+          host,
+          username,
+          password,
+          onLoginSuccess,
+          onStatusUpdate
+      );
+    } catch (err) {
+      if (!(err instanceof TypeError && err.message === "Network request failed")) {
+        return Promise.reject(err);
+      }
+    }
+  }
   const gradeCategories = reportCard.gradeCategoryNames;
 
   const assignmentsAllCoursesResponse = await fetchGradeCategoriesForCourses(
     host,
-    reportCard.sessionId,
-    reportCard.referer,
-    reportCard.courses,
+    reportCard,
     onStatusUpdate
   );
 
@@ -492,21 +492,20 @@ const fetchAllContent = async (
 
 const fetchGradeCategoriesForCourses = async (
   host: string,
-  sessionId: string,
-  oldReferer: string,
-  courses: Course[],
+  reportCard: CourseResponse,
   onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<AllCoursesResponse> => {
   const all: Course[] = [];
 
-  let referer = oldReferer;
+  let sessionId = reportCard.sessionId;
+  let referer = reportCard.referer;
 
-  for (let i = 0; i < courses.length; i++) {
-    const course = courses[i];
+  for (let i = 0; i < reportCard.courses.length; i++) {
+    const course = reportCard.courses[i];
 
     onStatusUpdate?.({
-      tasksCompleted: i + 1,
-      taskRemaining: courses.length + 1,
+      tasksCompleted: i + 2,
+      taskRemaining: reportCard.courses.length + 2,
       status: "Updating COURSE_NAME",
       type: "GETTING_COURSES",
       courseKey: course.key,

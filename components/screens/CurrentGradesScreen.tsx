@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Vibration,
+  AppState,
 } from "react-native";
 import React, {
   useCallback,
@@ -99,6 +99,20 @@ const CurrentGradesScreen = (props: {
 
     return `Updated on ${new Date(lastUpdated).toLocaleDateString()}`;
   }, [dataContext.data?.date, currentTime]);
+
+  // console.log('rendering CurrentGradesScreen');
+  // useEffect(() => {
+  //   console.log('adding listener');
+  //   AppState.addEventListener("change", (nextAppState) => {
+  //     console.log(nextAppState, refreshing);
+  //     if (nextAppState === "active") {
+  //       if (refreshing) {
+  //         console.log('onRefresh');
+  //         onRefresh();
+  //       }
+  //     }
+  //   });
+  // }, []);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -234,7 +248,6 @@ const CurrentGradesScreen = (props: {
 
   return (
     <>
-      <RefreshIndicator />
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <HeaderBanner
           label={

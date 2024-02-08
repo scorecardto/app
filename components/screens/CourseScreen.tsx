@@ -191,14 +191,14 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
           position: "relative",
         }}
       >
-        {/* <CourseCornerButtonContainer>
+        <CourseCornerButtonContainer>
           <CourseCornerButton
             side="left"
             icon="chevron-left"
             iconSize={30}
             onPress={() => props.navigation.goBack()}
           />
-        </CourseCornerButtonContainer> */}
+        </CourseCornerButtonContainer>
 
         <View
           style={{
@@ -289,9 +289,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             >
               <Gradebook
                 course={course}
-                setModifiedGrade={(n) => {
-                  setModifiedAvg(n == null ? null : `${n}`);
-                }}
+                setModifiedGrade={setModifiedAvg}
               />
             </Animated.View>
           </Suspense>

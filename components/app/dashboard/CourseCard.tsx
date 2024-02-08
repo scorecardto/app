@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Animated,
   Appearance,
@@ -17,7 +17,11 @@ import colorLib from "color";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
-import { setCourseSetting } from "../../../lib/setCourseSetting";
+import {
+  setCourseSetting,
+  updateContextSettings,
+} from "../../../lib/setCourseSetting";
+import Toast from "react-native-toast-message";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -112,9 +116,63 @@ export default function CourseCard(props: {
     </>
   );
 
-  const [show, setShow] = useState(true);
-  const [playedVibration, setPlayedVibration] = useState(false);
+  const hidden = dataContext.courseSettings[props.course.key]?.hidden ?? false;
 
+  const [show, setShow] = useState(!hidden);
+  const [_, setPlayedVibration] = useState(false);
+
+  const heightAnimation = React.useRef(
+    new Animated.Value(hidden ? 0 : 1)
+  ).current;
+  const [hiding, setHiding] = useState(hidden);
+  useEffect(() => setHiding(hidden), [hidden]);
+
+  useEffect(() => {
+    const duration = 200;
+    if (hiding) {
+      Animated.timing(heightAnimation, {
+        toValue: 0,
+        duration,
+        useNativeDriver: false,
+      }).start(() => {
+        setShow(false);
+        if (!hidden) {
+          setTimeout(() => {
+            updateContextSettings(dataContext);
+            Toast.show({
+              type: "info",
+              text1: "Course Hidden",
+              text2:
+                "You can unhide it in Archive or course settings. Tap to undo.",
+              visibilityTime: 3000,
+              onPress: () => {
+                setShow(true);
+                setHiding(false);
+                setCourseSetting(
+                  dataContext,
+                  props.course.key,
+                  { hidden: false },
+                  false
+                );
+                Toast.hide();
+              },
+            });
+          }, duration);
+        }
+      });
+    } else {
+      Animated.timing(heightAnimation, {
+        toValue: 1,
+        duration,
+        useNativeDriver: false,
+      }).start(() => {
+        setTimeout(() => {
+          setShow(true);
+          updateContextSettings(dataContext);
+        }, duration);
+      });
+    }
+  }, [hiding]);
   return (
     <Animated.View
       style={{
@@ -144,11 +202,15 @@ export default function CourseCard(props: {
             // @ts-ignore
             if (o.nativeEvent.translationX < -100) {
               setCourseSetting(dataContext, props.course.key, { hidden: true });
+              setHiding(true);
               setShow(false);
 
-              setTimeout(() => {
-                setShow(true);
-              }, 600);
+              setCourseSetting(
+                dataContext,
+                props.course.key,
+                { hidden: true },
+                false
+              );
             }
 
             setTimeout(() => {
