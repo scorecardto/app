@@ -1,5 +1,5 @@
-import {Animated, StyleSheet, View} from "react-native";
-import React, {useCallback, useEffect, useMemo, useState} from "react";
+import { Animated, StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import Constants from "expo-constants";
 
@@ -33,7 +33,7 @@ export default function AnimatedSplashScreen(props: {
 
   return (
     <View style={{ flex: 1 }}>
-      {appReady && props.children}
+      {props.children}
       {!animationComplete && (
         <Animated.View
           style={[

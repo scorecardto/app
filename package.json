@@ -20,6 +20,7 @@
     "@react-navigation/material-top-tabs": "^6.6.5",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@reduxjs/toolkit": "^2.1.0",
     "@shopify/flash-list": "1.4.3",
     "@types/react-native-snap-carousel": "^3.8.10",
     "color": "^4.2.3",
@@ -53,7 +54,10 @@
     "react-native-svg": "^13.9.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-toast-message": "^2.2.0",
+    "react-redux": "^9.1.0",
+    "react-tracked": "^1.7.11",
     "redaxios": "^0.5.1",
+    "redux": "^5.0.1",
     "scorecard-types": "github:scorecardto/types"
   },
   "devDependencies": {

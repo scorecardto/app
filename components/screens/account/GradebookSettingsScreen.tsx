@@ -8,6 +8,8 @@ import LoginInputCard from "../../input/LoginInputCard";
 import ToggleInput from "../../input/ToggleInput";
 import Storage from "expo-storage";
 import SelectInput from "../../input/SelectInput";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 
 export default function GradebookSettingsScreen(props: {
   route: any;
@@ -18,6 +20,9 @@ export default function GradebookSettingsScreen(props: {
 
   const [firstName, setFirstName] = useState(mobileData.firstName);
   const [lastName, setLastName] = useState(mobileData.lastName);
+
+  const district = useSelector((state: RootState) => state.login.district);
+  const username = useSelector((state: RootState) => state.login.username);
 
   return (
     <AccountSubpageScreen
@@ -35,20 +40,20 @@ export default function GradebookSettingsScreen(props: {
           onPressUsername={() => {
             props.navigation.navigate("editConnectAccount", {
               district: {
-                url: mobileData.district,
+                url: district,
               },
             });
           }}
           onPressPassword={() => {
             props.navigation.navigate("editConnectAccount", {
-              username: mobileData.username,
+              username: username,
               district: {
-                url: mobileData.district,
+                url: district,
               },
             });
           }}
-          district={mobileData.district}
-          username={mobileData.username}
+          district={district}
+          username={username}
         />
       </View>
       {/* <View style={{ marginBottom: 36 }}>

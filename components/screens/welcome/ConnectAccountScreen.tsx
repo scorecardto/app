@@ -13,7 +13,9 @@ import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import fetchAndStore from "../../../lib/fetchAndStore";
 import Toast from "react-native-toast-message";
-import updateKey from "../../../Root";
+import * as loginSlice from "../../core/state/user/loginSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../core/state/store";
 
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -36,6 +38,7 @@ const ConnectAccountScreen = (props: {
 
   const dataContext = React.useContext(DataContext);
   const mobileData = React.useContext(MobileDataContext);
+  const dispatch = useDispatch<AppDispatch>();
 
   const usernameRef = useRef<ReactNative.TextInput>(null);
   const passwordRef = useRef<ReactNative.TextInput>(null);
@@ -56,9 +59,9 @@ const ConnectAccountScreen = (props: {
 
       reportCard
         .then(async (data) => {
-          mobileData.setDistrict(district.url);
-          mobileData.setUsername(username);
-          mobileData.setPassword(password);
+          loginSlice.setDistrict(district);
+          loginSlice.setUsername(username);
+          loginSlice.setPassword(password);
 
           await Storage.setItem({
             key: "login",
@@ -69,7 +72,7 @@ const ConnectAccountScreen = (props: {
             }),
           });
 
-          await fetchAndStore(data, mobileData, dataContext, true);
+          await fetchAndStore(data, dataContext, mobileData, dispatch, true);
         })
         .catch((e: Error) => {
           if (e.message === "INCORRECT_PASSWORD") {

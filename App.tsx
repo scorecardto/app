@@ -1,10 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useColorScheme } from "react-native";
-import {
-  MobileDataContext,
-  MobileDataProvider,
-} from "./components/core/context/MobileDataContext";
+import { MobileDataContext } from "./components/core/context/MobileDataContext";
+import MobileDataProvider from "./components/core/context/MobileDataProvider";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   CourseSettings,
@@ -49,6 +47,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import HelpScreen from "./components/screens/HelpScreen";
 import RefreshStatus from "./lib/types/RefreshStatus";
 import RefreshIndicator from "./components/app/dashboard/RefreshIndicator";
+import AppInitializer from "./components/core/AppInitializer";
+import { Provider } from "react-redux";
+import { store } from "./components/core/state/store";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -76,167 +77,10 @@ export default function App() {
     }),
     [data, gradeCategory, setGradeCategory, courseSettings, setCourseSettings]
   );
-  const [district, setDistrict] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [referer, setReferer] = useState("");
-  const [sessionId, setSessionId] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback] = useState(
-    () => {
-      return async (code: string) => {
-        console.log(
-          "Attempted to confirm phone number, but no callback was set."
-        );
-      };
-    }
-  );
-  const [notifications, setNotifications] = useState(
-    [] as GradebookNotification[]
-  );
-
-  const [gradebookCheckInterval, setGradebookCheckInterval] =
-    useState("morning");
-
-  const [enableGradebookNotifications, setEnableGradebookNotifications] =
-    useState(false);
-
-  const [oldCourseStates, setOldCourseStates] = useState({});
-
-  const [userReady, setUserReady] = useState(false);
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
-  const [userRank, setUserRank] = useState<UserRank>("DEFAULT");
-  const [invitedNumbers, setInvitedNumbers] = useState<string[] | null>(null);
-
-  const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>({
-    status: "No Data to Load",
-    taskRemaining: 0,
-    tasksCompleted: 0,
-    type: "IDLE",
-  });
-
-  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    setUser(user);
-    if (!userReady) setUserReady(true);
-  }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-  }, []);
-
-  useEffect(() => {
-    if (dataContext.gradeCategory !== dataContext.data?.gradeCategory) {
-      Toast.show({
-        type: "info",
-        text1: "Older Grading Period",
-        text2:
-          "Some grade data is unavailable and grade testing may be innacurate.",
-        visibilityTime: 5000,
-        position: "bottom",
-      });
-    }
-  }, [dataContext.gradeCategory]);
-
-  const mobileData = useMemo<MobileDataProvider>(
-    () => ({
-      district,
-      setDistrict,
-      username,
-      setUsername,
-      password,
-      setPassword,
-      referer,
-      setReferer,
-      sessionId,
-      setSessionId,
-      confirmPhoneNumberCallback,
-      setConfirmPhoneNumberCallback,
-      firstName,
-      setFirstName,
-      lastName,
-      setLastName,
-      notifications,
-      setNotifications,
-      enableGradebookNotifications,
-      setEnableGradebookNotifications,
-      gradebookCheckInterval,
-      setGradebookCheckInterval,
-      userRank,
-      setUserRank,
-      oldCourseStates,
-      setOldCourseStates,
-      refreshStatus,
-      setRefreshStatus,
-      invitedNumbers,
-      setInvitedNumbers,
-    }),
-    [
-      district,
-      setDistrict,
-      username,
-      setUsername,
-      password,
-      setPassword,
-      referer,
-      setReferer,
-      sessionId,
-      setSessionId,
-      confirmPhoneNumberCallback,
-      setConfirmPhoneNumberCallback,
-      firstName,
-      setFirstName,
-      lastName,
-      setLastName,
-      notifications,
-      setNotifications,
-      enableGradebookNotifications,
-      setEnableGradebookNotifications,
-      gradebookCheckInterval,
-      setGradebookCheckInterval,
-      userRank,
-      setUserRank,
-      oldCourseStates,
-      setOldCourseStates,
-      refreshStatus,
-      setRefreshStatus,
-      invitedNumbers,
-      setInvitedNumbers,
-    ]
-  );
 
   const [nextScreen, setNextScreen] = useState("");
 
   const appearance = useColorScheme();
-
-  useEffect(() => {
-    async function prepare() {
-      const fontsAsync = Font.loadAsync({
-        AnekKannada_400Regular: AnekKannada_400Regular,
-        DMSans_400Regular: DMSans_400Regular,
-        DMSans_500Medium: DMSans_500Medium,
-        DMSans_700Bold: DMSans_700Bold,
-        IBMPlexMono_400Regular: IBMPlexMono_400Regular,
-      });
-
-      const nextScreenAsync = initialize(dataContext, mobileData, user);
-
-      const [_, nextScreen] = await Promise.all([fontsAsync, nextScreenAsync]);
-
-      setNextScreen(nextScreen);
-
-      setAppReady(true);
-    }
-
-    if (userReady) {
-      prepare();
-    }
-  }, [userReady]);
-
-  if (!appReady) {
-    return null;
-  }
 
   const headerOptions = {
     headerStyle: {
@@ -250,142 +94,150 @@ export default function App() {
   };
 
   return (
-    <DataContext.Provider value={dataContext}>
-      <MobileDataContext.Provider value={mobileData}>
-        {appReady && (
-          <AnimatedAppLoader image={require("./assets/splash.png")}>
-            <SafeAreaProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <BottomSheetProvider>
-                  <NavigationContainer
-                    theme={{
-                      ...(appearance === "dark"
-                        ? Color.DarkTheme
-                        : Color.LightTheme),
-                      dark: appearance === "dark",
-                      // @ts-ignore
-                      accents:
-                        Color.AccentsMatrix[Color.defaultAccentLabel][
-                          appearance === "dark" ? "dark" : "default"
-                        ],
-                      accentLabel: "red",
-                    }}
-                  >
-                    <RefreshIndicator />
-                    <BottomSheetDisplay />
-                    <Stack.Navigator initialRouteName={nextScreen}>
-                      <Stack.Screen
-                        name="selectDistrict"
-                        component={SelectDistrictScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="connectAccount"
-                        component={ConnectAccountScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="addPhoneNumber"
-                        component={AddPhoneNumberScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="reAddPhoneNumber"
-                        component={ReAddPhoneNumberScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="addName"
-                        component={AddNameScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="verifyPhoneNumber"
-                        component={VerifyPhoneNumberScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="generalSettings"
-                        component={GeneralSettingsScreen}
-                        options={{
-                          ...headerOptions,
-                          headerBackTitle: "All Settings",
-                        }}
-                      />
-                      <Stack.Screen
-                        name="gradebookSettings"
-                        component={GradebookSettingsScreen}
-                        options={{
-                          ...headerOptions,
-                          headerBackTitle: "All Settings",
-                        }}
-                      />
-                      <Stack.Screen
-                        name="editDistrict"
-                        component={EditDistrictScreen}
-                        options={{
-                          ...headerOptions,
-                          headerBackTitle: "Back",
-                        }}
-                      />
-                      <Stack.Screen
-                        name="editConnectAccount"
-                        component={EditConnectAccountScreen}
-                        options={{
-                          ...headerOptions,
-                          headerBackTitle: "Back",
-                        }}
-                      />
-                      <Stack.Screen
-                        name="scorecard"
-                        component={ScorecardScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="course"
-                        component={CourseScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="inviteOthers"
-                        component={InviteOthersScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <Stack.Screen
-                        name="help"
-                        component={HelpScreen}
-                        options={{
-                          ...headerOptions,
-                          headerBackTitle: "Back",
-                        }}
-                      />
-                    </Stack.Navigator>
-                    <ToastConfig />
-                  </NavigationContainer>
-                </BottomSheetProvider>
-              </GestureHandlerRootView>
-            </SafeAreaProvider>
-          </AnimatedAppLoader>
-        )}
-      </MobileDataContext.Provider>
-    </DataContext.Provider>
+    <Provider store={store}>
+      <DataContext.Provider value={dataContext}>
+        <MobileDataProvider>
+          <AppInitializer
+            setAppReady={setAppReady}
+            setNextScreen={setNextScreen}
+          />
+          {!appReady ? (
+            <></>
+          ) : (
+            <AnimatedAppLoader image={require("./assets/splash.png")}>
+              <SafeAreaProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <BottomSheetProvider>
+                    <NavigationContainer
+                      theme={{
+                        ...(appearance === "dark"
+                          ? Color.DarkTheme
+                          : Color.LightTheme),
+                        dark: appearance === "dark",
+                        // @ts-ignore
+                        accents:
+                          Color.AccentsMatrix[Color.defaultAccentLabel][
+                            appearance === "dark" ? "dark" : "default"
+                          ],
+                        accentLabel: "red",
+                      }}
+                    >
+                      <RefreshIndicator />
+                      <BottomSheetDisplay />
+                      <Stack.Navigator initialRouteName={nextScreen}>
+                        <Stack.Screen
+                          name="selectDistrict"
+                          component={SelectDistrictScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="connectAccount"
+                          component={ConnectAccountScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="addPhoneNumber"
+                          component={AddPhoneNumberScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="reAddPhoneNumber"
+                          component={ReAddPhoneNumberScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="addName"
+                          component={AddNameScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="verifyPhoneNumber"
+                          component={VerifyPhoneNumberScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="generalSettings"
+                          component={GeneralSettingsScreen}
+                          options={{
+                            ...headerOptions,
+                            headerBackTitle: "All Settings",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="gradebookSettings"
+                          component={GradebookSettingsScreen}
+                          options={{
+                            ...headerOptions,
+                            headerBackTitle: "All Settings",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="editDistrict"
+                          component={EditDistrictScreen}
+                          options={{
+                            ...headerOptions,
+                            headerBackTitle: "Back",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="editConnectAccount"
+                          component={EditConnectAccountScreen}
+                          options={{
+                            ...headerOptions,
+                            headerBackTitle: "Back",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="scorecard"
+                          component={ScorecardScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="course"
+                          component={CourseScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="inviteOthers"
+                          component={InviteOthersScreen}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="help"
+                          component={HelpScreen}
+                          options={{
+                            ...headerOptions,
+                            headerBackTitle: "Back",
+                          }}
+                        />
+                      </Stack.Navigator>
+                      <ToastConfig />
+                    </NavigationContainer>
+                  </BottomSheetProvider>
+                </GestureHandlerRootView>
+              </SafeAreaProvider>
+            </AnimatedAppLoader>
+          )}
+        </MobileDataProvider>
+      </DataContext.Provider>
+    </Provider>
   );
 }

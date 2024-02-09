@@ -3,12 +3,19 @@ import {
   GradebookNotification,
   GradebookRecord,
 } from "scorecard-types";
-import { MobileDataProvider } from "../components/core/context/MobileDataContext";
+import { MobileData } from "../components/core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { getNotifications } from "./notifications";
 import fetchAndStore from "./fetchAndStore";
 import { fetchAllContent } from "./fetcher";
+import { Dispatch } from "redux";
+import { AppDispatch } from "../components/core/state/store";
+import {
+  setDistrict,
+  setPassword,
+  setUsername,
+} from "../components/core/state/user/loginSlice";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -18,8 +25,9 @@ type NextScreen =
   | "addName";
 export default async function initialize(
   dataContext: DataProvider,
-  mobileDataContext: MobileDataProvider,
-  user: FirebaseAuthTypes.User | null | undefined
+  mobileDataContext: MobileData,
+  user: FirebaseAuthTypes.User | null | undefined,
+  dispatch: AppDispatch
 ): Promise<NextScreen> {
   const login = await Storage.getItem({ key: "login" });
   const name = await Storage.getItem({ key: "name" });
@@ -58,9 +66,9 @@ export default async function initialize(
 
     const { username, password, host } = JSON.parse(login);
 
-    mobileDataContext.setUsername(username);
-    mobileDataContext.setPassword(password);
-    mobileDataContext.setDistrict(host);
+    dispatch(setDistrict(host));
+    dispatch(setUsername(username));
+    dispatch(setPassword(password));
 
     if (name) {
       const { firstName, lastName } = JSON.parse(name);

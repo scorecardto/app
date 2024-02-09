@@ -14,6 +14,9 @@ import fetchAndStore from "../../../lib/fetchAndStore";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import Toast from "react-native-toast-message";
 import ReactNative from "react-native";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../core/state/store";
+import * as loginSlice from "../../core/state/user/loginSlice";
 
 const EditConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -37,6 +40,7 @@ const EditConnectAccountScreen = (props: {
   const dataContext = React.useContext(DataContext);
   const mobileData = React.useContext(MobileDataContext);
 
+  const dispatch = useDispatch<AppDispatch>();
   const usernameRef = useRef<ReactNative.TextInput>(null);
   const passwordRef = useRef<ReactNative.TextInput>(null);
 
@@ -64,9 +68,9 @@ const EditConnectAccountScreen = (props: {
 
       reportCard
         .then(async (data) => {
-          mobileData.setDistrict(district.url);
-          mobileData.setUsername(username);
-          mobileData.setPassword(password);
+          loginSlice.setDistrict(district.url);
+          loginSlice.setUsername(username);
+          loginSlice.setPassword(password);
 
           await Storage.setItem({
             key: "login",
@@ -77,7 +81,7 @@ const EditConnectAccountScreen = (props: {
             }),
           });
 
-          await fetchAndStore(data, mobileData, dataContext, true);
+          await fetchAndStore(data, dataContext, mobileData, dispatch, true);
         })
         .catch((e: Error) => {
           if (e.message === "INCORRECT_PASSWORD") {

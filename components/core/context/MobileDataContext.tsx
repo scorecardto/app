@@ -4,17 +4,7 @@ import UserRank from "../../../lib/types/UserRank";
 import CourseStateRecord from "../../../lib/types/CourseStateRecord";
 import RefreshStatus from "../../../lib/types/RefreshStatus";
 
-export const MobileDataContext = React.createContext<MobileDataProvider>({
-  district: "",
-  setDistrict: () => {},
-  username: "",
-  setUsername: () => {},
-  password: "",
-  setPassword: () => {},
-  sessionId: "",
-  setSessionId: () => {},
-  referer: "",
-  setReferer: () => {},
+export const MobileDataContext = React.createContext<MobileData>({
   firstName: "",
   setFirstName: () => {},
   lastName: "",
@@ -42,17 +32,7 @@ export const MobileDataContext = React.createContext<MobileDataProvider>({
   setInvitedNumbers: () => {},
 });
 
-export interface MobileDataProvider {
-  district: string;
-  setDistrict: (district: string) => void;
-  username: string;
-  setUsername: (username: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  sessionId: string;
-  setSessionId: (sessionId: string) => void;
-  referer: string;
-  setReferer: (referer: string) => void;
+export interface MobileData {
   firstName: string;
   setFirstName: (firstName: string) => void;
   lastName: string;

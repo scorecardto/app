@@ -39,6 +39,8 @@ import captureCourseState from "../../lib/captureCourseState";
 import RefreshIndicator from "../app/dashboard/RefreshIndicator";
 import RefreshStatus from "../../lib/types/RefreshStatus";
 import { getFeatureFlag } from "../../lib/featureFlag";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../core/state/store";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -46,11 +48,18 @@ const CurrentGradesScreen = (props: {
   const dataContext = useContext(DataContext);
   const mobileData = useContext(MobileDataContext);
 
+  const district = useSelector((state: RootState) => state.login.district);
+  const username = useSelector((state: RootState) => state.login.username);
+  const password = useSelector((state: RootState) => state.login.password);
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const [openedCourseId, setOpenedCourseId] = useState(null as string | null);
 
   const [refreshing, setRefreshing] = useState(false);
 
   const [currentTime, setCurrentTime] = useState(Date.now());
+
   const lastUpdatedHeader = useMemo(() => {
     if (!dataContext.data) return null;
 
@@ -117,12 +126,8 @@ const CurrentGradesScreen = (props: {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
 
-    const url = mobileData.district;
-    const username = mobileData.username;
-    const password = mobileData.password;
-
     const reportCard = fetchAllContent(
-      url,
+      district,
       username,
       password,
       undefined,
@@ -132,7 +137,7 @@ const CurrentGradesScreen = (props: {
     );
 
     reportCard.then(async (data) => {
-      await fetchAndStore(data, mobileData, dataContext, false);
+      await fetchAndStore(data, dataContext, mobileData, dispatch, false);
       setRefreshing(false);
     });
   }, []);

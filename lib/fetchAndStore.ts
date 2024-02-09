@@ -5,15 +5,21 @@ import {
   GradebookNotification,
   GradebookRecord,
 } from "scorecard-types";
-import { MobileDataProvider } from "../components/core/context/MobileDataContext";
+import { MobileData } from "../components/core/context/MobileDataContext";
 import { getNotifications } from "./notifications";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
+import { AppDispatch } from "../components/core/state/store";
+import {
+  setReferer,
+  setSessionId,
+} from "../components/core/state/user/loginSlice";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
-  mobileData: MobileDataProvider,
   dataContext: DataProvider,
+  mobileData: MobileData,
+  dispatch: AppDispatch,
   updateCourseStates: boolean
 ) {
   const gradeCategory =
@@ -21,8 +27,8 @@ export default async function fetchAndStore(
       ...data.courses.map((course) => course.grades.filter((g) => g).length)
     ) - 1;
 
-  mobileData.setReferer(data.referer);
-  mobileData.setSessionId(data.sessionId);
+  dispatch(setReferer(data.referer));
+  dispatch(setSessionId(data.sessionId));
 
   const oldData: GradebookRecord[] = JSON.parse(
     (await Storage.getItem({ key: "records" })) ?? "[]"

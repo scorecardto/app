@@ -41,9 +41,15 @@ import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContain
 import parseCourseKey from "../../lib/parseCourseKey";
 import StatusText from "../text/StatusText";
 import LoadingOverlay from "./loader/LoadingOverlay";
+import { useSelector } from "react-redux";
+import { RootState } from "../core/state/store";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
+
+  const district = useSelector((state: RootState) => state.login.district);
+  const username = useSelector((state: RootState) => state.login.username);
+  const password = useSelector((state: RootState) => state.login.password);
 
   const dataContext = React.useContext(DataContext);
   const mobileDataContext = React.useContext(MobileDataContext);
@@ -64,14 +70,10 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
       if (course == null || alternateKey == null) return undefined;
 
-      const reportCard = await fetchReportCard(
-        mobileDataContext.district,
-        mobileDataContext.username,
-        mobileDataContext.password
-      );
+      const reportCard = await fetchReportCard(district, username, password);
 
       const categories = await fetchGradeCategoriesForCourse(
-        mobileDataContext.district,
+        district,
         reportCard.sessionId,
         reportCard.referer,
         {
@@ -287,10 +289,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
                 ],
               }}
             >
-              <Gradebook
-                course={course}
-                setModifiedGrade={setModifiedAvg}
-              />
+              <Gradebook course={course} setModifiedGrade={setModifiedAvg} />
             </Animated.View>
           </Suspense>
         </View>

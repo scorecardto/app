@@ -50,7 +50,6 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
 
   const [allowUserContact, setAllowUserContact] = useState(true);
 
-  const [shareLogin, setShareLogin] = useState(false);
   const [urgent, setUrgent] = useState(false);
 
   const [message, setMessage] = useState("");
@@ -87,13 +86,6 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
           message: message.substring(0, 5000),
           respondToMe: allowUserContact,
           urgent: urgent,
-          ...(shareLogin
-            ? {
-                username: mobileData.username,
-                password: mobileData.password,
-                district: mobileData.district,
-              }
-            : {}),
           token: userToken,
           repo: "app",
         })
@@ -136,7 +128,7 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
           }}
         >
           <ToggleInput
-            label="Respond to Me"
+            label="Respond to Me (SMS)"
             value={allowUserContact}
             disabled={loading}
             setValue={(v) => {
@@ -144,8 +136,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
             }}
           />
           <SmallText style={{ marginTop: 4, color: colors.text }}>
-            If enabled, we may contact you via text. Your phone number and name
-            will be shared regardless of this setting.
+            Your phone number and name will be shared regardless of this
+            setting.
           </SmallText>
 
           <View style={{ marginTop: 40 }}>
@@ -159,27 +151,7 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
             />
           </View>
 
-          <Button
-            disabled={loading || !message}
-            onPress={() => {
-              setLoading(true);
-            }}
-          >
-            Send
-          </Button>
-
-          <Text
-            style={{
-              marginTop: 40,
-              marginBottom: 10,
-              fontSize: 16,
-              textAlign: "center",
-              color: colors.text,
-            }}
-          >
-            Other Options
-          </Text>
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginBottom: 20 }}>
             <ToggleInput
               disabled={loading}
               label="This Issue is Urgent"
@@ -192,21 +164,15 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
               Select if this is preventing you from using Scorecard.
             </SmallText>
           </View>
-          <View style={{ marginTop: 40 }}>
-            <ToggleInput
-              disabled={loading}
-              label="Share My Login Info"
-              value={shareLogin}
-              setValue={(v) => {
-                setShareLogin(v);
-              }}
-            />
-            <SmallText style={{ marginTop: 4, color: colors.text }}>
-              The Scorecard team cannot see your grades without this enabled. If
-              your bug involves a grade data issue, you may want to enable this
-              option.
-            </SmallText>
-          </View>
+
+          <Button
+            disabled={loading || !message}
+            onPress={() => {
+              setLoading(true);
+            }}
+          >
+            Send
+          </Button>
         </View>
       </AccountSubpageScreen>
     </>
