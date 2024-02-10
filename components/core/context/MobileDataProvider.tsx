@@ -17,15 +17,6 @@ export default function MobileDataProvider(props: {
       };
     }
   );
-  const [notifications, setNotifications] = useState(
-    [] as GradebookNotification[]
-  );
-
-  const [gradebookCheckInterval, setGradebookCheckInterval] =
-    useState("morning");
-
-  const [enableGradebookNotifications, setEnableGradebookNotifications] =
-    useState(false);
 
   const [oldCourseStates, setOldCourseStates] = useState({});
 
@@ -43,12 +34,6 @@ export default function MobileDataProvider(props: {
     () => ({
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      notifications,
-      setNotifications,
-      enableGradebookNotifications,
-      setEnableGradebookNotifications,
-      gradebookCheckInterval,
-      setGradebookCheckInterval,
       userRank,
       setUserRank,
       oldCourseStates,
@@ -61,12 +46,6 @@ export default function MobileDataProvider(props: {
     [
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      notifications,
-      setNotifications,
-      enableGradebookNotifications,
-      setEnableGradebookNotifications,
-      gradebookCheckInterval,
-      setGradebookCheckInterval,
       userRank,
       setUserRank,
       oldCourseStates,

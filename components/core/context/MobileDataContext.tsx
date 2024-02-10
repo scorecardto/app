@@ -7,12 +7,6 @@ import RefreshStatus from "../../../lib/types/RefreshStatus";
 export const MobileDataContext = React.createContext<MobileData>({
   confirmPhoneNumberCallback: async () => {},
   setConfirmPhoneNumberCallback: () => {},
-  notifications: [],
-  setNotifications: () => {},
-  enableGradebookNotifications: false,
-  setEnableGradebookNotifications: () => {},
-  gradebookCheckInterval: "morning",
-  setGradebookCheckInterval: () => {},
   userRank: "DEFAULT",
   setUserRank: () => {},
   oldCourseStates: {},
@@ -31,12 +25,6 @@ export const MobileDataContext = React.createContext<MobileData>({
 export interface MobileData {
   confirmPhoneNumberCallback: (code: string) => Promise<any>;
   setConfirmPhoneNumberCallback: React.SetStateAction<any>;
-  notifications: GradebookNotification[];
-  setNotifications: Dispatch<SetStateAction<GradebookNotification[]>>;
-  enableGradebookNotifications: boolean;
-  setEnableGradebookNotifications: Dispatch<SetStateAction<boolean>>;
-  gradebookCheckInterval: string;
-  setGradebookCheckInterval: Dispatch<SetStateAction<string>>;
   userRank: UserRank;
   setUserRank: Dispatch<SetStateAction<UserRank>>;
   oldCourseStates: CourseStateRecord;

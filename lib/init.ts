@@ -20,6 +20,7 @@ import {
   setFirstName,
   setLastName,
 } from "../components/core/state/user/nameSlice";
+import { setAllSettings } from "../components/core/state/user/settingsSlice";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -38,17 +39,12 @@ export default async function initialize(
   const notifs = await Storage.getItem({ key: "notifs" });
   const records = await Storage.getItem({ key: "records" });
   const oldCourseStates = await Storage.getItem({ key: "oldCourseStates" });
-  const settings = await Storage.getItem({ key: "settings" });
-  const enableGradebookNotifications = await Storage.getItem({
-    key: "enableGradebookNotifications",
-  });
+  const courseSettings = await Storage.getItem({ key: "courseSettings" });
+  const appSettings = await Storage.getItem({ key: "appSettings" });
+
   const invitedNumbers = await Storage.getItem({
     key: "invitedNumbers",
   });
-
-  mobileDataContext.setEnableGradebookNotifications(
-    enableGradebookNotifications === "true"
-  );
 
   if (invitedNumbers) {
     mobileDataContext.setInvitedNumbers(JSON.parse(invitedNumbers));
@@ -56,15 +52,15 @@ export default async function initialize(
     mobileDataContext.setInvitedNumbers(null);
   }
 
+  dispatch(setAllSettings(JSON.parse(appSettings || "{}")));
+
   if (login && !!JSON.parse(records ?? "[]")[0]) {
-    dataContext.setCourseSettings(JSON.parse(settings ?? "{}"));
+    dataContext.setCourseSettings(JSON.parse(courseSettings ?? "{}"));
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 
     dataContext.setData(data);
     dataContext.setGradeCategory(data.gradeCategory);
-
-    mobileDataContext.setNotifications(JSON.parse(notifs ?? "[]"));
 
     // mobileDataContext.setOldCourseStates(JSON.parse(oldCourseStates ?? "{}"));
 
