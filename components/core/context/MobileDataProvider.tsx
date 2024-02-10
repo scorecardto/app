@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { MobileDataContext, MobileData } from "./MobileDataContext";
 import { GradebookNotification } from "scorecard-types";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import UserRank from "../../../lib/types/UserRank";
+import UserRank from "../../../lib/types/UserRankType";
 import RefreshStatus from "../../../lib/types/RefreshStatus";
 export default function MobileDataProvider(props: {
   children: React.ReactNode;
@@ -20,7 +20,6 @@ export default function MobileDataProvider(props: {
 
   const [oldCourseStates, setOldCourseStates] = useState({});
 
-  const [userRank, setUserRank] = useState<UserRank>("DEFAULT");
   const [invitedNumbers, setInvitedNumbers] = useState<string[] | null>(null);
 
   const [refreshStatus, setRefreshStatus] = useState<RefreshStatus>({
@@ -34,8 +33,6 @@ export default function MobileDataProvider(props: {
     () => ({
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      userRank,
-      setUserRank,
       oldCourseStates,
       setOldCourseStates,
       refreshStatus,
@@ -46,8 +43,6 @@ export default function MobileDataProvider(props: {
     [
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      userRank,
-      setUserRank,
       oldCourseStates,
       setOldCourseStates,
       refreshStatus,

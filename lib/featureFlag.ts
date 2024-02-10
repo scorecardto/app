@@ -1,9 +1,9 @@
 import { Platform } from "react-native";
-import UserRank from "./types/UserRank";
+import UserRankType from "./types/UserRankType";
 
 type FeatureFlag = "SHOW_CUSTOMIZE_CARD";
 
-function getShowCustomizeCardFlag(userRank: UserRank): boolean {
+function getShowCustomizeCardFlag(userRank: UserRankType): boolean {
   const inDeveloperMode = __DEV__;
   if (userRank !== "DEFAULT" || Platform.OS === "android" || !inDeveloperMode) {
     return false;
@@ -11,7 +11,7 @@ function getShowCustomizeCardFlag(userRank: UserRank): boolean {
   return true;
 }
 
-function getFeatureFlag(flag: FeatureFlag, userRank: UserRank): boolean {
+function getFeatureFlag(flag: FeatureFlag, userRank: UserRankType): boolean {
   switch (flag) {
     case "SHOW_CUSTOMIZE_CARD":
       return getShowCustomizeCardFlag(userRank);

@@ -251,6 +251,10 @@ const CurrentGradesScreen = (props: {
     });
   }, [changeIndex]);
 
+  const showCustomizeCard = useSelector((state: RootState) =>
+    getFeatureFlag("SHOW_CUSTOMIZE_CARD", state.userRank.type)
+  );
+
   return (
     <>
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
@@ -323,9 +327,7 @@ const CurrentGradesScreen = (props: {
               />
             </TouchableOpacity>
 
-            <InviteOthersCard
-              show={getFeatureFlag("SHOW_CUSTOMIZE_CARD", mobileData.userRank)}
-            />
+            <InviteOthersCard show={showCustomizeCard} />
 
             {dataContext?.data?.courses && (
               <FlatList
@@ -358,7 +360,9 @@ const CurrentGradesScreen = (props: {
                   return (
                     <Animated.View
                       style={
-                        changeIndex !== -1 && index > changeIndex
+                        changeIndex !== -1 &&
+                        changeIndex !== undefined &&
+                        index > changeIndex
                           ? {
                               transform: [
                                 {
