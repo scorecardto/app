@@ -5,10 +5,6 @@ import CourseStateRecord from "../../../lib/types/CourseStateRecord";
 import RefreshStatus from "../../../lib/types/RefreshStatus";
 
 export const MobileDataContext = React.createContext<MobileData>({
-  firstName: "",
-  setFirstName: () => {},
-  lastName: "",
-  setLastName: () => {},
   confirmPhoneNumberCallback: async () => {},
   setConfirmPhoneNumberCallback: () => {},
   notifications: [],
@@ -33,10 +29,6 @@ export const MobileDataContext = React.createContext<MobileData>({
 });
 
 export interface MobileData {
-  firstName: string;
-  setFirstName: (firstName: string) => void;
-  lastName: string;
-  setLastName: (lastName: string) => void;
   confirmPhoneNumberCallback: (code: string) => Promise<any>;
   setConfirmPhoneNumberCallback: React.SetStateAction<any>;
   notifications: GradebookNotification[];

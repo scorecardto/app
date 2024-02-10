@@ -13,6 +13,9 @@ import Toast from "react-native-toast-message";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import { useTheme } from "@react-navigation/native";
 import LoadingOverlay from "../loader/LoadingOverlay";
+import * as nameSlice from "../../core/state/user/nameSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../core/state/store";
 
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -39,13 +42,14 @@ export default function AddPhoneNumberScreen(props: {
 
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch<AppDispatch>();
   const phoneNumberRef = React.useRef<ReactNative.TextInput>(null);
   function finish() {
     setLoading((l) => {
       if (l) return l;
       else {
-        mobileDataContext.setFirstName(firstName);
-        mobileDataContext.setLastName(lastName);
+        dispatch(nameSlice.setFirstName(firstName));
+        dispatch(nameSlice.setLastName(lastName));
         Storage.setItem({
           key: "name",
           value: JSON.stringify({

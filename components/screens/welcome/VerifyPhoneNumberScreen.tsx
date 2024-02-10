@@ -17,8 +17,6 @@ export default function VerifyPhoneNumberScreen(props: {
   const FOOTER = "We will never send you spam texts or give out your number.";
 
   const phoneNumber = props.route?.params?.phoneNumber;
-  const firstName = props.route?.params?.firstName;
-  const lastName = props.route?.params?.lastName;
 
   const [code, setCode] = useState("");
 

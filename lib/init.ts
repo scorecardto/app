@@ -16,6 +16,10 @@ import {
   setPassword,
   setUsername,
 } from "../components/core/state/user/loginSlice";
+import {
+  setFirstName,
+  setLastName,
+} from "../components/core/state/user/nameSlice";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -73,8 +77,8 @@ export default async function initialize(
     if (name) {
       const { firstName, lastName } = JSON.parse(name);
 
-      mobileDataContext.setFirstName(firstName);
-      mobileDataContext.setLastName(lastName);
+      dispatch(setFirstName(firstName));
+      dispatch(setLastName(lastName));
     }
 
     if (user && name) {

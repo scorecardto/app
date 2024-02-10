@@ -8,8 +8,6 @@ import RefreshStatus from "../../../lib/types/RefreshStatus";
 export default function MobileDataProvider(props: {
   children: React.ReactNode;
 }) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback] = useState(
     () => {
       return async (code: string) => {
@@ -45,10 +43,6 @@ export default function MobileDataProvider(props: {
     () => ({
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      firstName,
-      setFirstName,
-      lastName,
-      setLastName,
       notifications,
       setNotifications,
       enableGradebookNotifications,
@@ -67,10 +61,6 @@ export default function MobileDataProvider(props: {
     [
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      firstName,
-      setFirstName,
-      lastName,
-      setLastName,
       notifications,
       setNotifications,
       enableGradebookNotifications,

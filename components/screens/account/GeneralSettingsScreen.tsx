@@ -13,14 +13,14 @@ import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { DataContext } from "scorecard-types";
 import Storage from "expo-storage";
 import { reloadApp } from "../../../lib/reloadApp";
-
+import * as nameSlice from "../../core/state/user/nameSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../core/state/store";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
 }) {
   const { colors } = useTheme();
-  const mobileData = useContext(MobileDataContext);
-  const dataContext = useContext(DataContext);
 
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
@@ -30,9 +30,27 @@ export default function GeneralSettingsScreen(props: {
     });
   }, []);
 
-  const [firstName, setFirstName] = useState(mobileData.firstName);
-  const [lastName, setLastName] = useState(mobileData.lastName);
+  const firstNameInitial = useSelector(
+    (state: RootState) => state.name.firstName
+  );
+  const lastNameInitial = useSelector(
+    (state: RootState) => state.name.lastName
+  );
 
+  const [firstName, setFirstName] = useState(firstNameInitial);
+  const [lastName, setLastName] = useState(lastNameInitial);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(nameSlice.setFirstName(firstName));
+    dispatch(nameSlice.setLastName(lastName));
+
+    Storage.setItem({
+      key: "name",
+      value: JSON.stringify({ firstName, lastName }),
+    });
+  }, [firstName, lastName]);
   return (
     <AccountSubpageScreen
       header="General"

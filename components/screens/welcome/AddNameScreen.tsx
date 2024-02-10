@@ -1,13 +1,16 @@
 import { View } from "react-native";
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import { TextInput } from "../../input/TextInput";
 import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { useTheme } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../core/state/store";
+import * as nameSlice from "../../core/state/user/nameSlice";
+
 export default function AddNameScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -24,11 +27,11 @@ export default function AddNameScreen(props: {
 
   const [lastName, setLastName] = useState(props.route.params.lastName ?? "");
 
-  const mobileData = useContext(MobileDataContext);
+  const dispatch = useDispatch<AppDispatch>();
 
   function finish() {
-    mobileData.setFirstName(firstName);
-    mobileData.setLastName(lastName);
+    dispatch(nameSlice.setFirstName(firstName));
+    dispatch(nameSlice.setLastName(lastName));
 
     Storage.setItem({
       key: "name",

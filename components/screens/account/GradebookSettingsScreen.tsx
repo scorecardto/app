@@ -18,9 +18,6 @@ export default function GradebookSettingsScreen(props: {
   const { colors } = useTheme();
   const mobileData = useContext(MobileDataContext);
 
-  const [firstName, setFirstName] = useState(mobileData.firstName);
-  const [lastName, setLastName] = useState(mobileData.lastName);
-
   const district = useSelector((state: RootState) => state.login.district);
   const username = useSelector((state: RootState) => state.login.username);
 
