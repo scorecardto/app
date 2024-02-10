@@ -1,18 +1,14 @@
-import { View, Text, Keyboard } from "react-native";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { View } from "react-native";
+import React, { useEffect } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import SmallText from "../../text/SmallText";
-import {
-  NavigationContext,
-  NavigationProp,
-  useTheme,
-} from "@react-navigation/native";
-import { Course, DataContext } from "scorecard-types";
+import { NavigationContext, useTheme } from "@react-navigation/native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import FeatureCard from "./FeatureCard";
 import BottomSheetButton from "../../input/BottomSheetButton";
-import * as Contacts from "expo-contacts";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
+import { setInvitedNumbers } from "../../core/state/user/invitedNumbersSlice";
 import Storage from "expo-storage";
 
 export default function MoreFeaturesSheet(props: { close: () => void }) {
@@ -20,26 +16,25 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
 
   const { colors } = useTheme();
 
-  const mobileData = useContext(MobileDataContext);
+  const invitedNumbers = useSelector(
+    (s: RootState) => s.invitedNumbers.numbers
+  );
 
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (mobileData.invitedNumbers === null) {
-      //       (async () => {
-      // Storage.setItem({
-      //         key: "invitedNumbers",
-      //         value: JSON.stringify([]),
-      //       });
-      //       })();
+    if (invitedNumbers === null) {
+      Storage.setItem({
+        key: "invitedNumbers",
+        value: JSON.stringify([]),
+      });
 
-      setTimeout(() => {
-        mobileData.setInvitedNumbers([]);
-      }, 1000);
+      dispatch(setInvitedNumbers([]));
     } else {
-      // Storage.removeItem({
-      //   key: "invitedNumbers",
-      // });
+      Storage.removeItem({
+        key: "invitedNumbers",
+      });
 
-      mobileData.setInvitedNumbers(null);
+      dispatch(setInvitedNumbers(null));
     }
   }, []);
 

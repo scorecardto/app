@@ -12,22 +12,12 @@ export default function MobileDataProvider(props: {
       };
     }
   );
-
-  const [invitedNumbers, setInvitedNumbers] = useState<string[] | null>(null);
-
   const mobileData = useMemo<MobileData>(
     () => ({
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
-      invitedNumbers,
-      setInvitedNumbers,
     }),
-    [
-      confirmPhoneNumberCallback,
-      setConfirmPhoneNumberCallback,
-      invitedNumbers,
-      setInvitedNumbers,
-    ]
+    [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback]
   );
 
   return (

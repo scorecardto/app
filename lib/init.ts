@@ -21,6 +21,7 @@ import {
   setLastName,
 } from "../components/core/state/user/nameSlice";
 import { setAllSettings } from "../components/core/state/user/settingsSlice";
+import { setInvitedNumbers } from "../components/core/state/user/invitedNumbersSlice";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -47,9 +48,9 @@ export default async function initialize(
   });
 
   if (invitedNumbers) {
-    mobileDataContext.setInvitedNumbers(JSON.parse(invitedNumbers));
+    dispatch(setInvitedNumbers(JSON.parse(invitedNumbers)));
   } else {
-    mobileDataContext.setInvitedNumbers(null);
+    dispatch(setInvitedNumbers(null));
   }
 
   dispatch(setAllSettings(JSON.parse(appSettings || "{}")));

@@ -15,10 +15,14 @@ import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import MoreFeaturesSheet from "../vip/MoreFeaturesSheet";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 export default function InviteOthersCard(props: { show: boolean }) {
   const { colors, dark } = useTheme();
 
-  const { invitedNumbers } = useContext(MobileDataContext);
+  const invitedNumbers = useSelector(
+    (s: RootState) => s.invitedNumbers.numbers
+  );
 
   const accentLabel = "yellow";
 
