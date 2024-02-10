@@ -1,14 +1,6 @@
 import { View, Text, Animated, Easing } from "react-native";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
-import { DataContext } from "scorecard-types";
 import * as StatusBar from "expo-status-bar";
 import { useTheme } from "@react-navigation/native";
 import Color from "color";
@@ -17,20 +9,26 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 
 export default function RefreshIndicator() {
-  const data = useContext(DataContext);
-
   const refreshStatus = useSelector((state: RootState) => state.refreshStatus);
 
+  const courseDisplayName = useSelector((state: RootState) => {
+    if (refreshStatus.courseKey != null) {
+      return (
+        state.gradeData.courseSettings?.[refreshStatus.courseKey]
+          ?.displayName ||
+        state.gradeData.record?.courses.find(
+          (course) => course.key === refreshStatus.courseKey
+        )?.name
+      );
+    } else {
+      return null;
+    }
+  });
   const { colors } = useTheme();
   const shown = refreshStatus.type !== "IDLE";
 
   const statusText = useMemo(() => {
-    if (refreshStatus.courseKey != null) {
-      const courseDisplayName =
-        data.courseSettings?.[refreshStatus.courseKey]?.displayName ||
-        data.data?.courses.find(
-          (course) => course.key === refreshStatus.courseKey
-        )?.name;
+    if (courseDisplayName) {
       return refreshStatus.status.replace(
         "COURSE_NAME",
         courseDisplayName || "Unknown Course"

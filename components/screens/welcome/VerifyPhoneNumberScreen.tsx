@@ -21,8 +21,7 @@ export default function VerifyPhoneNumberScreen(props: {
   const [code, setCode] = useState("");
 
   const mobileDataContext = useContext(MobileDataContext);
-  const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
-    mobileDataContext;
+  const { confirmPhoneNumberCallback } = mobileDataContext;
 
   const { colors } = useTheme();
 

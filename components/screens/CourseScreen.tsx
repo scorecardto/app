@@ -1,25 +1,13 @@
-import React, {
-  useRef,
-  useState,
-  useContext,
-  useEffect,
-  useMemo,
-  Suspense,
-} from "react";
+import { useState, useContext, useEffect, useMemo, Suspense } from "react";
 import { Animated, Text, TouchableOpacity, View } from "react-native";
-import { MobileDataContext } from "../core/context/MobileDataContext";
-import { Course, DataContext } from "scorecard-types";
 import Header from "../text/Header";
 import { RadialGradient } from "react-native-gradients";
 import LargeGradeText from "../text/LargeGradeText";
 import { ThemeProvider, useTheme } from "@react-navigation/native";
 import Gradebook from "../app/gradebook/Gradebook";
-import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
-// import CourseEditSheet from "../app/course/CourseEditSheet";
 import { Theme } from "../../lib/Color";
 import color from "../../lib/Color";
-import { RouteProp, NavigationProp } from "@react-navigation/native";
 import CourseEditSheet from "../app/course/CourseEditSheet";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
@@ -30,20 +18,17 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import Storage from "expo-storage";
 import captureCourseState from "../../lib/captureCourseState";
 import GradeStateChangesCard from "../app/gradebook/GradeStateChangesCard";
-import Button from "../input/Button";
-import BottomSheetButton from "../input/BottomSheetButton";
 import CourseCornerButton from "../app/course/CourseCornerButton";
 import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContainer";
 import parseCourseKey from "../../lib/parseCourseKey";
-import StatusText from "../text/StatusText";
 import LoadingOverlay from "./loader/LoadingOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setOldCourseStates } from "../core/state/grades/oldCourseStatesSlice";
+import { Course } from "scorecard-types";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -52,22 +37,29 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const username = useSelector((state: RootState) => state.login.username);
   const password = useSelector((state: RootState) => state.login.password);
 
-  const dataContext = React.useContext(DataContext);
-  const mobileDataContext = React.useContext(MobileDataContext);
-
   const [course, setCourse] = useState<Course | undefined>(undefined);
   const [playUpdateAnimation, setPlayUpdateAnimation] = useState(false);
   const [showNormalCourseInfo, setShowNormalCourseInfo] = useState(false);
   const [showGradeStateChanges, setShowGradeStateChanges] = useState(false);
   const [gradeText, setGradeText] = useState("NG");
 
-  async function getCourse(): Promise<Course | undefined> {
-    if (dataContext.gradeCategory === dataContext.data?.gradeCategory) {
-      return dataContext.data?.courses.find((c) => c.key === key);
-    } else {
-      const course = dataContext.data?.courses.find((c) => c.key === key);
+  const currentGradeCategory = useSelector(
+    (s: RootState) => s.gradeData.gradeCategory
+  );
 
-      const alternateKey = course?.grades[dataContext.gradeCategory]?.key;
+  const recordGradeCategory = useSelector(
+    (s: RootState) => s.gradeData.record?.gradeCategory
+  );
+
+  const courses = useSelector((s: RootState) => s.gradeData.record?.courses);
+
+  async function getCourse(): Promise<Course | undefined> {
+    if (currentGradeCategory === recordGradeCategory) {
+      return courses?.find((c) => c.key === key);
+    } else {
+      const course = courses?.find((c) => c.key === key);
+
+      const alternateKey = course?.grades[currentGradeCategory]?.key;
 
       if (course == null || alternateKey == null) return undefined;
 
@@ -93,7 +85,19 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const oldCourseStates = useSelector(
     (state: RootState) => state.oldCourseStates.record
   );
+
+  const accentLabel = useSelector(
+    (state: RootState) =>
+      state.gradeData.courseSettings[key]?.accentColor ||
+      color.defaultAccentLabel
+  );
+
+  const courseCustomName = useSelector(
+    (state: RootState) => state.gradeData.courseSettings[key]?.displayName
+  );
+
   const dispatch = useDispatch<AppDispatch>();
+
   useEffect(() => {
     setShowNormalCourseInfo(false);
     getCourse().then((course) => {
@@ -115,7 +119,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
       setCourse(course);
     });
-  }, [dataContext.gradeCategory]);
+  }, [currentGradeCategory]);
 
   useEffect(() => {
     if (!course) return;
@@ -128,9 +132,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     if (stateChange) {
       setShowGradeStateChanges(true);
       setGradeText(oldCourseStates[key].average);
-      setModifiedAvg(course.grades[dataContext.gradeCategory]?.value || "NG");
+      setModifiedAvg(course.grades[currentGradeCategory]?.value || "NG");
     } else {
-      setGradeText(course.grades[dataContext.gradeCategory]?.value || "NG");
+      setGradeText(course.grades[currentGradeCategory]?.value || "NG");
       setShowNormalCourseInfo(true);
     }
   }, [course]);
@@ -167,10 +171,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     );
   }
 
-  const accentLabel =
-    dataContext.courseSettings[course.key]?.accentColor ||
-    color.defaultAccentLabel;
-
   const theme: Theme = {
     ...parentTheme,
     accentLabel,
@@ -179,8 +179,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   };
   const { colors, accents } = theme;
 
-  const courseDisplayName =
-    dataContext.courseSettings[course.key]?.displayName || course.name;
+  const courseDisplayName = courseCustomName || course.name;
 
   const colorList = [
     { offset: "0%", color: accents.gradientCenter, opacity: "1" },

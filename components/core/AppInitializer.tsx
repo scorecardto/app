@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { MobileDataContext } from "./context/MobileDataContext";
-import { DataContext } from "scorecard-types";
+import React, { useEffect, useState } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 
@@ -13,8 +11,8 @@ import {
 } from "@expo-google-fonts/dm-sans";
 import { IBMPlexMono_400Regular } from "@expo-google-fonts/ibm-plex-mono";
 import initialize from "../../lib/init";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "./state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./state/store";
 
 export default function AppInitializer(props: {
   setAppReady: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,8 +20,12 @@ export default function AppInitializer(props: {
 }) {
   const dispatch = useDispatch<AppDispatch>();
 
-  const mobileData = useContext(MobileDataContext);
-  const data = useContext(DataContext);
+  const currentGradeCategory = useSelector(
+    (s: RootState) => s.gradeData.gradeCategory
+  );
+  const recordGradeCategory = useSelector(
+    (s: RootState) => s.gradeData.record?.gradeCategory
+  );
 
   const [userReady, setUserReady] = useState(false);
 
@@ -40,7 +42,7 @@ export default function AppInitializer(props: {
   }, []);
 
   useEffect(() => {
-    if (data.gradeCategory !== data.data?.gradeCategory) {
+    if (currentGradeCategory !== recordGradeCategory) {
       Toast.show({
         type: "info",
         text1: "Older Grading Period",
@@ -50,7 +52,7 @@ export default function AppInitializer(props: {
         position: "bottom",
       });
     }
-  }, [data.gradeCategory]);
+  }, [currentGradeCategory, recordGradeCategory]);
 
   useEffect(() => {
     async function prepare() {
@@ -62,7 +64,7 @@ export default function AppInitializer(props: {
         IBMPlexMono_400Regular: IBMPlexMono_400Regular,
       });
 
-      const nextScreenAsync = initialize(data, mobileData, user, dispatch);
+      const nextScreenAsync = initialize(dispatch, user);
 
       const [_, nextScreen] = await Promise.all([fontsAsync, nextScreenAsync]);
 

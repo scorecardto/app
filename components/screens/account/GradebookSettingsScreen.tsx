@@ -1,13 +1,8 @@
 import { View } from "react-native";
-import React, { useContext, useState } from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
 import { useTheme } from "@react-navigation/native";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
 import LoginInputCard from "../../input/LoginInputCard";
-import ToggleInput from "../../input/ToggleInput";
-import Storage from "expo-storage";
-import SelectInput from "../../input/SelectInput";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 
@@ -16,7 +11,6 @@ export default function GradebookSettingsScreen(props: {
   navigation: any;
 }) {
   const { colors } = useTheme();
-  const mobileData = useContext(MobileDataContext);
 
   const district = useSelector((state: RootState) => state.login.district);
   const username = useSelector((state: RootState) => state.login.username);

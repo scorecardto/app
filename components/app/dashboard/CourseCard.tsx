@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Animated,
-  Appearance,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Course, DataContext } from "scorecard-types";
+import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
@@ -22,6 +21,8 @@ import {
   updateContextSettings,
 } from "../../../lib/setCourseSetting";
 import Toast from "react-native-toast-message";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../core/state/store";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -31,12 +32,15 @@ export default function CourseCard(props: {
 }) {
   const { colors, dark } = useTheme();
 
-  const dataContext = useContext(DataContext);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const { courseSettings } = dataContext;
+  const allCourseSettings = useSelector(
+    (s: RootState) => s.gradeData.courseSettings
+  );
 
-  const accentLabel =
-    courseSettings[props.course.key]?.accentColor || color.defaultAccentLabel;
+  const courseSettings = allCourseSettings[props.course.key];
+
+  const accentLabel = courseSettings?.accentColor || color.defaultAccentLabel;
 
   const styles = StyleSheet.create({
     wrapper: {
@@ -77,10 +81,9 @@ export default function CourseCard(props: {
     },
   });
 
-  const courseDisplayName =
-    courseSettings[props.course.key]?.displayName || props.course.name;
+  const courseDisplayName = courseSettings?.displayName || props.course.name;
 
-  const courseGlyph = courseSettings[props.course.key]?.glyph || undefined;
+  const courseGlyph = courseSettings?.glyph || undefined;
 
   const swipeRef = React.useRef<Swipeable>(null);
 
@@ -116,7 +119,7 @@ export default function CourseCard(props: {
     </>
   );
 
-  const hidden = dataContext.courseSettings[props.course.key]?.hidden ?? false;
+  const hidden = courseSettings?.hidden ?? false;
 
   const [show, setShow] = useState(!hidden);
   const [_, setPlayedVibration] = useState(false);
@@ -138,7 +141,7 @@ export default function CourseCard(props: {
         setShow(false);
         if (!hidden) {
           setTimeout(() => {
-            updateContextSettings(dataContext);
+            updateContextSettings(dispatch);
             Toast.show({
               type: "info",
               text1: "Course Hidden",
@@ -149,7 +152,8 @@ export default function CourseCard(props: {
                 setShow(true);
                 setHiding(false);
                 setCourseSetting(
-                  dataContext,
+                  dispatch,
+                  allCourseSettings,
                   props.course.key,
                   { hidden: false },
                   false
@@ -168,7 +172,7 @@ export default function CourseCard(props: {
       }).start(() => {
         setTimeout(() => {
           setShow(true);
-          updateContextSettings(dataContext);
+          updateContextSettings(dispatch);
         }, duration);
       });
     }
@@ -201,12 +205,15 @@ export default function CourseCard(props: {
 
             // @ts-ignore
             if (o.nativeEvent.translationX < -100) {
-              setCourseSetting(dataContext, props.course.key, { hidden: true });
+              setCourseSetting(dispatch, allCourseSettings, props.course.key, {
+                hidden: true,
+              });
               setHiding(true);
               setShow(false);
 
               setCourseSetting(
-                dataContext,
+                dispatch,
+                allCourseSettings,
                 props.course.key,
                 { hidden: true },
                 false

@@ -1,12 +1,5 @@
 import Storage from "expo-storage";
-import {
-  AllContentResponse,
-  DataProvider,
-  GradebookNotification,
-  GradebookRecord,
-} from "scorecard-types";
-import { MobileData } from "../components/core/context/MobileDataContext";
-import { getNotifications } from "./notifications";
+import { AllContentResponse, GradebookRecord } from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
 import { AppDispatch } from "../components/core/state/store";
@@ -14,11 +7,11 @@ import {
   setReferer,
   setSessionId,
 } from "../components/core/state/user/loginSlice";
+import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
+import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
-  dataContext: DataProvider,
-  mobileData: MobileData,
   dispatch: AppDispatch,
   updateCourseStates: boolean
 ) {
@@ -41,7 +34,7 @@ export default async function fetchAndStore(
     gradeCategoryNames: data.gradeCategoryNames,
   };
 
-  dataContext.setData(newData);
+  dispatch(setGradeRecord(newData));
 
   if (updateCourseStates) {
     const oldCourseStates: CourseStateRecord = {};
@@ -50,7 +43,7 @@ export default async function fetchAndStore(
       oldCourseStates[course.key] = captureCourseState(course);
     }
 
-    mobileData.setOldCourseStates(oldCourseStates);
+    dispatch(setOldCourseStates(oldCourseStates));
 
     await Storage.setItem({
       key: "oldCourseStates",

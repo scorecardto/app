@@ -37,8 +37,7 @@ export default function AddPhoneNumberScreen(props: {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const mobileDataContext = useContext(MobileDataContext);
-  const { confirmPhoneNumberCallback, setConfirmPhoneNumberCallback } =
-    mobileDataContext;
+  const { setConfirmPhoneNumberCallback } = mobileDataContext;
 
   const [loading, setLoading] = useState(false);
 

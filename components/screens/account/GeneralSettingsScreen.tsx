@@ -1,16 +1,14 @@
 import { Alert, View } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import MediumText from "../../text/MediumText";
 import { TextInput } from "../../input/TextInput";
 import LockedTextInput from "../../input/LockedTextInput";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
 import DeleteInput from "../../input/DeleteInput";
 
 import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { DataContext } from "scorecard-types";
 import Storage from "expo-storage";
 import { reloadApp } from "../../../lib/reloadApp";
 import * as nameSlice from "../../core/state/user/nameSlice";

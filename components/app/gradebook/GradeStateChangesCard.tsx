@@ -1,18 +1,9 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import React, { useContext } from "react";
+import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import { useTheme } from "@react-navigation/native";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
 import captureCourseState from "../../../lib/captureCourseState";
 import TableRow from "./TableRow";
-import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 
@@ -79,8 +70,6 @@ export default function GradeStateChangesCard(props: {
       backgroundColor: accents.secondary,
     },
   });
-
-  const mobileDataContext = useContext(MobileDataContext);
 
   const oldState = useSelector(
     (state: RootState) => state.oldCourseStates.record[props.course.key]

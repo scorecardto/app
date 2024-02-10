@@ -3,27 +3,15 @@ import {
   FlatList,
   RefreshControl,
   ScrollView,
-  Text,
   TouchableOpacity,
   View,
-  AppState,
 } from "react-native";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
-import { Course, DataContext } from "scorecard-types";
+import { Course } from "scorecard-types";
 import CourseCard from "../app/dashboard/CourseCard";
-// import CourseGradebook from "../app/dashboard/preview/CourseGradebook";
-import Storage from "expo-storage";
 import * as Haptics from "expo-haptics";
 import { fetchAllContent } from "../../lib/fetcher";
-import { MobileDataContext } from "../core/context/MobileDataContext";
 import Header from "../text/Header";
 import fetchAndStore from "../../lib/fetchAndStore";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
@@ -33,10 +21,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import useFooterHeight from "../util/hooks/useFooterHeight";
 import HeaderBanner from "../text/HeaderBanner";
 import InviteOthersCard from "../app/dashboard/InviteOthersCard";
-import MoreFeaturesSheet from "../app/vip/MoreFeaturesSheet";
 import parseCourseKey from "../../lib/parseCourseKey";
 import captureCourseState from "../../lib/captureCourseState";
-import RefreshIndicator from "../app/dashboard/RefreshIndicator";
 import RefreshStatus from "../../lib/types/RefreshStatus";
 import { getFeatureFlag } from "../../lib/featureFlag";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,9 +32,6 @@ import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
 }) => {
-  const dataContext = useContext(DataContext);
-  const mobileData = useContext(MobileDataContext);
-
   const district = useSelector((state: RootState) => state.login.district);
   const username = useSelector((state: RootState) => state.login.username);
   const password = useSelector((state: RootState) => state.login.password);
@@ -61,68 +44,75 @@ const CurrentGradesScreen = (props: {
 
   const [currentTime, setCurrentTime] = useState(Date.now());
 
-  const lastUpdatedHeader = useMemo(() => {
-    if (!dataContext.data) return null;
+  const lastRecordDate = useSelector(
+    (state: RootState) => state.gradeData.record?.date
+  );
 
-    const lastUpdated = dataContext.data.date;
+  const currentGradeCategory = useSelector(
+    (state: RootState) => state.gradeData.gradeCategory
+  );
+
+  const recordGradeCategory = useSelector(
+    (state: RootState) => state.gradeData.record?.gradeCategory
+  );
+
+  const courses = useSelector(
+    (state: RootState) => state.gradeData.record?.courses
+  );
+
+  const courseSettings = useSelector(
+    (state: RootState) => state.gradeData.courseSettings
+  );
+
+  const gradeCategoryNames = useSelector(
+    (state: RootState) => state.gradeData.record?.gradeCategoryNames || []
+  );
+  const lastUpdatedHeader = useMemo(() => {
+    if (!lastRecordDate) return "No Data";
+
     const now = currentTime;
 
-    if (!lastUpdated) return "No Data";
+    if (!lastRecordDate) return "No Data";
 
-    if (now - lastUpdated < 1000 * 60 * 10) {
+    if (now - lastRecordDate < 1000 * 60 * 10) {
       return "Up To Date";
     }
 
     return "Pull To Refresh";
-  }, [dataContext.data?.date, currentTime]);
+  }, [lastRecordDate, currentTime]);
 
   const updatedSubheader = useMemo(() => {
-    if (!dataContext.data) return null;
+    if (!lastRecordDate) return "No Data";
 
-    const lastUpdated = dataContext.data.date;
     const now = currentTime;
 
-    if (!lastUpdated) return "No Data";
+    if (!lastRecordDate) return "No Data";
 
-    if (now - lastUpdated < 1000 * 60 * 60) {
-      const mins = Math.floor((now - lastUpdated) / 1000 / 60);
+    if (now - lastRecordDate < 1000 * 60 * 60) {
+      const mins = Math.floor((now - lastRecordDate) / 1000 / 60);
 
       if (mins <= 0) return `Your grades are fresh out of the oven`;
       return `Updated ${mins} minute${mins === 1 ? "" : "s"} ago`;
     }
 
-    if (now - lastUpdated < 1000 * 60 * 60 * 24) {
+    if (now - lastRecordDate < 1000 * 60 * 60 * 24) {
       return `Updated ${Math.floor(
-        (now - lastUpdated) / 1000 / 60 / 60
+        (now - lastRecordDate) / 1000 / 60 / 60
       )} hours ago`;
     }
 
-    if (now - lastUpdated < 1000 * 60 * 60 * 24 * 2) {
+    if (now - lastRecordDate < 1000 * 60 * 60 * 24 * 2) {
       return "Updated yesterday";
     }
 
-    if (now - lastUpdated < 1000 * 60 * 60 * 24 * 7) {
+    if (now - lastRecordDate < 1000 * 60 * 60 * 24 * 7) {
       return `Updated ${Math.floor(
-        (now - lastUpdated) / 1000 / 60 / 60 / 24
+        (now - lastRecordDate) / 1000 / 60 / 60 / 24
       )} days ago`;
     }
 
-    return `Updated on ${new Date(lastUpdated).toLocaleDateString()}`;
-  }, [dataContext.data?.date, currentTime]);
-
-  // console.log('rendering CurrentGradesScreen');
-  // useEffect(() => {
-  //   console.log('adding listener');
-  //   AppState.addEventListener("change", (nextAppState) => {
-  //     console.log(nextAppState, refreshing);
-  //     if (nextAppState === "active") {
-  //       if (refreshing) {
-  //         console.log('onRefresh');
-  //         onRefresh();
-  //       }
-  //     }
-  //   });
-  // }, []);
+    return `Updated on ${new Date(lastRecordDate).toLocaleDateString()}`;
+  }, [lastRecordDate, currentTime]);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -138,7 +128,7 @@ const CurrentGradesScreen = (props: {
     );
 
     reportCard.then(async (data) => {
-      await fetchAndStore(data, dataContext, mobileData, dispatch, false);
+      await fetchAndStore(data, dispatch, false);
       setRefreshing(false);
     });
   }, []);
@@ -159,10 +149,10 @@ const CurrentGradesScreen = (props: {
     setTimeout(() => {
       selector.current?.hide();
     }, 10);
-  }, [dataContext.gradeCategory]);
+  }, [currentGradeCategory]);
 
   const onCurrentGradingPeriod =
-    dataContext.gradeCategory === dataContext.data?.gradeCategory;
+    currentGradeCategory === recordGradeCategory || !recordGradeCategory;
 
   const footerHeight = useFooterHeight();
 
@@ -184,25 +174,24 @@ const CurrentGradesScreen = (props: {
   const MINS_TO_REFRESH = 60;
 
   useEffect(() => {
-    const lastUpdated = dataContext.data?.date;
-    if (refreshing || !lastUpdated) return;
+    if (refreshing || !lastRecordDate) return;
 
-    const mins = Math.floor((Date.now() - lastUpdated) / 1000 / 60);
+    const mins = Math.floor((Date.now() - lastRecordDate) / 1000 / 60);
 
     if (mins > MINS_TO_REFRESH) {
       onRefresh();
     }
-  }, [currentTime, dataContext.data?.date, refreshing, showRefreshControl]);
+  }, [currentTime, lastRecordDate, refreshing, showRefreshControl]);
 
   const shownCourses = useMemo(() => {
-    if (!dataContext.data?.courses) return [];
+    if (!courses) return [];
 
-    return dataContext.data?.courses.filter((course) => {
-      const hidden = dataContext.courseSettings[course.key]?.hidden;
+    return courses.filter((course) => {
+      const hidden = courseSettings[course.key]?.hidden;
 
       return !hidden;
     });
-  }, [dataContext.data?.courses, dataContext.courseSettings]);
+  }, [courseSettings, courses]);
 
   const oldShownCourses = useRef(shownCourses);
 
@@ -215,8 +204,8 @@ const CurrentGradesScreen = (props: {
 
     let index = -1;
 
-    for (let i = 0; i < (dataContext.data?.courses?.length || 0); i++) {
-      const key = dataContext.data?.courses?.[i]?.key;
+    for (let i = 0; i < (courses?.length || 0); i++) {
+      const key = courses?.[i]?.key;
       const inOld = old.find((c) => c.key === key);
       const inCurrent = current.find((c) => c.key === key);
 
@@ -264,10 +253,7 @@ const CurrentGradesScreen = (props: {
     <>
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <HeaderBanner
-          label={
-            dataContext.data?.gradeCategoryNames[dataContext.gradeCategory] ??
-            "Your Scorecard"
-          }
+          label={gradeCategoryNames[currentGradeCategory] ?? "Your Scorecard"}
           show={scrollProgress > 80}
           onPress={() => {
             scrollViewRef.current?.scrollTo({
@@ -316,17 +302,14 @@ const CurrentGradesScreen = (props: {
                     ? lastUpdatedHeader ?? "No Data"
                     : onCurrentGradingPeriod
                     ? "Your Scorecard"
-                    : dataContext.data?.gradeCategoryNames[
-                        dataContext.gradeCategory
-                      ] ?? "Other Grading Period"
+                    : gradeCategoryNames[currentGradeCategory] ??
+                      "Other Grading Period"
                 }
                 subheader={
                   showLastUpdated
                     ? updatedSubheader ?? "No Data"
                     : onCurrentGradingPeriod
-                    ? dataContext.data?.gradeCategoryNames[
-                        dataContext.gradeCategory || 0
-                      ]
+                    ? gradeCategoryNames[currentGradeCategory || 0]
                     : "Tap to change grading period"
                 }
               />
@@ -334,13 +317,13 @@ const CurrentGradesScreen = (props: {
 
             <InviteOthersCard show={showCustomizeCard} />
 
-            {dataContext?.data?.courses && (
+            {courses && (
               <FlatList
                 style={{
                   paddingBottom: 66,
                 }}
                 scrollEnabled={false}
-                data={dataContext.data?.courses.sort((a: Course, b: Course) => {
+                data={[...courses].sort((a: Course, b: Course) => {
                   const aPrd = parseCourseKey(a.key)?.dayCodeIndex;
                   const bPrd = parseCourseKey(b.key)?.dayCodeIndex;
 
@@ -358,7 +341,7 @@ const CurrentGradesScreen = (props: {
                   return 0;
                 })}
                 renderItem={({ item, index }) => {
-                  const hidden = dataContext.courseSettings[item.key]?.hidden;
+                  const hidden = courseSettings[item.key]?.hidden;
 
                   if (hidden) return null;
 
@@ -394,7 +377,7 @@ const CurrentGradesScreen = (props: {
                         }
                         onHold={() => {}}
                         course={item}
-                        gradingPeriod={dataContext.gradeCategory || 0}
+                        gradingPeriod={currentGradeCategory || 0}
                       />
                     </Animated.View>
                   );
@@ -403,28 +386,6 @@ const CurrentGradesScreen = (props: {
               />
             )}
 
-            {/* <TouchableOpacity
-              onPress={() => {
-                Storage.getItem({ key: "records" }).then(async (records) => {
-                  // if (!records) return;
-                  // await Storage.setItem({
-                  //   key: "records",
-                  //   value: JSON.stringify(JSON.parse(records).slice(0, 1)),
-                  // });
-                  await Storage.removeItem({ key: "records" });
-                  await Storage.removeItem({ key: "login" });
-                });
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 12,
-                }}
-              >
-                Clear Record History
-              </Text>
-            </TouchableOpacity> */}
             <GradeCategorySelectorSheet ref={selector} />
           </View>
         </ScrollView>

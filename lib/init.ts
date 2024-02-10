@@ -1,15 +1,6 @@
-import {
-  DataProvider,
-  GradebookNotification,
-  GradebookRecord,
-} from "scorecard-types";
-import { MobileData } from "../components/core/context/MobileDataContext";
+import { GradebookRecord } from "scorecard-types";
 import Storage from "expo-storage";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { getNotifications } from "./notifications";
-import fetchAndStore from "./fetchAndStore";
-import { fetchAllContent } from "./fetcher";
-import { Dispatch } from "redux";
 import { AppDispatch } from "../components/core/state/store";
 import {
   setDistrict,
@@ -22,6 +13,12 @@ import {
 } from "../components/core/state/user/nameSlice";
 import { setAllSettings } from "../components/core/state/user/settingsSlice";
 import { setInvitedNumbers } from "../components/core/state/user/invitedNumbersSlice";
+import {
+  setCourseSettings,
+  setGradeCategory,
+  setGradeRecord,
+} from "../components/core/state/grades/gradeDataSlice";
+import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -30,10 +27,8 @@ type NextScreen =
   | "addPhoneNumber"
   | "addName";
 export default async function initialize(
-  dataContext: DataProvider,
-  mobileDataContext: MobileData,
-  user: FirebaseAuthTypes.User | null | undefined,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
   const login = await Storage.getItem({ key: "login" });
   const name = await Storage.getItem({ key: "name" });
@@ -56,14 +51,13 @@ export default async function initialize(
   dispatch(setAllSettings(JSON.parse(appSettings || "{}")));
 
   if (login && !!JSON.parse(records ?? "[]")[0]) {
-    dataContext.setCourseSettings(JSON.parse(courseSettings ?? "{}"));
+    dispatch(setCourseSettings(JSON.parse(courseSettings ?? "{}")));
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 
-    dataContext.setData(data);
-    dataContext.setGradeCategory(data.gradeCategory);
-
-    // mobileDataContext.setOldCourseStates(JSON.parse(oldCourseStates ?? "{}"));
+    dispatch(setGradeRecord(data));
+    dispatch(setGradeCategory(data.gradeCategory));
+    dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
     const { username, password, host } = JSON.parse(login);
 

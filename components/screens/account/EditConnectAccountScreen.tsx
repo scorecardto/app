@@ -4,8 +4,6 @@ import { NavigationProp, useTheme } from "@react-navigation/native";
 import Button from "../../input/Button";
 import { TextInput } from "../../input/TextInput";
 import { fetchAllContent } from "../../../lib/fetcher";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
-import { DataContext } from "scorecard-types";
 import Storage from "expo-storage";
 import SmallText from "../../text/SmallText";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
@@ -36,9 +34,6 @@ const EditConnectAccountScreen = (props: {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-
-  const dataContext = React.useContext(DataContext);
-  const mobileData = React.useContext(MobileDataContext);
 
   const dispatch = useDispatch<AppDispatch>();
   const usernameRef = useRef<ReactNative.TextInput>(null);
@@ -81,7 +76,7 @@ const EditConnectAccountScreen = (props: {
             }),
           });
 
-          await fetchAndStore(data, dataContext, mobileData, dispatch, true);
+          await fetchAndStore(data, dispatch, true);
         })
         .catch((e: Error) => {
           if (e.message === "INCORRECT_PASSWORD") {

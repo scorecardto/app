@@ -1,12 +1,6 @@
-import { View, Text, FlatList } from "react-native";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import * as Contacts from "expo-contacts";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "../text/Header";
-import InviteButton from "../app/vip/InviteButton";
-import ContactCard from "../app/vip/ContactCard";
+import { View } from "react-native";
+import { useEffect, useMemo, useState } from "react";
 import { useTheme } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
 import AccountSubpageScreen from "../app/account/AccountSubpageScreen";
 import ToggleInput from "../input/ToggleInput";
 import SmallText from "../text/SmallText";
@@ -15,8 +9,9 @@ import Button from "../input/Button";
 import axios from "redaxios";
 import { firebase } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
-import { MobileDataContext } from "../core/context/MobileDataContext";
 import LoadingOverlay from "./loader/LoadingOverlay";
+import { useSelector } from "react-redux";
+import { RootState } from "../core/state/store";
 export default function HelpScreen(props: { route: any; navigation: any }) {
   const { colors } = useTheme();
 
@@ -58,7 +53,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
 
   const [userToken, setUserToken] = useState<string | undefined>(undefined);
 
-  const mobileData = useContext(MobileDataContext);
+  const { firstName, lastName } = useSelector((state: RootState) => state.name);
+
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
@@ -81,8 +77,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
       axios
         .post("https://scorecardgrades.com/api/feedback", {
           reason: reason.toUpperCase(),
-          firstName: mobileData.firstName.substring(0, 50),
-          lastName: mobileData.lastName.substring(0, 50),
+          firstName: firstName.substring(0, 50),
+          lastName: lastName.substring(0, 50),
           message: message.substring(0, 5000),
           respondToMe: allowUserContact,
           urgent: urgent,

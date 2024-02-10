@@ -1,20 +1,24 @@
-import {View, Text, TouchableOpacity} from "react-native";
-import React, { useContext } from "react";
-import { Course, DataContext } from "scorecard-types";
+import { View, Text, TouchableOpacity } from "react-native";
+import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
-import {NavigationProp, useTheme} from "@react-navigation/native";
+import { NavigationProp, useTheme } from "@react-navigation/native";
 import ArchiveCourseChip from "./ArchiveCourseChip";
-import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
-import {setCourseSetting} from "../../../lib/setCourseSetting";
+import { setCourseSetting } from "../../../lib/setCourseSetting";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 export default function ArchiveCourseCard(props: {
   course: Course;
   cellCount: number;
   navigation: NavigationProp<any, any>;
 }) {
-  const data = useContext(DataContext);
-  const { colors } = useTheme();
+  const courseSettings = useSelector(
+    (s: RootState) => s.gradeData.courseSettings
+  );
 
-  const hidden = data.courseSettings[props.course.key]?.hidden;
+  const { colors } = useTheme();
+  const dispatch = useDispatch();
+
+  const hidden = courseSettings[props.course.key]?.hidden;
   const opacity = hidden ? 0.3 : 1;
   return (
     <View
@@ -31,8 +35,8 @@ export default function ArchiveCourseCard(props: {
       <View
         style={{
           marginVertical: 12,
-          marginHorizontal: 24, 
-          flexDirection :'row', 
+          marginHorizontal: 24,
+          flexDirection: "row",
           justifyContent: "space-between",
         }}
       >
@@ -40,33 +44,38 @@ export default function ArchiveCourseCard(props: {
           style={{
             fontSize: 16,
             color: colors.primary,
-              opacity
+            opacity,
           }}
         >
-          {data.courseSettings[props.course.key]?.displayName ||
-            props.course.name}
+          {courseSettings[props.course.key]?.displayName || props.course.name}
         </MediumText>
-          {hidden &&
-              <TouchableOpacity
-                  style={{
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      marginTop: -4,
-                      backgroundColor: colors.backgroundNeutral,
-                      borderColor: colors.borderNeutral,
-                      borderWidth: 1.75,
-                  }}
-                  onPress={() => {
-                      setCourseSetting(data, props.course.key, {hidden: false});
-                  }}
-              >
-                  <Text style={{
-                      color: colors.text,
-                      fontSize: 10,
-                  }}>Unhide</Text>
-              </TouchableOpacity>
-          }
+        {hidden && (
+          <TouchableOpacity
+            style={{
+              borderRadius: 10,
+              paddingVertical: 5,
+              paddingHorizontal: 10,
+              marginTop: -4,
+              backgroundColor: colors.backgroundNeutral,
+              borderColor: colors.borderNeutral,
+              borderWidth: 1.75,
+            }}
+            onPress={() => {
+              setCourseSetting(dispatch, courseSettings, props.course.key, {
+                hidden: false,
+              });
+            }}
+          >
+            <Text
+              style={{
+                color: colors.text,
+                fontSize: 10,
+              }}
+            >
+              Unhide
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {new Array(props.cellCount / 4).fill(0).map((_, row) => {
@@ -80,7 +89,7 @@ export default function ArchiveCourseCard(props: {
               flexDirection: "row",
               borderTopColor: colors.border,
               borderTopWidth: 2,
-                opacity,
+              opacity,
             }}
           >
             {new Array(4).fill(0).map((_, col) => {
@@ -103,20 +112,22 @@ export default function ArchiveCourseCard(props: {
                     }}
                   >
                     {props.course.grades[idx]?.value != null && (
-                        <TouchableOpacity
-                            onPress={() => {
-                                props.navigation.navigate("course", {key: props.course.key});
-                            }}
-                        >
-                          <ArchiveCourseChip
-                            accentColorLabel={
-                              data.courseSettings[props.course.key]?.accentColor ||
-                              "blue"
-                            }
-                            active={props.course.grades[idx]?.active || false}
-                            grade={props.course.grades[idx]?.value || ""}
-                          />
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          props.navigation.navigate("course", {
+                            key: props.course.key,
+                          });
+                        }}
+                      >
+                        <ArchiveCourseChip
+                          accentColorLabel={
+                            courseSettings[props.course.key]?.accentColor ||
+                            "blue"
+                          }
+                          active={props.course.grades[idx]?.active || false}
+                          grade={props.course.grades[idx]?.value || ""}
+                        />
+                      </TouchableOpacity>
                     )}
                   </View>
                 </View>

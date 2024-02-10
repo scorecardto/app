@@ -1,22 +1,26 @@
-import {ScrollView, View} from "react-native";
-import React, {useContext, useRef, useState} from "react";
-import {NavigationProp, useTheme} from "@react-navigation/native";
+import { ScrollView, View } from "react-native";
+import { useRef, useState } from "react";
+import { NavigationProp, useTheme } from "@react-navigation/native";
 import Header from "../text/Header";
-import {DataContext} from "scorecard-types";
 import ArchiveCourseCard from "../app/archive/ArchiveCourseCard";
 import ArchiveDemoTable from "../app/archive/ArchiveDemoTable";
-import {SafeAreaView} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderBanner from "../text/HeaderBanner";
+import { useSelector } from "react-redux";
+import { RootState } from "../core/state/store";
 
 export default function ArchiveScreen(props: {
-    navigation: NavigationProp<any, any>;
+  navigation: NavigationProp<any, any>;
 }) {
   const { colors } = useTheme();
 
-  const data = useContext(DataContext);
+  const gradeCategoryNames = useSelector(
+    (s: RootState) => s.gradeData.record?.gradeCategoryNames || []
+  );
 
-  const cellCount =
-    Math.ceil((data.data?.gradeCategoryNames.length || 0) / 4) * 4;
+  const courses = useSelector((s: RootState) => s.gradeData.record?.courses);
+
+  const cellCount = Math.ceil((gradeCategoryNames.length || 0) / 4) * 4;
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -44,9 +48,7 @@ export default function ArchiveScreen(props: {
             }}
           >
             <Header header="Archive">
-              <ArchiveDemoTable
-                gradeCategoryNames={data.data?.gradeCategoryNames || []}
-              />
+              <ArchiveDemoTable gradeCategoryNames={gradeCategoryNames || []} />
             </Header>
           </View>
 
@@ -55,7 +57,7 @@ export default function ArchiveScreen(props: {
               paddingHorizontal: 12,
             }}
           >
-            {data.data?.courses.map((course, idx) => {
+            {courses?.map((course, idx) => {
               return (
                 <ArchiveCourseCard
                   course={course}

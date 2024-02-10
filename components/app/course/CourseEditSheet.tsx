@@ -1,22 +1,17 @@
-import {View, Text, Keyboard, ScrollView, Dimensions} from "react-native";
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Keyboard, ScrollView, Dimensions } from "react-native";
+import { useCallback, useEffect, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
-import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import CourseColorChanger from "./CourseColorChanger";
-import { Course, DataContext } from "scorecard-types";
+import { Course } from "scorecard-types";
 import { setCourseSetting } from "../../../lib/setCourseSetting";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import Color from "../../../lib/Color";
 import CourseGlyphChanger from "./CourseGlyphChanger";
 import CourseHiddenToggle from "./CourseHiddenToggle";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 
 export default function CourseEditSheet(props: {
   course: Course;
@@ -24,12 +19,13 @@ export default function CourseEditSheet(props: {
 }) {
   const { colors } = useTheme();
 
-  const dataContext = useContext(DataContext);
+  const dispatch = useDispatch();
 
-  const courseSettings = useMemo(
-    () => dataContext.courseSettings[props.course.key] || {},
-    [dataContext.courseSettings]
+  const allCourseSettings = useSelector(
+    (s: RootState) => s.gradeData.courseSettings || {}
   );
+
+  const courseSettings = allCourseSettings[props.course.key] || {};
 
   const [name, setName] = useState(
     courseSettings.displayName || props.course.name
@@ -39,13 +35,16 @@ export default function CourseEditSheet(props: {
 
   const glyph = courseSettings.glyph || undefined;
 
-  const saveName = useCallback((n: string) => {
+  const saveName = useCallback(
+    (n: string) => {
       if (n === "") {
         setName(props.course.name);
         return;
       }
 
-      setCourseSetting(dataContext, props.course.key, {displayName: n});
+      setCourseSetting(dispatch, allCourseSettings, props.course.key, {
+        displayName: n,
+      });
     },
     [courseSettings]
   );
@@ -60,7 +59,7 @@ export default function CourseEditSheet(props: {
         style={{
           paddingHorizontal: 20,
           paddingBottom: 14,
-            height: Dimensions.get('window').height * 0.65,
+          height: Dimensions.get("window").height * 0.65,
         }}
       >
         <CourseNameTextInput
@@ -73,23 +72,29 @@ export default function CourseEditSheet(props: {
           }}
         />
         <CourseHiddenToggle
-            value={courseSettings.hidden ?? false}
-            onChange={(hidden) => {
-                setCourseSetting(dataContext, props.course.key, {hidden});
-            }}
+          value={courseSettings.hidden ?? false}
+          onChange={(hidden) => {
+            setCourseSetting(dispatch, allCourseSettings, props.course.key, {
+              hidden,
+            });
+          }}
         />
         <CourseColorChanger
           value={accentColor}
           onChange={(accentColor) => {
-              setCourseSetting(dataContext, props.course.key, {accentColor});
+            setCourseSetting(dispatch, allCourseSettings, props.course.key, {
+              accentColor,
+            });
           }}
         />
         <CourseGlyphChanger
           value={glyph}
           onChange={(newGlyph) => {
-              if (glyph == newGlyph) newGlyph = "";
+            if (glyph == newGlyph) newGlyph = "";
 
-              setCourseSetting(dataContext, props.course.key, {glyph: newGlyph});
+            setCourseSetting(dispatch, allCourseSettings, props.course.key, {
+              glyph: newGlyph,
+            });
           }}
         />
       </ScrollView>

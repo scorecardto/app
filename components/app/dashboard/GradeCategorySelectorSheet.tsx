@@ -1,21 +1,33 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { Ref, forwardRef, useContext, useEffect, useMemo } from "react";
-import { DataContext } from "scorecard-types";
+import { View, TouchableOpacity } from "react-native";
+import { Ref, forwardRef } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
-import { TextInput } from "react-native-gesture-handler";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../core/state/store";
+import { setGradeCategory } from "../../core/state/grades/gradeDataSlice";
 
 const starred = require("../../../assets/starred.svg");
 
 const GradeCategorySelectorSheet = forwardRef(
   (props: {}, ref: Ref<ActionSheetRef>) => {
-    const dataContext = useContext(DataContext);
+    const gradeCategoryNames = useSelector(
+      (s: RootState) => s.gradeData.record?.gradeCategoryNames || []
+    );
+    const currentGradeCategory = useSelector(
+      (s: RootState) => s.gradeData.gradeCategory
+    );
+
+    const recordGradeCategory = useSelector(
+      (s: RootState) => s.gradeData.record?.gradeCategory
+    );
 
     const { colors } = useTheme();
+
+    const dispatch = useDispatch<AppDispatch>();
 
     return (
       <ActionSheet
@@ -29,8 +41,8 @@ const GradeCategorySelectorSheet = forwardRef(
         }}
       >
         <BottomSheetHeader>Grading Period</BottomSheetHeader>
-        {dataContext.data?.gradeCategoryNames.map((category, idx) => {
-          const selected = idx === dataContext.gradeCategory;
+        {gradeCategoryNames.map((category, idx) => {
+          const selected = idx === currentGradeCategory;
 
           return (
             <View
@@ -42,7 +54,7 @@ const GradeCategorySelectorSheet = forwardRef(
             >
               <TouchableOpacity
                 onPress={() => {
-                  dataContext.setGradeCategory(idx);
+                  dispatch(setGradeCategory(idx));
                 }}
               >
                 <View
@@ -72,7 +84,7 @@ const GradeCategorySelectorSheet = forwardRef(
                       color={colors.primary}
                     />
                   )}
-                  {!selected && dataContext.data?.gradeCategory === idx && (
+                  {!selected && recordGradeCategory === idx && (
                     <Image
                       source={starred}
                       style={{

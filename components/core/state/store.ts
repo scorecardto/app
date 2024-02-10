@@ -6,6 +6,7 @@ import userRankReducer from "./user/userRank";
 import oldCourseStatesReducer from "./grades/oldCourseStatesSlice";
 import refreshStatusReducer from "./grades/refreshStatusSlice";
 import invitedNumbersReducer from "./user/invitedNumbersSlice";
+import gradeDataSlice from "./grades/gradeDataSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     oldCourseStates: oldCourseStatesReducer,
     refreshStatus: refreshStatusReducer,
     invitedNumbers: invitedNumbersReducer,
+    gradeData: gradeDataSlice,
   },
 });
 
