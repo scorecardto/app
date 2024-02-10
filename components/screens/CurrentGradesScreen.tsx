@@ -41,6 +41,7 @@ import RefreshStatus from "../../lib/types/RefreshStatus";
 import { getFeatureFlag } from "../../lib/featureFlag";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
+import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -132,7 +133,7 @@ const CurrentGradesScreen = (props: {
       password,
       undefined,
       (s: RefreshStatus) => {
-        mobileData.setRefreshStatus(s);
+        dispatch(setRefreshStatus(s));
       }
     );
 
@@ -253,6 +254,10 @@ const CurrentGradesScreen = (props: {
 
   const showCustomizeCard = useSelector((state: RootState) =>
     getFeatureFlag("SHOW_CUSTOMIZE_CARD", state.userRank.type)
+  );
+
+  const oldCourseStates = useSelector(
+    (s: RootState) => s.oldCourseStates.record
   );
 
   return (
@@ -383,10 +388,9 @@ const CurrentGradesScreen = (props: {
                           });
                         }}
                         newGrades={
-                          mobileData.oldCourseStates[item.key] &&
-                          JSON.stringify(
-                            mobileData.oldCourseStates[item.key]
-                          ) !== JSON.stringify(captureCourseState(item))
+                          oldCourseStates[item.key] &&
+                          JSON.stringify(oldCourseStates[item.key]) !==
+                            JSON.stringify(captureCourseState(item))
                         }
                         onHold={() => {}}
                         course={item}

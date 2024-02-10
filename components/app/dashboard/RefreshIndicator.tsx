@@ -13,29 +13,31 @@ import * as StatusBar from "expo-status-bar";
 import { useTheme } from "@react-navigation/native";
 import Color from "color";
 import { Dimensions } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 
 export default function RefreshIndicator() {
   const data = useContext(DataContext);
-  const mobileData = useContext(MobileDataContext);
+
+  const refreshStatus = useSelector((state: RootState) => state.refreshStatus);
 
   const { colors } = useTheme();
-  const shown = mobileData.refreshStatus.type !== "IDLE";
+  const shown = refreshStatus.type !== "IDLE";
 
   const statusText = useMemo(() => {
-    if (mobileData.refreshStatus.courseKey != null) {
+    if (refreshStatus.courseKey != null) {
       const courseDisplayName =
-        data.courseSettings?.[mobileData.refreshStatus.courseKey]
-          ?.displayName ||
+        data.courseSettings?.[refreshStatus.courseKey]?.displayName ||
         data.data?.courses.find(
-          (course) => course.key === mobileData.refreshStatus.courseKey
+          (course) => course.key === refreshStatus.courseKey
         )?.name;
-      return mobileData.refreshStatus.status.replace(
+      return refreshStatus.status.replace(
         "COURSE_NAME",
         courseDisplayName || "Unknown Course"
       );
     }
-    return mobileData.refreshStatus.status;
-  }, [mobileData.refreshStatus]);
+    return refreshStatus.status;
+  }, [refreshStatus]);
 
   const insets = useSafeAreaInsets();
 
@@ -71,11 +73,10 @@ export default function RefreshIndicator() {
   );
 
   useEffect(() => {
-    if (mobileData.refreshStatus.taskRemaining !== 0 && shown) {
+    if (refreshStatus.taskRemaining !== 0 && shown) {
       Animated.timing(progressBarTranslateXAnimation, {
         toValue:
-          (mobileData.refreshStatus.tasksCompleted + 1) /
-          mobileData.refreshStatus.taskRemaining,
+          (refreshStatus.tasksCompleted + 1) / refreshStatus.taskRemaining,
         duration: 1000,
         useNativeDriver: true,
         easing: Easing.linear,
@@ -83,10 +84,7 @@ export default function RefreshIndicator() {
     } else {
       progressBarTranslateXAnimation.setValue(0);
     }
-  }, [
-    mobileData.refreshStatus.tasksCompleted,
-    mobileData.refreshStatus.taskRemaining,
-  ]);
+  }, [refreshStatus.tasksCompleted, refreshStatus.taskRemaining]);
   return (
     <Animated.View
       style={[

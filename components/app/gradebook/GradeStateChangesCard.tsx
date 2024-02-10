@@ -13,6 +13,8 @@ import { MobileDataContext } from "../../core/context/MobileDataContext";
 import captureCourseState from "../../../lib/captureCourseState";
 import TableRow from "./TableRow";
 import { useMemo } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 
 type ChangeTableEntry = {
   assignmentName: string;
@@ -80,10 +82,10 @@ export default function GradeStateChangesCard(props: {
 
   const mobileDataContext = useContext(MobileDataContext);
 
-  const oldState = useMemo(
-    () => mobileDataContext.oldCourseStates[props.course.key],
-    []
+  const oldState = useSelector(
+    (state: RootState) => state.oldCourseStates.record[props.course.key]
   );
+
   const newState = captureCourseState(props.course);
 
   const newGrades: ChangeTableEntry[] = newState.categories

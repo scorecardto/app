@@ -41,8 +41,9 @@ import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContain
 import parseCourseKey from "../../lib/parseCourseKey";
 import StatusText from "../text/StatusText";
 import LoadingOverlay from "./loader/LoadingOverlay";
-import { useSelector } from "react-redux";
-import { RootState } from "../core/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../core/state/store";
+import { setOldCourseStates } from "../core/state/grades/oldCourseStatesSlice";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -89,18 +90,22 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     }
   }
 
+  const oldCourseStates = useSelector(
+    (state: RootState) => state.oldCourseStates.record
+  );
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     setShowNormalCourseInfo(false);
     getCourse().then((course) => {
       setTimeout(() => {
         if (course == null) return;
 
-        const oldCourseStates = {
-          ...mobileDataContext.oldCourseStates,
+        const oldCourseStatesUpdate = {
+          ...oldCourseStates,
           [key]: captureCourseState(course),
         };
 
-        mobileDataContext.setOldCourseStates(oldCourseStates);
+        dispatch(setOldCourseStates(oldCourseStatesUpdate));
 
         Storage.setItem({
           key: "oldCourseStates",
@@ -116,13 +121,13 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     if (!course) return;
 
     const stateChange =
-      mobileDataContext.oldCourseStates[key] &&
-      JSON.stringify(mobileDataContext.oldCourseStates[key]) !==
+      oldCourseStates[key] &&
+      JSON.stringify(oldCourseStates[key]) !==
         JSON.stringify(captureCourseState(course));
 
     if (stateChange) {
       setShowGradeStateChanges(true);
-      setGradeText(mobileDataContext.oldCourseStates[key].average);
+      setGradeText(oldCourseStates[key].average);
       setModifiedAvg(course.grades[dataContext.gradeCategory]?.value || "NG");
     } else {
       setGradeText(course.grades[dataContext.gradeCategory]?.value || "NG");
