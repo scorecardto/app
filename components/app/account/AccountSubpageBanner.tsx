@@ -1,8 +1,7 @@
-import { View, Text, Animated, Dimensions } from "react-native";
-import React, { useEffect, useMemo } from "react";
-import * as Svg from "react-native-svg";
-import { useTheme } from "@react-navigation/native";
+import { View, Animated } from "react-native";
+import { useEffect, useMemo } from "react";
 import { Image } from "expo-image";
+import useColors from "../../core/theme/useColors";
 
 const icon = require("../../../assets/icon.svg");
 
@@ -43,7 +42,7 @@ export default function AccountSubpageBanner(props: {
     }
   }, [props.show]);
 
-  const { colors } = useTheme();
+  const colors = useColors();
 
   return (
     <Animated.View

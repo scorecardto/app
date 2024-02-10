@@ -13,12 +13,10 @@ import {
 } from "../components/core/state/user/nameSlice";
 import { setAllSettings } from "../components/core/state/user/settingsSlice";
 import { setInvitedNumbers } from "../components/core/state/user/invitedNumbersSlice";
-import {
-  setCourseSettings,
-  setGradeCategory,
-  setGradeRecord,
-} from "../components/core/state/grades/gradeDataSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
+import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
+import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
+import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -51,7 +49,7 @@ export default async function initialize(
   dispatch(setAllSettings(JSON.parse(appSettings || "{}")));
 
   if (login && !!JSON.parse(records ?? "[]")[0]) {
-    dispatch(setCourseSettings(JSON.parse(courseSettings ?? "{}")));
+    dispatch(setAllCourseSettings(JSON.parse(courseSettings ?? "{}")));
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 

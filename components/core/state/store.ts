@@ -6,7 +6,10 @@ import userRankReducer from "./user/userRank";
 import oldCourseStatesReducer from "./grades/oldCourseStatesSlice";
 import refreshStatusReducer from "./grades/refreshStatusSlice";
 import invitedNumbersReducer from "./user/invitedNumbersSlice";
-import gradeDataSlice from "./grades/gradeDataSlice";
+import gradeDataReducer from "./grades/gradeDataSlice";
+import courseOrderReducer from "./grades/courseOrderSlice";
+import courseSettingsReducer from "./grades/courseSettingsSlice";
+import gradeCategoryReducer from "./grades/gradeCategorySlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,7 +20,10 @@ export const store = configureStore({
     oldCourseStates: oldCourseStatesReducer,
     refreshStatus: refreshStatusReducer,
     invitedNumbers: invitedNumbersReducer,
-    gradeData: gradeDataSlice,
+    gradeData: gradeDataReducer,
+    courseOrder: courseOrderReducer,
+    courseSettings: courseSettingsReducer,
+    gradeCategory: gradeCategoryReducer,
   },
 });
 

@@ -29,6 +29,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setOldCourseStates } from "../core/state/grades/oldCourseStatesSlice";
 import { Course } from "scorecard-types";
+import CourseScreenWrapper from "../app/course/CourseScreenWrapper";
+import CourseScreenGradient from "../app/course/CourseScreenGradient";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -44,14 +46,17 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const [gradeText, setGradeText] = useState("NG");
 
   const currentGradeCategory = useSelector(
-    (s: RootState) => s.gradeData.gradeCategory
+    (s: RootState) => s.gradeCategory.category
   );
 
   const recordGradeCategory = useSelector(
     (s: RootState) => s.gradeData.record?.gradeCategory
   );
 
-  const courses = useSelector((s: RootState) => s.gradeData.record?.courses);
+  const courses = useSelector(
+    (s: RootState) => s.gradeData.record?.courses,
+    () => true
+  );
 
   async function getCourse(): Promise<Course | undefined> {
     if (currentGradeCategory === recordGradeCategory) {
@@ -86,14 +91,15 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     (state: RootState) => state.oldCourseStates.record
   );
 
-  const accentLabel = useSelector(
-    (state: RootState) =>
-      state.gradeData.courseSettings[key]?.accentColor ||
-      color.defaultAccentLabel
-  );
+  // const accentLabel = color.defaultAccentLabel;
+
+  // const accentLabel = useSelector(
+  //   (state: RootState) =>
+  //     state.courseSettings[key]?.accentColor || color.defaultAccentLabel
+  // );
 
   const courseCustomName = useSelector(
-    (state: RootState) => state.gradeData.courseSettings[key]?.displayName
+    (state: RootState) => state.courseSettings[key]?.displayName
   );
 
   const dispatch = useDispatch<AppDispatch>();
@@ -139,8 +145,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     }
   }, [course]);
 
-  const parentTheme = useTheme();
-
   const [modifiedAvg, setModifiedAvg] = useState<string | null>(null);
 
   const sheets = useContext(BottomSheetContext);
@@ -163,6 +167,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
   const insets = useSafeAreaInsets();
 
+  const { colors } = useTheme();
   if (course == null) {
     return (
       <View>
@@ -171,25 +176,12 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     );
   }
 
-  const theme: Theme = {
-    ...parentTheme,
-    accentLabel,
-    accents:
-      color.AccentsMatrix[accentLabel][parentTheme.dark ? "dark" : "default"],
-  };
-  const { colors, accents } = theme;
-
   const courseDisplayName = courseCustomName || course.name;
-
-  const colorList = [
-    { offset: "0%", color: accents.gradientCenter, opacity: "1" },
-    { offset: "100%", color: accents.gradientCenter, opacity: "0" },
-  ];
 
   const keyInfo = parseCourseKey(key);
 
   return (
-    <ThemeProvider value={theme}>
+    <CourseScreenWrapper courseKey={key}>
       <SafeAreaView
         style={{
           height: "100%",
@@ -240,10 +232,11 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
                       // animated={true}
                       grade={gradeText}
                       // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
-                      backgroundColor={
-                        modifiedAvg ? colors.borderNeutral : accents.primary
-                      }
-                      textColor={modifiedAvg ? colors.text : "#FFFFFF"}
+                      colorType={modifiedAvg ? "SECONDARY" : "PRIMARY"}
+                      // backgroundColor={
+                      //   modifiedAvg ? colors.borderNeutral : accents.primary
+                      // // }
+                      // textColor={modifiedAvg ? colors.text : "#FFFFFF"}
                     />
                     {modifiedAvg && (
                       <MaterialIcons
@@ -255,8 +248,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
                     {modifiedAvg && (
                       <LargeGradeText
                         grade={`${modifiedAvg}`}
-                        backgroundColor={accents.primary}
-                        textColor="#FFFFFF"
+                        colorType="PRIMARY"
                       />
                     )}
                   </View>
@@ -306,15 +298,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             height: "100%",
           }}
         >
-          <RadialGradient
-            x="50%"
-            y="0"
-            rx="384"
-            ry="288"
-            colorList={colorList}
-          ></RadialGradient>
+          <CourseScreenGradient />
         </View>
       </SafeAreaView>
-    </ThemeProvider>
+    </CourseScreenWrapper>
   );
 }

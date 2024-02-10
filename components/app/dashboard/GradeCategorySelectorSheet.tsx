@@ -2,13 +2,13 @@ import { View, TouchableOpacity } from "react-native";
 import { Ref, forwardRef } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
-import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../core/state/store";
-import { setGradeCategory } from "../../core/state/grades/gradeDataSlice";
+import { setGradeCategory } from "../../core/state/grades/gradeCategorySlice";
+import useColors from "../../core/theme/useColors";
 
 const starred = require("../../../assets/starred.svg");
 
@@ -18,14 +18,14 @@ const GradeCategorySelectorSheet = forwardRef(
       (s: RootState) => s.gradeData.record?.gradeCategoryNames || []
     );
     const currentGradeCategory = useSelector(
-      (s: RootState) => s.gradeData.gradeCategory
+      (s: RootState) => s.gradeCategory.category
     );
 
     const recordGradeCategory = useSelector(
       (s: RootState) => s.gradeData.record?.gradeCategory
     );
 
-    const { colors } = useTheme();
+    const colors = useColors();
 
     const dispatch = useDispatch<AppDispatch>();
 

@@ -2,15 +2,17 @@ import { useContext } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
-import { useTheme } from "@react-navigation/native";
 import color from "../../../lib/Color";
 import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import MoreFeaturesSheet from "../vip/MoreFeaturesSheet";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import useColors from "../../core/theme/useColors";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 export default function InviteOthersCard(props: { show: boolean }) {
-  const { colors, dark } = useTheme();
+  const colors = useColors();
+  const dark = useIsDarkMode();
 
   const invitedNumbers = useSelector(
     (s: RootState) => s.invitedNumbers.numbers

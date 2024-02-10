@@ -1,11 +1,8 @@
-import { View, Text, Keyboard } from "react-native";
-import React from "react";
-import Color from "../../../lib/Color";
-import { useTheme } from "@react-navigation/native";
+import { View } from "react-native";
 import SmallText from "../../text/SmallText";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import useColors from "../../core/theme/useColors";
 export default function CourseGlyphChanger(props: {
   value?: string;
   onChange: (accentLabel: string) => void;
@@ -36,11 +33,11 @@ export default function CourseGlyphChanger(props: {
     "football",
     "arm-flex",
     "code-braces",
-    "drama-masks"
+    "drama-masks",
   ];
 
   // const a=  <MaterialCommunityIcons name=""/>;
-  const theme = useTheme();
+  const colors = useColors();
   return (
     <View
       style={{
@@ -49,7 +46,7 @@ export default function CourseGlyphChanger(props: {
       }}
     >
       <SmallText
-        style={{ fontSize: 16, marginBottom: 8, color: theme.colors.primary }}
+        style={{ fontSize: 16, marginBottom: 8, color: colors.primary }}
       >
         Icon
       </SmallText>

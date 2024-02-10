@@ -1,10 +1,10 @@
-import {TextInput} from "react-native";
-import React, {useRef, useState} from "react";
+import { TextInput } from "react-native";
+import { useRef, useState } from "react";
 import AssignmentEdits from "../../../../../lib/types/AssignmentEdits";
-import {useTheme} from "@react-navigation/native";
 import SmallText from "../../../../text/SmallText";
 import AssignmentTileTextInput from "./AssignmentTileTextInput";
 import SmallGradebookSheetTile from "./SmallGradebookSheetTile";
+import useColors from "../../../../core/theme/useColors";
 
 export default function AssignmentCountTile(props: {
   count: number;
@@ -16,7 +16,7 @@ export default function AssignmentCountTile(props: {
   const [inputValue, setInputValue] = useState(props.count.toString());
   const [testingValue, setTestingValue] = useState(props.count);
 
-  const { colors } = useTheme();
+  const colors = useColors();
   const parseText = (value: string) => {
     const numeric = parseInt(value.trim());
 

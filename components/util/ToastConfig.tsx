@@ -1,6 +1,6 @@
 import Toast, { BaseToast, ToastConfig } from "react-native-toast-message";
 import { useTheme } from "@react-navigation/native";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import { useContext } from "react";
 

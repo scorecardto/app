@@ -1,16 +1,15 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useRef } from "react";
-import { useTheme } from "@react-navigation/native";
+import { View } from "react-native";
+import { useRef } from "react";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import * as Haptics from "expo-haptics";
 import SmallText from "../../text/SmallText";
+import useColors from "../../core/theme/useColors";
 
 export default function CourseNameTextInput(props: {
   value: string;
   setValue: (text: string) => void;
   onFinish(): void;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
 
   const ref = useRef(null);
 

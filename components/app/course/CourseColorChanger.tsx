@@ -1,16 +1,24 @@
-import { View, Text, Keyboard } from "react-native";
-import React from "react";
+import { View } from "react-native";
+import { useEffect, useState } from "react";
 import Color from "../../../lib/Color";
-import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import useColors from "../../core/theme/useColors";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 export default function CourseColorChanger(props: {
-  value: string;
+  initialValue: string;
   onChange: (accentLabel: string) => void;
 }) {
-  const theme = useTheme();
+  const colors = useColors();
+  const isDarkMode = useIsDarkMode();
+
+  const [value, setValue] = useState(props.initialValue);
+
+  useEffect(() => {
+    props.onChange(value);
+  }, [value]);
+
   return (
     <View
       style={{
@@ -18,7 +26,7 @@ export default function CourseColorChanger(props: {
       }}
     >
       <SmallText
-        style={{ fontSize: 16, marginBottom: 8, color: theme.colors.primary }}
+        style={{ fontSize: 16, marginBottom: 8, color: colors.primary }}
       >
         Color
       </SmallText>
@@ -34,7 +42,7 @@ export default function CourseColorChanger(props: {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  props.onChange(accentLabel);
+                  setValue(accentLabel);
                 }}
                 key={index}
               >
@@ -52,10 +60,10 @@ export default function CourseColorChanger(props: {
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor:
-                      colors[theme.dark ? "dark" : "default"].preview,
+                      colors[isDarkMode ? "dark" : "default"].preview,
                   }}
                 >
-                  {accentLabel === props.value && (
+                  {accentLabel === value && (
                     <MaterialIcons
                       name="check"
                       size={20}

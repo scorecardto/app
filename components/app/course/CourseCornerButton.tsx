@@ -1,8 +1,6 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { View, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useTheme } from "@react-navigation/native";
+import useColors from "../../core/theme/useColors";
 
 export default function CourseCornerButton(props: {
   side: "left" | "right";
@@ -11,8 +9,7 @@ export default function CourseCornerButton(props: {
   iconPadding?: number;
   onPress: () => void;
 }) {
-  const { colors } = useTheme();
-  const insets = useSafeAreaInsets();
+  const colors = useColors();
   return (
     <TouchableOpacity onPress={props.onPress}>
       <View>

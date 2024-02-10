@@ -1,11 +1,12 @@
 import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
-import { useTheme } from "@react-navigation/native";
 import captureCourseState from "../../../lib/captureCourseState";
 import TableRow from "./TableRow";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import useColors from "../../core/theme/useColors";
+import useAccents from "../../core/theme/useAccents";
 
 type ChangeTableEntry = {
   assignmentName: string;
@@ -17,7 +18,8 @@ export default function GradeStateChangesCard(props: {
   course: Course;
   onFinished: () => void;
 }) {
-  const { colors, accents } = useTheme();
+  const colors = useColors();
+  const accents = useAccents();
 
   const styles = StyleSheet.create({
     wrapper: {

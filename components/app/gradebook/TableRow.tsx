@@ -1,6 +1,6 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
+import useColors from "../../core/theme/useColors";
 
 export default function TableRow(props: {
   name: string;
@@ -13,7 +13,7 @@ export default function TableRow(props: {
   };
   onPress?: () => void;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
 
   const styles = StyleSheet.create({
     wrapper: {

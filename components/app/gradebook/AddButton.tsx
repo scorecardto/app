@@ -1,10 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useTheme } from "@react-navigation/native";
+import useColors from "../../core/theme/useColors";
 
 export default function AddButton(props: { onPress(): void }) {
-  const { colors } = useTheme();
+  const colors = useColors();
   const styles = StyleSheet.create({
     wrapper: {
       backgroundColor: colors.secondaryNeutral,

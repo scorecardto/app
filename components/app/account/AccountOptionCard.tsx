@@ -1,15 +1,15 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
-import { useTheme } from "@react-navigation/native";
 import SmallText from "../../text/SmallText";
 import MaterialIcon from "@expo/vector-icons/MaterialCommunityIcons";
+import useColors from "../../core/theme/useColors";
 
 export default function AccountOptionCard(props: {
   label: string;
   icon: string;
   onPress(): void;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
 
   const styles = StyleSheet.create({
     wrapper: {

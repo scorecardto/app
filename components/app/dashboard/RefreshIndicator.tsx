@@ -1,12 +1,12 @@
 import { View, Text, Animated, Easing } from "react-native";
-import { useContext, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as StatusBar from "expo-status-bar";
-import { useTheme } from "@react-navigation/native";
 import Color from "color";
 import { Dimensions } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import useColors from "../../core/theme/useColors";
 
 export default function RefreshIndicator() {
   const refreshStatus = useSelector((state: RootState) => state.refreshStatus);
@@ -14,8 +14,7 @@ export default function RefreshIndicator() {
   const courseDisplayName = useSelector((state: RootState) => {
     if (refreshStatus.courseKey != null) {
       return (
-        state.gradeData.courseSettings?.[refreshStatus.courseKey]
-          ?.displayName ||
+        state.courseSettings?.[refreshStatus.courseKey]?.displayName ||
         state.gradeData.record?.courses.find(
           (course) => course.key === refreshStatus.courseKey
         )?.name
@@ -24,7 +23,7 @@ export default function RefreshIndicator() {
       return null;
     }
   });
-  const { colors } = useTheme();
+  const colors = useColors();
   const shown = refreshStatus.type !== "IDLE";
 
   const statusText = useMemo(() => {

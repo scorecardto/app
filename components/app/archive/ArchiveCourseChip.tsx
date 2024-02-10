@@ -1,14 +1,13 @@
-import React from "react";
 import { Text, View } from "react-native";
 import color from "../../../lib/Color";
-import { useTheme } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 export default function ArchiveCourseChip(props: {
   accentColorLabel: string;
   grade: string;
   active: boolean;
 }) {
-  const { dark } = useTheme();
+  const dark = useIsDarkMode();
   const accents =
     color.AccentsMatrix[props.accentColorLabel][dark ? "dark" : "default"];
 

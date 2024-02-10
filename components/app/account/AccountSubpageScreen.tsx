@@ -1,13 +1,10 @@
-import { View, Text, StyleSheet, Dimensions, Platform } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import React from "react";
 import LargeText from "../../text/LargeText";
-import WelcomeScreenBanner from "../welcome/WelcomeScreenBanner";
-import MonoText from "../../text/MonoText";
-import { useTheme } from "@react-navigation/native";
 import AccountSubpageBanner from "./AccountSubpageBanner";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import { ScrollView } from "react-native-gesture-handler";
-import { SafeAreaView } from "react-native-safe-area-context";
+import useColors from "../../core/theme/useColors";
 
 export default function AccountSubpageScreen(props: {
   children: React.ReactNode;
@@ -16,7 +13,8 @@ export default function AccountSubpageScreen(props: {
   showBanner?: boolean;
   padding?: boolean;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
+
   const styles = StyleSheet.create({
     wrapper: {
       backgroundColor: colors.card,

@@ -1,11 +1,10 @@
 import { View, Text } from "react-native";
-import React from "react";
-import { useTheme } from "@react-navigation/native";
 import StatusText from "../../text/StatusText";
+import useColors from "../../core/theme/useColors";
 export default function ArchiveDemoTable(props: {
   gradeCategoryNames: string[];
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
   const rows = Math.ceil(props.gradeCategoryNames.length / 4);
   return (
     <View

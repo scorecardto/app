@@ -1,6 +1,9 @@
 import type { Theme } from "./lib/Color";
 
 declare module "@react-navigation/native" {
+  /**
+   * @deprecated Use the individual color hooks
+   */
   export function useTheme(): Theme;
 
   export const NavigationContainer: <

@@ -2,30 +2,29 @@ import { Keyboard, ScrollView, Dimensions } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
-import { useTheme } from "@react-navigation/native";
 import CourseColorChanger from "./CourseColorChanger";
 import { Course } from "scorecard-types";
-import { setCourseSetting } from "../../../lib/setCourseSetting";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import Color from "../../../lib/Color";
 import CourseGlyphChanger from "./CourseGlyphChanger";
 import CourseHiddenToggle from "./CourseHiddenToggle";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
+import useColors from "../../core/theme/useColors";
 
 export default function CourseEditSheet(props: {
   course: Course;
   setOnClose: (onClose: () => void) => void;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
 
   const dispatch = useDispatch();
 
-  const allCourseSettings = useSelector(
-    (s: RootState) => s.gradeData.courseSettings || {}
+  const courseSettings = useSelector(
+    (state: RootState) => state.courseSettings[props.course.key],
+    () => true
   );
-
-  const courseSettings = allCourseSettings[props.course.key] || {};
 
   const [name, setName] = useState(
     courseSettings.displayName || props.course.name
@@ -42,8 +41,12 @@ export default function CourseEditSheet(props: {
         return;
       }
 
-      setCourseSetting(dispatch, allCourseSettings, props.course.key, {
-        displayName: n,
+      setCourseSetting({
+        key: props.course.key,
+        value: {
+          displayName: n,
+        },
+        save: "STATE_AND_STORAGE",
       });
     },
     [courseSettings]
@@ -74,17 +77,29 @@ export default function CourseEditSheet(props: {
         <CourseHiddenToggle
           value={courseSettings.hidden ?? false}
           onChange={(hidden) => {
-            setCourseSetting(dispatch, allCourseSettings, props.course.key, {
-              hidden,
-            });
+            dispatch(
+              setCourseSetting({
+                key: props.course.key,
+                value: {
+                  hidden,
+                },
+                save: "STATE_AND_STORAGE",
+              })
+            );
           }}
         />
         <CourseColorChanger
-          value={accentColor}
+          initialValue={accentColor}
           onChange={(accentColor) => {
-            setCourseSetting(dispatch, allCourseSettings, props.course.key, {
-              accentColor,
-            });
+            dispatch(
+              setCourseSetting({
+                key: props.course.key,
+                value: {
+                  accentColor,
+                },
+                save: "STATE_AND_STORAGE",
+              })
+            );
           }}
         />
         <CourseGlyphChanger
@@ -92,9 +107,15 @@ export default function CourseEditSheet(props: {
           onChange={(newGlyph) => {
             if (glyph == newGlyph) newGlyph = "";
 
-            setCourseSetting(dispatch, allCourseSettings, props.course.key, {
-              glyph: newGlyph,
-            });
+            dispatch(
+              setCourseSetting({
+                key: props.course.key,
+                value: {
+                  glyph: newGlyph,
+                },
+                save: "STATE_AND_STORAGE",
+              })
+            );
           }}
         />
       </ScrollView>

@@ -1,17 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
 import CategoryTable from "./CategoryTable";
 // import Carousel, { Pagination } from "react-native-snap-carousel";
 import SummaryTable from "./SummaryTable";
-// import {
-//   DynamicStyleProp,
-//   ExcludeFunctionKeys,
-//   MotiView,
-//   useDynamicAnimation,
-// } from "moti";
-import { useTheme } from "@react-navigation/native";
 // import { set } from "react-native-reanimated";
 import {
   averageAssignments,
@@ -20,6 +13,7 @@ import {
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
+import useAccents from "../../core/theme/useAccents";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -30,7 +24,7 @@ function Gradebook(props: {
 }) {
   const sheets = useContext(BottomSheetContext);
 
-  const { accents, colors } = useTheme();
+  const accents = useAccents();
   const ref = useRef<Carousel<GradeCategory | null>>(null);
 
   //   const cardAnimation = useDynamicAnimation(() => ({
@@ -57,7 +51,7 @@ function Gradebook(props: {
     })
   );
   const [exactAverages, setExactAverages] = useState<(string | null)[]>(
-    averageAssignments(categories, []).map(i=>i?.toFixed(2))
+    averageAssignments(categories, []).map((i) => i?.toFixed(2))
   );
   const [numTestAssignments, setNumTestAssignments] = useState(1);
   const [numTestCats, setNumTestCats] = useState(1);
@@ -76,9 +70,10 @@ function Gradebook(props: {
             null;
       } else {
         if (isNaN(averages[catIdx])) {
-            categoryMods[catIdx].average = categoryMods[catIdx].exactAverage = "NG";
+          categoryMods[catIdx].average = categoryMods[catIdx].exactAverage =
+            "NG";
         } else {
-          categoryMods[catIdx].average = ''+Math.round(averages[catIdx]);
+          categoryMods[catIdx].average = "" + Math.round(averages[catIdx]);
           categoryMods[catIdx].exactAverage = averages[catIdx].toFixed(2);
         }
       }
@@ -93,16 +88,14 @@ function Gradebook(props: {
       props.setModifiedGrade(null);
     } else {
       const avg = averageGradeCategories(
-          categories.map((c, i) => {
-            return {
-              ...c,
-              average:
-                  "" +
-                  (isNaN(averages[i]) ? "" : averages[i] ?? c.average),
-            };
-          })
+        categories.map((c, i) => {
+          return {
+            ...c,
+            average: "" + (isNaN(averages[i]) ? "" : averages[i] ?? c.average),
+          };
+        })
       );
-      props.setModifiedGrade(isNaN(avg) ? "NG" : ''+avg);
+      props.setModifiedGrade(isNaN(avg) ? "NG" : "" + avg);
     }
   };
 
@@ -243,9 +236,18 @@ function Gradebook(props: {
                 }}
                 removable={testing}
                 remove={() => {
-                  setCategories((oldCategories) => {oldCategories.splice(index - 1, 1); return [...oldCategories];});
-                  setModifiedCategories((oldCategories) => {oldCategories.splice(index - 1, 1); return [...oldCategories];});
-                  setExactAverages((oldAverages) => {oldAverages.splice(index - 1, 1); return [...oldAverages];});
+                  setCategories((oldCategories) => {
+                    oldCategories.splice(index - 1, 1);
+                    return [...oldCategories];
+                  });
+                  setModifiedCategories((oldCategories) => {
+                    oldCategories.splice(index - 1, 1);
+                    return [...oldCategories];
+                  });
+                  setExactAverages((oldAverages) => {
+                    oldAverages.splice(index - 1, 1);
+                    return [...oldAverages];
+                  });
                 }}
                 buttonAction={() => {
                   setModifiedCategories((categories) => {

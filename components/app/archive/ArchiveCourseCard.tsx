@@ -1,21 +1,20 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
-import { NavigationProp, useTheme } from "@react-navigation/native";
+import { NavigationProp } from "@react-navigation/native";
 import ArchiveCourseChip from "./ArchiveCourseChip";
-import { setCourseSetting } from "../../../lib/setCourseSetting";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
+import useColors from "../../core/theme/useColors";
 export default function ArchiveCourseCard(props: {
   course: Course;
   cellCount: number;
   navigation: NavigationProp<any, any>;
 }) {
-  const courseSettings = useSelector(
-    (s: RootState) => s.gradeData.courseSettings
-  );
+  const courseSettings = useSelector((s: RootState) => s.courseSettings);
 
-  const { colors } = useTheme();
+  const colors = useColors();
   const dispatch = useDispatch();
 
   const hidden = courseSettings[props.course.key]?.hidden;
@@ -61,9 +60,15 @@ export default function ArchiveCourseCard(props: {
               borderWidth: 1.75,
             }}
             onPress={() => {
-              setCourseSetting(dispatch, courseSettings, props.course.key, {
-                hidden: false,
-              });
+              dispatch(
+                setCourseSetting({
+                  key: props.course.key,
+                  value: {
+                    hidden: false,
+                  },
+                  save: "STATE_AND_STORAGE",
+                })
+              );
             }}
           >
             <Text

@@ -49,7 +49,7 @@ const CurrentGradesScreen = (props: {
   );
 
   const currentGradeCategory = useSelector(
-    (state: RootState) => state.gradeData.gradeCategory
+    (state: RootState) => state.gradeCategory.category
   );
 
   const recordGradeCategory = useSelector(
@@ -61,7 +61,7 @@ const CurrentGradesScreen = (props: {
   );
 
   const courseSettings = useSelector(
-    (state: RootState) => state.gradeData.courseSettings
+    (state: RootState) => state.courseSettings
   );
 
   const gradeCategoryNames = useSelector(

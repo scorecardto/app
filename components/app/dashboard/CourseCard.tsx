@@ -9,20 +9,19 @@ import {
 import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
-import { useTheme } from "@react-navigation/native";
 import color from "../../../lib/Color";
 import LinearGradient from "react-native-linear-gradient";
 import colorLib from "color";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
-import {
-  setCourseSetting,
-  updateContextSettings,
-} from "../../../lib/setCourseSetting";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../core/state/store";
+import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
+import Storage from "expo-storage";
+import useColors from "../../core/theme/useColors";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -30,13 +29,12 @@ export default function CourseCard(props: {
   onHold: () => void;
   newGrades?: boolean;
 }) {
-  const { colors, dark } = useTheme();
+  const colors = useColors();
+  const dark = useIsDarkMode();
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const allCourseSettings = useSelector(
-    (s: RootState) => s.gradeData.courseSettings
-  );
+  const allCourseSettings = useSelector((s: RootState) => s.courseSettings);
 
   const courseSettings = allCourseSettings[props.course.key];
 
@@ -141,26 +139,13 @@ export default function CourseCard(props: {
         setShow(false);
         if (!hidden) {
           setTimeout(() => {
-            updateContextSettings(dispatch);
-            Toast.show({
-              type: "info",
-              text1: "Course Hidden",
-              text2:
-                "You can unhide it in Archive or course settings. Tap to undo.",
-              visibilityTime: 3000,
-              onPress: () => {
-                setShow(true);
-                setHiding(false);
-                setCourseSetting(
-                  dispatch,
-                  allCourseSettings,
-                  props.course.key,
-                  { hidden: false },
-                  false
-                );
-                Toast.hide();
-              },
-            });
+            dispatch(
+              setCourseSetting({
+                key: props.course.key,
+                save: "STATE",
+                value: { hidden: true },
+              })
+            );
           }, duration);
         }
       });
@@ -172,7 +157,18 @@ export default function CourseCard(props: {
       }).start(() => {
         setTimeout(() => {
           setShow(true);
-          updateContextSettings(dispatch);
+          Storage.getItem({ key: "courseSettings" }).then((res) => {
+            if (res) {
+              const settings = JSON.parse(res);
+              dispatch(
+                setCourseSetting({
+                  key: props.course.key,
+                  save: "STATE",
+                  value: settings[props.course.key],
+                })
+              );
+            }
+          });
         }, duration);
       });
     }
@@ -205,18 +201,42 @@ export default function CourseCard(props: {
 
             // @ts-ignore
             if (o.nativeEvent.translationX < -100) {
-              setCourseSetting(dispatch, allCourseSettings, props.course.key, {
-                hidden: true,
+              Toast.show({
+                type: "info",
+                text1: "Course Hidden",
+                text2: "You can unhide it in Archive. Tap to undo.",
+                visibilityTime: 3000,
+                onPress: () => {
+                  setShow(true);
+                  setHiding(false);
+
+                  dispatch(
+                    setCourseSetting({
+                      key: props.course.key,
+                      save: "STORAGE",
+                      value: { hidden: false },
+                    })
+                  );
+                  Toast.hide();
+                },
               });
+
+              dispatch(
+                setCourseSetting({
+                  key: props.course.key,
+                  save: "STATE",
+                  value: { hidden: true },
+                })
+              );
               setHiding(true);
               setShow(false);
 
-              setCourseSetting(
-                dispatch,
-                allCourseSettings,
-                props.course.key,
-                { hidden: true },
-                false
+              dispatch(
+                setCourseSetting({
+                  key: props.course.key,
+                  save: "STORAGE",
+                  value: { hidden: true },
+                })
               );
             }
 
