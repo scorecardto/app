@@ -55,6 +55,7 @@ export default async function initialize(
 
     dispatch(setGradeRecord(data));
     dispatch(setGradeCategory(data.gradeCategory));
+
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
     const { username, password, host } = JSON.parse(login);

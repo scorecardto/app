@@ -14,7 +14,8 @@ import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import useColors from "../../core/theme/useColors";
 
 export default function CourseEditSheet(props: {
-  course: Course;
+  courseKey: string;
+  defaultName: string;
   setOnClose: (onClose: () => void) => void;
 }) {
   const colors = useColors();
@@ -22,12 +23,12 @@ export default function CourseEditSheet(props: {
   const dispatch = useDispatch();
 
   const courseSettings = useSelector(
-    (state: RootState) => state.courseSettings[props.course.key],
+    (state: RootState) => state.courseSettings[props.courseKey],
     () => true
   );
 
   const [name, setName] = useState(
-    courseSettings.displayName || props.course.name
+    courseSettings.displayName || props.defaultName
   );
 
   const accentColor = courseSettings.accentColor || Color.defaultAccentLabel;
@@ -37,17 +38,19 @@ export default function CourseEditSheet(props: {
   const saveName = useCallback(
     (n: string) => {
       if (n === "") {
-        setName(props.course.name);
+        setName(props.defaultName);
         return;
       }
 
-      setCourseSetting({
-        key: props.course.key,
-        value: {
-          displayName: n,
-        },
-        save: "STATE_AND_STORAGE",
-      });
+      dispatch(
+        setCourseSetting({
+          key: props.courseKey,
+          value: {
+            displayName: n,
+          },
+          save: "STATE_AND_STORAGE",
+        })
+      );
     },
     [courseSettings]
   );
@@ -79,7 +82,7 @@ export default function CourseEditSheet(props: {
           onChange={(hidden) => {
             dispatch(
               setCourseSetting({
-                key: props.course.key,
+                key: props.courseKey,
                 value: {
                   hidden,
                 },
@@ -93,7 +96,7 @@ export default function CourseEditSheet(props: {
           onChange={(accentColor) => {
             dispatch(
               setCourseSetting({
-                key: props.course.key,
+                key: props.courseKey,
                 value: {
                   accentColor,
                 },
@@ -110,7 +113,7 @@ export default function CourseEditSheet(props: {
 
             dispatch(
               setCourseSetting({
-                key: props.course.key,
+                key: props.courseKey,
                 value: {
                   glyph: newGlyph,
                 },

@@ -1,305 +1,145 @@
-import { useState, useContext, useEffect, useMemo, Suspense } from "react";
-import { Animated, Text, TouchableOpacity, View } from "react-native";
-import Header from "../text/Header";
-import { RadialGradient } from "react-native-gradients";
-import LargeGradeText from "../text/LargeGradeText";
-import { ThemeProvider, useTheme } from "@react-navigation/native";
-import Gradebook from "../app/gradebook/Gradebook";
-import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
-import { Theme } from "../../lib/Color";
-import color from "../../lib/Color";
-import CourseEditSheet from "../app/course/CourseEditSheet";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import {
-  fetchGradeCategoriesForCourse,
-  fetchReportCard,
-} from "../../lib/fetcher";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import Storage from "expo-storage";
-import captureCourseState from "../../lib/captureCourseState";
-import GradeStateChangesCard from "../app/gradebook/GradeStateChangesCard";
-import CourseCornerButton from "../app/course/CourseCornerButton";
-import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContainer";
-import parseCourseKey from "../../lib/parseCourseKey";
-import LoadingOverlay from "./loader/LoadingOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
-import { setOldCourseStates } from "../core/state/grades/oldCourseStatesSlice";
-import { Course } from "scorecard-types";
+import { SafeAreaView, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import captureCourseState from "../../lib/captureCourseState";
 import CourseScreenWrapper from "../app/course/CourseScreenWrapper";
+import useColors from "../core/theme/useColors";
+import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContainer";
+import CourseCornerButton from "../app/course/CourseCornerButton";
+import CourseHeading from "../app/course/CourseHeading";
 import CourseScreenGradient from "../app/course/CourseScreenGradient";
+import GradeStateChangesCard from "../app/gradebook/GradeStateChangesCard";
+import CourseState from "../../lib/types/CourseState";
+import Gradebook from "../app/gradebook/Gradebook";
+import LoadingOverlay from "./loader/LoadingOverlay";
+import GradebookWrapper from "../app/gradebook/GradebookWrapper";
+import { setOldCourseState } from "../core/state/grades/oldCourseStatesSlice";
+import Storage from "expo-storage";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
 
-  const district = useSelector((state: RootState) => state.login.district);
-  const username = useSelector((state: RootState) => state.login.username);
-  const password = useSelector((state: RootState) => state.login.password);
-
-  const [course, setCourse] = useState<Course | undefined>(undefined);
-  const [playUpdateAnimation, setPlayUpdateAnimation] = useState(false);
-  const [showNormalCourseInfo, setShowNormalCourseInfo] = useState(false);
-  const [showGradeStateChanges, setShowGradeStateChanges] = useState(false);
-  const [gradeText, setGradeText] = useState("NG");
-
-  const currentGradeCategory = useSelector(
-    (s: RootState) => s.gradeCategory.category
-  );
-
-  const recordGradeCategory = useSelector(
-    (s: RootState) => s.gradeData.record?.gradeCategory
-  );
-
-  const courses = useSelector(
-    (s: RootState) => s.gradeData.record?.courses,
+  const course = useSelector(
+    (state: RootState) =>
+      state.gradeData.record?.courses.find((c) => c.key === key),
     () => true
   );
 
-  async function getCourse(): Promise<Course | undefined> {
-    if (currentGradeCategory === recordGradeCategory) {
-      return courses?.find((c) => c.key === key);
-    } else {
-      const course = courses?.find((c) => c.key === key);
+  const courseName = useSelector(
+    (state: RootState) =>
+      state.courseSettings[key].displayName || course?.name || ""
+  );
 
-      const alternateKey = course?.grades[currentGradeCategory]?.key;
+  const stateChanges = useSelector(
+    (state: RootState) => {
+      const oldState: CourseState = state.oldCourseStates.record[
+        key
+      ] as CourseState;
 
-      if (course == null || alternateKey == null) return undefined;
-
-      const reportCard = await fetchReportCard(district, username, password);
-
-      const categories = await fetchGradeCategoriesForCourse(
-        district,
-        reportCard.sessionId,
-        reportCard.referer,
-        {
-          ...course,
-          key: alternateKey || "",
-        }
+      const currentCourse = state.gradeData.record?.courses.find(
+        (c) => c.key === key
       );
 
-      return {
-        ...course,
-        gradeCategories: categories.gradeCategories,
-      };
-    }
-  }
-
-  const oldCourseStates = useSelector(
-    (state: RootState) => state.oldCourseStates.record
-  );
-
-  // const accentLabel = color.defaultAccentLabel;
-
-  // const accentLabel = useSelector(
-  //   (state: RootState) =>
-  //     state.courseSettings[key]?.accentColor || color.defaultAccentLabel
-  // );
-
-  const courseCustomName = useSelector(
-    (state: RootState) => state.courseSettings[key]?.displayName
-  );
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    setShowNormalCourseInfo(false);
-    getCourse().then((course) => {
-      setTimeout(() => {
-        if (course == null) return;
-
-        const oldCourseStatesUpdate = {
-          ...oldCourseStates,
-          [key]: captureCourseState(course),
+      if (oldState == null || currentCourse == null)
+        return {
+          exists: false,
+          oldAverage: "",
         };
 
-        dispatch(setOldCourseStates(oldCourseStatesUpdate));
+      const newState = JSON.stringify(captureCourseState(currentCourse));
 
-        Storage.setItem({
-          key: "oldCourseStates",
-          value: JSON.stringify(oldCourseStates),
-        });
-      }, 1500);
+      return {
+        exists: JSON.stringify(oldState) !== newState,
+        oldAverage: oldState.average,
+      };
+    },
+    () => true
+  );
 
-      setCourse(course);
-    });
-  }, [currentGradeCategory]);
+  const gradeCategory = useSelector(
+    (root: RootState) => root.gradeCategory.category
+  );
+  const courseGradeText = course?.grades[gradeCategory]?.value;
 
+  const [showGradeStateChanges, setShowGradeStateChanges] = useState(
+    stateChanges.exists
+  );
+
+  const [gradeText, setGradeText] = useState<string>(
+    stateChanges.exists ? stateChanges.oldAverage : courseGradeText || "NG"
+  );
+  const [modifiedAvg, setModifiedAvg] = useState<string | null>(
+    stateChanges.exists ? courseGradeText ?? null : null
+  );
+
+  const colors = useColors();
+
+  const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    if (!course) return;
+    if (course == null) return;
 
-    const stateChange =
-      oldCourseStates[key] &&
-      JSON.stringify(oldCourseStates[key]) !==
-        JSON.stringify(captureCourseState(course));
+    const stateChange = stateChanges.exists;
 
     if (stateChange) {
-      setShowGradeStateChanges(true);
-      setGradeText(oldCourseStates[key].average);
-      setModifiedAvg(course.grades[currentGradeCategory]?.value || "NG");
-    } else {
-      setGradeText(course.grades[currentGradeCategory]?.value || "NG");
-      setShowNormalCourseInfo(true);
+      setTimeout(() => {
+        dispatch(
+          setOldCourseState({
+            key: key,
+            value: captureCourseState(course),
+            save: "STATE_AND_STORAGE",
+          })
+        );
+      }, 1500);
     }
-  }, [course]);
+  }, []);
 
-  const [modifiedAvg, setModifiedAvg] = useState<string | null>(null);
-
-  const sheets = useContext(BottomSheetContext);
-
-  const normalViewOpacity = useMemo(() => new Animated.Value(0), []);
-  const normalViewTranslateY = useMemo(() => new Animated.Value(0), []);
-
-  useEffect(() => {
-    Animated.timing(normalViewOpacity, {
-      toValue: showNormalCourseInfo ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(normalViewTranslateY, {
-      toValue: showNormalCourseInfo ? 0 : 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [showNormalCourseInfo]);
-
-  const insets = useSafeAreaInsets();
-
-  const { colors } = useTheme();
   if (course == null) {
-    return (
-      <View>
-        <Text>Course not found</Text>
-      </View>
-    );
+    return <LoadingOverlay show={true} />;
   }
-
-  const courseDisplayName = courseCustomName || course.name;
-
-  const keyInfo = parseCourseKey(key);
-
   return (
     <CourseScreenWrapper courseKey={key}>
+      <CourseCornerButtonContainer
+        onPress={() => {
+          props.navigation.goBack();
+        }}
+      />
+
       <SafeAreaView
         style={{
           height: "100%",
           backgroundColor: colors.backgroundNeutral,
           position: "relative",
+          zIndex: 1,
         }}
       >
-        <CourseCornerButtonContainer>
-          <CourseCornerButton
-            side="left"
-            icon="chevron-left"
-            iconSize={30}
-            onPress={() => props.navigation.goBack()}
+        <View style={{ zIndex: 1 }}>
+          <CourseHeading
+            courseKey={key}
+            defaultName={course?.name || ""}
+            gradeText={gradeText}
+            modifiedGradeText={modifiedAvg}
           />
-        </CourseCornerButtonContainer>
 
-        <View
-          style={{
-            zIndex: 1,
-          }}
-        >
-          <Suspense fallback={<LoadingOverlay show={true} />}>
-            <TouchableOpacity
-              onPress={() => {
-                sheets?.addSheet(({ close, setOnClose }) => (
-                  <CourseEditSheet course={course} setOnClose={setOnClose} />
-                ));
-              }}
-            >
-              <View style={{ marginHorizontal: 64 }}>
-                <Header
-                  header={courseDisplayName}
-                  subheader={
-                    courseDisplayName !== course.name
-                      ? undefined
-                      : "Tap to add a name and color"
-                  }
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      gap: 15,
-                      marginTop: 20,
-                      alignItems: "center",
-                    }}
-                  >
-                    <LargeGradeText
-                      // animated={true}
-                      grade={gradeText}
-                      // TODO: I think this should be colors.secondaryNeutral, but it's invisible w/o the gradient
-                      colorType={modifiedAvg ? "SECONDARY" : "PRIMARY"}
-                      // backgroundColor={
-                      //   modifiedAvg ? colors.borderNeutral : accents.primary
-                      // // }
-                      // textColor={modifiedAvg ? colors.text : "#FFFFFF"}
-                    />
-                    {modifiedAvg && (
-                      <MaterialIcons
-                        name={"arrow-forward"}
-                        size={25}
-                        color={colors.text}
-                      />
-                    )}
-                    {modifiedAvg && (
-                      <LargeGradeText
-                        grade={`${modifiedAvg}`}
-                        colorType="PRIMARY"
-                      />
-                    )}
-                  </View>
-                </Header>
-              </View>
-            </TouchableOpacity>
-
-            {showGradeStateChanges && (
-              <View>
-                <GradeStateChangesCard
-                  course={course}
-                  onFinished={() => {
-                    setShowNormalCourseInfo(true);
-                    setShowGradeStateChanges(false);
-                    setGradeText(modifiedAvg || "NG");
-                    setModifiedAvg(null);
-                  }}
-                />
-              </View>
-            )}
-            <Animated.View
-              style={{
-                opacity: normalViewOpacity.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 1],
-                }),
-                transform: [
-                  {
-                    translateY: normalViewTranslateY.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [0, -20],
-                    }),
-                  },
-                ],
-              }}
-            >
-              <Gradebook course={course} setModifiedGrade={setModifiedAvg} />
-            </Animated.View>
-          </Suspense>
+          {showGradeStateChanges ? (
+            <View>
+              <GradeStateChangesCard
+                course={course!}
+                onFinished={() => {
+                  setShowGradeStateChanges(false);
+                  setGradeText(courseGradeText || "NG");
+                  setModifiedAvg(null);
+                }}
+              />
+            </View>
+          ) : (
+            <GradebookWrapper
+              course={course}
+              setModifiedGrade={setModifiedAvg}
+            />
+          )}
         </View>
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <CourseScreenGradient />
-        </View>
+        <CourseScreenGradient />
       </SafeAreaView>
     </CourseScreenWrapper>
   );

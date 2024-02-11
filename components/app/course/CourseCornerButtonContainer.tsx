@@ -1,8 +1,9 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import CourseCornerButton from "./CourseCornerButton";
 export default function CourseCornerButtonContainer(props: {
-  children: React.ReactNode;
+  onPress: () => void;
 }) {
   const insets = useSafeAreaInsets();
   return (
@@ -21,7 +22,12 @@ export default function CourseCornerButtonContainer(props: {
         },
       ]}
     >
-      {props.children}
+      <CourseCornerButton
+        side="left"
+        icon="chevron-left"
+        iconSize={30}
+        onPress={() => props.onPress()}
+      />
     </View>
   );
 }

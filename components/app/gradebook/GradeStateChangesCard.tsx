@@ -74,7 +74,8 @@ export default function GradeStateChangesCard(props: {
   });
 
   const oldState = useSelector(
-    (state: RootState) => state.oldCourseStates.record[props.course.key]
+    (state: RootState) => state.oldCourseStates.record[props.course.key],
+    () => true
   );
 
   const newState = captureCourseState(props.course);
