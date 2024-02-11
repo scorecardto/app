@@ -3,6 +3,7 @@ import {
   FlatList,
   RefreshControl,
   ScrollView,
+  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -317,7 +318,7 @@ const CurrentGradesScreen = (props: {
 
             <InviteOthersCard show={showCustomizeCard} />
 
-            {courses && (
+            {courses && Date.now() > 0 && (
               <FlatList
                 style={{
                   paddingBottom: 66,

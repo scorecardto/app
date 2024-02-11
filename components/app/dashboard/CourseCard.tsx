@@ -128,51 +128,51 @@ export default function CourseCard(props: {
   const [hiding, setHiding] = useState(hidden);
   useEffect(() => setHiding(hidden), [hidden]);
 
-  useEffect(() => {
-    const duration = 200;
-    if (hiding) {
-      Animated.timing(heightAnimation, {
-        toValue: 0,
-        duration,
-        useNativeDriver: false,
-      }).start(() => {
-        setShow(false);
-        if (!hidden) {
-          setTimeout(() => {
-            dispatch(
-              setCourseSetting({
-                key: props.course.key,
-                save: "STATE",
-                value: { hidden: true },
-              })
-            );
-          }, duration);
-        }
-      });
-    } else {
-      Animated.timing(heightAnimation, {
-        toValue: 1,
-        duration,
-        useNativeDriver: false,
-      }).start(() => {
-        setTimeout(() => {
-          setShow(true);
-          Storage.getItem({ key: "courseSettings" }).then((res) => {
-            if (res) {
-              const settings = JSON.parse(res);
-              dispatch(
-                setCourseSetting({
-                  key: props.course.key,
-                  save: "STATE",
-                  value: settings[props.course.key],
-                })
-              );
-            }
-          });
-        }, duration);
-      });
-    }
-  }, [hiding]);
+  // useEffect(() => {
+  //   const duration = 200;
+  //   if (hiding) {
+  //     Animated.timing(heightAnimation, {
+  //       toValue: 0,
+  //       duration,
+  //       useNativeDriver: false,
+  //     }).start(() => {
+  //       setShow(false);
+  //       if (!hidden) {
+  //         setTimeout(() => {
+  //           dispatch(
+  //             setCourseSetting({
+  //               key: props.course.key,
+  //               save: "STATE",
+  //               value: { hidden: true },
+  //             })
+  //           );
+  //         }, duration);
+  //       }
+  //     });
+  //   } else {
+  //     Animated.timing(heightAnimation, {
+  //       toValue: 1,
+  //       duration,
+  //       useNativeDriver: false,
+  //     }).start(() => {
+  //       setTimeout(() => {
+  //         setShow(true);
+  //         Storage.getItem({ key: "courseSettings" }).then((res) => {
+  //           if (res) {
+  //             const settings = JSON.parse(res);
+  //             dispatch(
+  //               setCourseSetting({
+  //                 key: props.course.key,
+  //                 save: "STATE",
+  //                 value: settings[props.course.key],
+  //               })
+  //             );
+  //           }
+  //         });
+  //       }, duration);
+  //     });
+  //   }
+  // }, [hiding]);
   return (
     <Animated.View
       style={{
