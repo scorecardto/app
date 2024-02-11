@@ -9,7 +9,7 @@ type Sheet = (p: SheetParams) => React.ReactNode;
 
 const BottomSheetContext = React.createContext<
   | {
-      sheets: Sheet[];
+      sheets: React.MutableRefObject<Sheet[]>;
       addSheet: (s: Sheet) => void;
       next: () => boolean;
     }

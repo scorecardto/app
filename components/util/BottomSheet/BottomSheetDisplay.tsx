@@ -11,9 +11,15 @@ import {
   View,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
 
 export default function BottomSheetDisplay(props: {}) {
   const sheets = useContext(BottomSheetContext);
+
+  const virtualSheetIds = useSelector(
+    (s: RootState) => s.virtualSheets.sheetIds
+  );
 
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
@@ -24,7 +30,11 @@ export default function BottomSheetDisplay(props: {}) {
   );
 
   function onClose() {
-    if (sheets?.sheets && sheets?.sheets?.length > 0 && sheets.next()) {
+    if (
+      sheets?.sheets?.current &&
+      sheets?.sheets?.current?.length > 0 &&
+      sheets.next()
+    ) {
       bottomSheetRef?.current?.expand();
     }
 
@@ -38,11 +48,11 @@ export default function BottomSheetDisplay(props: {}) {
   );
 
   useEffect(() => {
-    if (sheets?.sheets && sheets.sheets.length > 0) {
+    if (sheets?.sheets && sheets.sheets.current?.length > 0) {
       bottomSheetRef?.current?.expand();
 
       setCurrentSheet(
-        sheets.sheets[0]({
+        sheets.sheets.current[0]({
           close: () => {
             bottomSheetRef?.current?.close();
           },
@@ -54,7 +64,7 @@ export default function BottomSheetDisplay(props: {}) {
     } else {
       setCurrentSheet(undefined);
     }
-  }, [sheets?.sheets]);
+  }, [virtualSheetIds]);
 
   return (
     <>
@@ -65,8 +75,8 @@ export default function BottomSheetDisplay(props: {}) {
           top: 0,
           left: 0,
           position: "absolute",
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
+          flexDirection: "column",
+          justifyContent: "flex-end",
           zIndex: currentSheet != null ? 999 : -1,
         }}
       >
@@ -92,29 +102,29 @@ export default function BottomSheetDisplay(props: {}) {
           ) : (
             <></>
           )}
-            <BottomSheetBase
-                keyboardBlurBehavior="restore"
-                ref={bottomSheetRef}
-                enableDynamicSizing={true}
-                enableContentPanningGesture={true}
-                enablePanDownToClose={true}
-                handleStyle={{
-                    borderBottomColor: "red",
-                }}
-                containerStyle={{
-                    zIndex: 100,
-                }}
-                backgroundStyle={{
-                    backgroundColor: colors.card,
-                    borderTopLeftRadius: 24,
-                    borderTopRightRadius: 24,
-                }}
-                keyboardBehavior="extend"
-                onClose={onClose}
-                backdropComponent={BottomSheetBackdrop}
-            >
-                {currentSheet}
-            </BottomSheetBase>
+          <BottomSheetBase
+            keyboardBlurBehavior="restore"
+            ref={bottomSheetRef}
+            enableDynamicSizing={true}
+            enableContentPanningGesture={true}
+            enablePanDownToClose={true}
+            handleStyle={{
+              borderBottomColor: "red",
+            }}
+            containerStyle={{
+              zIndex: 100,
+            }}
+            backgroundStyle={{
+              backgroundColor: colors.card,
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+            }}
+            keyboardBehavior="extend"
+            onClose={onClose}
+            backdropComponent={BottomSheetBackdrop}
+          >
+            {currentSheet}
+          </BottomSheetBase>
         </>
       </View>
     </>

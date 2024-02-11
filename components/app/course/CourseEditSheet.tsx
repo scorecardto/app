@@ -102,6 +102,7 @@ export default function CourseEditSheet(props: {
             );
           }}
         />
+
         <CourseGlyphChanger
           value={glyph}
           onChange={(newGlyph) => {

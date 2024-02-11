@@ -1,25 +1,34 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import BottomSheetContext, { Sheet } from "./BottomSheetContext";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../core/state/store";
+import {
+  addVirtualSheetId,
+  removeLatestVirtualSheetId,
+} from "../../core/state/view/virtualSheetsSlice";
 
 export default function BottomSheetProvider(props: {
   children: React.ReactNode;
 }) {
-  const [sheets, setSheets] = useState<Sheet[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const sheets = useRef<Sheet[]>([]);
+
+  const generateSheetId = (size: number) =>
+    [...Array(size)]
+      .map(() => Math.floor(Math.random() * 16).toString(16))
+      .join("");
 
   const addSheet = (s: Sheet) => {
-    setSheets((prevSheets) => [...prevSheets, s]);
+    sheets.current.push(s);
+    dispatch(addVirtualSheetId(generateSheetId(8)));
   };
 
   const next = () => {
-    const remaining = sheets.length - 1;
+    const remaining = sheets.current?.length - 1;
 
-    setSheets((s) => {
-      const newState = [...s];
+    sheets.current.shift();
 
-      newState.shift();
-
-      return newState;
-    });
+    dispatch(removeLatestVirtualSheetId({}));
 
     return remaining > 0;
   };

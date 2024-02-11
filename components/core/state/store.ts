@@ -10,6 +10,7 @@ import gradeDataReducer from "./grades/gradeDataSlice";
 import courseOrderReducer from "./grades/courseOrderSlice";
 import courseSettingsReducer from "./grades/courseSettingsSlice";
 import gradeCategoryReducer from "./grades/gradeCategorySlice";
+import virtualSheetsReducer from "./view/virtualSheetsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
     courseOrder: courseOrderReducer,
     courseSettings: courseSettingsReducer,
     gradeCategory: gradeCategoryReducer,
+    virtualSheets: virtualSheetsReducer,
   },
 });
 
