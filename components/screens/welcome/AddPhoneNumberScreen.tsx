@@ -79,8 +79,6 @@ export default function AddPhoneNumberScreen(props: {
         auth()
           .signInWithPhoneNumber(formattedPhoneNumber.phoneNumber)
           .then((confirmation) => {
-            console.log(confirmation);
-
             setConfirmPhoneNumberCallback(() => {
               return async (c: string) => {
                 return confirmation.confirm(c);
@@ -133,6 +131,7 @@ export default function AddPhoneNumberScreen(props: {
             width: "100%",
             display: "flex",
             flexDirection: "row",
+            marginBottom: 12,
           }}
         >
           <View style={{ width: "100%", marginRight: 10, flexShrink: 1 }}>
@@ -161,7 +160,7 @@ export default function AddPhoneNumberScreen(props: {
           </View>
         </View>
         <MediumText style={{ marginBottom: 16, color: colors.primary }}>
-          Phone number
+          Add your phone number
         </MediumText>
         <TextInput
           label="Your Phone Number"

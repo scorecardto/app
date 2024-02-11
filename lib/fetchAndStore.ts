@@ -9,6 +9,7 @@ import {
 } from "../components/core/state/user/loginSlice";
 import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
+import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
@@ -34,6 +35,7 @@ export default async function fetchAndStore(
     gradeCategoryNames: data.gradeCategoryNames,
   };
 
+  dispatch(setGradeCategory(gradeCategory));
   dispatch(setGradeRecord(newData));
 
   if (updateCourseStates) {

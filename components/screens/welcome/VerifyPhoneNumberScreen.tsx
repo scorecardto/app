@@ -1,5 +1,5 @@
-import { View } from "react-native";
-import React, { useContext, useState } from "react";
+import ReactNative, { Keyboard, View } from "react-native";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import { TextInput } from "../../input/TextInput";
@@ -9,6 +9,8 @@ import { MobileDataContext } from "../../core/context/MobileDataContext";
 import SmallText from "../../text/SmallText";
 import { useTheme } from "@react-navigation/native";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
+import Toast from "react-native-toast-message";
+import LoadingOverlay from "../loader/LoadingOverlay";
 export default function VerifyPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -19,6 +21,7 @@ export default function VerifyPhoneNumberScreen(props: {
   const phoneNumber = props.route?.params?.phoneNumber;
 
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const mobileDataContext = useContext(MobileDataContext);
   const { confirmPhoneNumberCallback } = mobileDataContext;
@@ -26,6 +29,56 @@ export default function VerifyPhoneNumberScreen(props: {
   const { colors } = useTheme();
 
   const isKeyboardVisible = useKeyboardVisible();
+
+  const textInputRef = React.useRef<ReactNative.TextInput>(null);
+
+  const confirm = useCallback(() => {
+    setLoading(true);
+    Keyboard.dismiss();
+
+    confirmPhoneNumberCallback(code)
+      .then(() => {
+        const currentPage = props.navigation.getState().routes.slice(-1)[0];
+
+        if (currentPage?.name === "verifyPhoneNumber") {
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: "scorecard" }],
+          });
+        }
+      })
+      .catch((err) => {
+        if (err.code === "auth/invalid-verification-code") {
+          setCode("");
+          textInputRef.current?.focus();
+
+          Toast.show({
+            type: "info",
+            text1: "Incorrect code",
+            text2:
+              "Enter the code we sent to your phone or tap here to edit your number.",
+            onPress: () => {
+              props.navigation.goBack();
+            },
+          });
+        } else if (err.code && err.message) {
+          Toast.show({
+            type: "error",
+            text1: err.code,
+            text2: err.message,
+          });
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [code, confirmPhoneNumberCallback, props.navigation]);
+
+  useEffect(() => {
+    if (code.length === 6) {
+      confirm();
+    }
+  });
   return (
     <View
       style={{
@@ -33,6 +86,7 @@ export default function VerifyPhoneNumberScreen(props: {
         width: "100%",
       }}
     >
+      <LoadingOverlay show={loading} />
       <WelcomeScreen
         header={HEADER}
         footerText={FOOTER}
@@ -50,26 +104,27 @@ export default function VerifyPhoneNumberScreen(props: {
 
         <View style={{}}>
           <TextInput
+            ref={textInputRef}
             label="Verification Code"
             setValue={setCode}
             value={code}
             type="verification-code"
           />
-          <Button
+          {/* <Button
             onPress={() => {
-              confirmPhoneNumberCallback(code)
-                .then?.(() => {
-                  props.navigation.reset({
-                    index: 0,
-                    routes: [{ name: "scorecard" }],
-                  });
-                })
-                .catch?.((err) => {
-                  setCode("");
-                });
+              confirm();
             }}
           >
             Finish
+          </Button> */}
+          <Button
+            secondary
+            disabled={loading}
+            onPress={() => {
+              props.navigation.goBack();
+            }}
+          >
+            Edit Number
           </Button>
         </View>
       </WelcomeScreen>

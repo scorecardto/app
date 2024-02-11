@@ -18,6 +18,7 @@ export const TextInput = forwardRef<
       | "verification-code";
     inputProps?: ReactNative.TextInputProps;
     clearTextOnFocus?: boolean;
+    disableMarginBottom?: boolean;
   }
 >((props, ref) => {
   const disableCorrections =
@@ -35,15 +36,15 @@ export const TextInput = forwardRef<
       marginBottom: 10,
     },
     input: {
-      paddingHorizontal: 16,
-      paddingVertical: 10,
+      paddingHorizontal: 18,
+      paddingVertical: 12,
       backgroundColor: colors.backgroundNeutral,
       borderRadius: 4,
-      marginBottom: 10,
+      marginBottom: props.disableMarginBottom ? 0 : 10,
       fontSize: 16,
-      borderColor: colors.borderNeutral,
-      borderWidth: 1,
-      borderBottomWidth: 2,
+      // borderColor: colors.borderNeutral,
+      // borderWidth: 1,
+      // borderBottomWidth: 2,
       color: colors.primary,
     },
   });

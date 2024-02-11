@@ -14,6 +14,7 @@ import Toast from "react-native-toast-message";
 import * as loginSlice from "../../core/state/user/loginSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
+import StatusText from "../../text/StatusText";
 
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -127,26 +128,24 @@ const ConnectAccountScreen = (props: {
               props.navigation.navigate("selectDistrict");
             }}
           >
-            <View>
-              <SmallText
-                style={{
-                  color: colors.primary,
-                }}
-              >
-                You're logging with an {district.name} account.
-              </SmallText>
-              <SmallText
-                style={{
-                  marginTop: 4,
-                  marginBottom: 36,
-                  color: accents.primary,
-                  fontWeight: "600",
-                  textDecorationLine: "underline",
-                }}
-              >
-                Edit your district.
-              </SmallText>
-            </View>
+            <StatusText
+              style={{
+                color: colors.text,
+                fontSize: 14,
+                marginBottom: 8,
+              }}
+            >
+              You're logging in through {district.name}.
+            </StatusText>
+            <StatusText
+              style={{
+                fontSize: 14,
+                marginBottom: 36,
+                color: accents.primary,
+              }}
+            >
+              Tap to change district.
+            </StatusText>
           </TouchableOpacity>
           <TextInput
             label="Username"
@@ -162,6 +161,15 @@ const ConnectAccountScreen = (props: {
             type="password"
             ref={passwordRef}
           />
+          <StatusText
+            style={{
+              color: colors.text,
+              fontSize: 14,
+              marginBottom: 24,
+            }}
+          >
+            The Scorecard team won't see your login.
+          </StatusText>
           <Button onPress={() => setLoading(true)}>Login</Button>
         </View>
       </WelcomeScreen>

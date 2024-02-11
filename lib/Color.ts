@@ -244,7 +244,7 @@ const MyLightTheme = {
     secondary: "#D5E8FA",
     secondaryNeutral: "#f4f4f4",
     card: "#FFF",
-    button: "#11A1F1",
+    button: "#148bcb",
     buttonBorder: "#1585c2",
   },
 };
@@ -262,7 +262,7 @@ const MyDarkTheme = {
     secondary: "#2F3E65",
     secondaryNeutral: "#282B4B",
     card: "#1E213B",
-    button: "#11A1F1",
+    button: "#148bcb",
     buttonBorder: "#098fd7",
   },
 };

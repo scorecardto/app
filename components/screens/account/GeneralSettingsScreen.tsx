@@ -127,7 +127,8 @@ export default function GeneralSettingsScreen(props: {
                     "gradebookCheckInterval",
                     "notifs",
                     "records",
-                    "settings",
+                    "courseSettings",
+                    "appSettings",
                     "oldCourseStates",
                   ]) {
                     await Storage.removeItem({ key });

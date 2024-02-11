@@ -63,7 +63,7 @@ export default function LoginInputCard(props: {
         onPress={props.onPressUsername}
       />
       <CardEntry
-        label="Password not visisble"
+        label="Password not visible"
         primary={false}
         onPress={props.onPressPassword}
       />
