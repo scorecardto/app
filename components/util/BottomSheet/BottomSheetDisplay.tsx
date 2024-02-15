@@ -77,7 +77,7 @@ export default function BottomSheetDisplay(props: {}) {
           position: "absolute",
           flexDirection: "column",
           justifyContent: "flex-end",
-          zIndex: currentSheet != null ? 999 : -1,
+          zIndex: currentSheet != null ? 50 : -1,
         }}
       >
         <>
@@ -118,6 +118,7 @@ export default function BottomSheetDisplay(props: {}) {
               backgroundColor: colors.card,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
+              zIndex: 0,
             }}
             keyboardBehavior="extend"
             onClose={onClose}

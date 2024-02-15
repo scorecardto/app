@@ -3,41 +3,52 @@ import SmallText from "../../text/SmallText";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import useColors from "../../core/theme/useColors";
+import { useEffect, useState } from "react";
+import CourseGlyphCategoryChip from "./CourseGlyphCategoryChip";
 export default function CourseGlyphChanger(props: {
   value?: string;
   onChange: (accentLabel: string) => void;
 }) {
   const ICONS = [
-    "function-variant",
     "skull",
+    "emoticon-devil",
+    "nuke",
     "fire",
+    "food-apple",
+    "function-variant",
+    "leaf",
+    "virus",
+    "atom",
+    "calculator-variant",
+    "console",
+    "beaker",
+    "code-braces",
+    "shape",
     "earth",
     "flag",
     "translate",
     "pencil",
-    "emoticon-devil",
-    "virus",
-    "leaf",
-    "nuke",
-    "atom",
-    "food-apple",
-    "shape",
-    "calculator-variant",
-    "console",
+    "book-open-blank-variant",
     "brush",
     "music",
-    "book-open-blank-variant",
-    "beaker",
     "basketball",
     "tennis",
     "football",
     "arm-flex",
-    "code-braces",
     "drama-masks",
   ];
 
   // const a=  <MaterialCommunityIcons name=""/>;
   const colors = useColors();
+
+  const [value, setValue] = useState(props.value);
+
+  useEffect(() => {
+    if (value) {
+      props.onChange(value);
+    }
+  }, [value]);
+
   return (
     <View
       style={{
@@ -61,7 +72,7 @@ export default function CourseGlyphChanger(props: {
           return (
             <TouchableOpacity
               onPress={() => {
-                props.onChange(icon);
+                setValue(icon);
               }}
               key={index}
             >
@@ -78,7 +89,8 @@ export default function CourseGlyphChanger(props: {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  backgroundColor: icon === props.value ? "#38405A" : "#F2F2F2",
+                  backgroundColor:
+                    icon === value ? colors.button : colors.background,
                 }}
               >
                 {
@@ -86,7 +98,7 @@ export default function CourseGlyphChanger(props: {
                     // @ts-ignore
                     name={icon}
                     size={20}
-                    color={icon === props.value ? "#FFFFFF" : "#C0C0C0"}
+                    color={icon === value ? "#FFFFFF" : colors.text}
                     style={{
                       width: 20,
                       height: 20,

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import useColors from "../../core/theme/useColors";
+import Toast from "react-native-toast-message";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
@@ -76,10 +77,16 @@ export default function CourseEditSheet(props: {
           onFinish={() => {
             saveName(name);
           }}
-        />
-        <CourseHiddenToggle
-          value={courseSettings?.hidden ?? false}
-          onChange={(hidden) => {
+          hidden={!!courseSettings?.hidden}
+          onToggleHidden={(hidden) => {
+            if (hidden) {
+              Toast.show({
+                type: "info",
+                text1: "Course Hidden",
+                text2:
+                  "You can unhide it in Archive or by tapping the eye icon.",
+              });
+            }
             dispatch(
               setCourseSetting({
                 key: props.courseKey,
@@ -109,8 +116,6 @@ export default function CourseEditSheet(props: {
         <CourseGlyphChanger
           value={glyph}
           onChange={(newGlyph) => {
-            if (glyph == newGlyph) newGlyph = "";
-
             dispatch(
               setCourseSetting({
                 key: props.courseKey,
