@@ -21,7 +21,7 @@ export default function AppInitializer(props: {
   const dispatch = useDispatch<AppDispatch>();
 
   const currentGradeCategory = useSelector(
-    (s: RootState) => s.gradeData.gradeCategory
+    (s: RootState) => s.gradeData.record?.gradeCategory
   );
   const recordGradeCategory = useSelector(
     (s: RootState) => s.gradeData.record?.gradeCategory

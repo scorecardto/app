@@ -42,7 +42,7 @@ export default function AddNameScreen(props: {
     }).then(() => {
       props.navigation.reset({
         index: 0,
-        routes: [{ name: "scorecard" }],
+        routes: [{ name: "scorecard", params: { firstTime: true } }],
       });
     });
   }

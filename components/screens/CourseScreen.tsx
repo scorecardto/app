@@ -26,10 +26,10 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     () => true
   );
 
-  const courseName = useSelector(
-    (state: RootState) =>
-      state.courseSettings[key].displayName || course?.name || ""
-  );
+  // const courseName = useSelector(
+  //   (state: RootState) =>
+  //     state.courseSettings[key]?.displayName || course?.name || ""
+  // );
 
   const stateChanges = useSelector(
     (state: RootState) => {

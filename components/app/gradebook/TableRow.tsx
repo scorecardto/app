@@ -43,6 +43,7 @@ export default function TableRow(props: {
       alignItems: "flex-end",
       flexShrink: 0,
       flexGrow: 1,
+      maxWidth: 100,
     },
     grade: {
       fontSize: 14,
@@ -59,8 +60,12 @@ export default function TableRow(props: {
       <TouchableOpacity style={styles.content} onPress={props.onPress}>
         <SmallText style={styles.name}>{props.name}</SmallText>
         <View style={styles.right}>
-          <SmallText style={styles.grade}>{props.grade || "NG"}</SmallText>
-          <SmallText style={styles.worth}>{props.worth}</SmallText>
+          <SmallText style={styles.grade} numberOfLines={1}>
+            {props.grade || "NG"}
+          </SmallText>
+          <SmallText style={styles.worth} numberOfLines={1}>
+            {props.worth}
+          </SmallText>
         </View>
       </TouchableOpacity>
     </View>

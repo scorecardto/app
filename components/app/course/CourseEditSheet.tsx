@@ -28,7 +28,7 @@ export default function CourseEditSheet(props: {
   );
 
   const [name, setName] = useState(
-    courseSettings.displayName || props.defaultName
+    courseSettings?.displayName || props.defaultName
   );
 
   const accentColor = courseSettings.accentColor || Color.defaultAccentLabel;

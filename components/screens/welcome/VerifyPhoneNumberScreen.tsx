@@ -11,6 +11,7 @@ import { useTheme } from "@react-navigation/native";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import Toast from "react-native-toast-message";
 import LoadingOverlay from "../loader/LoadingOverlay";
+import { firebase } from "@react-native-firebase/auth";
 export default function VerifyPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -43,7 +44,7 @@ export default function VerifyPhoneNumberScreen(props: {
         if (currentPage?.name === "verifyPhoneNumber") {
           props.navigation.reset({
             index: 0,
-            routes: [{ name: "scorecard" }],
+            routes: [{ name: "scorecard", params: { firstTime: true } }],
           });
         }
       })
@@ -63,7 +64,7 @@ export default function VerifyPhoneNumberScreen(props: {
           });
         } else if (err.code && err.message) {
           Toast.show({
-            type: "error",
+            type: "info",
             text1: err.code,
             text2: err.message,
           });
@@ -72,13 +73,25 @@ export default function VerifyPhoneNumberScreen(props: {
       .finally(() => {
         setLoading(false);
       });
-  }, [code, confirmPhoneNumberCallback, props.navigation]);
+  }, [code, confirmPhoneNumberCallback, props.navigation, loading]);
+
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setLoading(false);
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "scorecard", params: { firstTime: true } }],
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (code.length === 6) {
       confirm();
     }
-  });
+  }, [code]);
   return (
     <View
       style={{

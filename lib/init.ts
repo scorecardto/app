@@ -53,8 +53,8 @@ export default async function initialize(
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 
-    dispatch(setGradeRecord(data));
-    dispatch(setGradeCategory(data.gradeCategory));
+    // dispatch(setGradeRecord(data));
+    // dispatch(setGradeCategory(data.gradeCategory));
 
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
@@ -71,6 +71,9 @@ export default async function initialize(
       dispatch(setLastName(lastName));
     }
 
+    // if (1 + 1 === 2) {
+    //   return "scorecard";
+    // }
     if (user && name) {
       return "scorecard";
     } else if (!user && name) {
@@ -81,6 +84,9 @@ export default async function initialize(
       return "addPhoneNumber";
     }
   } else {
+    // if (1 + 1 === 2) {
+    //   return "scorecard";
+    // }
     return "selectDistrict";
   }
 }

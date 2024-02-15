@@ -30,6 +30,7 @@ import RefreshIndicator from "./components/app/dashboard/RefreshIndicator";
 import AppInitializer from "./components/core/AppInitializer";
 import { Provider } from "react-redux";
 import { store } from "./components/core/state/store";
+import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 
 SplashScreen.preventAutoHideAsync();
 

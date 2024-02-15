@@ -15,12 +15,12 @@ export default function ArchiveScreen(props: {
   const { colors } = useTheme();
 
   const gradeCategoryNames = useSelector(
-    (s: RootState) => s.gradeData.record?.gradeCategoryNames || []
+    (s: RootState) => s.gradeData.record?.gradeCategoryNames
   );
 
   const courses = useSelector((s: RootState) => s.gradeData.record?.courses);
 
-  const cellCount = Math.ceil((gradeCategoryNames.length || 0) / 4) * 4;
+  const cellCount = Math.ceil((gradeCategoryNames?.length || 0) / 4) * 4;
 
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);

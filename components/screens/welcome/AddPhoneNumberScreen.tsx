@@ -1,11 +1,11 @@
 import ReactNative, { View } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import { TextInput } from "../../input/TextInput";
 import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
-import auth from "@react-native-firebase/auth";
+import auth, { firebase } from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import Storage from "expo-storage";
 import { phone } from "phone";
@@ -109,6 +109,7 @@ export default function AddPhoneNumberScreen(props: {
   const { colors } = useTheme();
 
   const keyboardVisible = useKeyboardVisible();
+
   return (
     <View
       style={{

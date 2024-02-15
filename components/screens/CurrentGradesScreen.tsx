@@ -66,7 +66,7 @@ const CurrentGradesScreen = (props: {
   );
 
   const gradeCategoryNames = useSelector(
-    (state: RootState) => state.gradeData.record?.gradeCategoryNames || []
+    (state: RootState) => state.gradeData.record?.gradeCategoryNames
   );
   const lastUpdatedHeader = useMemo(() => {
     if (!lastRecordDate) return "No Data";
@@ -254,7 +254,7 @@ const CurrentGradesScreen = (props: {
     <>
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
         <HeaderBanner
-          label={gradeCategoryNames[currentGradeCategory] ?? "Your Scorecard"}
+          label={gradeCategoryNames?.[currentGradeCategory] ?? "Your Scorecard"}
           show={scrollProgress > 80}
           onPress={() => {
             scrollViewRef.current?.scrollTo({
@@ -303,14 +303,14 @@ const CurrentGradesScreen = (props: {
                     ? lastUpdatedHeader ?? "No Data"
                     : onCurrentGradingPeriod
                     ? "Your Scorecard"
-                    : gradeCategoryNames[currentGradeCategory] ??
+                    : gradeCategoryNames?.[currentGradeCategory] ??
                       "Other Grading Period"
                 }
                 subheader={
                   showLastUpdated
                     ? updatedSubheader ?? "No Data"
                     : onCurrentGradingPeriod
-                    ? gradeCategoryNames[currentGradeCategory || 0]
+                    ? gradeCategoryNames?.[currentGradeCategory || 0]
                     : "Tap to change grading period"
                 }
               />

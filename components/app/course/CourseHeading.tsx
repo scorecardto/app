@@ -20,7 +20,7 @@ export default function CourseHeading(props: {
 
   const courseName = useSelector(
     (state: RootState) =>
-      state.courseSettings[props.courseKey].displayName || props.defaultName
+      state.courseSettings[props.courseKey]?.displayName || props.defaultName
   );
 
   return (

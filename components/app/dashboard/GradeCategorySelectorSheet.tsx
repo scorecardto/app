@@ -15,7 +15,7 @@ const starred = require("../../../assets/starred.svg");
 const GradeCategorySelectorSheet = forwardRef(
   (props: {}, ref: Ref<ActionSheetRef>) => {
     const gradeCategoryNames = useSelector(
-      (s: RootState) => s.gradeData.record?.gradeCategoryNames || []
+      (s: RootState) => s.gradeData.record?.gradeCategoryNames
     );
     const currentGradeCategory = useSelector(
       (s: RootState) => s.gradeCategory.category
@@ -41,7 +41,7 @@ const GradeCategorySelectorSheet = forwardRef(
         }}
       >
         <BottomSheetHeader>Grading Period</BottomSheetHeader>
-        {gradeCategoryNames.map((category, idx) => {
+        {gradeCategoryNames?.map((category, idx) => {
           const selected = idx === currentGradeCategory;
 
           return (
