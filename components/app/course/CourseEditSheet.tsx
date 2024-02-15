@@ -59,6 +59,12 @@ export default function CourseEditSheet(props: {
   useEffect(() => {
     Keyboard.dismiss();
   }, [courseSettings]);
+
+  useEffect(() => {
+    props.setOnClose(() => {
+      saveName(name);
+    });
+  }, [name]);
   return (
     <BottomSheetView>
       <BottomSheetHeader>Course Details</BottomSheetHeader>

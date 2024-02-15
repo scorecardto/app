@@ -38,9 +38,12 @@ export default function BottomSheetDisplay(props: {}) {
       bottomSheetRef?.current?.expand();
     }
 
-    customOnClose?.();
-
-    setCustomOnClose(undefined);
+    setCustomOnClose((prev) => {
+      if (prev != null) {
+        prev();
+      }
+      return undefined;
+    });
   }
 
   const [currentSheet, setCurrentSheet] = useState<React.ReactNode | undefined>(
@@ -57,7 +60,9 @@ export default function BottomSheetDisplay(props: {}) {
             bottomSheetRef?.current?.close();
           },
           setOnClose: (onClose: () => void) => {
-            setCustomOnClose(onClose);
+            setCustomOnClose(() => {
+              return onClose;
+            });
           },
         })
       );
@@ -86,6 +91,12 @@ export default function BottomSheetDisplay(props: {}) {
               <TouchableOpacity
                 onPress={() => {
                   bottomSheetRef?.current?.close();
+                  setCustomOnClose((prev) => {
+                    if (prev != null) {
+                      prev();
+                    }
+                    return undefined;
+                  });
                 }}
                 style={{
                   height: "100%",
