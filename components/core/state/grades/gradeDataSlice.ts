@@ -13,13 +13,16 @@ const gradeDataSlice = createSlice({
   name: "gradeData",
   initialState,
   reducers: {
+    resetGradeData: (state) => {
+      state.record = null;
+    },
     setGradeRecord: (state, action: PayloadAction<GradeData["record"]>) => {
       state.record = action.payload;
     },
   },
 });
 
-export const { setGradeRecord } = gradeDataSlice.actions;
+export const { setGradeRecord, resetGradeData } = gradeDataSlice.actions;
 
 export { GradeData };
 

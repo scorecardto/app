@@ -21,9 +21,9 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
 
   const [randomIndex, setRandomIndex] = useState(numRandomCards);
 
-  // const doneFetchingGrades = useSelector(
-  //   (state: RootState) => state.gradeData.record !== null
-  // );
+  const doneFetchingGrades = useSelector(
+    (state: RootState) => state.gradeData.record !== null
+  );
 
   const closeAnimation = useMemo(() => new Animated.Value(1), []);
 
@@ -123,7 +123,7 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
         >
           Tap Customize to rename classes and add colors and icons
         </StatusText>
-        {1 === 1 ? (
+        {doneFetchingGrades ? (
           <Button
             onPress={() => {
               close();

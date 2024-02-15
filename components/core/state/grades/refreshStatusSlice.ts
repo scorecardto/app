@@ -14,6 +14,14 @@ const refreshStatusSlice = createSlice({
   name: "refreshStatus",
   initialState,
   reducers: {
+    resetRefreshStatus: (state) => {
+      state.status = "No Data to Load";
+      state.taskRemaining = 0;
+      state.tasksCompleted = 0;
+      state.type = "IDLE";
+      state.courseKey = undefined;
+      state.reportCard = undefined;
+    },
     setRSMessage: (state, action: PayloadAction<string>) => {
       state.status = action.payload;
     },
@@ -63,6 +71,7 @@ export const {
   setRSCourseKey,
   setRSReportCard,
   setRefreshStatus,
+  resetRefreshStatus,
 } = refreshStatusSlice.actions;
 
 export default refreshStatusSlice.reducer;

@@ -56,8 +56,6 @@ const ConnectAccountScreen = (props: {
 
       reportCard
         .then(async (data) => {
-          console.log(data);
-
           loginSlice.setDistrict(district);
           loginSlice.setUsername(username);
           loginSlice.setPassword(password);

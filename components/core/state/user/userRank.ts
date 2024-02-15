@@ -13,12 +13,15 @@ const userRankSlice = createSlice({
   name: "userRank",
   initialState,
   reducers: {
+    resetUserRank: (state) => {
+      state.type = "DEFAULT";
+    },
     setUserRankType: (state, action: PayloadAction<UserRankType>) => {
       state.type = action.payload;
     },
   },
 });
 
-export const { setUserRankType } = userRankSlice.actions;
+export const { setUserRankType, resetUserRank } = userRankSlice.actions;
 
 export default userRankSlice.reducer;

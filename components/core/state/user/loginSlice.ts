@@ -20,6 +20,13 @@ const loginSlice = createSlice({
   name: "login",
   initialState,
   reducers: {
+    resetLogin: (state) => {
+      state.district = "";
+      state.username = "";
+      state.password = "";
+      state.referer = "";
+      state.sessionId = "";
+    },
     setDistrict: (state, action: PayloadAction<string>) => {
       state.district = action.payload;
     },
@@ -39,6 +46,7 @@ const loginSlice = createSlice({
 });
 
 export const {
+  resetLogin,
   setDistrict,
   setUsername,
   setPassword,

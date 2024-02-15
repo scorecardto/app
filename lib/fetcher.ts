@@ -457,14 +457,16 @@ const fetchAllContent = async (
   while (!reportCard) {
     try {
       reportCard = await fetchReportCard(
-          host,
-          username,
-          password,
-          onLoginSuccess,
-          onStatusUpdate
+        host,
+        username,
+        password,
+        onLoginSuccess,
+        onStatusUpdate
       );
     } catch (err) {
-      if (!(err instanceof TypeError && err.message === "Network request failed")) {
+      if (
+        !(err instanceof TypeError && err.message === "Network request failed")
+      ) {
         return Promise.reject(err);
       }
     }

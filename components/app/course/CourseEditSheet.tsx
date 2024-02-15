@@ -31,9 +31,9 @@ export default function CourseEditSheet(props: {
     courseSettings?.displayName || props.defaultName
   );
 
-  const accentColor = courseSettings.accentColor || Color.defaultAccentLabel;
+  const accentColor = courseSettings?.accentColor || Color.defaultAccentLabel;
 
-  const glyph = courseSettings.glyph || undefined;
+  const glyph = courseSettings?.glyph || undefined;
 
   const saveName = useCallback(
     (n: string) => {
@@ -78,7 +78,7 @@ export default function CourseEditSheet(props: {
           }}
         />
         <CourseHiddenToggle
-          value={courseSettings.hidden ?? false}
+          value={courseSettings?.hidden ?? false}
           onChange={(hidden) => {
             dispatch(
               setCourseSetting({

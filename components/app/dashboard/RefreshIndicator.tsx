@@ -82,75 +82,78 @@ export default function RefreshIndicator() {
       progressBarTranslateXAnimation.setValue(0);
     }
   }, [refreshStatus.tasksCompleted, refreshStatus.taskRemaining]);
+
   return (
-    <Animated.View
-      style={[
-        {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: insets.top + 24,
-          backgroundColor: colors.button,
-          zIndex: 100,
-          width: "100%",
-        },
-        {
-          transform: [
-            {
-              translateY: translateYAnimation.interpolate({
-                inputRange: [0, 1],
-                outputRange: [-insets.top - 28, 0],
-              }),
-            },
-          ],
-        },
-      ]}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          paddingVertical: 8,
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Text
-          style={{
-            color: "#fff",
-          }}
-        >
-          {statusText}
-        </Text>
-      </View>
-      <View
-        style={{
-          width: "100%",
-          height: 3,
-          backgroundColor: new Color(colors.button).lighten(0.5).string(),
-        }}
-      >
-        <Animated.View
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: colors.button,
+    <>
+      <Animated.View
+        style={[
+          {
             position: "absolute",
-            left: 0,
             top: 0,
+            left: 0,
+            right: 0,
+            height: insets.top + 24,
+            backgroundColor: colors.button,
+            zIndex: 100,
+            width: "100%",
+          },
+          {
             transform: [
               {
-                translateX: progressBarTranslateXAnimation.interpolate({
+                translateY: translateYAnimation.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [-1 * Dimensions.get("window").width, 0],
+                  outputRange: [-insets.top - 28, 0],
                 }),
               },
             ],
+          },
+        ]}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "flex-end",
+            paddingVertical: 8,
+            width: "100%",
+            height: "100%",
           }}
-        ></Animated.View>
-      </View>
-    </Animated.View>
+        >
+          <Text
+            style={{
+              color: "#fff",
+            }}
+          >
+            {statusText}
+          </Text>
+        </View>
+        <View
+          style={{
+            width: "100%",
+            height: 3,
+            backgroundColor: new Color(colors.button).lighten(0.5).string(),
+          }}
+        >
+          <Animated.View
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: colors.button,
+              position: "absolute",
+              left: 0,
+              top: 0,
+              transform: [
+                {
+                  translateX: progressBarTranslateXAnimation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-1 * Dimensions.get("window").width, 0],
+                  }),
+                },
+              ],
+            }}
+          ></Animated.View>
+        </View>
+      </Animated.View>
+    </>
   );
 }

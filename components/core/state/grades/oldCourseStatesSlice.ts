@@ -16,6 +16,9 @@ const oldCourseStatesSlice = createSlice({
   name: "oldCourseStates",
   initialState,
   reducers: {
+    resetOldCourseStates: (state) => {
+      state.record = {};
+    },
     setOldCourseStates: (state, action: PayloadAction<CourseStateRecord>) => {
       state.record = action.payload;
     },
@@ -41,7 +44,7 @@ const oldCourseStatesSlice = createSlice({
   },
 });
 
-export const { setOldCourseStates, setOldCourseState } =
+export const { setOldCourseStates, setOldCourseState, resetOldCourseStates } =
   oldCourseStatesSlice.actions;
 
 export default oldCourseStatesSlice.reducer;

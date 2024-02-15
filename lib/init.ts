@@ -53,8 +53,8 @@ export default async function initialize(
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 
-    // dispatch(setGradeRecord(data));
-    // dispatch(setGradeCategory(data.gradeCategory));
+    dispatch(setGradeRecord(data));
+    dispatch(setGradeCategory(data.gradeCategory));
 
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 

@@ -14,6 +14,15 @@ import { reloadApp } from "../../../lib/reloadApp";
 import * as nameSlice from "../../core/state/user/nameSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../core/state/store";
+import { resetGradeData } from "../../core/state/grades/gradeDataSlice";
+import { resetOldCourseStates } from "../../core/state/grades/oldCourseStatesSlice";
+import { resetRefreshStatus } from "../../core/state/grades/refreshStatusSlice";
+import { resetInvitedNumbers } from "../../core/state/user/invitedNumbersSlice";
+import { resetLogin } from "../../core/state/user/loginSlice";
+import { resetName } from "../../core/state/user/nameSlice";
+import { resetSettings } from "../../core/state/user/settingsSlice";
+import { resetUserRank } from "../../core/state/user/userRank";
+
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -143,6 +152,15 @@ export default function GeneralSettingsScreen(props: {
                   }
 
                   firebase.auth().signOut();
+
+                  dispatch(resetGradeData());
+                  dispatch(resetOldCourseStates());
+                  dispatch(resetRefreshStatus());
+                  dispatch(resetInvitedNumbers());
+                  dispatch(resetLogin());
+                  dispatch(resetName());
+                  dispatch(resetSettings());
+                  dispatch(resetUserRank());
 
                   reloadApp();
                 },

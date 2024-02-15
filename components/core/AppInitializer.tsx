@@ -17,6 +17,7 @@ import { AppDispatch, RootState } from "./state/store";
 export default function AppInitializer(props: {
   setAppReady: React.Dispatch<React.SetStateAction<boolean>>;
   setNextScreen: React.Dispatch<React.SetStateAction<string>>;
+  resetKey: string;
 }) {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -56,6 +57,10 @@ export default function AppInitializer(props: {
 
   useEffect(() => {
     async function prepare() {
+      props.setAppReady(false);
+
+      console.log("Preparing app data...");
+
       const fontsAsync = Font.loadAsync({
         AnekKannada_400Regular: AnekKannada_400Regular,
         DMSans_400Regular: DMSans_400Regular,
@@ -76,6 +81,7 @@ export default function AppInitializer(props: {
     if (userReady) {
       prepare();
     }
-  }, [userReady]);
+  }, [userReady, props.resetKey]);
+
   return <></>;
 }

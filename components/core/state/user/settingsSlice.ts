@@ -14,6 +14,12 @@ const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
+    resetSettings: (state) => {
+      state.enableGradebookPushNotifications =
+        initialState.enableGradebookPushNotifications;
+      state.gradebookCheckInterval = initialState.gradebookCheckInterval;
+    },
+
     setEnableGradebookPushNotifications: (
       state,
       action: PayloadAction<boolean>
@@ -48,6 +54,7 @@ export const {
   setEnableGradebookPushNotifications,
   setGradebookCheckInterval,
   setAllSettings,
+  resetSettings,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

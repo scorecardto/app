@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useColorScheme } from "react-native";
+import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
 import { useState } from "react";
 import Color from "./lib/Color";
@@ -36,7 +36,7 @@ SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function App(props: { resetKey: string }) {
   const [appReady, setAppReady] = useState(false);
 
   const [nextScreen, setNextScreen] = useState("");
@@ -55,9 +55,10 @@ export default function App() {
   };
 
   return (
-    <Provider store={store}>
+    <Provider store={store} key={props.resetKey}>
       <MobileDataProvider>
         <AppInitializer
+          resetKey={props.resetKey}
           setAppReady={setAppReady}
           setNextScreen={setNextScreen}
         />
@@ -84,6 +85,7 @@ export default function App() {
                   >
                     <RefreshIndicator />
                     <BottomSheetDisplay />
+
                     <Stack.Navigator initialRouteName={nextScreen}>
                       <Stack.Screen
                         name="selectDistrict"
