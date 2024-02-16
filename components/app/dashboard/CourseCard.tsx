@@ -213,7 +213,7 @@ export default function CourseCard(props: {
                   dispatch(
                     setCourseSetting({
                       key: props.course.key,
-                      save: "STORAGE",
+                      save: "STATE_AND_STORAGE",
                       value: { hidden: false },
                     })
                   );
