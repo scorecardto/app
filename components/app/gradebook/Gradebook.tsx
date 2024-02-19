@@ -20,6 +20,7 @@ const { width: viewportWidth, height: viewportHeight } =
 
 function Gradebook(props: {
   course: Course;
+
   setModifiedGrade(avg: string | null): void;
 }) {
   const sheets = useContext(BottomSheetContext);
@@ -36,6 +37,7 @@ function Gradebook(props: {
 
   const [currentCard, setCurrentCard] = useState(0);
 
+  const [isGradeModified, setIsGradeModified] = useState(false);
   const [animatingCard, setAnimatingCard] = useState(-1);
 
   type CategoryMod = {
@@ -50,6 +52,7 @@ function Gradebook(props: {
       return { assignments: null, average: null, exactAverage: null };
     })
   );
+  const [exactAverage, setExactAverage] = useState(0);
   const [exactAverages, setExactAverages] = useState<(string | null)[]>(
     averageAssignments(categories, []).map((i) => i?.toFixed(2))
   );
@@ -86,16 +89,38 @@ function Gradebook(props: {
       categories.length == props.course.gradeCategories?.length
     ) {
       props.setModifiedGrade(null);
-    } else {
-      const avg = averageGradeCategories(
-        categories.map((c, i) => {
+
+      setIsGradeModified(false);
+
+      const cats: GradeCategory[] = new Array(averages.length)
+        .fill(0)
+        .map((_, i) => {
+          const weight = categories[i].weight ?? 0;
           return {
-            ...c,
-            average: "" + (isNaN(averages[i]) ? "" : averages[i] ?? c.average),
+            ...categories[i],
+            average: averages[i].toString(),
+            weight: weight,
           };
-        })
-      );
-      props.setModifiedGrade(isNaN(avg) ? "NG" : "" + avg);
+        });
+
+      setExactAverage(averageGradeCategories(cats));
+    } else {
+      const cats: GradeCategory[] = new Array(averages.length)
+        .fill(0)
+        .map((_, i) => {
+          const weight = categories[i].weight ?? 0;
+          return {
+            ...categories[i],
+            average: averages[i].toString(),
+            weight: weight,
+          };
+        });
+      const avg = averageGradeCategories(cats);
+
+      props.setModifiedGrade(isNaN(avg) ? "NG" : "" + Math.round(avg));
+
+      setIsGradeModified(true);
+      setExactAverage(avg);
     }
   };
 
@@ -142,7 +167,13 @@ function Gradebook(props: {
                 <GradebookCard
                   key={index}
                   title="Summary"
-                  bottom={{ Weight: { text: "100%", red: false } }}
+                  bottom={{
+                    Weight: { text: "100%", red: false },
+                    "Exact Average": {
+                      text: `${exactAverage.toFixed(2)}`,
+                      red: isGradeModified,
+                    },
+                  }}
                   removable={false}
                   remove={() => {}}
                   buttonAction={() => {

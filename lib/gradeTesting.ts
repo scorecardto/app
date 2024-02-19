@@ -2,7 +2,7 @@ import { Assignment, Course, GradeCategory } from "scorecard-types";
 
 export function averageAssignments(
   categories: GradeCategory[],
-  modifiedAssignments: ((Assignment|null)[] | null)[]
+  modifiedAssignments: ((Assignment | null)[] | null)[]
 ) {
   return categories.map((category, i) => {
     let sum = 0;
@@ -27,7 +27,7 @@ export function averageAssignments(
               : undefined;
 
           if (def === "msg") def = "0";
-          if (def.match(/[a-z]/g)) return;
+          else if (def.match(/[a-z]/g)) return;
 
           sum += (exact ?? parseFloat(def)) * weight;
           count += weight;
@@ -46,11 +46,9 @@ export function averageGradeCategories(categories: GradeCategory[]) {
   categories.forEach((category) => {
     let weight = category.weight ?? 100;
 
-    if (category.average == null || category.average === "") return;
-
-    sum += parseInt(category.average) * weight;
+    sum += (Math.round(parseFloat(category.average) * 10) / 10) * weight;
     count += weight;
   });
 
-  return Math.round(sum / count);
+  return sum / count;
 }
