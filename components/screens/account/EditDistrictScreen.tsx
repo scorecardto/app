@@ -42,7 +42,6 @@ export default function EditDistrictScreen(props: {
 
   return (
     <>
-      <LoadingOverlay show={loading} />
       <ScrollView
         style={{
           height: "100%",
@@ -163,6 +162,7 @@ export default function EditDistrictScreen(props: {
           </View>
         </AccountSubpageScreen>
       </ScrollView>
+      <LoadingOverlay show={loading} />
     </>
   );
 }

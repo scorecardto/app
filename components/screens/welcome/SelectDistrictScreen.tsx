@@ -42,13 +42,7 @@ export default function SelectDistrictScreen(props: {
   const [districtSearch, setDistrictSearch] = useState("");
   return (
     <>
-      <LoadingOverlay show={loading} />
-      <ScrollView
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-      >
+      <ScrollView>
         <WelcomeScreen
           header={HEADER}
           footerText={FOOTER}
@@ -164,6 +158,7 @@ export default function SelectDistrictScreen(props: {
           </View>
         </WelcomeScreen>
       </ScrollView>
+      <LoadingOverlay show={loading} />
     </>
   );
 }
