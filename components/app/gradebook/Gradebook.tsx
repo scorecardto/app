@@ -177,10 +177,19 @@ function Gradebook(props: {
                   removable={false}
                   remove={() => {}}
                   buttonAction={() => {
+                    const existingWeight =
+                      100 -
+                      categories.reduce((sum, category) => {
+                        return sum + (category.weight ?? 0);
+                      }, 0);
+
                     sheets?.addSheet(({ close }) => (
                       <>
                         <AddCategorySheet
                           close={close}
+                          suggestWeight={
+                            existingWeight < 100 ? 100 - existingWeight : 100
+                          }
                           add={(weight, newAverage) => {
                             setCategories((oldCategories) => {
                               const newCategories = [...oldCategories];

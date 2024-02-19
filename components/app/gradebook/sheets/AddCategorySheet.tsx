@@ -14,12 +14,13 @@ import Toast from "react-native-toast-message";
 export default function AddCategorySheet(props: {
   close(): void;
   add(weight: number, initialAverage: number): void;
+  suggestWeight: number;
 }) {
   const [value, setValue] = useState("100");
 
   const colors = useColors();
 
-  const [weight, setWeight] = useState("100");
+  const [weight, setWeight] = useState(`${props.suggestWeight}`);
   const weightTextInputRef = useRef<BottomSheetTextInputProps>(null);
 
   const [initialAverage, setInitialAverage] = useState("100");
@@ -64,7 +65,7 @@ export default function AddCategorySheet(props: {
               marginTop: 10,
             }}
           >
-            Permanent
+            {props.suggestWeight === 100 ? "Default" : "Suggested"}
           </SmallText>
         </LargeGradebookSheetTile>
         <LargeGradebookSheetTile
@@ -96,7 +97,7 @@ export default function AddCategorySheet(props: {
               marginTop: 10,
             }}
           >
-            Changeable
+            Arbitrary
           </SmallText>
         </LargeGradebookSheetTile>
       </View>
