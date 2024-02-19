@@ -262,6 +262,8 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       </>
     );
   }
+
+  const [resetKey, setResetKey] = useState(0);
   return (
     <CourseScreenWrapper courseKey={key}>
       <CourseCornerButtonContainer
@@ -280,6 +282,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       >
         <View style={{ zIndex: 1 }}>
           <CourseHeading
+            resetGradeTesting={() => {
+              setResetKey((prev) => prev + 1);
+            }}
             courseKey={key}
             defaultName={course?.name || ""}
             gradeText={gradeText}
@@ -305,6 +310,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
               refreshOldGradingPeriod={() => {
                 refreshGradingPeriod(false);
               }}
+              resetKey={`${resetKey}`}
             />
           )}
         </View>

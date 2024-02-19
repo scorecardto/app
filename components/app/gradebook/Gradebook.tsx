@@ -24,6 +24,7 @@ function Gradebook(props: {
   oldGradingPeriodLastUpdated?: string;
   setModifiedGrade(avg: string | null): void;
   refreshOldGradingPeriod?(): void;
+  resetKey?: string;
 }) {
   const sheets = useContext(BottomSheetContext);
 
@@ -197,7 +198,7 @@ function Gradebook(props: {
                     header="Old Grading Period"
                     text={lastUpdatedText}
                     buttonText="Refresh"
-                    onPress={props.refreshOldGradingPeriod}
+                    onPress={props.refreshOldGradingPeriod || (() => {})}
                   />
                 )}
 

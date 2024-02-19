@@ -16,6 +16,7 @@ export default function CourseHeading(props: {
   defaultName: string;
   gradeText: string;
   modifiedGradeText: string | null;
+  resetGradeTesting: () => void;
 }) {
   const sheets = useContext(BottomSheetContext);
   const colors = useColors();
@@ -32,24 +33,30 @@ export default function CourseHeading(props: {
   return (
     <TouchableOpacity
       onPress={() => {
-        sheets?.addSheet(({ close, setOnClose }) =>
-          allowCourseEditSheet ? (
-            <CourseEditSheet
-              courseKey={props.courseKey}
-              defaultName={props.defaultName}
-              setOnClose={setOnClose}
-            />
-          ) : (
-            <MoreFeaturesSheet close={close} />
-          )
-        );
+        if (props.modifiedGradeText) {
+          props.resetGradeTesting();
+        } else {
+          sheets?.addSheet(({ close, setOnClose }) =>
+            allowCourseEditSheet ? (
+              <CourseEditSheet
+                courseKey={props.courseKey}
+                defaultName={props.defaultName}
+                setOnClose={setOnClose}
+              />
+            ) : (
+              <MoreFeaturesSheet close={close} />
+            )
+          );
+        }
       }}
     >
       <View style={{ marginHorizontal: 64 }}>
         <Header
-          header={courseName}
+          header={props.modifiedGradeText ? "Tap to Reset" : courseName}
           subheader={
-            courseName !== props.defaultName
+            props.modifiedGradeText
+              ? "You're using grade testing right now."
+              : courseName !== props.defaultName
               ? undefined
               : "Tap to add a name and color"
           }
