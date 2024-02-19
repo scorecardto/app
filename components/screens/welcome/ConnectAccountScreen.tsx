@@ -15,6 +15,7 @@ import * as loginSlice from "../../core/state/user/loginSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
 import StatusText from "../../text/StatusText";
+import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
 
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -69,7 +70,7 @@ const ConnectAccountScreen = (props: {
             }),
           });
 
-          await fetchAndStore(data, dispatch, true);
+          const fetchStoreResult = await fetchAndStore(data, dispatch, true);
         })
         .catch((e: Error) => {
           if (e.message === "INCORRECT_PASSWORD") {

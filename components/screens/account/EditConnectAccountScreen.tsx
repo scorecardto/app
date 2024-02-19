@@ -15,6 +15,7 @@ import ReactNative from "react-native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
 import * as loginSlice from "../../core/state/user/loginSlice";
+import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
 
 const EditConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;

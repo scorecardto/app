@@ -189,6 +189,14 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
   const stateChanges = useSelector(
     (state: RootState) => {
+      if (
+        state.gradeCategory.category !== state.gradeData.record?.gradeCategory
+      ) {
+        return {
+          exists: false,
+          oldAverage: "",
+        };
+      }
       const oldState: CourseState = state.oldCourseStates.record[
         key
       ] as CourseState;

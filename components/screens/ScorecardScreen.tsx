@@ -40,7 +40,7 @@ export default function ScorecardScreen(props: {
     >
       <Tab.Navigator
         screenOptions={{
-          lazy: false,
+          lazy: true,
         }}
         tabBar={(props) => (
           <View
