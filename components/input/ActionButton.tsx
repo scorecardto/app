@@ -9,17 +9,17 @@ export default function ActionButton(props: {
 }) {
   const backgroundColor =
     props.type === "BLACK"
-      ? "#35262A"
+      ? "#2B2426"
       : props.type === "WHITE"
       ? "white"
-      : "#9A9294";
+      : "#EFEFEF";
 
   const color =
     props.type === "BLACK"
       ? "white"
       : props.type === "WHITE"
       ? "black"
-      : "white";
+      : "#B3B3B3";
 
   return (
     <TouchableOpacity

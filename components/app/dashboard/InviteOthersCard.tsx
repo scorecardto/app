@@ -10,6 +10,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
+import LinearGradient from "react-native-linear-gradient";
+import colorLib from "color";
 export default function InviteOthersCard(props: { show: boolean }) {
   const colors = useColors();
   const dark = useIsDarkMode();
@@ -100,7 +102,25 @@ export default function InviteOthersCard(props: { show: boolean }) {
         });
       }}
     >
-      <View style={styles.wrapper}>
+      <LinearGradient
+        colors={[
+          colors.card,
+          colorLib(
+            color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
+              .gradientCenter
+          )
+            .mix(colorLib(colors.card), 0.7)
+            .hex(),
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[
+          styles.wrapper,
+          {
+            opacity: 1,
+          },
+        ]}
+      >
         <View style={styles.left}>
           <View style={styles.badge}>
             <MaterialIcon name="star" size={24} color={"white"} />
@@ -114,7 +134,7 @@ export default function InviteOthersCard(props: { show: boolean }) {
           </MediumText>
         </View>
         <SmallText style={styles.grade}>{rightText}</SmallText>
-      </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }

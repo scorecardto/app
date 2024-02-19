@@ -17,7 +17,6 @@ function ContactCard(props: {
   alreadyInvited?: boolean;
 }) {
   const SHOW_PHOTOS = false;
-  const { colors } = useTheme();
 
   const initials = useMemo(() => {
     const words = props.name.split(" ");

@@ -21,6 +21,7 @@ import {
 import LoadingOverlay from "./loader/LoadingOverlay";
 import ContactListDone1View from "../app/vip/ContactListDone1View";
 import ContactListDone2View from "../app/vip/ContactListDone2View";
+import ContactShareView from "../app/vip/ContactShareView";
 export default function InviteOthersScreen(props: {
   navigation: NavigationProp<any>;
 }) {
@@ -150,6 +151,16 @@ export default function InviteOthersScreen(props: {
     <>
       {view === "list" && contacts.length === 0 && (
         <LoadingOverlay show={contacts.length === 0} />
+      )}
+      {view === "share" && (
+        <ContactShareView
+          close={() => {}}
+          numInvited={numInvited ?? 0}
+          invite={() => {
+            dispatch(addInvitedNumber(""));
+            dispatch(saveInvitedNumbers());
+          }}
+        />
       )}
       {view === "request" && <ContactRequestView />}
       {view === "list" && (

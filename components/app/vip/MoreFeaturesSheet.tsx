@@ -56,7 +56,7 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
 
   return (
     <BottomSheetView>
-      <BottomSheetHeader>Coming Feb 29</BottomSheetHeader>
+      <BottomSheetHeader>Coming March 11</BottomSheetHeader>
       <View
         style={{
           paddingHorizontal: 20,
@@ -86,17 +86,19 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
         </View>
         <SmallText
           style={{
-            fontSize: 16,
+            fontSize: 18,
             textAlign: "center",
             marginHorizontal: 20,
             color: colors.text,
-            marginVertical: 20,
+            marginTop: 20,
+            marginBottom: 24,
           }}
         >
-          Dark mode, custom colors, and renaming classes are coming soon.
+          🤫 You found our secret features! Dark mode, custom colors, and
+          renaming classes are coming soon.
         </SmallText>
         <CountdownButton
-          // forceEnable={true}
+          forceEnable={true}
           onPress={() => {
             // @ts-ignore;
             navigation.navigate("inviteOthers");

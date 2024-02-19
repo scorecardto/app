@@ -16,7 +16,7 @@ function getGiveVipFeaturesFlag(userRank: UserRankType): boolean {
   if (
     userRank !== "DEFAULT" ||
     Platform.OS === "android" ||
-    numInvitedNumbers >= 2 ||
+    numInvitedNumbers > 2 ||
     !inDeveloperMode
   ) {
     return true;
