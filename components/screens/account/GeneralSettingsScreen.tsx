@@ -116,7 +116,9 @@ export default function GeneralSettingsScreen(props: {
       </SmallText>
       <DeleteInput
         onPress={async () => {
-          Alert.prompt(
+          console.log("Resetting account data");
+
+          Alert.alert(
             "Reset Local Data",
             "You will need to sign in again to access Scorecard.",
             [
@@ -167,8 +169,7 @@ export default function GeneralSettingsScreen(props: {
                   reloadApp();
                 },
               },
-            ],
-            "default"
+            ]
           );
         }}
       >
