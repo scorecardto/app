@@ -48,7 +48,7 @@ export default function ArchiveScreen(props: {
             }}
           >
             <Header header="Archive">
-              <ArchiveDemoTable gradeCategoryNames={gradeCategoryNames || []} />
+              {/* <ArchiveDemoTable gradeCategoryNames={gradeCategoryNames || []} /> */}
             </Header>
           </View>
 
@@ -61,6 +61,7 @@ export default function ArchiveScreen(props: {
               return (
                 <ArchiveCourseCard
                   course={course}
+                  gradeCategoryNames={gradeCategoryNames || []}
                   navigation={props.navigation}
                   key={idx}
                   cellCount={cellCount}
