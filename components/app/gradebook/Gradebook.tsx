@@ -150,18 +150,34 @@ function Gradebook(props: {
                       <>
                         <AddCategorySheet
                           close={close}
-                          add={(weight) => {
+                          add={(weight, newAverage) => {
                             setCategories((oldCategories) => {
                               const newCategories = [...oldCategories];
                               newCategories.push({
                                 name: "Test Category " + numTestCats,
                                 id: "",
                                 weight: weight,
-                                average: "",
+                                average: `${newAverage}`,
                                 error: false,
-                                assignments: [],
+
+                                assignments: [
+                                  {
+                                    name: "Starting Average",
+                                    points: newAverage,
+                                    max: 100,
+                                    grade: `${newAverage}%`,
+                                    dropped: false,
+                                    scale: 100,
+                                    count: 1,
+                                    error: false,
+                                  },
+                                ],
                               });
                               setNumTestCats(numTestCats + 1);
+
+                              setTimeout(() => {
+                                ref.current?.snapToItem(categories.length + 1);
+                              }, 100);
                               return newCategories;
                             });
                             setExactAverages((averages) => {
@@ -248,6 +264,7 @@ function Gradebook(props: {
                     oldAverages.splice(index - 1, 1);
                     return [...oldAverages];
                   });
+                  ref.current?.snapToItem(0);
                 }}
                 buttonAction={() => {
                   setModifiedCategories((categories) => {

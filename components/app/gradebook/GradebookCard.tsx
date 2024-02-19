@@ -1,4 +1,10 @@
-import {Dimensions, ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { useTheme } from "@react-navigation/native";
 import MediumText from "../../text/MediumText";
@@ -7,6 +13,7 @@ import SmallText from "../../text/SmallText";
 import AddButton from "./AddButton";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import TinyText from "../../text/TinyText";
+import Button from "../../input/Button";
 
 export default function GradebookCard(props: {
   title: string;
@@ -62,7 +69,13 @@ export default function GradebookCard(props: {
     <View>
       <View style={styles.wrapper}>
         <View style={styles.header}>
-          <MediumText numberOfLines={2} ellipsizeMode={"tail"} style={styles.headerText}>{props.title}</MediumText>
+          <MediumText
+            numberOfLines={2}
+            ellipsizeMode={"tail"}
+            style={styles.headerText}
+          >
+            {props.title}
+          </MediumText>
           {props.grade && (
             <MediumText style={styles.headerGrade}>
               {props.grade.text}
@@ -98,40 +111,47 @@ export default function GradebookCard(props: {
         </View>
       </View>
       {props.removable && (
-        <TouchableOpacity
+        <View
           style={{
-            borderColor: "red",
-            borderStyle: "solid",
-            borderWidth: 0.5,
-            borderRadius: 24,
-            display: "flex",
-            flexDirection: "row",
-            alignSelf: "flex-start",
-            alignItems: "center",
-            marginTop: 10,
-            marginLeft: 3,
+            marginTop: 16,
           }}
-          onPress={props.remove}
         >
-          <TinyText
-            style={{
-              color: "red",
-              paddingVertical: 8,
-              paddingLeft: 12,
-              paddingRight: 6,
-            }}
-          >
-            Remove
-          </TinyText>
-          <MaterialIcons
-            style={{
-              color: "red",
-              paddingRight: 8,
-            }}
-            name={"delete"}
-            size={12}
-          />
-        </TouchableOpacity>
+          <Button onPress={props.remove}>Remove</Button>
+        </View>
+        // <TouchableOpacity
+        //   style={{
+        //     borderColor: "red",
+        //     borderStyle: "solid",
+        //     borderWidth: 0.5,
+        //     borderRadius: 24,
+        //     display: "flex",
+        //     flexDirection: "row",
+        //     alignSelf: "flex-start",
+        //     alignItems: "center",
+        //     marginTop: 10,
+        //     marginLeft: 3,
+        //   }}
+        //   onPress={props.remove}
+        // >
+        //   <TinyText
+        //     style={{
+        //       color: "red",
+        //       paddingVertical: 8,
+        //       paddingLeft: 12,
+        //       paddingRight: 6,
+        //     }}
+        //   >
+        //     Remove
+        //   </TinyText>
+        //   <MaterialIcons
+        //     style={{
+        //       color: "red",
+        //       paddingRight: 8,
+        //     }}
+        //     name={"delete"}
+        //     size={12}
+        //   />
+        // </TouchableOpacity>
       )}
     </View>
   );
