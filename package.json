@@ -58,7 +58,8 @@
     "react-tracked": "^1.7.11",
     "redaxios": "^0.5.1",
     "redux": "^5.0.1",
-    "scorecard-types": "github:scorecardto/types"
+    "scorecard-types": "github:scorecardto/types",
+    "expo-sms": "~11.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

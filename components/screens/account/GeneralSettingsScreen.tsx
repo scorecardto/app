@@ -143,6 +143,8 @@ export default function GeneralSettingsScreen(props: {
                     "enableGradebookNotifications",
                     "gradebookCheckInterval",
                     "notifs",
+                    "invitedNumbers",
+                    "openInviteSheetDate",
                     "records",
                     "courseSettings",
                     "appSettings",

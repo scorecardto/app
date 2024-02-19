@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
@@ -17,6 +17,33 @@ export default function InviteOthersCard(props: { show: boolean }) {
   const invitedNumbers = useSelector(
     (s: RootState) => s.invitedNumbers.numbers
   );
+
+  const openInviteSheetDate = useSelector(
+    (s: RootState) => s.invitedNumbers.openInviteSheetDate
+  );
+
+  const [rightText, setRightText] = useState("tap me");
+
+  useEffect(() => {
+    if (openInviteSheetDate) {
+      const intervalId = setInterval(() => {
+        const now = new Date();
+        const secsSinceOpen = Math.floor(
+          (now.getTime() - openInviteSheetDate) / 1000
+        );
+
+        if (secsSinceOpen > 90) {
+          setRightText("coming later");
+        } else {
+          setRightText(`expires in ${90 - secsSinceOpen}`);
+        }
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    } else {
+      setRightText("tap me");
+    }
+  }, [openInviteSheetDate]);
 
   const accentLabel = "yellow";
 
@@ -63,12 +90,8 @@ export default function InviteOthersCard(props: { show: boolean }) {
 
   const leftText = invitedNumbers === null ? "Customize" : "More Features";
 
-  const rightText =
-    invitedNumbers === null
-      ? "tap me"
-      : invitedNumbers.length === 1
-      ? "1 invite left"
-      : "tap to invite";
+  if (!props.show) return null;
+
   return (
     <TouchableOpacity
       onPress={() => {

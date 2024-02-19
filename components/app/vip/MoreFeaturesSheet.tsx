@@ -2,17 +2,26 @@ import { View } from "react-native";
 import React, { useEffect } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import SmallText from "../../text/SmallText";
-import { NavigationContext, useTheme } from "@react-navigation/native";
+import {
+  NavigationContext,
+  useNavigation,
+  useTheme,
+} from "@react-navigation/native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import FeatureCard from "./FeatureCard";
 import BottomSheetButton from "../../input/BottomSheetButton";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
-import { setInvitedNumbers } from "../../core/state/user/invitedNumbersSlice";
+import {
+  setInvitedNumbers,
+  setOpenInviteSheetDate,
+} from "../../core/state/user/invitedNumbersSlice";
 import Storage from "expo-storage";
+import FeatureBadge from "./FeatureBadge";
+import ActionButton from "../../input/ActionButton";
+import CountdownButton from "../../input/CountdownButton";
 
 export default function MoreFeaturesSheet(props: { close: () => void }) {
-  const navigation = React.useContext(NavigationContext);
+  const navigation = useNavigation();
 
   const { colors } = useTheme();
 
@@ -22,96 +31,78 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
 
   const dispatch = useDispatch();
   useEffect(() => {
+    // if (invitedNumbers !== null) {
+    //   Storage.removeItem({ key: "invitedNumbers" });
+    //   dispatch(setInvitedNumbers(null));
+    //   Storage.removeItem({ key: "openInviteSheetDate" });
+    //   dispatch(setOpenInviteSheetDate(null));
+    // } else
     if (invitedNumbers === null) {
       Storage.setItem({
         key: "invitedNumbers",
         value: JSON.stringify([]),
       });
 
-      dispatch(setInvitedNumbers([]));
-    } else {
-      Storage.removeItem({
-        key: "invitedNumbers",
+      Storage.setItem({
+        key: "openInviteSheetDate",
+        value: new Date().toISOString(),
       });
 
-      dispatch(setInvitedNumbers(null));
+      dispatch(setInvitedNumbers([]));
+
+      dispatch(setOpenInviteSheetDate(Date.now()));
     }
   }, []);
 
   return (
     <BottomSheetView>
-      <BottomSheetHeader>More Features</BottomSheetHeader>
+      <BottomSheetHeader>Coming Feb 29</BottomSheetHeader>
       <View
         style={{
           paddingHorizontal: 20,
-          marginBottom: 16,
           marginTop: 16,
+          marginBottom: 36,
         }}
       >
-        <FeatureCard
-          label="Notifications"
-          description="Grades also auto-refresh more often"
-          icon="bell"
-          iconColor="#FF5050"
-        />
-        <FeatureCard
-          label="Aesthetics"
-          description="Dark mode, custom colors, and custom icons"
-          icon="shape"
-          iconColor="#B2CB1A"
-        />
-        <FeatureCard
-          label="Rename Classes"
-          description="Remove unclear course codes"
-          icon="pencil"
-          iconColor="#1A76CB"
-        />
         <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginHorizontal: 12,
-            marginTop: 12,
-            marginBottom: 24,
-          }}
-        >
-          <SmallText
-            style={{
-              color: colors.text,
-              marginBottom: 12,
-            }}
-          >
-            Invite 3 friends to Scorecard to unloock
-          </SmallText>
-          <BottomSheetButton
-            onPress={() => {
-              navigation?.navigate("inviteOthers", {});
-            }}
-            label="Send Invites"
-            primary={true}
-          />
-        </View>
-        {/* <View
           style={{
             display: "flex",
             flexDirection: "row",
             justifyContent: "center",
           }}
         >
-          <BottomSheetButton
-            onPress={() => {}}
-            label="Send Invites"
-            primary={true}
+          <FeatureBadge
+            icon="pencil"
+            colors={["#EAF5FF", "#1A76CB", "#EAF5FF", "#1A76CB"]}
           />
-          <View style={{ width: 12 }} />
-          <BottomSheetButton
-            onPress={() => {}}
-            label="Cancel"
-            primary={false}
+          <FeatureBadge
+            icon="emoticon-happy"
+            colors={["#FFEDF7", "#DF2960", "#FFEDF7", "#DF2960"]}
           />
-        </View> */}
+          <FeatureBadge
+            icon="brightness-2"
+            colors={["#F6F0FF", "#AA53E0", "#F6F0FF", "#AA53E0"]}
+          />
+        </View>
+        <SmallText
+          style={{
+            fontSize: 16,
+            textAlign: "center",
+            marginHorizontal: 20,
+            color: colors.text,
+            marginVertical: 20,
+          }}
+        >
+          Dark mode, custom colors, and renaming classes are coming soon.
+        </SmallText>
+        <CountdownButton
+          // forceEnable={true}
+          onPress={() => {
+            // @ts-ignore;
+            navigation.navigate("inviteOthers");
+            props.close();
+          }}
+        />
       </View>
     </BottomSheetView>
   );
