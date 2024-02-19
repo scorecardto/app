@@ -1,8 +1,12 @@
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  NavigationContainerRef,
+} from "@react-navigation/native";
+import analytics from "@react-native-firebase/analytics";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Color from "./lib/Color";
 import * as SplashScreen from "expo-splash-screen";
 import ConnectAccountScreen from "./components/screens/welcome/ConnectAccountScreen";
@@ -44,10 +48,13 @@ export default function App(props: { resetKey: string }) {
 
   const appearance = useColorScheme();
 
+  const allowDarkMode = useSelector((r: RootState) =>
+    getFeatureFlag("ALLOW_DARK_MODE", r.userRank.type)
+  );
   const headerOptions = {
     headerStyle: {
       backgroundColor:
-        appearance === "dark"
+        appearance === "dark" && allowDarkMode
           ? Color.DarkTheme.colors.secondary
           : Color.LightTheme.colors.secondary,
     },
@@ -55,9 +62,9 @@ export default function App(props: { resetKey: string }) {
     headerTitle: "",
   };
 
-  const allowDarkMode = useSelector((r: RootState) =>
-    getFeatureFlag("ALLOW_DARK_MODE", r.userRank.type)
-  );
+  const routeNameRef = useRef<string | null>(null);
+  const navigationRef =
+    useRef<NavigationContainerRef<ReactNavigation.RootParamList>>(null);
 
   return (
     <MobileDataProvider>
@@ -74,6 +81,25 @@ export default function App(props: { resetKey: string }) {
             <GestureHandlerRootView style={{ flex: 1 }}>
               <BottomSheetProvider>
                 <NavigationContainer
+                  ref={navigationRef}
+                  onStateChange={async () => {
+                    const previousRouteName = routeNameRef.current;
+                    const currentRouteName =
+                      navigationRef.current?.getCurrentRoute()?.name;
+
+                    if (currentRouteName == null) return;
+
+                    if (previousRouteName !== currentRouteName) {
+                      // analytics().setd
+                      await analytics().logScreenView({
+                        screen_name: currentRouteName,
+                        screen_class: currentRouteName,
+                      });
+                      console.log("Screen view logged: " + currentRouteName);
+                    }
+
+                    routeNameRef.current = currentRouteName;
+                  }}
                   theme={{
                     ...(appearance === "dark" && allowDarkMode
                       ? Color.DarkTheme
