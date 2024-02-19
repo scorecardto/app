@@ -12,6 +12,7 @@ import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
 import LinearGradient from "react-native-linear-gradient";
 import colorLib from "color";
+import FeatureExplanationSheet from "../vip/FeatureExplanationSheet";
 export default function InviteOthersCard(props: { show: boolean }) {
   const colors = useColors();
   const dark = useIsDarkMode();

@@ -58,7 +58,7 @@ export default function ContactShareView(props: {
         }}
       >
         <InviteFlowHeader
-          header="Select 2 Invites"
+          header="Send 2 Invites"
           subheader="make sure to use iMessage"
         />
       </View>
@@ -70,7 +70,7 @@ export default function ContactShareView(props: {
       >
         <View>
           <MaterialIcon
-            name="account-circle"
+            name={props.numInvited === 0 ? "account-circle" : "check"}
             size={192}
             color={colors.text}
             style={{ opacity: 0.3, alignSelf: "center" }}
@@ -86,7 +86,9 @@ export default function ContactShareView(props: {
               marginTop: 32,
             }}
           >
-            When you're ready, text a link to your first contact using iMessage.
+            {props.numInvited === 0
+              ? "When you're ready, text a link to your first contact using iMessage."
+              : "Thanks! Now, text a link to your second contact."}
           </Text>
         </View>
       </View>
@@ -98,11 +100,16 @@ export default function ContactShareView(props: {
           bottom: 64,
         }}
       >
-        <ActionButton type="BLACK" onPress={() => share()}>
-          Share with Person 1
-        </ActionButton>
+        {props.numInvited === 0 && (
+          <ActionButton type="BLACK" onPress={() => share()}>
+            Share with Person 1
+          </ActionButton>
+        )}
         <View style={{ height: 16 }} />
-        <ActionButton type="DISABLED" onPress={() => share()}>
+        <ActionButton
+          type={props.numInvited === 0 ? "DISABLED" : "BLACK"}
+          onPress={() => share()}
+        >
           Share with Person 2
         </ActionButton>
       </View>

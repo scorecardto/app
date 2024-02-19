@@ -8,6 +8,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import useColors from "../../core/theme/useColors";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import { getFeatureFlag } from "../../../lib/featureFlag";
+import MoreFeaturesSheet from "../vip/MoreFeaturesSheet";
 
 export default function CourseHeading(props: {
   courseKey: string;
@@ -23,16 +25,24 @@ export default function CourseHeading(props: {
       state.courseSettings[props.courseKey]?.displayName || props.defaultName
   );
 
+  const allowCourseEditSheet = useSelector((s: RootState) => {
+    return getFeatureFlag("ALLOW_COURSE_EDITING", s.userRank.type);
+  });
+
   return (
     <TouchableOpacity
       onPress={() => {
-        sheets?.addSheet(({ close, setOnClose }) => (
-          <CourseEditSheet
-            courseKey={props.courseKey}
-            defaultName={props.defaultName}
-            setOnClose={setOnClose}
-          />
-        ));
+        sheets?.addSheet(({ close, setOnClose }) =>
+          allowCourseEditSheet ? (
+            <CourseEditSheet
+              courseKey={props.courseKey}
+              defaultName={props.defaultName}
+              setOnClose={setOnClose}
+            />
+          ) : (
+            <MoreFeaturesSheet close={close} />
+          )
+        );
       }}
     >
       <View style={{ marginHorizontal: 64 }}>

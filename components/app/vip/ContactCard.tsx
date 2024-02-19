@@ -6,6 +6,7 @@ import { useTheme } from "@react-navigation/native";
 import Ionicon from "@expo/vector-icons/Ionicons";
 import Contacts from "expo-contacts";
 import { Image } from "expo-image";
+import useColors from "../../core/theme/useColors";
 function ContactCard(props: {
   name: string;
   phoneNumber: string;
@@ -17,7 +18,7 @@ function ContactCard(props: {
   alreadyInvited?: boolean;
 }) {
   const SHOW_PHOTOS = false;
-
+  const colors = useColors();
   const initials = useMemo(() => {
     const words = props.name.split(" ");
     return words

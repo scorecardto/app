@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as Contacts from "expo-contacts";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../text/Header";
@@ -22,19 +22,21 @@ import LoadingOverlay from "./loader/LoadingOverlay";
 import ContactListDone1View from "../app/vip/ContactListDone1View";
 import ContactListDone2View from "../app/vip/ContactListDone2View";
 import ContactShareView from "../app/vip/ContactShareView";
+import ContactShareDoneView from "../app/vip/ContactShareDoneView";
+import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
+import FeatureExplanationSheet from "../app/vip/FeatureExplanationSheet";
+
 export default function InviteOthersScreen(props: {
   navigation: NavigationProp<any>;
 }) {
   const [view, setView] = useState<
-    "request" | "list" | "share" | "list_done_1" | "list_done_2"
+    "request" | "list" | "share" | "list_done_1" | "list_done_2" | "share_done"
   >("request");
   const [contacts, setContacts] = useState<Contacts.Contact[]>([]);
 
   const alreadyInvited = useSelector(
     (state: RootState) => state.invitedNumbers?.numbers
   );
-
-  console.log(alreadyInvited);
 
   const numInvited = useSelector(
     (state: RootState) => state.invitedNumbers?.numbers?.length
@@ -43,6 +45,8 @@ export default function InviteOthersScreen(props: {
   const [alreadyOnApp, setAlreadyOnApp] = useState<string[]>([]);
 
   const dispatch = useDispatch();
+
+  const sheets = useContext(BottomSheetContext);
 
   useEffect(() => {
     (async () => {
@@ -157,8 +161,25 @@ export default function InviteOthersScreen(props: {
           close={() => {}}
           numInvited={numInvited ?? 0}
           invite={() => {
+            if (numInvited && numInvited >= 1) {
+              setView("share_done");
+            }
             dispatch(addInvitedNumber(""));
             dispatch(saveInvitedNumbers());
+          }}
+        />
+      )}
+      {view === "share_done" && (
+        <ContactShareDoneView
+          close={() => {
+            props.navigation.reset({
+              index: 0,
+              routes: [{ name: "scorecard" }],
+            });
+
+            sheets?.addSheet((p) => {
+              return <FeatureExplanationSheet close={p.close} />;
+            });
           }}
         />
       )}
@@ -191,6 +212,10 @@ export default function InviteOthersScreen(props: {
             props.navigation.reset({
               index: 0,
               routes: [{ name: "scorecard" }],
+            });
+
+            sheets?.addSheet((p) => {
+              return <FeatureExplanationSheet close={p.close} />;
             });
           }}
         />
