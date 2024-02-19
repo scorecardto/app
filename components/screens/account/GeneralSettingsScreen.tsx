@@ -22,6 +22,7 @@ import { resetLogin } from "../../core/state/user/loginSlice";
 import { resetName } from "../../core/state/user/nameSlice";
 import { resetSettings } from "../../core/state/user/settingsSlice";
 import { resetUserRank } from "../../core/state/user/userRank";
+import { resetCourseSettings } from "../../core/state/grades/courseSettingsSlice";
 
 export default function GeneralSettingsScreen(props: {
   route: any;
@@ -151,6 +152,7 @@ export default function GeneralSettingsScreen(props: {
                     "courseSettings",
                     "appSettings",
                     "oldCourseStates",
+                    "oldGradebooks",
                   ]) {
                     await Storage.removeItem({ key });
                   }
@@ -159,6 +161,7 @@ export default function GeneralSettingsScreen(props: {
 
                   dispatch(resetGradeData());
                   dispatch(resetOldCourseStates());
+                  dispatch(resetCourseSettings());
                   dispatch(resetRefreshStatus());
                   dispatch(resetInvitedNumbers());
                   dispatch(resetLogin());

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
@@ -14,14 +14,16 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
 import useAccents from "../../core/theme/useAccents";
+import GradebookInfoCard from "./GradebookInfoCard";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
 
 function Gradebook(props: {
   course: Course;
-
+  oldGradingPeriodLastUpdated?: string;
   setModifiedGrade(avg: string | null): void;
+  refreshOldGradingPeriod?(): void;
 }) {
   const sheets = useContext(BottomSheetContext);
 
@@ -130,6 +132,31 @@ function Gradebook(props: {
     updateAverage(modifiedCategories);
   }, [categories]);
 
+  const lastUpdatedText = useMemo(() => {
+    if (
+      props.oldGradingPeriodLastUpdated === "" ||
+      props.oldGradingPeriodLastUpdated == null
+    ) {
+      return null;
+    }
+
+    const lastUpdated = new Date(props.oldGradingPeriodLastUpdated);
+
+    const now = new Date();
+
+    const diff = now.getTime() - lastUpdated.getTime();
+
+    const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return "This is a saved copy of an old grading period. It was last updated today.";
+    } else if (diffDays === 1) {
+      return "This is a saved copy of an old grading period. It was last updated yesterday.";
+    } else {
+      return `This is a saved copy of an old grading period. It was last updated ${diffDays} days ago.`;
+    }
+  }, [props.oldGradingPeriodLastUpdated]);
+
   return (
     <View
       style={{
@@ -157,6 +184,7 @@ function Gradebook(props: {
         inactiveDotOpacity={0.3}
         inactiveDotScale={1}
       />
+
       <Carousel
         ref={ref}
         data={[null, ...categories]}
@@ -164,6 +192,15 @@ function Gradebook(props: {
           if (!item) {
             return (
               <View>
+                {lastUpdatedText && (
+                  <GradebookInfoCard
+                    header="Old Grading Period"
+                    text={lastUpdatedText}
+                    buttonText="Refresh"
+                    onPress={props.refreshOldGradingPeriod}
+                  />
+                )}
+
                 <GradebookCard
                   key={index}
                   title="Summary"

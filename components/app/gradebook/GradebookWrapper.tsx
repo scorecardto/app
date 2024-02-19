@@ -6,6 +6,8 @@ import Gradebook from "./Gradebook";
 export default function GradebookWrapper(props: {
   course: Course;
   setModifiedGrade(avg: string | null): void;
+  oldGradingPeriodLastUpdated?: string;
+  refreshOldGradingPeriod?(): void;
 }) {
   const [show, setShow] = useState(false);
 
@@ -31,6 +33,8 @@ export default function GradebookWrapper(props: {
         <Gradebook
           course={props.course}
           setModifiedGrade={props.setModifiedGrade}
+          oldGradingPeriodLastUpdated={props.oldGradingPeriodLastUpdated}
+          refreshOldGradingPeriod={props.refreshOldGradingPeriod}
         />
       )}
     </Animated.View>

@@ -290,7 +290,8 @@ const fetchGradeCategoriesForCourse = async (
   host: string,
   sessionId: string,
   referer: string,
-  course: Course
+  course: Course,
+  gradeIndex?: number
 ): Promise<GradeCategoriesResponse> => {
   const ASSIGNMENTS: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
@@ -300,7 +301,8 @@ const fetchGradeCategoriesForCourse = async (
       selectedTable: "",
       smartFormName: "SmartForm",
       focusElement: "",
-      gradeBookKey: course.key,
+      gradeBookKey:
+        gradeIndex != null ? course.grades[gradeIndex]?.key : course.key,
       replaceObjectParam1: "",
       selectedCell: "",
       selectedTdId: "",
@@ -519,7 +521,8 @@ const fetchAllContent = async (
 const fetchGradeCategoriesForCourses = async (
   host: string,
   reportCard: CourseResponse,
-  onStatusUpdate?: (status: RefreshStatus) => void
+  onStatusUpdate?: (status: RefreshStatus) => void,
+  gradeIndex?: number
 ): Promise<AllCoursesResponse> => {
   const all: Course[] = [];
 
@@ -541,7 +544,8 @@ const fetchGradeCategoriesForCourses = async (
       host,
       sessionId,
       referer,
-      course
+      course,
+      gradeIndex
     );
 
     all.push({
@@ -559,4 +563,9 @@ const fetchGradeCategoriesForCourses = async (
   };
 };
 
-export { fetchReportCard, fetchGradeCategoriesForCourse, fetchAllContent };
+export {
+  fetchReportCard,
+  fetchGradeCategoriesForCourse,
+  fetchGradeCategoriesForCourses,
+  fetchAllContent,
+};

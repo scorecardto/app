@@ -12,6 +12,11 @@ const courseSettingsSlice = createSlice({
   name: "courseSettings",
   initialState,
   reducers: {
+    resetCourseSettings: (state) => {
+      Object.keys(state).forEach((key) => {
+        state[key] = {};
+      });
+    },
     setCourseSetting: (
       state,
       action: PayloadAction<{
@@ -42,7 +47,7 @@ const courseSettingsSlice = createSlice({
   },
 });
 
-export const { setCourseSetting, setAllCourseSettings } =
+export const { setCourseSetting, setAllCourseSettings, resetCourseSettings } =
   courseSettingsSlice.actions;
 
 export default courseSettingsSlice.reducer;
