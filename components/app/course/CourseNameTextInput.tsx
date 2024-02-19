@@ -42,7 +42,7 @@ export default function CourseNameTextInput(props: {
       >
         <BottomSheetTextInput
           ref={ref}
-          value={props.value}
+          defaultValue={props.value}
           onFocus={() => {
             // @ts-ignore
             ref.current?.setNativeProps({
@@ -57,7 +57,7 @@ export default function CourseNameTextInput(props: {
           onBlur={props.onFinish}
           returnKeyType="done"
           textContentType="none"
-          autoCorrect={false}
+          autoCorrect={true}
           maxLength={24}
           style={{
             fontSize: 20,

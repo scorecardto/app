@@ -58,7 +58,7 @@ export default function EditDistrictScreen(props: {
               label="Search for your school or district"
               setValue={setDistrictSearch}
               value={districtSearch}
-              type="username"
+              type="text"
             />
             <FlatList
               scrollEnabled={false}

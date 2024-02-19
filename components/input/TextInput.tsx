@@ -11,6 +11,7 @@ export const TextInput = forwardRef<
     setValue: (text: string) => void;
     type:
       | "username"
+      | "text"
       | "password"
       | "phone-number"
       | "first-name"
