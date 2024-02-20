@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../core/state/store";
 import { setGradeCategory } from "../../core/state/grades/gradeCategorySlice";
 import useColors from "../../core/theme/useColors";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 const starred = require("../../../assets/starred.svg");
 
@@ -55,6 +56,11 @@ const GradeCategorySelectorSheet = forwardRef(
               <TouchableOpacity
                 onPress={() => {
                   dispatch(setGradeCategory(idx));
+
+                  getAnalytics().logEvent("change_grading_period", {
+                    from: recordGradeCategory,
+                    to: idx,
+                  });
                 }}
               >
                 <View

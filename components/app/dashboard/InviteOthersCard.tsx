@@ -99,7 +99,7 @@ export default function InviteOthersCard(props: { show: boolean }) {
     <TouchableOpacity
       onPress={() => {
         sheets?.addSheet((p) => {
-          return <MoreFeaturesSheet close={p.close} />;
+          return <MoreFeaturesSheet close={p.close} source="CARD" />;
         });
       }}
     >

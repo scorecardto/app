@@ -13,6 +13,7 @@ import { RootState } from "../../core/state/store";
 import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import useColors from "../../core/theme/useColors";
 import Toast from "react-native-toast-message";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
@@ -38,6 +39,10 @@ export default function CourseEditSheet(props: {
 
   const saveName = useCallback(
     (n: string) => {
+      getAnalytics().logEvent("use_customize", {
+        type: "rename",
+      });
+
       if (n === "") {
         setName(props.defaultName);
         return;
@@ -116,6 +121,10 @@ export default function CourseEditSheet(props: {
                 save: "STATE_AND_STORAGE",
               })
             );
+            getAnalytics().logEvent("use_customize", {
+              type: "color",
+              color: accentColor,
+            });
           }}
         />
 
@@ -131,6 +140,10 @@ export default function CourseEditSheet(props: {
                 save: "STATE_AND_STORAGE",
               })
             );
+            getAnalytics().logEvent("use_customize", {
+              type: "glyph",
+              glyph: newGlyph,
+            });
           }}
         />
       </ScrollView>

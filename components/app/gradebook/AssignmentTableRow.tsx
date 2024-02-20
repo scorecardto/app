@@ -1,9 +1,10 @@
-import React, {useContext, useEffect, useState,} from "react";
-import {Assignment} from "scorecard-types";
+import React, { useContext, useEffect, useState } from "react";
+import { Assignment } from "scorecard-types";
 import TableRow from "./TableRow";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AssignmentSheet from "./sheets/AssignmentSheet";
 import AssignmentEdits from "../../../lib/types/AssignmentEdits";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export default function AssignmentTableRow(props: {
   assignment: Assignment;
@@ -68,6 +69,7 @@ export default function AssignmentTableRow(props: {
             worth({ count: assignment.count, dropped: assignment.dropped }),
       }}
       onPress={() => {
+        getAnalytics().logEvent("open_assignment_sheet");
         sheets.addSheet(({ close }) => (
           <>
             <AssignmentSheet
@@ -100,23 +102,23 @@ export default function AssignmentTableRow(props: {
 
                   ret = ret || grade !== assignment.grade;
                 } else {
-                    setGrade(assignment.grade);
-                    setPoints(assignment.points);
-                    setMaxPoints(assignment.scale);
+                  setGrade(assignment.grade);
+                  setPoints(assignment.points);
+                  setMaxPoints(assignment.scale);
                 }
 
                 if (edits.count != null) {
                   setCount(edits.count);
                   ret = ret || edits.count !== assignment.count;
                 } else {
-                    setCount(assignment.count);
+                  setCount(assignment.count);
                 }
 
                 if (edits.dropped === true || edits.dropped === false) {
                   setDropped(edits.dropped);
                   ret = ret || edits.dropped !== assignment.dropped;
                 } else {
-                    setDropped(assignment.dropped);
+                  setDropped(assignment.dropped);
                 }
 
                 return ret;

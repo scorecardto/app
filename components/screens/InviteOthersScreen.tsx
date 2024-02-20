@@ -25,6 +25,7 @@ import ContactShareView from "../app/vip/ContactShareView";
 import ContactShareDoneView from "../app/vip/ContactShareDoneView";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 import FeatureExplanationSheet from "../app/vip/FeatureExplanationSheet";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export default function InviteOthersScreen(props: {
   navigation: NavigationProp<any>;
@@ -163,6 +164,10 @@ export default function InviteOthersScreen(props: {
           invite={() => {
             if (numInvited && numInvited >= 1) {
               setView("share_done");
+              getAnalytics().logEvent("sent_invite", {
+                through: "share_sheet",
+                totalInvited: (numInvited ?? 0) + 1,
+              });
             }
             dispatch(addInvitedNumber(""));
             dispatch(saveInvitedNumbers());
@@ -191,6 +196,10 @@ export default function InviteOthersScreen(props: {
           alreadyOnApp={alreadyOnApp}
           alreadyInvited={alreadyInvited ?? []}
           addInvitedNumber={(n) => {
+            getAnalytics().logEvent("sent_invite", {
+              through: "contact_list",
+              totalInvited: (numInvited ?? 0) + 1,
+            });
             if (numInvited == 0) setView("list_done_1");
             else setView("list_done_2");
 

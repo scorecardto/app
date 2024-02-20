@@ -44,7 +44,7 @@ export default function CourseHeading(props: {
                 setOnClose={setOnClose}
               />
             ) : (
-              <MoreFeaturesSheet close={close} />
+              <MoreFeaturesSheet close={close} source="HEADER" />
             )
           );
         }

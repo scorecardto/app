@@ -29,6 +29,7 @@ import { getFeatureFlag } from "../../lib/featureFlag";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -295,6 +296,7 @@ const CurrentGradesScreen = (props: {
             <TouchableOpacity
               onPress={() => {
                 selector.current?.show();
+                getAnalytics().logEvent("show_grading_period_selector");
               }}
             >
               <Header

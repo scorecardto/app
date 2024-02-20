@@ -1,10 +1,11 @@
-import {TextInput} from "react-native";
-import React, {useRef, useState} from "react";
+import { TextInput } from "react-native";
+import React, { useRef, useState } from "react";
 import AssignmentEdits from "../../../../../lib/types/AssignmentEdits";
 import LargeGradebookSheetTile from "./LargeGradebookSheetTile";
-import {useTheme} from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import SmallText from "../../../../text/SmallText";
 import AssignmentTileTextInput from "./AssignmentTileTextInput";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 type TileValue =
   | {
@@ -94,6 +95,10 @@ export default function AssignmentGradeTile(props: {
   };
 
   const onFinishEditing = () => {
+    getAnalytics().logEvent("use_grade_testing", {
+      type: "grade",
+    });
+
     setIsEditing(false);
 
     const parsed = parseText(inputValue);
@@ -143,7 +148,7 @@ export default function AssignmentGradeTile(props: {
         Exact Grade
       </SmallText>
       <AssignmentTileTextInput
-        value={isEditing ? inputValue : (inputValue || "NG")}
+        value={isEditing ? inputValue : inputValue || "NG"}
         ref={textInputRef}
         edited={
           props.testing || inputValue !== gradeToString(props.originalGrade)

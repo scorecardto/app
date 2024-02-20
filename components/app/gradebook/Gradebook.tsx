@@ -15,6 +15,7 @@ import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
 import useAccents from "../../core/theme/useAccents";
 import GradebookInfoCard from "./GradebookInfoCard";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -215,6 +216,9 @@ function Gradebook(props: {
                   removable={false}
                   remove={() => {}}
                   buttonAction={() => {
+                    getAnalytics().logEvent("use_grade_testing", {
+                      type: "testCategory",
+                    });
                     const existingWeight =
                       100 -
                       categories.reduce((sum, category) => {
@@ -345,6 +349,9 @@ function Gradebook(props: {
                   ref.current?.snapToItem(0);
                 }}
                 buttonAction={() => {
+                  getAnalytics().logEvent("use_grade_testing", {
+                    type: "testAssignment",
+                  });
                   setModifiedCategories((categories) => {
                     const catIdx = index - 1;
                     const newCategories = [...categories];
