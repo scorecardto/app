@@ -40,14 +40,13 @@ import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
 import {setupForegroundNotifications, setupBackgroundNotifications, registerToken} from "./lib/backgroundNotifications";
 
 SplashScreen.preventAutoHideAsync();
+registerToken();
 setupBackgroundNotifications();
 setupForegroundNotifications();
 
 const Stack = createNativeStackNavigator();
 
 export default function App(props: { resetKey: string }) {
-  useEffect(registerToken, []);
-
   const [appReady, setAppReady] = useState(false);
 
   const [nextScreen, setNextScreen] = useState("");
