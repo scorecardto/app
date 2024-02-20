@@ -1,4 +1,4 @@
-import { Keyboard, ScrollView, Dimensions } from "react-native";
+import { Keyboard, ScrollView, Dimensions, View } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
@@ -14,6 +14,7 @@ import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import useColors from "../../core/theme/useColors";
 import Toast from "react-native-toast-message";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import { registerNotifs } from "../../../lib/backgroundNotifications";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
@@ -33,12 +34,27 @@ export default function CourseEditSheet(props: {
     courseSettings?.displayName || props.defaultName
   );
 
+  const notificationSettings = useSelector((s: RootState) => {
+    return s.notificationSettings[props.courseKey];
+  });
+
   const accentColor = courseSettings?.accentColor || Color.defaultAccentLabel;
 
   const glyph = courseSettings?.glyph || undefined;
 
   const saveName = useCallback(
     (n: string) => {
+      if (
+        notificationSettings === "ON_ALWAYS" ||
+        notificationSettings === "ON_ONCE"
+      ) {
+        registerNotifs(
+          props.courseKey,
+          n || props.defaultName,
+          notificationSettings === "ON_ONCE"
+        );
+      }
+
       getAnalytics().logEvent("use_customize", {
         type: "rename",
       });
@@ -71,82 +87,84 @@ export default function CourseEditSheet(props: {
     });
   }, [name]);
   return (
-    <BottomSheetView>
-      <BottomSheetHeader>Course Details</BottomSheetHeader>
-      <ScrollView
-        style={{
-          paddingHorizontal: 20,
-          paddingBottom: 14,
-          height: Dimensions.get("window").height * 0.65,
-        }}
-      >
-        <CourseNameTextInput
-          value={name}
-          setValue={(n) => {
-            setName(n);
+    <>
+      <BottomSheetView>
+        <BottomSheetHeader>Course Details</BottomSheetHeader>
+        <ScrollView
+          style={{
+            paddingHorizontal: 20,
+            paddingBottom: 14,
+            height: Dimensions.get("window").height * 0.65,
           }}
-          onFinish={() => {
-            saveName(name);
-          }}
-          hidden={!!courseSettings?.hidden}
-          onToggleHidden={(hidden) => {
-            if (hidden) {
-              Toast.show({
-                type: "info",
-                text1: "Course Hidden",
-                text2:
-                  "You can unhide it in Archive or by tapping the eye icon.",
+        >
+          <CourseNameTextInput
+            value={name}
+            setValue={(n) => {
+              setName(n);
+            }}
+            onFinish={() => {
+              saveName(name);
+            }}
+            hidden={!!courseSettings?.hidden}
+            onToggleHidden={(hidden) => {
+              if (hidden) {
+                Toast.show({
+                  type: "info",
+                  text1: "Course Hidden",
+                  text2:
+                    "You can unhide it in Archive or by tapping the eye icon.",
+                });
+              }
+              dispatch(
+                setCourseSetting({
+                  key: props.courseKey,
+                  value: {
+                    hidden,
+                  },
+                  save: "STATE_AND_STORAGE",
+                })
+              );
+            }}
+          />
+          <CourseColorChanger
+            initialValue={accentColor}
+            onChange={(accentColor) => {
+              dispatch(
+                setCourseSetting({
+                  key: props.courseKey,
+                  value: {
+                    accentColor,
+                  },
+                  save: "STATE_AND_STORAGE",
+                })
+              );
+              getAnalytics().logEvent("use_customize", {
+                type: "color",
+                color: accentColor,
               });
-            }
-            dispatch(
-              setCourseSetting({
-                key: props.courseKey,
-                value: {
-                  hidden,
-                },
-                save: "STATE_AND_STORAGE",
-              })
-            );
-          }}
-        />
-        <CourseColorChanger
-          initialValue={accentColor}
-          onChange={(accentColor) => {
-            dispatch(
-              setCourseSetting({
-                key: props.courseKey,
-                value: {
-                  accentColor,
-                },
-                save: "STATE_AND_STORAGE",
-              })
-            );
-            getAnalytics().logEvent("use_customize", {
-              type: "color",
-              color: accentColor,
-            });
-          }}
-        />
+            }}
+          />
 
-        <CourseGlyphChanger
-          value={glyph}
-          onChange={(newGlyph) => {
-            dispatch(
-              setCourseSetting({
-                key: props.courseKey,
-                value: {
-                  glyph: newGlyph,
-                },
-                save: "STATE_AND_STORAGE",
-              })
-            );
-            getAnalytics().logEvent("use_customize", {
-              type: "glyph",
-              glyph: newGlyph,
-            });
-          }}
-        />
-      </ScrollView>
-    </BottomSheetView>
+          <CourseGlyphChanger
+            value={glyph}
+            onChange={(newGlyph) => {
+              dispatch(
+                setCourseSetting({
+                  key: props.courseKey,
+                  value: {
+                    glyph: newGlyph,
+                  },
+                  save: "STATE_AND_STORAGE",
+                })
+              );
+              getAnalytics().logEvent("use_customize", {
+                type: "glyph",
+                glyph: newGlyph,
+              });
+            }}
+          />
+        </ScrollView>
+      </BottomSheetView>
+    </>
   );
 }

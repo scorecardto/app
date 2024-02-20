@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { SafeAreaView, Text, View } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import captureCourseState from "../../lib/captureCourseState";
 import CourseScreenWrapper from "../app/course/CourseScreenWrapper";
 import useColors from "../core/theme/useColors";
@@ -30,6 +30,9 @@ import {
 } from "../core/state/grades/refreshStatusSlice";
 import Toast from "react-native-toast-message";
 import { AllCoursesResponse } from "scorecard-types";
+import NotificationsSelectorSheet from "../app/course/NotificationsSelectorSheet";
+import { ActionSheetRef } from "react-native-actions-sheet";
+import CourseNotificationsButton from "../app/course/CourseNotificationsButton";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -264,13 +267,25 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   }
 
   const [resetKey, setResetKey] = useState(0);
+
+  const selector = useRef<ActionSheetRef>(null);
   return (
     <CourseScreenWrapper courseKey={key}>
       <CourseCornerButtonContainer
         onPress={() => {
           props.navigation.goBack();
         }}
+        type="BACK"
       />
+
+      <CourseNotificationsButton
+        courseKey={key}
+        onPress={() => {
+          selector.current?.setModalVisible(true);
+        }}
+      />
+
+      <NotificationsSelectorSheet ref={selector} courseKey={key} />
 
       <SafeAreaView
         style={{

@@ -11,6 +11,7 @@ import courseOrderReducer from "./grades/courseOrderSlice";
 import courseSettingsReducer from "./grades/courseSettingsSlice";
 import gradeCategoryReducer from "./grades/gradeCategorySlice";
 import virtualSheetsReducer from "./view/virtualSheetsSlice";
+import notificationSettingsReducer from "./user/notificationSettingsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     courseSettings: courseSettingsReducer,
     gradeCategory: gradeCategoryReducer,
     virtualSheets: virtualSheetsReducer,
+    notificationSettings: notificationSettingsReducer,
   },
 });
 

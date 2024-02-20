@@ -2,10 +2,16 @@ import { View, Text } from "react-native";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CourseCornerButton from "./CourseCornerButton";
-export default function CourseCornerButtonContainer(props: {
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
+export default function CourseNotificationsButton(props: {
+  courseKey: string;
   onPress: () => void;
-  type: "BACK" | "NOTIFICATIONS";
 }) {
+  const notificationSettings = useSelector((r: RootState) => {
+    return r.notificationSettings[props.courseKey];
+  });
+
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -18,29 +24,21 @@ export default function CourseCornerButtonContainer(props: {
           width: "100%",
           display: "flex",
           flexDirection: "row",
-          justifyContent: props.type === "BACK" ? "flex-start" : "flex-end",
+          justifyContent: "flex-end",
           alignItems: "center",
         },
       ]}
     >
       <CourseCornerButton
-        side={
-          props.type === "BACK"
-            ? "left"
-            : props.type === "NOTIFICATIONS"
-            ? "right"
-            : "left"
-        }
+        side={"right"}
         icon={
-          props.type === "BACK"
-            ? "chevron-left"
-            : props.type === "NOTIFICATIONS"
+          notificationSettings === "ON_ALWAYS"
             ? "notifications"
-            : "chevron-left"
+            : notificationSettings === "ON_ONCE"
+            ? "alarm"
+            : "notifications-off"
         }
-        iconPadding={
-          props.type === "BACK" ? 8 : props.type === "NOTIFICATIONS" ? 16 : 8
-        }
+        iconPadding={18}
         iconSize={30}
         onPress={() => props.onPress()}
       />
