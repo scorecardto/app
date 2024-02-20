@@ -5,6 +5,7 @@ import SmallText from "../../../../text/SmallText";
 import AssignmentTileTextInput from "./AssignmentTileTextInput";
 import SmallGradebookSheetTile from "./SmallGradebookSheetTile";
 import useColors from "../../../../core/theme/useColors";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export default function AssignmentCountTile(props: {
   count: number;
@@ -24,6 +25,9 @@ export default function AssignmentCountTile(props: {
   };
 
   const onFinishEditing = () => {
+    getAnalytics().logEvent("use_grade_testing", {
+      type: "weight",
+    });
     const parsed = parseText(inputValue);
 
     if (parsed === -1) {

@@ -10,6 +10,7 @@ import { NavigationProp } from "@react-navigation/native";
 import LoadingIndicatorButton from "../../input/LoadingIndicatorButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 const icon = require("../../../assets/icon.svg");
 export default function FinalWelcomeScreen(props: { close: () => void }) {
@@ -127,6 +128,7 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
           <Button
             onPress={() => {
               close();
+              getAnalytics().logTutorialComplete();
             }}
           >
             Done

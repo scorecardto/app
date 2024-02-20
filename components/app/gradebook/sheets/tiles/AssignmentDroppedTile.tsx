@@ -1,10 +1,11 @@
-import {Text} from "react-native";
-import React, {useState} from "react";
+import { Text } from "react-native";
+import React, { useState } from "react";
 import AssignmentEdits from "../../../../../lib/types/AssignmentEdits";
-import {useTheme} from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 import SmallText from "../../../../text/SmallText";
 import SmallGradebookSheetTile from "./SmallGradebookSheetTile";
 import AssignmentTileTextInputFrame from "./AssignmentTileTextInputFrame";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export default function AssignmentDroppedTile(props: {
   dropped: boolean;
@@ -18,6 +19,10 @@ export default function AssignmentDroppedTile(props: {
   return (
     <SmallGradebookSheetTile
       onPress={() => {
+        getAnalytics().logEvent("use_grade_testing", {
+          type: "dropped",
+        });
+
         props.edit({
           dropped: !testingValue,
         });
@@ -37,7 +42,7 @@ export default function AssignmentDroppedTile(props: {
           style={{
             color:
               testingValue !== props.originalDropped ? "red" : colors.primary,
-              marginVertical: -2,
+            marginVertical: -2,
           }}
         >
           {testingValue ? "yes" : "no"}

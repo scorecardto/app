@@ -19,8 +19,12 @@ import Storage from "expo-storage";
 import FeatureBadge from "./FeatureBadge";
 import ActionButton from "../../input/ActionButton";
 import CountdownButton from "../../input/CountdownButton";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
-export default function MoreFeaturesSheet(props: { close: () => void }) {
+export default function MoreFeaturesSheet(props: {
+  close: () => void;
+  source: "CARD" | "HEADER";
+}) {
   const navigation = useNavigation();
 
   const { colors } = useTheme();
@@ -38,6 +42,10 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
     //   dispatch(setOpenInviteSheetDate(null));
     // } else
     if (invitedNumbers === null) {
+      getAnalytics().logEvent("opened_invite_sheet", {
+        firstTime: true,
+        from: props.source,
+      });
       Storage.setItem({
         key: "invitedNumbers",
         value: JSON.stringify([]),
@@ -51,6 +59,11 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
       dispatch(setInvitedNumbers([]));
 
       dispatch(setOpenInviteSheetDate(Date.now()));
+    } else {
+      getAnalytics().logEvent("opened_invite_sheet", {
+        firstTime: false,
+        from: props.source,
+      });
     }
   }, []);
 
@@ -100,6 +113,8 @@ export default function MoreFeaturesSheet(props: { close: () => void }) {
         <CountdownButton
           forceEnable={true}
           onPress={() => {
+            getAnalytics().logEvent("opened_invite_screen");
+
             // @ts-ignore;
             navigation.navigate("inviteOthers");
             props.close();
