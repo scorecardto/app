@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { SafeAreaView, Text, View } from "react-native";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import captureCourseState from "../../lib/captureCourseState";
 import CourseScreenWrapper from "../app/course/CourseScreenWrapper";
 import useColors from "../core/theme/useColors";
@@ -14,16 +14,164 @@ import CourseState from "../../lib/types/CourseState";
 import Gradebook from "../app/gradebook/Gradebook";
 import LoadingOverlay from "./loader/LoadingOverlay";
 import GradebookWrapper from "../app/gradebook/GradebookWrapper";
-import { setOldCourseState } from "../core/state/grades/oldCourseStatesSlice";
+import oldCourseStatesSlice, {
+  setOldCourseState,
+} from "../core/state/grades/oldCourseStatesSlice";
 import Storage from "expo-storage";
+import {
+  fetchGradeCategoriesForCourse,
+  fetchGradeCategoriesForCourses,
+  fetchReportCard,
+} from "../../lib/fetcher";
+import {
+  setRSMessage,
+  setRSType,
+  setRefreshStatus,
+} from "../core/state/grades/refreshStatusSlice";
+import Toast from "react-native-toast-message";
+import { AllCoursesResponse } from "scorecard-types";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
 
-  const course = useSelector(
+  const courseInitial = useSelector(
     (state: RootState) =>
       state.gradeData.record?.courses.find((c) => c.key === key),
     () => true
+  );
+
+  const gradeCategory = useSelector(
+    (root: RootState) => root.gradeCategory.category
+  );
+
+  const recordGrade = useSelector(
+    (root: RootState) => root.gradeData.record?.gradeCategory
+  );
+
+  const [course, setCourse] = useState(
+    gradeCategory === recordGrade ? courseInitial : null
+  );
+
+  const login = useSelector((state: RootState) => state.login);
+
+  const [lastUpdatedOldGradingPeriod, setLastUpdatedOldGradingPeriod] =
+    useState<string | undefined>(undefined);
+
+  const refreshGradingPeriod = useCallback(
+    async (allowGetFromStorage: boolean) => {
+      setLastUpdatedOldGradingPeriod(undefined);
+
+      const oldGradebooks = JSON.parse(
+        ((await Storage.getItem({ key: "oldGradebooks" })) || "{}") as string
+      );
+
+      const alternateKey = courseInitial?.grades[gradeCategory]?.key;
+
+      if (courseInitial == null || alternateKey == null) return;
+
+      if (oldGradebooks[alternateKey] != null && allowGetFromStorage) {
+        if (!courseInitial.grades[gradeCategory]?.active) {
+          setCourse(oldGradebooks[alternateKey]);
+          setGradeText(
+            oldGradebooks[alternateKey].grades[gradeCategory]?.value || "NG"
+          );
+          setLastUpdatedOldGradingPeriod(
+            oldGradebooks[alternateKey].lastUpdated
+          );
+          return;
+        } else {
+          Toast.show({
+            type: "info",
+            text1: "Refreshing Grades",
+            text2:
+              "Scorecard has a copy of this grading period, but is refreshing from Frontline since grades are still active.",
+          });
+        }
+      }
+
+      const reportCard = await fetchReportCard(
+        login.district,
+        login.username,
+        login.password,
+        () => {},
+        (status) => {
+          dispatch(setRefreshStatus(status));
+        }
+      );
+
+      dispatch(
+        setRefreshStatus({
+          type: "GETTING_COURSES",
+          status: "Loading old grades...",
+          taskRemaining: 1,
+          tasksCompleted: 3,
+        })
+      );
+
+      const categories = await fetchGradeCategoriesForCourse(
+        login.district,
+        reportCard.sessionId,
+        reportCard.referer,
+        {
+          ...courseInitial,
+          key: alternateKey || "",
+        }
+      );
+
+      dispatch(setRSType("IDLE"));
+
+      setCourse({
+        ...courseInitial,
+        gradeCategories: categories.gradeCategories,
+      });
+
+      setGradeText(courseInitial.grades[gradeCategory]?.value || "NG");
+
+      setLastUpdatedOldGradingPeriod(new Date().toISOString());
+
+      oldGradebooks[alternateKey] = {
+        ...courseInitial,
+        gradeCategories: categories.gradeCategories,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      Storage.setItem({
+        key: "oldGradebooks",
+        value: JSON.stringify(oldGradebooks),
+      });
+
+      fetchGradeCategoriesForCourses(
+        login.district,
+        {
+          ...reportCard,
+          courses: reportCard.courses.map((c) => {
+            return {
+              ...c,
+              key: c.grades[gradeCategory]?.key || c.key,
+            };
+          }),
+        },
+        () => {},
+        gradeCategory
+      ).then(async (categories: AllCoursesResponse) => {
+        const oldGradebooks = JSON.parse(
+          ((await Storage.getItem({ key: "oldGradebooks" })) || "{}") as string
+        );
+
+        categories.courses.forEach((c) => {
+          oldGradebooks[c.key] = {
+            ...c,
+            lastUpdated: new Date().toISOString(),
+          };
+        });
+
+        Storage.setItem({
+          key: "oldGradebooks",
+          value: JSON.stringify(oldGradebooks),
+        });
+      });
+    },
+    [courseInitial, gradeCategory, login]
   );
 
   // const courseName = useSelector(
@@ -31,8 +179,24 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   //     state.courseSettings[key]?.displayName || course?.name || ""
   // );
 
+  useEffect(() => {
+    if (course != null) return;
+
+    console.log("Refreshing");
+
+    refreshGradingPeriod(true);
+  }, [courseInitial]);
+
   const stateChanges = useSelector(
     (state: RootState) => {
+      if (
+        state.gradeCategory.category !== state.gradeData.record?.gradeCategory
+      ) {
+        return {
+          exists: false,
+          oldAverage: "",
+        };
+      }
       const oldState: CourseState = state.oldCourseStates.record[
         key
       ] as CourseState;
@@ -57,9 +221,6 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     () => true
   );
 
-  const gradeCategory = useSelector(
-    (root: RootState) => root.gradeCategory.category
-  );
   const courseGradeText = course?.grades[gradeCategory]?.value;
 
   const [showGradeStateChanges, setShowGradeStateChanges] = useState(
@@ -95,8 +256,14 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   }, []);
 
   if (course == null) {
-    return <LoadingOverlay show={true} />;
+    return (
+      <>
+        <LoadingOverlay show={true} hideBackdrop />
+      </>
+    );
   }
+
+  const [resetKey, setResetKey] = useState(0);
   return (
     <CourseScreenWrapper courseKey={key}>
       <CourseCornerButtonContainer
@@ -115,6 +282,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       >
         <View style={{ zIndex: 1 }}>
           <CourseHeading
+            resetGradeTesting={() => {
+              setResetKey((prev) => prev + 1);
+            }}
             courseKey={key}
             defaultName={course?.name || ""}
             gradeText={gradeText}
@@ -136,6 +306,11 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             <GradebookWrapper
               course={course}
               setModifiedGrade={setModifiedAvg}
+              oldGradingPeriodLastUpdated={lastUpdatedOldGradingPeriod}
+              refreshOldGradingPeriod={() => {
+                refreshGradingPeriod(false);
+              }}
+              resetKey={`${resetKey}`}
             />
           )}
         </View>

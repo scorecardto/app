@@ -38,9 +38,12 @@ export default function BottomSheetDisplay(props: {}) {
       bottomSheetRef?.current?.expand();
     }
 
-    customOnClose?.();
-
-    setCustomOnClose(undefined);
+    setCustomOnClose((prev) => {
+      if (prev != null) {
+        prev();
+      }
+      return undefined;
+    });
   }
 
   const [currentSheet, setCurrentSheet] = useState<React.ReactNode | undefined>(
@@ -57,7 +60,9 @@ export default function BottomSheetDisplay(props: {}) {
             bottomSheetRef?.current?.close();
           },
           setOnClose: (onClose: () => void) => {
-            setCustomOnClose(onClose);
+            setCustomOnClose(() => {
+              return onClose;
+            });
           },
         })
       );
@@ -77,7 +82,7 @@ export default function BottomSheetDisplay(props: {}) {
           position: "absolute",
           flexDirection: "column",
           justifyContent: "flex-end",
-          zIndex: currentSheet != null ? 999 : -1,
+          zIndex: currentSheet != null ? 50 : -1,
         }}
       >
         <>
@@ -86,6 +91,12 @@ export default function BottomSheetDisplay(props: {}) {
               <TouchableOpacity
                 onPress={() => {
                   bottomSheetRef?.current?.close();
+                  setCustomOnClose((prev) => {
+                    if (prev != null) {
+                      prev();
+                    }
+                    return undefined;
+                  });
                 }}
                 style={{
                   height: "100%",
@@ -118,8 +129,9 @@ export default function BottomSheetDisplay(props: {}) {
               backgroundColor: colors.card,
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
+              zIndex: 0,
             }}
-            keyboardBehavior="extend"
+            // keyboardBehavior="extend"
             onClose={onClose}
             backdropComponent={BottomSheetBackdrop}
           >

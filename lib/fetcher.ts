@@ -118,16 +118,16 @@ const fetchReportCard = async (
     throw new Error("INCORRECT_USERNAME");
   }
 
-  const name = JSON.parse(
-    homeLoginHtml.querySelector("#teamsSidekickJson")?.innerText || "{}"
-  ).userPersonName;
+  // const name = JSON.parse(
+  //   homeLoginHtml.querySelector("#teamsSidekickJson")?.innerText || "{}"
+  // ).userPersonName;
 
-  const firstName = name?.split(" ")?.[0];
-  const lastName = name?.split(" ")?.slice(1)?.join(" ");
+  // const firstName = name?.split(" ")?.[0];
+  // const lastName = name?.split(" ")?.slice(1)?.join(" ");
 
-  if (onLoginSuccess) {
-    onLoginSuccess({ firstName, lastName });
-  }
+  // if (onLoginSuccess) {
+  //   onLoginSuccess({ firstName, lastName });
+  // }
 
   onStatusUpdate?.({
     tasksCompleted: 1,
@@ -165,6 +165,30 @@ const fetchReportCard = async (
   const courseElements = reportCardsHtml.querySelectorAll(
     ".studentGradingBottomLeft tr:not(:first-child) td:nth-child(4)"
   );
+
+  const rawName =
+    reportCardsHtml.querySelector(
+      "#defaultInfoHeader tr:nth-child(1) td:nth-child(2)"
+    )?.innerText || "";
+
+  const lastName = rawName?.split(",")?.[0];
+
+  const legalFirstName = rawName?.split(", ")?.[1]?.split(" ")?.[0];
+
+  const regex = /\(.*\)/g;
+
+  const prefferedFirstName = regex.exec(rawName)?.[0];
+
+  const firstName = prefferedFirstName
+    ? prefferedFirstName.replace(/[()]/g, "")
+    : legalFirstName;
+
+  if (onLoginSuccess) {
+    onLoginSuccess({
+      firstName: firstName,
+      lastName: lastName,
+    });
+  }
 
   const columnNames: string[] = [];
 
@@ -266,7 +290,8 @@ const fetchGradeCategoriesForCourse = async (
   host: string,
   sessionId: string,
   referer: string,
-  course: Course
+  course: Course,
+  gradeIndex?: number
 ): Promise<GradeCategoriesResponse> => {
   const ASSIGNMENTS: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
@@ -276,7 +301,8 @@ const fetchGradeCategoriesForCourse = async (
       selectedTable: "",
       smartFormName: "SmartForm",
       focusElement: "",
-      gradeBookKey: course.key,
+      gradeBookKey:
+        gradeIndex != null ? course.grades[gradeIndex]?.key : course.key,
       replaceObjectParam1: "",
       selectedCell: "",
       selectedTdId: "",
@@ -495,7 +521,8 @@ const fetchAllContent = async (
 const fetchGradeCategoriesForCourses = async (
   host: string,
   reportCard: CourseResponse,
-  onStatusUpdate?: (status: RefreshStatus) => void
+  onStatusUpdate?: (status: RefreshStatus) => void,
+  gradeIndex?: number
 ): Promise<AllCoursesResponse> => {
   const all: Course[] = [];
 
@@ -517,7 +544,8 @@ const fetchGradeCategoriesForCourses = async (
       host,
       sessionId,
       referer,
-      course
+      course,
+      gradeIndex
     );
 
     all.push({
@@ -535,4 +563,9 @@ const fetchGradeCategoriesForCourses = async (
   };
 };
 
-export { fetchReportCard, fetchGradeCategoriesForCourse, fetchAllContent };
+export {
+  fetchReportCard,
+  fetchGradeCategoriesForCourse,
+  fetchGradeCategoriesForCourses,
+  fetchAllContent,
+};

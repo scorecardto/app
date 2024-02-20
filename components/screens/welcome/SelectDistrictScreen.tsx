@@ -14,6 +14,9 @@ import { NavigationProp, useTheme } from "@react-navigation/native";
 import { Image } from "expo-image";
 import useKeyboardVisisble from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
+import QuestionsButton from "../../app/welcome/questions/QuestionsButton";
+import TopQuestionsButton from "../../app/welcome/questions/SmallQuestionsButton";
+import SmallQuestionsButton from "../../app/welcome/questions/SmallQuestionsButton";
 
 const starred = require("../../../assets/starred.svg");
 
@@ -42,14 +45,9 @@ export default function SelectDistrictScreen(props: {
   const [districtSearch, setDistrictSearch] = useState("");
   return (
     <>
-      <LoadingOverlay show={loading} />
-      <ScrollView
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-      >
+      <ScrollView>
         <WelcomeScreen
+          hideQuestionButton
           header={HEADER}
           footerText={FOOTER}
           showBanner={!isKeyboardVisible}
@@ -60,7 +58,7 @@ export default function SelectDistrictScreen(props: {
               label="Search for your school or district"
               setValue={setDistrictSearch}
               value={districtSearch}
-              type="username"
+              type="text"
             />
             <FlatList
               scrollEnabled={false}
@@ -164,6 +162,8 @@ export default function SelectDistrictScreen(props: {
           </View>
         </WelcomeScreen>
       </ScrollView>
+      <SmallQuestionsButton />
+      <LoadingOverlay show={loading} />
     </>
   );
 }

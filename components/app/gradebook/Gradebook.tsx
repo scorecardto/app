@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
@@ -14,13 +14,17 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
 import useAccents from "../../core/theme/useAccents";
+import GradebookInfoCard from "./GradebookInfoCard";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
 
 function Gradebook(props: {
   course: Course;
+  oldGradingPeriodLastUpdated?: string;
   setModifiedGrade(avg: string | null): void;
+  refreshOldGradingPeriod?(): void;
+  resetKey?: string;
 }) {
   const sheets = useContext(BottomSheetContext);
 
@@ -36,6 +40,7 @@ function Gradebook(props: {
 
   const [currentCard, setCurrentCard] = useState(0);
 
+  const [isGradeModified, setIsGradeModified] = useState(false);
   const [animatingCard, setAnimatingCard] = useState(-1);
 
   type CategoryMod = {
@@ -50,6 +55,7 @@ function Gradebook(props: {
       return { assignments: null, average: null, exactAverage: null };
     })
   );
+  const [exactAverage, setExactAverage] = useState(0);
   const [exactAverages, setExactAverages] = useState<(string | null)[]>(
     averageAssignments(categories, []).map((i) => i?.toFixed(2))
   );
@@ -86,16 +92,38 @@ function Gradebook(props: {
       categories.length == props.course.gradeCategories?.length
     ) {
       props.setModifiedGrade(null);
-    } else {
-      const avg = averageGradeCategories(
-        categories.map((c, i) => {
+
+      setIsGradeModified(false);
+
+      const cats: GradeCategory[] = new Array(averages.length)
+        .fill(0)
+        .map((_, i) => {
+          const weight = categories[i].weight ?? 0;
           return {
-            ...c,
-            average: "" + (isNaN(averages[i]) ? "" : averages[i] ?? c.average),
+            ...categories[i],
+            average: averages[i].toString(),
+            weight: weight,
           };
-        })
-      );
-      props.setModifiedGrade(isNaN(avg) ? "NG" : "" + avg);
+        });
+
+      setExactAverage(averageGradeCategories(cats));
+    } else {
+      const cats: GradeCategory[] = new Array(averages.length)
+        .fill(0)
+        .map((_, i) => {
+          const weight = categories[i].weight ?? 0;
+          return {
+            ...categories[i],
+            average: averages[i].toString(),
+            weight: weight,
+          };
+        });
+      const avg = averageGradeCategories(cats);
+
+      props.setModifiedGrade(isNaN(avg) ? "NG" : "" + Math.round(avg));
+
+      setIsGradeModified(true);
+      setExactAverage(avg);
     }
   };
 
@@ -104,6 +132,31 @@ function Gradebook(props: {
   useEffect(() => {
     updateAverage(modifiedCategories);
   }, [categories]);
+
+  const lastUpdatedText = useMemo(() => {
+    if (
+      props.oldGradingPeriodLastUpdated === "" ||
+      props.oldGradingPeriodLastUpdated == null
+    ) {
+      return null;
+    }
+
+    const lastUpdated = new Date(props.oldGradingPeriodLastUpdated);
+
+    const now = new Date();
+
+    const diff = now.getTime() - lastUpdated.getTime();
+
+    const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return "This is a saved copy of an old grading period. It was last updated today.";
+    } else if (diffDays === 1) {
+      return "This is a saved copy of an old grading period. It was last updated yesterday.";
+    } else {
+      return `This is a saved copy of an old grading period. It was last updated ${diffDays} days ago.`;
+    }
+  }, [props.oldGradingPeriodLastUpdated]);
 
   return (
     <View
@@ -132,6 +185,7 @@ function Gradebook(props: {
         inactiveDotOpacity={0.3}
         inactiveDotScale={1}
       />
+
       <Carousel
         ref={ref}
         data={[null, ...categories]}
@@ -139,29 +193,69 @@ function Gradebook(props: {
           if (!item) {
             return (
               <View>
+                {lastUpdatedText && (
+                  <GradebookInfoCard
+                    header="Old Grading Period"
+                    text={lastUpdatedText}
+                    buttonText="Refresh"
+                    onPress={props.refreshOldGradingPeriod || (() => {})}
+                  />
+                )}
+
                 <GradebookCard
                   key={index}
                   title="Summary"
-                  bottom={{ Weight: { text: "100%", red: false } }}
+                  bottom={{
+                    Weight: { text: "100%", red: false },
+                    "Exact Average": {
+                      text: `${exactAverage.toFixed(2)}`,
+                      red: isGradeModified,
+                    },
+                  }}
                   removable={false}
                   remove={() => {}}
                   buttonAction={() => {
+                    const existingWeight =
+                      100 -
+                      categories.reduce((sum, category) => {
+                        return sum + (category.weight ?? 0);
+                      }, 0);
+
                     sheets?.addSheet(({ close }) => (
                       <>
                         <AddCategorySheet
                           close={close}
-                          add={(weight) => {
+                          suggestWeight={
+                            existingWeight < 100 ? 100 - existingWeight : 100
+                          }
+                          add={(weight, newAverage) => {
                             setCategories((oldCategories) => {
                               const newCategories = [...oldCategories];
                               newCategories.push({
                                 name: "Test Category " + numTestCats,
                                 id: "",
                                 weight: weight,
-                                average: "",
+                                average: `${newAverage}`,
                                 error: false,
-                                assignments: [],
+
+                                assignments: [
+                                  {
+                                    name: "Starting Average",
+                                    points: newAverage,
+                                    max: 100,
+                                    grade: `${newAverage}%`,
+                                    dropped: false,
+                                    scale: 100,
+                                    count: 1,
+                                    error: false,
+                                  },
+                                ],
                               });
                               setNumTestCats(numTestCats + 1);
+
+                              setTimeout(() => {
+                                ref.current?.snapToItem(categories.length + 1);
+                              }, 100);
                               return newCategories;
                             });
                             setExactAverages((averages) => {
@@ -248,6 +342,7 @@ function Gradebook(props: {
                     oldAverages.splice(index - 1, 1);
                     return [...oldAverages];
                   });
+                  ref.current?.snapToItem(0);
                 }}
                 buttonAction={() => {
                   setModifiedCategories((categories) => {

@@ -3,6 +3,7 @@ import React from "react";
 import { useTheme } from "@react-navigation/native";
 import MaterialCommunityIcon from "@expo/vector-icons/MaterialCommunityIcons";
 import SmallText from "../../text/SmallText";
+import useColors from "../../core/theme/useColors";
 
 export default function FeatureCard(props: {
   label: string;
@@ -10,7 +11,7 @@ export default function FeatureCard(props: {
   icon: string;
   iconColor: string;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
 
   const styles = StyleSheet.create({
     wrapper: {

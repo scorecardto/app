@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 import { useEffect, useMemo } from "react";
 import { Animated } from "react-native";
 import { MaterialIndicator } from "react-native-indicators";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 
 export default function LoadingOverlay(props: {
   show: boolean;
@@ -17,6 +18,7 @@ export default function LoadingOverlay(props: {
     },
   });
 
+  const isDarkMode = useIsDarkMode();
   const opacity = useMemo(() => new Animated.Value(1), []);
 
   useEffect(() => {
@@ -36,11 +38,12 @@ export default function LoadingOverlay(props: {
   }, [props.show]);
 
   return (
-    <Animated.View
-      style={[styles.wrapper, { opacity }]}
-      pointerEvents={props.show ? "auto" : "none"}
-    >
-      {/* <View
+    props.show && (
+      <Animated.View
+        style={[styles.wrapper, { opacity }]}
+        pointerEvents={props.show ? "auto" : "none"}
+      >
+        {/* <View
         style={{
           width: 100,
           height: 100,
@@ -50,11 +53,18 @@ export default function LoadingOverlay(props: {
           alignItems: "center",
         }}
       > */}
-      <MaterialIndicator
-        color={props.hideBackdrop ? "rgba(0,0,0,0.2 )" : "white"}
-        size={60}
-      />
-      {/* </View> */}
-    </Animated.View>
+        <MaterialIndicator
+          color={
+            props.hideBackdrop
+              ? isDarkMode
+                ? "rgba(255,255,255,0.2)"
+                : "rgba(0,0,0,0.2)"
+              : "white"
+          }
+          size={60}
+        />
+        {/* </View> */}
+      </Animated.View>
+    )
   );
 }

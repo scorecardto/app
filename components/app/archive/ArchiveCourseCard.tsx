@@ -7,10 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import useColors from "../../core/theme/useColors";
+import { setGradeCategory } from "../../core/state/grades/gradeCategorySlice";
 export default function ArchiveCourseCard(props: {
   course: Course;
   cellCount: number;
   navigation: NavigationProp<any, any>;
+  gradeCategoryNames: string[];
 }) {
   const courseSettings = useSelector((s: RootState) => s.courseSettings);
 
@@ -113,26 +115,38 @@ export default function ArchiveCourseCard(props: {
                       padding: 8,
                       width: "100%",
                       backgroundColor: colors.card,
-                      height: 52,
+                      height: 60,
                     }}
                   >
                     {props.course.grades[idx]?.value != null && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          props.navigation.navigate("course", {
-                            key: props.course.key,
-                          });
-                        }}
-                      >
-                        <ArchiveCourseChip
-                          accentColorLabel={
-                            courseSettings[props.course.key]?.accentColor ||
-                            "blue"
-                          }
-                          active={props.course.grades[idx]?.active || false}
-                          grade={props.course.grades[idx]?.value || ""}
-                        />
-                      </TouchableOpacity>
+                      <>
+                        <TouchableOpacity
+                          onPress={() => {
+                            dispatch(setGradeCategory(idx));
+                            props.navigation.navigate("course", {
+                              key: props.course.key,
+                            });
+                          }}
+                        >
+                          <ArchiveCourseChip
+                            accentColorLabel={
+                              courseSettings[props.course.key]?.accentColor ||
+                              "blue"
+                            }
+                            active={props.course.grades[idx]?.active || false}
+                            grade={props.course.grades[idx]?.value || ""}
+                          />
+                        </TouchableOpacity>
+                        <Text
+                          style={{
+                            color: colors.text,
+                            fontSize: 10,
+                            marginVertical: 4,
+                          }}
+                        >
+                          {props.gradeCategoryNames[idx]}
+                        </Text>
+                      </>
                     )}
                   </View>
                 </View>

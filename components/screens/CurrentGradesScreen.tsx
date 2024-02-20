@@ -242,9 +242,9 @@ const CurrentGradesScreen = (props: {
     });
   }, [changeIndex]);
 
-  const showCustomizeCard = useSelector((state: RootState) =>
-    getFeatureFlag("SHOW_CUSTOMIZE_CARD", state.userRank.type)
-  );
+  const showCustomizeCard = useSelector((state: RootState): boolean => {
+    return getFeatureFlag("SHOW_CUSTOMIZE_CARD", state.userRank.type);
+  });
 
   const oldCourseStates = useSelector(
     (s: RootState) => s.oldCourseStates.record

@@ -12,7 +12,10 @@ import {
   setLastName,
 } from "../components/core/state/user/nameSlice";
 import { setAllSettings } from "../components/core/state/user/settingsSlice";
-import { setInvitedNumbers } from "../components/core/state/user/invitedNumbersSlice";
+import {
+  setInvitedNumbers,
+  setOpenInviteSheetDate,
+} from "../components/core/state/user/invitedNumbersSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
 import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
@@ -35,6 +38,9 @@ export default async function initialize(
   const oldCourseStates = await Storage.getItem({ key: "oldCourseStates" });
   const courseSettings = await Storage.getItem({ key: "courseSettings" });
   const appSettings = await Storage.getItem({ key: "appSettings" });
+  const openInviteSheetDate = await Storage.getItem({
+    key: "openInviteSheetDate",
+  });
 
   const invitedNumbers = await Storage.getItem({
     key: "invitedNumbers",
@@ -44,6 +50,12 @@ export default async function initialize(
     dispatch(setInvitedNumbers(JSON.parse(invitedNumbers)));
   } else {
     dispatch(setInvitedNumbers(null));
+  }
+
+  if (openInviteSheetDate) {
+    dispatch(setOpenInviteSheetDate(new Date(openInviteSheetDate).getTime()));
+  } else {
+    dispatch(setOpenInviteSheetDate(null));
   }
 
   dispatch(setAllSettings(JSON.parse(appSettings || "{}")));

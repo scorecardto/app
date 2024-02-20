@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
@@ -10,6 +10,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
+import LinearGradient from "react-native-linear-gradient";
+import colorLib from "color";
+import FeatureExplanationSheet from "../vip/FeatureExplanationSheet";
 export default function InviteOthersCard(props: { show: boolean }) {
   const colors = useColors();
   const dark = useIsDarkMode();
@@ -17,6 +20,33 @@ export default function InviteOthersCard(props: { show: boolean }) {
   const invitedNumbers = useSelector(
     (s: RootState) => s.invitedNumbers.numbers
   );
+
+  const openInviteSheetDate = useSelector(
+    (s: RootState) => s.invitedNumbers.openInviteSheetDate
+  );
+
+  const [rightText, setRightText] = useState("tap me");
+
+  useEffect(() => {
+    if (openInviteSheetDate) {
+      const intervalId = setInterval(() => {
+        const now = new Date();
+        const secsSinceOpen = Math.floor(
+          (now.getTime() - openInviteSheetDate) / 1000
+        );
+
+        if (secsSinceOpen > 90) {
+          setRightText("coming later");
+        } else {
+          setRightText(`expires in ${90 - secsSinceOpen}`);
+        }
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    } else {
+      setRightText("tap me");
+    }
+  }, [openInviteSheetDate]);
 
   const accentLabel = "yellow";
 
@@ -63,12 +93,8 @@ export default function InviteOthersCard(props: { show: boolean }) {
 
   const leftText = invitedNumbers === null ? "Customize" : "More Features";
 
-  const rightText =
-    invitedNumbers === null
-      ? "tap me"
-      : invitedNumbers.length === 1
-      ? "1 invite left"
-      : "tap to invite";
+  if (!props.show) return null;
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -77,7 +103,25 @@ export default function InviteOthersCard(props: { show: boolean }) {
         });
       }}
     >
-      <View style={styles.wrapper}>
+      <LinearGradient
+        colors={[
+          colors.card,
+          colorLib(
+            color.AccentsMatrix[accentLabel][dark ? "dark" : "default"]
+              .gradientCenter
+          )
+            .mix(colorLib(colors.card), 0.7)
+            .hex(),
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[
+          styles.wrapper,
+          {
+            opacity: 1,
+          },
+        ]}
+      >
         <View style={styles.left}>
           <View style={styles.badge}>
             <MaterialIcon name="star" size={24} color={"white"} />
@@ -91,7 +135,7 @@ export default function InviteOthersCard(props: { show: boolean }) {
           </MediumText>
         </View>
         <SmallText style={styles.grade}>{rightText}</SmallText>
-      </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 }

@@ -29,6 +29,7 @@ export const LongTextInput = forwardRef<
       borderRadius: 4,
       marginBottom: 10,
       fontSize: 16,
+      lineHeight: 24,
       borderColor: colors.borderNeutral,
       borderWidth: 1,
       borderBottomWidth: 2,

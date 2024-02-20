@@ -1,17 +1,27 @@
-import { View } from "react-native";
-import { useRef } from "react";
+import { TouchableOpacity, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import SmallText from "../../text/SmallText";
 import useColors from "../../core/theme/useColors";
+import StatusText from "../../text/StatusText";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 export default function CourseNameTextInput(props: {
   value: string;
   setValue: (text: string) => void;
   onFinish(): void;
+  hidden: boolean;
+  onToggleHidden: (b: boolean) => void;
 }) {
   const colors = useColors();
 
   const ref = useRef(null);
+
+  const [hidden, setHidden] = useState(props.hidden);
+
+  useEffect(() => {
+    props.onToggleHidden(hidden);
+  }, [hidden]);
 
   return (
     <View>
@@ -27,11 +37,12 @@ export default function CourseNameTextInput(props: {
           alignSelf: "flex-start",
           borderRadius: 8,
           width: "100%",
+          position: "relative",
         }}
       >
         <BottomSheetTextInput
           ref={ref}
-          value={props.value}
+          defaultValue={props.value}
           onFocus={() => {
             // @ts-ignore
             ref.current?.setNativeProps({
@@ -46,7 +57,7 @@ export default function CourseNameTextInput(props: {
           onBlur={props.onFinish}
           returnKeyType="done"
           textContentType="none"
-          autoCorrect={false}
+          autoCorrect={true}
           maxLength={24}
           style={{
             fontSize: 20,
@@ -55,7 +66,37 @@ export default function CourseNameTextInput(props: {
             paddingVertical: 16,
           }}
         />
+
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            paddingHorizontal: 20,
+            borderRadius: 100,
+            right: 0,
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+          onPress={() => {
+            setHidden(!hidden);
+          }}
+        >
+          <MaterialCommunityIcons
+            name={hidden ? "eye-off" : "eye"}
+            size={24}
+            color={colors.text}
+          />
+        </TouchableOpacity>
       </View>
+      <SmallText
+        style={{
+          color: colors.text,
+          fontSize: 14,
+          marginVertical: 8,
+        }}
+      >
+        {hidden ? "Hidden in your courses" : "Shown in your courses"}
+      </SmallText>
     </View>
   );
 }
