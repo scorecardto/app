@@ -132,12 +132,12 @@ async function getExpoToken() {
 let token: string | undefined;
 
 // the actual result will be in `response.data.result`
-export function isRegisteredForNotifs(courseId: string) {
+export function isRegisteredForNotifs(courseIds: string[]) {
     return axios.post("https://scorecardgrades.com/api/notifications", {
         method: 'isRegistered',
         fcmToken,
         expoPushToken: token,
-        courseId
+        courseIds
     });
 }
 export function registerNotifs(courseId: string, courseName?: string, onetime?: boolean) {
