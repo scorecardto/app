@@ -132,13 +132,16 @@ async function getExpoToken() {
 let token: string | undefined;
 
 // the actual result will be in `response.data.result`
-export function isRegisteredForNotifs(courseId: string) {
-    return axios.post("https://scorecardgrades.com/api/notifications", {
+export function isRegisteredForNotifs(courseId: string|string[]) {
+    let body = {
         method: 'isRegistered',
         fcmToken,
         expoPushToken: token,
-        courseId
-    });
+    };
+    // @ts-ignore
+    body[typeof(courseId) === 'string' ? "courseId" : "courseIds"] = courseId;
+
+    return axios.post("https://scorecardgrades.com/api/notifications", body);
 }
 export function registerNotifs(courseId: string, courseName?: string, onetime?: boolean) {
     return axios.post("https://scorecardgrades.com/api/notifications", {
