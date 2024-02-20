@@ -10,6 +10,7 @@ import {
 import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
+import {updateNotifs} from "./backgroundNotifications";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
@@ -53,29 +54,26 @@ export default async function fetchAndStore(
     });
   }
 
+  if (oldData[0]) {
+    courseLoop:
+      for (const course of newData.courses) {
+        const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
+        if (!oldCourse) continue;
+
+        for (const assignment of (course.gradeCategories![gradeCategory].assignments ?? [])) {
+          if (!assignment.name) continue;
+          const oldAssignment = oldCourse.gradeCategories![gradeCategory].assignments?.find(a=>a.name === assignment.name);
+
+          if ((!oldAssignment || oldAssignment.grade === '') && assignment.grade !== '') {
+            await updateNotifs(course.key, assignment.name);
+            continue courseLoop;
+          }
+        }
+      }
+  }
+
   await Storage.setItem({
     key: "records",
     value: JSON.stringify([newData, ...oldData]),
   });
-}
-
-function arrayIsEqual(a: any[], b: any[]) {
-  return (
-    a.length == b.length &&
-    a.every((v1) => b.find((v2) => objIsEqual(v1, v2)) != null)
-  );
-}
-
-function objIsEqual(a: any, b: any) {
-  if (typeof a != "object" || typeof b != "object") return a == b;
-
-  for (const key in a) {
-    if (
-      (Array.isArray(a) && Array.isArray(b) && !arrayIsEqual(a, b)) ||
-      a[key] != b[key]
-    )
-      return false;
-  }
-
-  return true;
 }

@@ -6,7 +6,7 @@ import analytics from "@react-native-firebase/analytics";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Color from "./lib/Color";
 import * as SplashScreen from "expo-splash-screen";
 import ConnectAccountScreen from "./components/screens/welcome/ConnectAccountScreen";
@@ -37,8 +37,12 @@ import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 import { getFeatureFlag } from "./lib/featureFlag";
 import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
+import {setupForegroundNotifications, setupBackgroundNotifications, registerToken} from "./lib/backgroundNotifications";
 
 SplashScreen.preventAutoHideAsync();
+registerToken();
+setupBackgroundNotifications();
+setupForegroundNotifications();
 
 const Stack = createNativeStackNavigator();
 
