@@ -13,7 +13,7 @@ export default function CategoryTable(props: {
 }) {
   return (
     <ScrollView
-      style={{ maxHeight: Dimensions.get("window").height - 437 }}
+      style={{ maxHeight: Dimensions.get("window").height - 500 }}
       alwaysBounceVertical={false}
     >
       {new Array(

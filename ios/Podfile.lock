@@ -75,6 +75,8 @@ PODS:
     - expo-dev-menu/SafeAreaView
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - ExpoCrypto (12.4.1):
+    - ExpoModulesCore
   - ExpoDevice (5.4.0):
     - ExpoModulesCore
   - ExpoHaptics (12.4.0):
@@ -710,6 +712,7 @@ DEPENDENCIES:
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
+  - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoDevice (from `../node_modules/expo-device/ios`)
   - ExpoHaptics (from `../node_modules/expo-haptics/ios`)
   - ExpoImage (from `../node_modules/expo-image/ios`)
@@ -832,6 +835,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu"
   expo-dev-menu-interface:
     :path: "../node_modules/expo-dev-menu-interface/ios"
+  ExpoCrypto:
+    :path: "../node_modules/expo-crypto/ios"
   ExpoDevice:
     :path: "../node_modules/expo-device/ios"
   ExpoHaptics:
@@ -969,6 +974,7 @@ SPEC CHECKSUMS:
   expo-dev-launcher: 4abaa5997c1063e77432bb23ca05da364803e297
   expo-dev-menu: 7cc0b6c9ed9fc99740e5d3ba1335bcd1537da9e8
   expo-dev-menu-interface: bda969497e73dadc2663c479e0fa726ca79a306e
+  ExpoCrypto: a382ab9a2fa91f0b511ce1fe4d6baecee40a1615
   ExpoDevice: 1c1b0c9cad96c292c1de73948649cfd654b2b3c0
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
   ExpoImage: 723efcb8d9377ae8645a6f7a1579305f5b80a76f

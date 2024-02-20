@@ -70,7 +70,7 @@ export default function GradebookCard(props: {
       <View style={styles.wrapper}>
         <View style={styles.header}>
           <MediumText
-            numberOfLines={2}
+            numberOfLines={1}
             ellipsizeMode={"tail"}
             style={styles.headerText}
           >

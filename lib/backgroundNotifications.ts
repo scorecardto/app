@@ -2,6 +2,7 @@ import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
 import {Platform} from "react-native";
 import * as Device from "expo-device";
+import * as Crypto from "expo-crypto";
 import axios, {Response} from "redaxios";
 import {Notification} from "expo-notifications";
 import {fetchAllContent, fetchGradeCategoriesForCourse, fetchReportCard} from "./fetcher";
@@ -142,6 +143,7 @@ export async function isRegisteredForNotifs(courseId: string|string[]): Promise<
         method: 'isRegistered',
         fcmToken,
         expoPushToken: token,
+        deviceId: await getDeviceId(),
     };
     // @ts-ignore
     body[typeof(courseId) === 'string' ? "courseId" : "courseIds"] = courseId;
@@ -158,6 +160,7 @@ export async function registerNotifs(courseId: string, courseName?: string, onet
         method: 'register',
         fcmToken,
         expoPushToken: token,
+        deviceId: await getDeviceId(),
         courseId,
         courseName,
         onetime,
@@ -173,16 +176,32 @@ export async function deregisterNotifs(courseId: string): Promise<Response<any>|
         method: 'deregister',
         fcmToken,
         expoPushToken: token,
-        courseId
+        courseId,
+        deviceId: await getDeviceId(),
     })
 }
+
 export async function updateNotifs(courseId: string, assignmentId: string): Promise<Response<any>|undefined> {
     return await axios.post("https://scorecardgrades.com/api/notifications", {
         method: 'update',
         fcmToken,
         courseId,
+        deviceId: await getDeviceId(),
         assignmentId
     });
+}
+
+async function getDeviceId() {
+    const deviceId = await Storage.getItem({key: "deviceId"});
+
+    if (!deviceId) {
+        const id = Crypto.randomUUID();
+        await Storage.setItem({key: "deviceId", value: id});
+
+        return id;
+    }
+
+    return deviceId;
 }
 
 export async function requestPermissions() {
