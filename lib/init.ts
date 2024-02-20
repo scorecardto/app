@@ -68,7 +68,7 @@ export default async function initialize(
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 
     isRegisteredForNotifs(data.courses.map(c => c.key)).then(res => {
-      if (res.data.success) {
+      if (res?.data.success) {
         for (const result of res.data.result) {
           dispatch(setNotification({
             key: result.key,

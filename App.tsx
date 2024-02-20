@@ -37,10 +37,10 @@ import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 import { getFeatureFlag } from "./lib/featureFlag";
 import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
-import {setupForegroundNotifications, setupBackgroundNotifications, registerToken} from "./lib/backgroundNotifications";
+import {setupForegroundNotifications, setupBackgroundNotifications, requestPermissions} from "./lib/backgroundNotifications";
 
 SplashScreen.preventAutoHideAsync();
-registerToken();
+requestPermissions();
 setupBackgroundNotifications();
 setupForegroundNotifications();
 

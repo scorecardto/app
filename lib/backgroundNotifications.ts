@@ -2,7 +2,7 @@ import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
 import {Platform} from "react-native";
 import * as Device from "expo-device";
-import axios from "redaxios";
+import axios, {Response} from "redaxios";
 import {Notification} from "expo-notifications";
 import {fetchAllContent, fetchGradeCategoriesForCourse, fetchReportCard} from "./fetcher";
 import {useDispatch, useSelector} from "react-redux";
@@ -132,7 +132,12 @@ async function getExpoToken() {
 let token: string | undefined;
 
 // the actual result will be in `response.data.result`
-export function isRegisteredForNotifs(courseId: string|string[]) {
+export async function isRegisteredForNotifs(courseId: string|string[]): Promise<Response<any>|undefined> {
+    if (!token) {
+        await requestPermissions();
+        if (!token) return;
+    }
+
     let body = {
         method: 'isRegistered',
         fcmToken,
@@ -141,10 +146,15 @@ export function isRegisteredForNotifs(courseId: string|string[]) {
     // @ts-ignore
     body[typeof(courseId) === 'string' ? "courseId" : "courseIds"] = courseId;
 
-    return axios.post("https://scorecardgrades.com/api/notifications", body);
+    return await axios.post("https://scorecardgrades.com/api/notifications", body);
 }
-export function registerNotifs(courseId: string, courseName?: string, onetime?: boolean) {
-    return axios.post("https://scorecardgrades.com/api/notifications", {
+export async function registerNotifs(courseId: string, courseName?: string, onetime?: boolean): Promise<Response<any>|undefined> {
+    if (!token) {
+        await requestPermissions();
+        if (!token) return;
+    }
+
+    return await axios.post("https://scorecardgrades.com/api/notifications", {
         method: 'register',
         fcmToken,
         expoPushToken: token,
@@ -153,24 +163,28 @@ export function registerNotifs(courseId: string, courseName?: string, onetime?: 
         onetime,
     })
 }
-export function deregisterNotifs(courseId: string) {
-    return axios.post("https://scorecardgrades.com/api/notifications", {
+export async function deregisterNotifs(courseId: string): Promise<Response<any>|undefined> {
+    if (!token) {
+        await requestPermissions();
+        if (!token) return;
+    }
+
+    return await axios.post("https://scorecardgrades.com/api/notifications", {
         method: 'deregister',
         fcmToken,
         expoPushToken: token,
         courseId
     })
 }
-export function updateNotifs(courseId: string, assignmentId: string) {
-    return axios.post("https://scorecardgrades.com/api/notifications", {
+export async function updateNotifs(courseId: string, assignmentId: string): Promise<Response<any>|undefined> {
+    return await axios.post("https://scorecardgrades.com/api/notifications", {
         method: 'update',
         fcmToken,
-        expoPushToken: token,
         courseId,
         assignmentId
     });
 }
 
-export function registerToken() {
-    getExpoToken().then(t => token = t);
+export async function requestPermissions() {
+    token = await getExpoToken();
 }
