@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TextInput } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { Contact } from "expo-contacts";
 import InviteFlowHeader from "./InviteFlowHeader";
@@ -9,6 +9,7 @@ import LoadingOverlay from "../../screens/loader/LoadingOverlay";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import axios from "redaxios";
+import useColors from "../../core/theme/useColors";
 export default function ContactListView(props: {
   contacts: Contact[];
   numInvited: number;
@@ -55,6 +56,9 @@ export default function ContactListView(props: {
 
   const enableInviteButton = selectedContact !== undefined && userPhoneNumber;
 
+  const colors = useColors();
+
+  const [search, setSearch] = useState("");
   return (
     <>
       <View style={{ height: "100%" }}>
@@ -62,13 +66,31 @@ export default function ContactListView(props: {
           header={headerText}
           subheader="then, send them a link"
         />
+        <View>
+          <TextInput
+            value={search}
+            onChangeText={(text) => setSearch(text)}
+            style={{
+              padding: 20,
+              color: colors.primary,
+            }}
+            placeholderTextColor={colors.text}
+            placeholder="Search for a contact"
+          ></TextInput>
+        </View>
         <FlatList
           // list including multiple phone numbers for each contact
           data={contacts}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => {
+            const isInSearch = search === "" || item.name.includes(search);
             return (
-              <View key={index}>
+              <View
+                key={index}
+                style={{
+                  display: isInSearch ? "flex" : "none",
+                }}
+              >
                 <ContactCard
                   showPhoneNumber={true}
                   selected={selected === index}
