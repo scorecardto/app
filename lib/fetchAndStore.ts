@@ -55,21 +55,26 @@ export default async function fetchAndStore(
   }
 
   if (oldData[0]) {
-    courseLoop:
-      for (const course of newData.courses) {
-        const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
-        if (!oldCourse) continue;
+    // courseLoop:
+    for (const course of newData.courses) {
+      const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
+      if (!oldCourse) continue;
 
-        for (const assignment of (course.gradeCategories![gradeCategory].assignments ?? [])) {
+      for (const category of course.gradeCategories!) {
+        const oldCategory = oldCourse.gradeCategories!.find(c=>c.name === category.name);
+
+        for (const assignment of category.assignments!) {
           if (!assignment.name) continue;
-          const oldAssignment = oldCourse.gradeCategories![gradeCategory].assignments?.find(a=>a.name === assignment.name);
+          const oldAssignment = oldCategory?.assignments?.find(a=>a.name === assignment.name);
 
           if ((!oldAssignment || oldAssignment.grade === '') && assignment.grade !== '') {
             await updateNotifs(course.key, assignment.name);
-            continue courseLoop;
+            console.log("updating", course.key, assignment.name);
+            // continue courseLoop;
           }
         }
       }
+    }
   }
 
   await Storage.setItem({
