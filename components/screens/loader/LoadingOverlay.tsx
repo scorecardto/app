@@ -38,11 +38,12 @@ export default function LoadingOverlay(props: {
   }, [props.show]);
 
   return (
-    <Animated.View
-      style={[styles.wrapper, { opacity }]}
-      pointerEvents={props.show ? "auto" : "none"}
-    >
-      {/* <View
+    props.show && (
+      <Animated.View
+        style={[styles.wrapper, { opacity }]}
+        pointerEvents={props.show ? "auto" : "none"}
+      >
+        {/* <View
         style={{
           width: 100,
           height: 100,
@@ -52,17 +53,18 @@ export default function LoadingOverlay(props: {
           alignItems: "center",
         }}
       > */}
-      <MaterialIndicator
-        color={
-          props.hideBackdrop
-            ? isDarkMode
-              ? "rgba(255,255,255,0.2)"
-              : "rgba(0,0,0,0.2)"
-            : "white"
-        }
-        size={60}
-      />
-      {/* </View> */}
-    </Animated.View>
+        <MaterialIndicator
+          color={
+            props.hideBackdrop
+              ? isDarkMode
+                ? "rgba(255,255,255,0.2)"
+                : "rgba(0,0,0,0.2)"
+              : "white"
+          }
+          size={60}
+        />
+        {/* </View> */}
+      </Animated.View>
+    )
   );
 }

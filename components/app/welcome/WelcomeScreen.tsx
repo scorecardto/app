@@ -4,6 +4,7 @@ import LargeText from "../../text/LargeText";
 import WelcomeScreenBanner from "./WelcomeScreenBanner";
 import MonoText from "../../text/MonoText";
 import { useTheme } from "@react-navigation/native";
+import QuestionsButton from "./questions/QuestionsButton";
 
 export default function WelcomeScreen(props: {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ export default function WelcomeScreen(props: {
   footerText: string;
   showBanner?: boolean;
   monoLabel: string;
+  hideQuestionButton?: boolean;
 }) {
   const { colors } = useTheme();
   const styles = StyleSheet.create({
@@ -45,18 +47,23 @@ export default function WelcomeScreen(props: {
   const windowHeight = Dimensions.get("window").height;
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.top}>
-        <WelcomeScreenBanner
-          height={windowHeight / 3}
-          show={props.showBanner ?? true}
-        />
-        <View style={styles.heading}>
-          <MonoText style={{ color: colors.text }}>{props.monoLabel}</MonoText>
-          <LargeText style={styles.header}>{props.header}</LargeText>
+    <>
+      <View style={styles.wrapper}>
+        <View style={styles.top}>
+          <WelcomeScreenBanner
+            height={windowHeight / 3}
+            show={props.showBanner ?? true}
+          />
+          <View style={styles.heading}>
+            <MonoText style={{ color: colors.text }}>
+              {props.monoLabel}
+            </MonoText>
+            <LargeText style={styles.header}>{props.header}</LargeText>
+          </View>
+          <View style={styles.content}>{props.children}</View>
         </View>
-        <View style={styles.content}>{props.children}</View>
       </View>
-    </View>
+      {!props.hideQuestionButton && <QuestionsButton />}
+    </>
   );
 }

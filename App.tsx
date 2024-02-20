@@ -36,6 +36,7 @@ import { Provider, useSelector } from "react-redux";
 import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 import { getFeatureFlag } from "./lib/featureFlag";
+import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -217,6 +218,14 @@ export default function App(props: { resetKey: string }) {
                     <Stack.Screen
                       name="help"
                       component={HelpScreen}
+                      options={{
+                        ...headerOptions,
+                        headerBackTitle: "Back",
+                      }}
+                    />
+                    <Stack.Screen
+                      name="helpOnboarding"
+                      component={HelpOnboardingScreen}
                       options={{
                         ...headerOptions,
                         headerBackTitle: "Back",
