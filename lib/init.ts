@@ -20,6 +20,8 @@ import { setOldCourseStates } from "../components/core/state/grades/oldCourseSta
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
 import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
+import {setNotification} from "../components/core/state/user/notificationSettingsSlice";
+import {isRegisteredForNotifs} from "./backgroundNotifications";
 type NextScreen =
   | "scorecard"
   | "account"
@@ -64,6 +66,17 @@ export default async function initialize(
     dispatch(setAllCourseSettings(JSON.parse(courseSettings ?? "{}")));
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
+
+    isRegisteredForNotifs(data.courses.map(c => c.key)).then(res => {
+      if (res.data.success) {
+        for (const result of res.data.result) {
+          dispatch(setNotification({
+            key: result.key,
+            value: result.value
+          }));
+        }
+      }
+    });
 
     dispatch(setGradeRecord(data));
     dispatch(setGradeCategory(data.gradeCategory));
