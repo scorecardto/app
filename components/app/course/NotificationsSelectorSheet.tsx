@@ -53,7 +53,7 @@ const NotificationsSelectorSheet = forwardRef(
         (c) => c.key === props.courseKey
       );
 
-      const courseSettingName = r.courseSettings[props.courseKey].displayName;
+      const courseSettingName = r.courseSettings[props.courseKey]?.displayName;
 
       return courseSettingName || course?.name || "Unknown Course";
     });
