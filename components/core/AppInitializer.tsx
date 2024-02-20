@@ -13,6 +13,7 @@ import { IBMPlexMono_400Regular } from "@expo-google-fonts/ibm-plex-mono";
 import initialize from "../../lib/init";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./state/store";
+import {setFcmToken} from "../../lib/backgroundNotifications";
 
 export default function AppInitializer(props: {
   setAppReady: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,6 +35,8 @@ export default function AppInitializer(props: {
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setUser(user);
+    user?.getIdToken().then(setFcmToken);
+
     if (!userReady) setUserReady(true);
   }
 

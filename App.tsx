@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Color from "./lib/Color";
 import * as SplashScreen from "expo-splash-screen";
 import ConnectAccountScreen from "./components/screens/welcome/ConnectAccountScreen";
@@ -31,12 +31,17 @@ import AppInitializer from "./components/core/AppInitializer";
 import { Provider } from "react-redux";
 import { store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
+import {setupForegroundNotifications, setupBackgroundNotifications, registerToken} from "./lib/backgroundNotifications";
 
 SplashScreen.preventAutoHideAsync();
+setupBackgroundNotifications();
+setupForegroundNotifications();
 
 const Stack = createNativeStackNavigator();
 
 export default function App(props: { resetKey: string }) {
+  useEffect(registerToken, []);
+
   const [appReady, setAppReady] = useState(false);
 
   const [nextScreen, setNextScreen] = useState("");
