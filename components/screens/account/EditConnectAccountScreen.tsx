@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
 import * as loginSlice from "../../core/state/user/loginSlice";
 import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
-
+import * as SecureStorage from "expo-secure-store";
 const EditConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -67,6 +67,19 @@ const EditConnectAccountScreen = (props: {
           loginSlice.setDistrict(district.url);
           loginSlice.setUsername(username);
           loginSlice.setPassword(password);
+
+          SecureStorage.setItem(
+            "login",
+            JSON.stringify({
+              host: district.url,
+              username,
+              password,
+            }),
+            {
+              requireAuthentication: false,
+              keychainAccessible: SecureStorage.ALWAYS,
+            }
+          );
 
           await Storage.setItem({
             key: "login",
