@@ -67,9 +67,24 @@ export default function MoreFeaturesSheet(props: {
     }
   }, []);
 
+  const release = useSelector((s: RootState) => {
+    if (s.login.districtVipProgramDate == null) {
+      return "Coming Soon";
+    }
+    return (
+      "Coming " +
+      new Date(Date.parse(s.login.districtVipProgramDate)).toLocaleString(
+        "en-US",
+        {
+          month: "long",
+          day: "numeric",
+        }
+      )
+    );
+  });
   return (
     <BottomSheetView>
-      <BottomSheetHeader>Coming March 11</BottomSheetHeader>
+      <BottomSheetHeader>{release}</BottomSheetHeader>
       <View
         style={{
           paddingHorizontal: 20,
@@ -111,7 +126,7 @@ export default function MoreFeaturesSheet(props: {
           renaming classes are coming soon.
         </SmallText>
         <CountdownButton
-          forceEnable={true}
+          // forceEnable={true}
           onPress={() => {
             getAnalytics().logEvent("opened_invite_screen");
 

@@ -13,11 +13,22 @@ function getGiveVipFeaturesFlag(userRank: UserRankType): boolean {
   const numInvitedNumbers =
     store.getState().invitedNumbers.numbers?.length ?? 0;
 
+  const vipProgramDate = store.getState().login.districtVipProgramDate;
+
+  const now = new Date();
+
+  now.setMinutes(0, 0, 0);
+
+  const vipProgramEnabled =
+    vipProgramDate !== null && now.getTime() < Date.parse(vipProgramDate);
+
+  // console.log(Date.parse(vipProgramDate) - now.getTime());
+
   if (
     userRank !== "DEFAULT" ||
     Platform.OS === "android" ||
     numInvitedNumbers > 2 ||
-    !inDeveloperMode
+    !vipProgramEnabled
   ) {
     return true;
   }

@@ -16,7 +16,7 @@ import LoadingOverlay from "../loader/LoadingOverlay";
 import * as nameSlice from "../../core/state/user/nameSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
-
+import * as Notifications from "expo-notifications";
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -94,12 +94,36 @@ export default function AddPhoneNumberScreen(props: {
             setLoading(false);
           })
           .catch((err) => {
-            console.error(err);
-            Toast.show({
-              type: "info",
-              text1: "Error",
-              text2: err.message,
-            });
+            if (err.message.startsWith("[auth/missing-phone-number]")) {
+              Toast.show({
+                type: "info",
+                text1: "Error",
+                text2: "Please enter a valid phone number.",
+              });
+              setTimeout(() => {
+                setLoading(false);
+              }, 500);
+            } else if (err.message.startsWith("[auth/popup-closed-by-user]")) {
+              Toast.show({
+                type: "info",
+                text1: "Error",
+                text2: "Please complete the popup activity.",
+              });
+              setTimeout(() => {
+                setLoading(false);
+              }, 500);
+            } else {
+              console.error(err);
+              Toast.show({
+                type: "info",
+                text1: "Error",
+                text2: err.message,
+              });
+              setTimeout(() => {
+                setLoading(false);
+                setAllowSkip(true);
+              }, 2500);
+            }
           });
         return true;
       }
@@ -109,6 +133,8 @@ export default function AddPhoneNumberScreen(props: {
   const { colors } = useTheme();
 
   const keyboardVisible = useKeyboardVisible();
+
+  const [allowSkip, setAllowSkip] = useState(true);
 
   return (
     <View
@@ -170,7 +196,42 @@ export default function AddPhoneNumberScreen(props: {
           ref={phoneNumberRef}
           type="phone-number"
         />
-        <Button onPress={finish}>Finish</Button>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <Button onPress={finish}>Finish</Button>
+
+          {allowSkip && (
+            <>
+              <View style={{ width: 12 }} />
+              <Button
+                onPress={() => {
+                  Notifications.getPermissionsAsync().then((permissions) => {
+                    if (permissions.canAskAgain) {
+                      props.navigation.reset({
+                        index: 0,
+                        routes: [{ name: "notifications" }],
+                      });
+                    } else {
+                      props.navigation.reset({
+                        index: 0,
+                        routes: [
+                          { name: "scorecard", params: { firstTime: true } },
+                        ],
+                      });
+                    }
+                  });
+                }}
+                secondary
+              >
+                Skip This
+              </Button>
+            </>
+          )}
+        </View>
       </WelcomeScreen>
     </View>
   );

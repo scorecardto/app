@@ -4,6 +4,7 @@ import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { AppDispatch } from "../components/core/state/store";
 import {
   setDistrict,
+  setDistrictVipProgramDate,
   setPassword,
   setUsername,
 } from "../components/core/state/user/loginSlice";
@@ -50,6 +51,13 @@ export default async function initialize(
     key: "invitedNumbers",
   });
 
+  const vipProgramDate = await Storage.getItem({
+    key: "vipProgramDate",
+  });
+
+  if (vipProgramDate) {
+    dispatch(setDistrictVipProgramDate(vipProgramDate));
+  }
   if (invitedNumbers) {
     dispatch(setInvitedNumbers(JSON.parse(invitedNumbers)));
   } else {

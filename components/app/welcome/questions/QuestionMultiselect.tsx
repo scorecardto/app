@@ -100,8 +100,6 @@ export default function QuestionMultiselect(props: {
             // @ts-ignore
             path={props.path.options[showMultiselectIndex]}
             back={() => {
-              console.log("back");
-
               setShowMultiselectIndex(-1);
             }}
           />
@@ -113,8 +111,6 @@ export default function QuestionMultiselect(props: {
             // @ts-ignore
             path={props.path.options[showMultiselectIndex]}
             back={() => {
-              console.log("back");
-
               setShowMultiselectIndex(-1);
             }}
           />

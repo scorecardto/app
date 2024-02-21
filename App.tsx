@@ -106,7 +106,6 @@ export default function App(props: { resetKey: string }) {
                         screen_name: currentRouteName,
                         screen_class: currentRouteName,
                       });
-                      console.log("Screen view logged: " + currentRouteName);
                     }
 
                     routeNameRef.current = currentRouteName;
