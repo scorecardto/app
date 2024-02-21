@@ -4,7 +4,7 @@ import BottomSheetHeader from "../../../util/BottomSheet/BottomSheetHeader";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import QuestionMultiselect from "./QuestionMultiselect";
 import { MultiselectQuestionPath } from "../../../../lib/types/QuestionPath";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 
 export default function QuestionsSheet(props: { close: () => void }) {
   const navigation = useNavigation();
@@ -96,6 +96,25 @@ export default function QuestionsSheet(props: { close: () => void }) {
         type: "answer",
         emoji: "❣️",
         text: "Scorecard deals with sensitive data, which is why your login and grades are never uploaded to a server. Our code is open source, which means anyone can see how it works and audit it for security. We're also public about who we are and are always happy to answer questions!",
+      },
+
+      {
+        type: "answerAction",
+        label: "What's your privacy policy?",
+        // @ts-ignore
+        onPress: () => {
+          Linking.openURL(
+            "https://scorecardgrades.com/privacy-policy?type=mobile"
+          );
+        },
+        emoji: "🔒",
+      },
+      {
+        type: "answerAction",
+        label: "I have a different question.",
+        // @ts-ignore
+        onPress: () => navigation.navigate("helpOnboarding"),
+        emoji: "🙋",
       },
     ],
   };

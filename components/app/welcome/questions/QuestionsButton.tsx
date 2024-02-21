@@ -1,13 +1,18 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import React, { useContext } from "react";
 import MediumText from "../../../text/MediumText";
 import MaterialIcon from "@expo/vector-icons/MaterialIcons";
 import useColors from "../../../core/theme/useColors";
 import BottomSheetContext from "../../../util/BottomSheet/BottomSheetContext";
 import QuestionsSheet from "./QuestionsSheet";
+import SmallQuestionsButton from "./SmallQuestionsButton";
 export default function QuestionsButton() {
   const colors = useColors();
   const sheets = useContext(BottomSheetContext);
+  const dimensions = Dimensions.get("window");
+
+  if (dimensions.height < 700) return <SmallQuestionsButton />;
+
   return (
     <View
       style={{

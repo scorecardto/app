@@ -70,7 +70,7 @@ const ConnectAccountScreen = (props: {
           loginSlice.setPassword(password);
           loginSlice.setDistrictVipProgramDate(district.vipProgramDate);
 
-          SecureStorage.setItem(
+          await SecureStorage.setItemAsync(
             "login",
             JSON.stringify({
               host: district.url,

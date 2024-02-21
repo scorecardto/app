@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
 import { enableAllNotifications } from "../core/state/user/notificationSettingsSlice";
 import * as Notifications from "expo-notifications";
+import Storage from "expo-storage";
+import { registerNotifs } from "../../lib/backgroundNotifications";
 const Tab = createBottomTabNavigator();
 
 export default function ScorecardScreen(props: {
@@ -39,6 +41,10 @@ export default function ScorecardScreen(props: {
     (state: RootState) => state.gradeData.record !== null
   );
 
+  const courses = useSelector(
+    (state: RootState) => state.gradeData.record?.courses || [],
+    () => true
+  );
   const courseKeys = useSelector(
     (state: RootState) =>
       state.gradeData.record?.courses.map((c) => c.key) || []
@@ -54,6 +60,18 @@ export default function ScorecardScreen(props: {
               keys: courseKeys,
             })
           );
+
+          Storage.setItem({
+            key: "notifications",
+            value: JSON.stringify({
+              keys: courseKeys,
+            }),
+          });
+
+          courseKeys.forEach((courseKey, idx) => {
+            const displayName = courses.find((c) => c.key === courseKey)?.name;
+            registerNotifs(courseKey, displayName, false);
+          });
         }
       });
     }

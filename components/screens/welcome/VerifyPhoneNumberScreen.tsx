@@ -44,7 +44,7 @@ export default function VerifyPhoneNumberScreen(props: {
 
         if (currentPage?.name === "verifyPhoneNumber") {
           Notifications.getPermissionsAsync().then((permissions) => {
-            if (permissions.canAskAgain) {
+            if (permissions.canAskAgain || permissions.ios?.status === 0) {
               props.navigation.reset({
                 index: 0,
                 routes: [{ name: "notifications" }],
@@ -89,9 +89,18 @@ export default function VerifyPhoneNumberScreen(props: {
     return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setLoading(false);
-        props.navigation.reset({
-          index: 0,
-          routes: [{ name: "scorecard", params: { firstTime: true } }],
+        Notifications.getPermissionsAsync().then((permissions) => {
+          if (permissions.canAskAgain || permissions.ios?.status === 0) {
+            props.navigation.reset({
+              index: 0,
+              routes: [{ name: "notifications" }],
+            });
+          } else {
+            props.navigation.reset({
+              index: 0,
+              routes: [{ name: "scorecard", params: { firstTime: true } }],
+            });
+          }
         });
       }
     });

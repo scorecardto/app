@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Animated } from "react-native";
+import { View, Text, SafeAreaView, Animated, ScrollView } from "react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import useColors from "../../core/theme/useColors";
 import GiantCourseCard from "../../app/welcome/GiantCourseCard";
@@ -8,10 +8,15 @@ import StatusText from "../../text/StatusText";
 import Button from "../../input/Button";
 import { NavigationProp } from "@react-navigation/native";
 import LoadingIndicatorButton from "../../input/LoadingIndicatorButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import { getAnalytics } from "@react-native-firebase/analytics";
-
+import * as SecureStorage from "expo-secure-store";
+import {
+  setDistrict,
+  setPassword,
+  setUsername,
+} from "../../core/state/user/loginSlice";
 const icon = require("../../../assets/icon.svg");
 export default function FinalWelcomeScreen(props: { close: () => void }) {
   const colors = useColors();
@@ -39,6 +44,8 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
     });
   }, [closeAnimation]);
 
+  const dispatch = useDispatch();
+
   return (
     <Animated.View
       style={{
@@ -47,6 +54,7 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
         width: "100%",
         opacity: closeAnimation,
         overflow: "hidden",
+        backgroundColor: background,
         transform: [
           {
             scale: closeAnimation.interpolate({
@@ -57,88 +65,110 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
         ],
       }}
     >
-      <SafeAreaView
-        style={{
-          flex: 1,
-          alignItems: "center",
-          backgroundColor: background,
-        }}
-      >
-        <View
+      <ScrollView>
+        <SafeAreaView
           style={{
-            marginTop: 32,
-            width: "100%",
+            flex: 1,
             alignItems: "center",
+            backgroundColor: background,
           }}
         >
-          <Image
-            source={icon}
+          <View
             style={{
-              width: 100,
-              aspectRatio: 1,
-            }}
-          />
-          <Text
-            style={{
-              fontSize: 28,
               marginTop: 32,
-              width: "50%",
+              paddingBottom: 32,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={icon}
+              style={{
+                width: 100,
+                aspectRatio: 1,
+              }}
+            />
+            <Text
+              style={{
+                fontSize: 28,
+                marginTop: 32,
+                width: "50%",
+                textAlign: "center",
+                lineHeight: 48,
+              }}
+            >
+              Welcome to Scorecard
+            </Text>
+          </View>
+          <View style={{ width: "100%", paddingHorizontal: 24, marginTop: 36 }}>
+            <GiantCustomizeCard
+              increment={() => {
+                setRandomIndex((prev) => (prev + 1) % numRandomCards);
+              }}
+            />
+            <GiantCourseCard
+              randomIndex={randomIndex}
+              colors={["#FFA95A", "#FF5A5A", "#00C34E", "#BE7B66"]}
+              names={["Calc BC", "calc bc", "Math", "Calculus"]}
+              icons={[
+                "function-variant",
+                "shape",
+                "calculator-variant",
+                "nuke",
+              ]}
+              opacity={0.6}
+            />
+            <GiantCourseCard
+              randomIndex={randomIndex}
+              colors={["#AD5AFF", "#FF5AA9", "#00D0ED"]}
+              names={["English", "ela", "AP English 3"]}
+              icons={["pencil", "skull", "book-open-blank-variant"]}
+              opacity={0.4}
+            />
+          </View>
+          <StatusText
+            style={{
+              fontSize: 20,
+              color: "#AAA",
+              marginTop: 24,
+              lineHeight: 32,
               textAlign: "center",
-              lineHeight: 48,
+              width: "70%",
+              marginBottom: 32,
             }}
           >
-            Welcome to Scorecard
-          </Text>
-        </View>
-        <View style={{ width: "100%", paddingHorizontal: 24, marginTop: 36 }}>
-          <GiantCustomizeCard
-            increment={() => {
-              setRandomIndex((prev) => (prev + 1) % numRandomCards);
-            }}
-          />
-          <GiantCourseCard
-            randomIndex={randomIndex}
-            colors={["#FFA95A", "#FF5A5A", "#00C34E", "#BE7B66"]}
-            names={["Calc BC", "calc bc", "Math", "Calculus"]}
-            icons={["function-variant", "shape", "calculator-variant", "nuke"]}
-            opacity={0.6}
-          />
-          <GiantCourseCard
-            randomIndex={randomIndex}
-            colors={["#AD5AFF", "#FF5AA9", "#00D0ED"]}
-            names={["English", "ela", "AP English 3"]}
-            icons={["pencil", "skull", "book-open-blank-variant"]}
-            opacity={0.4}
-          />
-        </View>
-        <StatusText
-          style={{
-            fontSize: 20,
-            color: "#AAA",
-            marginTop: 24,
-            lineHeight: 32,
-            textAlign: "center",
-            width: "70%",
-            marginBottom: 32,
-          }}
-        >
-          Tap Customize to rename classes and add colors and icons
-        </StatusText>
-        {doneFetchingGrades ? (
-          <Button
-            onPress={() => {
-              close();
-              getAnalytics().logTutorialComplete();
+            Tap Customize to rename classes and add colors and icons
+          </StatusText>
+          <View
+            style={{
+              marginBottom: 32,
             }}
           >
-            Done
-          </Button>
-        ) : (
-          <LoadingIndicatorButton>
-            Loading your Grades...
-          </LoadingIndicatorButton>
-        )}
-      </SafeAreaView>
+            {doneFetchingGrades ? (
+              <Button
+                onPress={() => {
+                  SecureStorage.getItemAsync("login").then((result) => {
+                    if (result === null) return;
+
+                    const { username, host, password } = JSON.parse(result);
+                    dispatch(setUsername(username));
+                    dispatch(setDistrict(host));
+                    dispatch(setPassword(password));
+                  });
+                  close();
+                  getAnalytics().logTutorialComplete();
+                }}
+              >
+                Done
+              </Button>
+            ) : (
+              <LoadingIndicatorButton>
+                Loading your Grades...
+              </LoadingIndicatorButton>
+            )}
+          </View>
+        </SafeAreaView>
+      </ScrollView>
     </Animated.View>
   );
 }
