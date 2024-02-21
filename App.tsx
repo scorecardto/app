@@ -2,7 +2,9 @@ import {
   NavigationContainer,
   NavigationContainerRef,
 } from "@react-navigation/native";
+import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
+import auth from "@react-native-firebase/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
@@ -77,6 +79,22 @@ export default function App(props: { resetKey: string }) {
   const navigationRef =
     useRef<NavigationContainerRef<ReactNavigation.RootParamList>>(null);
 
+  const schoolName = useSelector((state: RootState) => state.login.schoolName);
+  const gradeLabel = useSelector((state: RootState) => state.login.gradeLabel);
+
+  useEffect(() => {
+    const userId = auth().currentUser?.uid;
+
+    if (userId && schoolName && gradeLabel) {
+      firestore().collection("userSchoolInfo").doc(userId).set(
+        {
+          schoolName,
+          gradeLabel,
+        },
+        { merge: true }
+      );
+    }
+  }, [schoolName, gradeLabel]);
   return (
     <MobileDataProvider>
       <AppInitializer

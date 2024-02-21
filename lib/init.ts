@@ -5,7 +5,9 @@ import { AppDispatch } from "../components/core/state/store";
 import {
   setDistrict,
   setDistrictVipProgramDate,
+  setGradeLabel,
   setPassword,
+  setSchoolName,
   setUsername,
 } from "../components/core/state/user/loginSlice";
 import {
@@ -95,11 +97,13 @@ export default async function initialize(
 
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
-    const { username, password, host } = JSON.parse(login);
+    const { username, password, host, school, grade } = JSON.parse(login);
 
     dispatch(setDistrict(host));
     dispatch(setUsername(username));
     dispatch(setPassword(password));
+    dispatch(setSchoolName(school));
+    dispatch(setGradeLabel(grade));
 
     if (name) {
       const { firstName, lastName } = JSON.parse(name);

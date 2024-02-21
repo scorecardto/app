@@ -8,6 +8,8 @@ interface LoginSlice {
   sessionId: string;
   districtName: string;
   districtVipProgramDate: string | null;
+  schoolName: string;
+  gradeLabel: string;
 }
 
 const initialState: LoginSlice = {
@@ -18,6 +20,8 @@ const initialState: LoginSlice = {
   sessionId: "",
   districtName: "",
   districtVipProgramDate: null,
+  schoolName: "",
+  gradeLabel: "",
 };
 
 const loginSlice = createSlice({
@@ -30,6 +34,8 @@ const loginSlice = createSlice({
       state.password = "";
       state.referer = "";
       state.sessionId = "";
+      state.districtName = "";
+      state.districtVipProgramDate = null;
     },
     setDistrict: (state, action: PayloadAction<string>) => {
       state.district = action.payload;
@@ -55,6 +61,12 @@ const loginSlice = createSlice({
     ) => {
       state.districtVipProgramDate = action.payload;
     },
+    setSchoolName: (state, action: PayloadAction<string>) => {
+      state.schoolName = action.payload;
+    },
+    setGradeLabel: (state, action: PayloadAction<string>) => {
+      state.gradeLabel = action.payload;
+    },
   },
 });
 
@@ -66,6 +78,9 @@ export const {
   setReferer,
   setSessionId,
   setDistrictVipProgramDate,
+  setDistrictName,
+  setSchoolName,
+  setGradeLabel,
 } = loginSlice.actions;
 
 export default loginSlice.reducer;

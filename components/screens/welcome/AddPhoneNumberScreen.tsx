@@ -134,7 +134,7 @@ export default function AddPhoneNumberScreen(props: {
 
   const keyboardVisible = useKeyboardVisible();
 
-  const [allowSkip, setAllowSkip] = useState(true);
+  const [allowSkip, setAllowSkip] = useState(false);
 
   return (
     <View

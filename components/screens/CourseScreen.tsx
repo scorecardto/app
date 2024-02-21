@@ -269,6 +269,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   const [resetKey, setResetKey] = useState(0);
 
   const selector = useRef<ActionSheetRef>(null);
+
   return (
     <CourseScreenWrapper courseKey={key}>
       <CourseCornerButtonContainer

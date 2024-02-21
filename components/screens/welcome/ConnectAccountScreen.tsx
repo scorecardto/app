@@ -43,11 +43,19 @@ const ConnectAccountScreen = (props: {
 
   useEffect(() => {
     if (loading) {
+      let schoolLabel = "";
+      let gradeLabel = "";
       const reportCard = fetchAllContent(
         district.url,
         username,
         password,
         (name) => {
+          schoolLabel = name.school;
+          gradeLabel = name.grade;
+
+          dispatch(loginSlice.setSchoolName(name.school));
+          dispatch(loginSlice.setGradeLabel(name.grade));
+
           props.navigation.reset({
             index: 0,
             routes: [{ name: "addPhoneNumber", params: { name } }],
@@ -68,6 +76,8 @@ const ConnectAccountScreen = (props: {
               host: district.url,
               username,
               password,
+              school: schoolLabel,
+              grade: gradeLabel,
             }),
             {
               requireAuthentication: false,

@@ -41,7 +41,12 @@ const fetchReportCard = async (
   host: string,
   username: string,
   password: string,
-  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void,
+  onLoginSuccess?: (info: {
+    firstName: string;
+    lastName: string;
+    school: string;
+    grade: string;
+  }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<CourseResponse> => {
   const cookie = generateSessionId();
@@ -183,10 +188,21 @@ const fetchReportCard = async (
     ? prefferedFirstName.replace(/[()]/g, "")
     : legalFirstName;
 
+  const schoolName =
+    reportCardsHtml.querySelector(
+      "#defaultInfoHeader tr:nth-child(2) td:nth-child(1)"
+    )?.innerText || "";
+
+  const gradeLabel =
+    reportCardsHtml.querySelector(
+      "#defaultInfoHeader tr:nth-child(2) td:nth-child(2)"
+    )?.innerText || "";
   if (onLoginSuccess) {
     onLoginSuccess({
       firstName: firstName,
       lastName: lastName,
+      grade: gradeLabel,
+      school: schoolName,
     });
   }
 
@@ -476,7 +492,12 @@ const fetchAllContent = async (
   host: string,
   username: string,
   password: string,
-  onLoginSuccess?: (name: { firstName: string; lastName: string }) => void,
+  onLoginSuccess?: (info: {
+    firstName: string;
+    lastName: string;
+    school: string;
+    grade: string;
+  }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<AllContentResponse> => {
   let reportCard;
