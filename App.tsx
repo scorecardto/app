@@ -37,7 +37,13 @@ import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 import { getFeatureFlag } from "./lib/featureFlag";
 import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
-import {setupForegroundNotifications, setupBackgroundNotifications, requestPermissions} from "./lib/backgroundNotifications";
+import {
+  setupForegroundNotifications,
+  setupBackgroundNotifications,
+  requestPermissions,
+} from "./lib/backgroundNotifications";
+import StartScreen from "./components/screens/welcome/StartScreen";
+import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
 
 SplashScreen.preventAutoHideAsync();
 requestPermissions();
@@ -124,6 +130,20 @@ export default function App(props: { resetKey: string }) {
                   <BottomSheetDisplay />
 
                   <Stack.Navigator initialRouteName={nextScreen}>
+                    <Stack.Screen
+                      name="start"
+                      component={StartScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="notifications"
+                      component={NotificationsScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
                     <Stack.Screen
                       name="selectDistrict"
                       component={SelectDistrictScreen}

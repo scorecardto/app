@@ -24,10 +24,23 @@ const NotificationSettingsSlice = createSlice({
     ) => {
       state[action.payload.key] = action.payload.value;
     },
+    enableAllNotifications: (
+      state,
+      action: PayloadAction<{
+        keys: string[];
+      }>
+    ) => {
+      action.payload.keys.forEach((key) => {
+        state[key] = "ON_ALWAYS";
+      });
+    },
   },
 });
 
-export const { setNotification, resetAllNotifications } =
-  NotificationSettingsSlice.actions;
+export const {
+  setNotification,
+  resetAllNotifications,
+  enableAllNotifications,
+} = NotificationSettingsSlice.actions;
 
 export default NotificationSettingsSlice.reducer;

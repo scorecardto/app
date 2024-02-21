@@ -12,6 +12,7 @@ import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import Toast from "react-native-toast-message";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import { firebase } from "@react-native-firebase/auth";
+import * as Notifications from "expo-notifications";
 export default function VerifyPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -42,9 +43,18 @@ export default function VerifyPhoneNumberScreen(props: {
         const currentPage = props.navigation.getState().routes.slice(-1)[0];
 
         if (currentPage?.name === "verifyPhoneNumber") {
-          props.navigation.reset({
-            index: 0,
-            routes: [{ name: "scorecard", params: { firstTime: true } }],
+          Notifications.getPermissionsAsync().then((permissions) => {
+            if (permissions.canAskAgain) {
+              props.navigation.reset({
+                index: 0,
+                routes: [{ name: "notifications" }],
+              });
+            } else {
+              props.navigation.reset({
+                index: 0,
+                routes: [{ name: "scorecard", params: { firstTime: true } }],
+              });
+            }
           });
         }
       })

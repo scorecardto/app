@@ -42,6 +42,14 @@
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "13.4"
+          }
+        }
+      ],
+      [
         "expo-contacts",
         {
           "contactsPermission": "Find and invite friends to Scorecard"

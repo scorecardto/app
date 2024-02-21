@@ -60,6 +60,7 @@ const ConnectAccountScreen = (props: {
           loginSlice.setDistrict(district);
           loginSlice.setUsername(username);
           loginSlice.setPassword(password);
+          loginSlice.setDistrictVipProgramDate(district.vipProgramDate);
 
           SecureStorage.setItem(
             "login",
@@ -73,6 +74,13 @@ const ConnectAccountScreen = (props: {
               keychainAccessible: SecureStorage.ALWAYS,
             }
           );
+
+          if (district.vipProgramDate) {
+            await Storage.setItem({
+              key: "vipProgramDate",
+              value: district.vipProgramDate,
+            });
+          }
 
           const fetchStoreResult = await fetchAndStore(data, dispatch, true);
         })

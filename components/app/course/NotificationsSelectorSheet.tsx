@@ -84,6 +84,7 @@ const NotificationsSelectorSheet = forwardRef(
               <TouchableOpacity
                 onPress={() => {
                   setCurrent(idx);
+
                   dispatch(
                     setNotification({
                       key: props.courseKey,

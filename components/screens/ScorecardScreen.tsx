@@ -17,6 +17,10 @@ import { NavigationProp, useTheme } from "@react-navigation/native";
 import BottomSheetDisplay from "../util/BottomSheet/BottomSheetDisplay";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FinalWelcomeScreen from "./welcome/FinalWelcomeScreen";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../core/state/store";
+import { enableAllNotifications } from "../core/state/user/notificationSettingsSlice";
+import * as Notifications from "expo-notifications";
 const Tab = createBottomTabNavigator();
 
 export default function ScorecardScreen(props: {
@@ -30,6 +34,30 @@ export default function ScorecardScreen(props: {
   const [showWelcomeScreen, setShowWelcomeScreen] = useState(
     props.route.params?.firstTime === true ? true : false
   );
+
+  const doneFetchingGrades = useSelector(
+    (state: RootState) => state.gradeData.record !== null
+  );
+
+  const courseKeys = useSelector(
+    (state: RootState) =>
+      state.gradeData.record?.courses.map((c) => c.key) || []
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (props.route.params?.firstTime === true && doneFetchingGrades) {
+      Notifications.getPermissionsAsync().then((permissions) => {
+        if (permissions.status === "granted") {
+          dispatch(
+            enableAllNotifications({
+              keys: courseKeys,
+            })
+          );
+        }
+      });
+    }
+  }, [doneFetchingGrades]);
 
   return (
     <View

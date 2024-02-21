@@ -20,9 +20,11 @@ import { setOldCourseStates } from "../components/core/state/grades/oldCourseSta
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
 import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
-import {setNotification} from "../components/core/state/user/notificationSettingsSlice";
-import {isRegisteredForNotifs} from "./backgroundNotifications";
+import { setNotification } from "../components/core/state/user/notificationSettingsSlice";
+import { isRegisteredForNotifs } from "./backgroundNotifications";
+import * as SecureStorage from "expo-secure-store";
 type NextScreen =
+  | "start"
   | "scorecard"
   | "account"
   | "selectDistrict"
@@ -33,7 +35,7 @@ export default async function initialize(
   dispatch: AppDispatch,
   user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
-  const login = await Storage.getItem({ key: "login" });
+  const login = SecureStorage.getItem("login");
   const name = await Storage.getItem({ key: "name" });
   const notifs = await Storage.getItem({ key: "notifs" });
   const records = await Storage.getItem({ key: "records" });
@@ -67,13 +69,15 @@ export default async function initialize(
 
     const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
 
-    isRegisteredForNotifs(data.courses.map(c => c.key)).then(res => {
+    isRegisteredForNotifs(data.courses.map((c) => c.key)).then((res) => {
       if (res?.data.success) {
         for (const result of res.data.result) {
-          dispatch(setNotification({
-            key: result.key,
-            value: result.value
-          }));
+          dispatch(
+            setNotification({
+              key: result.key,
+              value: result.value,
+            })
+          );
         }
       }
     });
@@ -112,6 +116,6 @@ export default async function initialize(
     // if (1 + 1 === 2) {
     //   return "scorecard";
     // }
-    return "selectDistrict";
+    return "start";
   }
 }

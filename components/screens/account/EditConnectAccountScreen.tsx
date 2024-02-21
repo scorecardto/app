@@ -67,6 +67,7 @@ const EditConnectAccountScreen = (props: {
           loginSlice.setDistrict(district.url);
           loginSlice.setUsername(username);
           loginSlice.setPassword(password);
+          loginSlice.setDistrictVipProgramDate(district.vipProgramDate);
 
           SecureStorage.setItem(
             "login",
@@ -81,14 +82,12 @@ const EditConnectAccountScreen = (props: {
             }
           );
 
-          await Storage.setItem({
-            key: "login",
-            value: JSON.stringify({
-              host: district.url,
-              username,
-              password,
-            }),
-          });
+          if (district.vipProgramDate) {
+            await Storage.setItem({
+              key: "vipProgramDate",
+              value: district.vipProgramDate,
+            });
+          }
 
           await fetchAndStore(data, dispatch, true);
         })

@@ -23,7 +23,7 @@ import { resetName } from "../../core/state/user/nameSlice";
 import { resetSettings } from "../../core/state/user/settingsSlice";
 import { resetUserRank } from "../../core/state/user/userRank";
 import { resetCourseSettings } from "../../core/state/grades/courseSettingsSlice";
-
+import * as SecureStorage from "expo-secure-store";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -142,7 +142,7 @@ export default function GeneralSettingsScreen(props: {
                 onPress: async () => {
                   for (const key of [
                     "name",
-                    "login",
+                    "vipProgramDate",
                     "enableGradebookNotifications",
                     "gradebookCheckInterval",
                     "notifs",
@@ -156,6 +156,7 @@ export default function GeneralSettingsScreen(props: {
                   ]) {
                     await Storage.removeItem({ key });
                   }
+                  SecureStorage.deleteItemAsync("login");
 
                   firebase.auth().signOut();
 

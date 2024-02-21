@@ -6,6 +6,8 @@ interface LoginSlice {
   password: string;
   referer: string;
   sessionId: string;
+  districtName: string;
+  districtVipProgramDate: string | null;
 }
 
 const initialState: LoginSlice = {
@@ -14,6 +16,8 @@ const initialState: LoginSlice = {
   password: "",
   referer: "",
   sessionId: "",
+  districtName: "",
+  districtVipProgramDate: null,
 };
 
 const loginSlice = createSlice({
@@ -42,6 +46,15 @@ const loginSlice = createSlice({
     setSessionId: (state, action: PayloadAction<string>) => {
       state.sessionId = action.payload;
     },
+    setDistrictName: (state, action: PayloadAction<string>) => {
+      state.districtName = action.payload;
+    },
+    setDistrictVipProgramDate: (
+      state,
+      action: PayloadAction<string | null>
+    ) => {
+      state.districtVipProgramDate = action.payload;
+    },
   },
 });
 
@@ -52,6 +65,7 @@ export const {
   setPassword,
   setReferer,
   setSessionId,
+  setDistrictVipProgramDate,
 } = loginSlice.actions;
 
 export default loginSlice.reducer;

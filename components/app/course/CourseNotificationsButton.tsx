@@ -4,6 +4,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CourseCornerButton from "./CourseCornerButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
+import * as Notifications from "expo-notifications";
+import Toast from "react-native-toast-message";
 export default function CourseNotificationsButton(props: {
   courseKey: string;
   onPress: () => void;
@@ -40,7 +42,35 @@ export default function CourseNotificationsButton(props: {
         }
         iconPadding={18}
         iconSize={30}
-        onPress={() => props.onPress()}
+        onPress={() => {
+          Notifications.getPermissionsAsync().then((permissions) => {
+            if (permissions.status === "granted") {
+              props.onPress();
+            } else {
+              if (permissions.canAskAgain) {
+                Notifications.requestPermissionsAsync().then((r) => {
+                  if (r.status === "granted") {
+                    props.onPress();
+                  } else {
+                    Toast.show({
+                      type: "info",
+                      text1: "Enable Notifications",
+                      text2:
+                        "You must allow notifications to use this feature. Use the settings app to enable notifications for Scorecard.",
+                    });
+                  }
+                });
+              } else {
+                Toast.show({
+                  type: "info",
+                  text1: "Enable Notifications",
+                  text2:
+                    "You must allow notifications to use this feature. Use the settings app to enable notifications for Scorecard.",
+                });
+              }
+            }
+          });
+        }}
       />
     </View>
   );
