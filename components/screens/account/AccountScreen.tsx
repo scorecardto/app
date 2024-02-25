@@ -1,10 +1,16 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Text, View } from "react-native";
 import Header from "../../text/Header";
 import AccountOptionCard from "../../app/account/AccountOptionCard";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
+import {BottomSheetView} from "@gorhom/bottom-sheet";
+import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
+import {getCurrentToken, getDeviceId} from "../../../lib/backgroundNotifications";
 
 export default function AccountScreen(props: { route: any; navigation: any }) {
+  const sheets = useContext(BottomSheetContext);
+
   return (
     <SafeAreaView>
       <Header header="Account" />
@@ -61,6 +67,24 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
             });
           }}
         />
+
+          <AccountOptionCard
+              label={"Debug Information"}
+              icon={"bug"}
+              onPress={async () => {
+                  const deviceId = await getDeviceId();
+                  const expoToken = getCurrentToken();
+                  sheets?.addSheet(({ close, setOnClose }) => (
+                      <>
+                          <BottomSheetView>
+                              <BottomSheetHeader>Debug Information</BottomSheetHeader>
+                              <Text>Device ID: {deviceId}</Text>
+                              <Text>Push Token: {expoToken}</Text>
+                          </BottomSheetView>
+                      </>
+                  ));
+              }}
+          />
       </View>
     </SafeAreaView>
   );

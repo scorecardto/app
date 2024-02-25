@@ -43,6 +43,7 @@ import {
   setupForegroundNotifications,
   setupBackgroundNotifications,
   requestPermissions,
+  setupBackgroundFetch,
 } from "./lib/backgroundNotifications";
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";

@@ -63,13 +63,6 @@ export default function ScorecardScreen(props: {
             })
           );
 
-          Storage.setItem({
-            key: "notifications",
-            value: JSON.stringify({
-              keys: courseKeys,
-            }),
-          });
-
           courseKeys.forEach((courseKey, idx) => {
             const displayName = courses.find((c) => c.key === courseKey)?.name;
             registerNotifs(courseKey, displayName, false);
