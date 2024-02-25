@@ -11,15 +11,20 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "16",
+      "buildNumber": "20",
       "infoPlist": {
-        "UIBackgroundModes": ["remote-notification", "fetch"]
+        "UIBackgroundModes": [
+          "remote-notification",
+          "fetch"
+        ]
       }
     },
     "android": {
@@ -28,7 +33,8 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.scorecardgrades.mobile",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

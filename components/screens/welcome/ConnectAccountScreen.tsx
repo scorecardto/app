@@ -1,4 +1,4 @@
-import ReactNative, { TouchableOpacity, View } from "react-native";
+import ReactNative, { Linking, TouchableOpacity, View } from "react-native";
 import { useEffect, useState, useRef } from "react";
 import { NavigationProp, useTheme } from "@react-navigation/native";
 import Button from "../../input/Button";
@@ -45,11 +45,31 @@ const ConnectAccountScreen = (props: {
     if (loading) {
       let schoolLabel = "";
       let gradeLabel = "";
+
+      const timeoutId = setTimeout(() => {
+        setLoading(false);
+        Toast.show({
+          type: "info",
+          text1: "Timed Out",
+          text2:
+            "The login process took too long. Frontline may be down or your internet connection may be slow. Tap here to check if Frontline is down.",
+          visibilityTime: 5000,
+          position: "top",
+          onPress: () => {
+            Linking.openURL(
+              `https://${district.url}/selfserve/EntryPointHomeAction.do?parent=false`
+            );
+          },
+        });
+      }, 7000);
+
       const reportCard = fetchAllContent(
         district.url,
         username,
         password,
         (name) => {
+          clearTimeout(timeoutId);
+
           schoolLabel = name.school;
           gradeLabel = name.grade;
 

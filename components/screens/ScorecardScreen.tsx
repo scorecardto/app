@@ -43,7 +43,9 @@ export default function ScorecardScreen(props: {
 
   const courses = useSelector(
     (state: RootState) => state.gradeData.record?.courses || [],
-    () => true
+    (prevState, newState) => {
+      return prevState.length === newState.length;
+    }
   );
   const courseKeys = useSelector(
     (state: RootState) =>

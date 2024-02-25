@@ -17,7 +17,11 @@
       "autoIncrement": true
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "packageType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      }
     }
   }
 }

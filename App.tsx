@@ -48,7 +48,6 @@ import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
 
 SplashScreen.preventAutoHideAsync();
-requestPermissions();
 setupBackgroundNotifications();
 setupForegroundNotifications();
 
