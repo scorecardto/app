@@ -1,28 +1,29 @@
 import * as Notifications from "expo-notifications";
-import * as BackgroundFetch from "expo-background-fetch"
+import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Crypto from "expo-crypto";
 import axios, { Response } from "redaxios";
 import { Notification } from "expo-notifications";
+import { store } from "../components/core/state/store";
 import {
   fetchAllContent,
   fetchGradeCategoriesForCourse,
   fetchReportCard,
 } from "./fetcher";
-import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../components/core/state/store";
 import Storage from "expo-storage";
-import { CourseSettings } from "scorecard-types";
+import { CourseSettings, GradebookRecord } from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import { setRefreshStatus } from "../components/core/state/grades/refreshStatusSlice";
 import fetchAndStore from "./fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
+import captureCourseState from "./captureCourseState";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
-const BACKGROUND_FETCH_TASK = 'BACKGROUND-FETCH-TASK';
+const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
 
 let fcmToken: string | undefined;
 export function setFcmToken(token: string | undefined) {
@@ -33,29 +34,36 @@ export async function setupBackgroundNotifications() {
   TaskManager.defineTask(
     BACKGROUND_NOTIFICATION_TASK,
     async ({ data, error, executionInfo }) => {
+      if (AppState.currentState === "active") return;
+
       const body = (data as any).body;
 
-      await axios.post(
-        "https://scorecardgrades.com/api/silent_verification",
-        {
-          id: body.id,
-          fcmToken,
-        }
-      );
+      console.log("making axios request");
+
+      await axios.post("https://scorecardgrades.com/api/silent_verification", {
+        id: body.id,
+        fcmToken,
+      });
+
+      console.log("did silent verification");
 
       const { username, password, host } = JSON.parse(
         SecureStore.getItem("login") ?? "{}"
       );
       if (!username || !password || !host) return;
 
-      const record = JSON.parse(
+      console.log("got login");
+      const record: GradebookRecord = JSON.parse(
         (await Storage.getItem({ key: "records" })) ?? "[]"
       )[0];
       if (!record) return;
+      const oldCourse = record.courses.find((c) => c.key === body.courseId);
 
-      const reportCard = await fetchReportCard(username, password, host);
+      const reportCard = await fetchReportCard(host, username, password);
       const course = reportCard.courses.find((c) => c.key === body.courseId);
-      if (!course) return;
+      if (!course || !oldCourse) return;
+
+      console.log("fetch repc");
 
       const gradeCategories = await fetchGradeCategoriesForCourse(
         host,
@@ -64,10 +72,14 @@ export async function setupBackgroundNotifications() {
         course
       );
 
-      if (
-        JSON.stringify(gradeCategories.gradeCategories) !=
-        JSON.stringify(record)
-      ) {
+      const oldState = captureCourseState(oldCourse);
+
+      const newState = captureCourseState({
+        ...course,
+        gradeCategories: gradeCategories.gradeCategories,
+      });
+
+      if (JSON.stringify(oldState) !== JSON.stringify(newState)) {
         await Notifications.scheduleNotificationAsync({
           content: {
             title: body.displayName,
@@ -84,15 +96,22 @@ export async function setupBackgroundNotifications() {
 
 export async function setupBackgroundFetch() {
   TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    console.log("getting login");
+
     const { username, password, host } = JSON.parse(
-        SecureStore.getItem("login") ?? "{}"
+      SecureStore.getItem("login") ?? "{}"
     );
     if (!username || !password || !host) return;
 
+    console.log("getting rpc");
+
     const reportCard = await fetchAllContent(host, username, password);
 
-    await fetchAndStore(reportCard, useDispatch<AppDispatch>(), true);
+    console.log("storing");
 
+    await fetchAndStore(reportCard, store.dispatch, true);
+
+    console.log("done storing");
     return BackgroundFetch.BackgroundFetchResult.NewData;
   });
 
@@ -103,13 +122,9 @@ export async function setupBackgroundFetch() {
   });
 }
 
-export async function setupForegroundNotifications() {
+export function setupForegroundNotifications() {
   const handleNotification = async (notification: Notification) => {
-    const dispatch = useDispatch<AppDispatch>();
-
-    const district = useSelector((state: RootState) => state.login.district);
-    const username = useSelector((state: RootState) => state.login.username);
-    const password = useSelector((state: RootState) => state.login.password);
+    const { district, username, password } = store.getState().login;
 
     Toast.show({
       type: "info",
@@ -119,16 +134,16 @@ export async function setupForegroundNotifications() {
     });
 
     const reportCard = await fetchAllContent(
-        district,
-        username,
-        password,
-        undefined,
-        (s: RefreshStatus) => {
-          dispatch(setRefreshStatus(s));
-        }
+      district,
+      username,
+      password,
+      undefined,
+      (s: RefreshStatus) => {
+        store.dispatch(setRefreshStatus(s));
+      }
     );
 
-    await fetchAndStore(reportCard, dispatch, false);
+    await fetchAndStore(reportCard, store.dispatch, false);
 
     return {
       shouldShowAlert: false,
@@ -137,12 +152,20 @@ export async function setupForegroundNotifications() {
     };
   };
 
-  Notifications.getLastNotificationResponseAsync().then(response => {
+  Notifications.getLastNotificationResponseAsync().then((response) => {
     console.log(response);
-    response?.notification && handleNotification(response?.notification)
-  })
+    response?.notification && handleNotification(response?.notification);
+  });
 
   Notifications.setNotificationHandler({ handleNotification });
+
+  const listener = Notifications.addNotificationResponseReceivedListener(
+    (response) => {
+      handleNotification(response.notification);
+    }
+  );
+
+  return listener.remove;
 }
 
 async function getExpoToken() {

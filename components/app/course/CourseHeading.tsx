@@ -8,7 +8,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import useColors from "../../core/theme/useColors";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
-import { getFeatureFlag } from "../../../lib/featureFlag";
+import { useFeatureFlag } from "../../../lib/featureFlag";
 import MoreFeaturesSheet from "../vip/MoreFeaturesSheet";
 
 export default function CourseHeading(props: {
@@ -26,9 +26,7 @@ export default function CourseHeading(props: {
       state.courseSettings[props.courseKey]?.displayName || props.defaultName
   );
 
-  const allowCourseEditSheet = useSelector((s: RootState) => {
-    return getFeatureFlag("ALLOW_COURSE_EDITING", s.userRank.type);
-  });
+  const allowCourseEditSheet = useFeatureFlag("ALLOW_COURSE_EDITING");
 
   return (
     <TouchableOpacity

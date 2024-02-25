@@ -37,7 +37,7 @@ import AppInitializer from "./components/core/AppInitializer";
 import { Provider, useSelector } from "react-redux";
 import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
-import { getFeatureFlag } from "./lib/featureFlag";
+import { useFeatureFlag } from "./lib/featureFlag";
 import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
 import {
   setupForegroundNotifications,
@@ -47,10 +47,10 @@ import {
 } from "./lib/backgroundNotifications";
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
+import * as Notifications from "expo-notifications";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
-setupForegroundNotifications();
 
 const Stack = createNativeStackNavigator();
 
@@ -61,9 +61,8 @@ export default function App(props: { resetKey: string }) {
 
   const appearance = useColorScheme();
 
-  const allowDarkMode = useSelector((r: RootState) =>
-    getFeatureFlag("ALLOW_DARK_MODE", r.userRank.type)
-  );
+  const allowDarkMode = useFeatureFlag("ALLOW_DARK_MODE");
+
   const headerOptions = {
     headerStyle: {
       backgroundColor:
@@ -95,6 +94,12 @@ export default function App(props: { resetKey: string }) {
       );
     }
   }, [schoolName, gradeLabel]);
+
+  useEffect(() => {
+    if (appReady) {
+      return setupForegroundNotifications();
+    }
+  }, [appReady]);
   return (
     <MobileDataProvider>
       <AppInitializer

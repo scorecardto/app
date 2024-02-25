@@ -25,7 +25,7 @@ import InviteOthersCard from "../app/dashboard/InviteOthersCard";
 import parseCourseKey from "../../lib/parseCourseKey";
 import captureCourseState from "../../lib/captureCourseState";
 import RefreshStatus from "../../lib/types/RefreshStatus";
-import { getFeatureFlag } from "../../lib/featureFlag";
+import { useFeatureFlag } from "../../lib/featureFlag";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
@@ -243,9 +243,7 @@ const CurrentGradesScreen = (props: {
     });
   }, [changeIndex]);
 
-  const showCustomizeCard = useSelector((state: RootState): boolean => {
-    return getFeatureFlag("SHOW_CUSTOMIZE_CARD", state.userRank.type);
-  });
+  const showCustomizeCard = useFeatureFlag("SHOW_CUSTOMIZE_CARD");
 
   const oldCourseStates = useSelector(
     (s: RootState) => s.oldCourseStates.record
