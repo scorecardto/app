@@ -1,4 +1,5 @@
 import * as Notifications from "expo-notifications";
+import * as BackgroundFetch from "expo-background-fetch"
 import * as TaskManager from "expo-task-manager";
 import { Platform } from "react-native";
 import * as Device from "expo-device";
@@ -19,7 +20,9 @@ import { setRefreshStatus } from "../components/core/state/grades/refreshStatusS
 import fetchAndStore from "./fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
+
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
+const BACKGROUND_FETCH_TASK = 'BACKGROUND-FETCH-TASK';
 
 let fcmToken: string | undefined;
 export function setFcmToken(token: string | undefined) {
@@ -32,7 +35,7 @@ export async function setupBackgroundNotifications() {
     async ({ data, error, executionInfo }) => {
       const body = (data as any).body;
 
-      const response = await axios.post(
+      await axios.post(
         "https://scorecardgrades.com/api/silent_verification",
         {
           id: body.id,
@@ -79,24 +82,43 @@ export async function setupBackgroundNotifications() {
   await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 }
 
+export async function setupBackgroundFetch() {
+  TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+    const { username, password, host } = JSON.parse(
+        SecureStore.getItem("login") ?? "{}"
+    );
+    if (!username || !password || !host) return;
+
+    const reportCard = await fetchAllContent(host, username, password);
+
+    await fetchAndStore(reportCard, useDispatch<AppDispatch>(), true);
+
+    return BackgroundFetch.BackgroundFetchResult.NewData;
+  });
+
+  await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    minimumInterval: 60 * 15,
+    stopOnTerminate: false,
+    startOnBoot: true,
+  });
+}
+
 export async function setupForegroundNotifications() {
-  // will not receive silent push notifications in foreground
-  Notifications.setNotificationHandler({
-    handleNotification: async (notification: Notification) => {
-      const dispatch = useDispatch<AppDispatch>();
+  const handleNotification = async (notification: Notification) => {
+    const dispatch = useDispatch<AppDispatch>();
 
-      const district = useSelector((state: RootState) => state.login.district);
-      const username = useSelector((state: RootState) => state.login.username);
-      const password = useSelector((state: RootState) => state.login.password);
+    const district = useSelector((state: RootState) => state.login.district);
+    const username = useSelector((state: RootState) => state.login.username);
+    const password = useSelector((state: RootState) => state.login.password);
 
-      Toast.show({
-        type: "info",
-        text1: notification.request.content.data.displayName,
-        text2: "Fetching new grades now. Check back in a few seconds.",
-        visibilityTime: 3000,
-      });
+    Toast.show({
+      type: "info",
+      text1: notification.request.content.data.displayName,
+      text2: "Fetching new grades now. Check back in a few seconds.",
+      visibilityTime: 3000,
+    });
 
-      const reportCard = await fetchAllContent(
+    const reportCard = await fetchAllContent(
         district,
         username,
         password,
@@ -104,17 +126,23 @@ export async function setupForegroundNotifications() {
         (s: RefreshStatus) => {
           dispatch(setRefreshStatus(s));
         }
-      );
+    );
 
-      await fetchAndStore(reportCard, dispatch, false);
+    await fetchAndStore(reportCard, dispatch, false);
 
-      return {
-        shouldShowAlert: false,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-      };
-    },
-  });
+    return {
+      shouldShowAlert: false,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    };
+  };
+
+  Notifications.getLastNotificationResponseAsync().then(response => {
+    console.log(response);
+    response?.notification && handleNotification(response?.notification)
+  })
+
+  Notifications.setNotificationHandler({ handleNotification });
 }
 
 async function getExpoToken() {
@@ -155,6 +183,10 @@ async function getExpoToken() {
 }
 
 let token: string | undefined;
+
+export function getCurrentToken() {
+  return token;
+}
 
 // the actual result will be in `response.data.result`
 export async function isRegisteredForNotifs(
@@ -229,7 +261,7 @@ export async function updateNotifs(
   });
 }
 
-async function getDeviceId() {
+export async function getDeviceId() {
   const deviceId = await Storage.getItem({ key: "deviceId" });
 
   if (!deviceId) {

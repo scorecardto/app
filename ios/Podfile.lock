@@ -640,6 +640,8 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXApplication (5.3.1):
     - ExpoModulesCore
+  - EXBackgroundFetch (11.3.0):
+    - ExpoModulesCore
   - EXConstants (14.4.2):
     - ExpoModulesCore
   - EXContacts (12.2.0):
@@ -1429,6 +1431,7 @@ DEPENDENCIES:
   - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXApplication (from `../node_modules/expo-application/ios`)
+  - EXBackgroundFetch (from `../node_modules/expo-background-fetch/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXContacts (from `../node_modules/expo-contacts/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -1551,6 +1554,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXApplication:
     :path: "../node_modules/expo-application/ios"
+  EXBackgroundFetch:
+    :path: "../node_modules/expo-background-fetch/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXContacts:
@@ -1708,6 +1713,7 @@ SPEC CHECKSUMS:
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 042aa2e3f05258a16962ea1a9914bf288db9c9a1
+  EXBackgroundFetch: a4a45a5924d9ac6dd480d5d745aabe91bb17bb36
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
   EXContacts: 9e8626eefc90c428af3d61a9e2869ac413d2569b
   EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b

@@ -42,13 +42,14 @@ import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
 import {
   setupForegroundNotifications,
   setupBackgroundNotifications,
-  requestPermissions,
+  requestPermissions, setupBackgroundFetch,
 } from "./lib/backgroundNotifications";
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
 
 SplashScreen.preventAutoHideAsync();
 requestPermissions();
+setupBackgroundFetch();
 setupBackgroundNotifications();
 setupForegroundNotifications();
 
