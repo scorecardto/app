@@ -43,7 +43,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     () => true
   );
 
-  const gradeCategory = useSelector(
+  const gradeCategory = props.route.params.gradeCategory ?? useSelector(
     (root: RootState) => root.gradeCategory.category
   );
 

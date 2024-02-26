@@ -109,10 +109,10 @@ export async function setupBackgroundFetch() {
 
     console.log("storing");
 
-    await fetchAndStore(reportCard, store.dispatch, true);
+    const updated = await fetchAndStore(reportCard, store.dispatch, true);
 
     console.log("done storing");
-    return BackgroundFetch.BackgroundFetchResult.NewData;
+    return updated ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
   });
 
   await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {

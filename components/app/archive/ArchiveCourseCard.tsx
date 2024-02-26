@@ -122,9 +122,9 @@ export default function ArchiveCourseCard(props: {
                       <>
                         <TouchableOpacity
                           onPress={() => {
-                            dispatch(setGradeCategory(idx));
                             props.navigation.navigate("course", {
                               key: props.course.key,
+                              gradeCategory: idx,
                             });
                           }}
                         >

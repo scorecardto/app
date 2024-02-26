@@ -107,7 +107,7 @@ export default function CourseEditSheet(props: {
             }}
             hidden={!!courseSettings?.hidden}
             onToggleHidden={(hidden) => {
-              if (hidden) {
+              if (hidden && !courseSettings?.hidden) {
                 Toast.show({
                   type: "info",
                   text1: "Course Hidden",

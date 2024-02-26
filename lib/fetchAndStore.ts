@@ -54,6 +54,7 @@ export default async function fetchAndStore(
     });
   }
 
+  let newData = false;
   if (oldData[0]) {
     // courseLoop:
     for (const course of newData.courses) {
@@ -71,6 +72,7 @@ export default async function fetchAndStore(
             await updateNotifs(course.key, assignment.name);
             console.log("updating", course.key, assignment.name);
             // continue courseLoop;
+            newData = true;
           }
         }
       }
@@ -81,4 +83,6 @@ export default async function fetchAndStore(
     key: "records",
     value: JSON.stringify([newData, ...oldData]),
   });
+
+  return newData;
 }

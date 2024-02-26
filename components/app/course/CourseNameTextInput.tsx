@@ -58,7 +58,7 @@ export default function CourseNameTextInput(props: {
           returnKeyType="done"
           textContentType="none"
           autoCorrect={true}
-          maxLength={24}
+          maxLength={22}
           style={{
             fontSize: 20,
             fontFamily: "DMSans_500Medium",
