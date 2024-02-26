@@ -12,7 +12,7 @@ import { TextInput } from "../../input/TextInput";
 import axios from "redaxios";
 import { NavigationProp, useTheme } from "@react-navigation/native";
 import { Image } from "expo-image";
-import useKeyboardVisisble from "../../util/hooks/useKeyboardVisible";
+import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import QuestionsButton from "../../app/welcome/questions/QuestionsButton";
 import TopQuestionsButton from "../../app/welcome/questions/SmallQuestionsButton";
@@ -38,7 +38,7 @@ export default function SelectDistrictScreen(props: {
 
   const { colors } = useTheme();
 
-  const isKeyboardVisible = useKeyboardVisisble();
+  const isKeyboardVisible = useKeyboardVisible();
 
   const [loading, setLoading] = useState(false);
 
