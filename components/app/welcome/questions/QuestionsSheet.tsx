@@ -4,7 +4,8 @@ import BottomSheetHeader from "../../../util/BottomSheet/BottomSheetHeader";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import QuestionMultiselect from "./QuestionMultiselect";
 import { MultiselectQuestionPath } from "../../../../lib/types/QuestionPath";
-import { Linking, View } from "react-native";
+import {Dimensions, Linking, ScrollView, View} from "react-native";
+import React from "react";
 
 export default function QuestionsSheet(props: { close: () => void }) {
   const navigation = useNavigation();
@@ -121,14 +122,15 @@ export default function QuestionsSheet(props: { close: () => void }) {
 
   return (
     <BottomSheetView>
-      <View
+      <ScrollView
         style={{
           marginHorizontal: 20,
           marginBottom: 20,
+          height: Dimensions.get("window").height * 0.65
         }}
       >
         <QuestionMultiselect path={path} />
-      </View>
+      </ScrollView>
     </BottomSheetView>
   );
 }
