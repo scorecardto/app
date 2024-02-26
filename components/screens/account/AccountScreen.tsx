@@ -110,7 +110,7 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
             ));
           }}
         />
-        <AccountOptionCard
+        {/* <AccountOptionCard
           label={"Tinker"}
           icon={"wrench"}
           onPress={async () => {
@@ -128,7 +128,7 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
               key: "deviceId",
             });
           }}
-        ></AccountOptionCard>
+        ></AccountOptionCard> */}
       </View>
     </SafeAreaView>
   );

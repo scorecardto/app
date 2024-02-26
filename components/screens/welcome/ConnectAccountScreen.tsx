@@ -85,10 +85,13 @@ const ConnectAccountScreen = (props: {
 
       reportCard
         .then(async (data) => {
-          loginSlice.setDistrict(district);
-          loginSlice.setUsername(username);
-          loginSlice.setPassword(password);
-          loginSlice.setDistrictVipProgramDate(district.vipProgramDate);
+          dispatch(loginSlice.setDistrict(district));
+          dispatch(loginSlice.setUsername(username));
+          dispatch(loginSlice.setPassword(password));
+
+          dispatch(
+            loginSlice.setDistrictVipProgramDate(district.vipProgramDate)
+          );
 
           await SecureStorage.setItemAsync(
             "login",
