@@ -110,6 +110,15 @@ export async function setupBackgroundFetch() {
     console.log("storing");
 
     const updated = await fetchAndStore(reportCard, store.dispatch, true);
+    if (updated) {
+      await Notifications.scheduleNotificationAsync({
+        content: {
+            title: "New grades",
+            body: "Tap to go to your Scorecard.",
+        },
+        trigger: null,
+      });
+    }
 
     console.log("done storing");
     return updated ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
@@ -124,6 +133,8 @@ export async function setupBackgroundFetch() {
 
 export function setupForegroundNotifications() {
   const handleNotification = async (notification: Notification) => {
+    if (!notification.request.content.data) return;
+
     const { district, username, password } = store.getState().login;
 
     Toast.show({
@@ -151,11 +162,6 @@ export function setupForegroundNotifications() {
       shouldSetBadge: false,
     };
   };
-
-  Notifications.getLastNotificationResponseAsync().then((response) => {
-    console.log(response);
-    response?.notification && handleNotification(response?.notification);
-  });
 
   Notifications.setNotificationHandler({ handleNotification });
 

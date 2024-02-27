@@ -61,6 +61,8 @@ export default async function fetchAndStore(
       const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
       if (!oldCourse) continue;
 
+      hasNewData = hasNewData || course.grades[course.grades.length-1]?.value !== oldCourse.grades[oldCourse.grades.length-1]?.value;
+
       for (const category of course.gradeCategories!) {
         const oldCategory = oldCourse.gradeCategories!.find(c=>c.name === category.name);
 
