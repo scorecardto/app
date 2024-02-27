@@ -46,7 +46,7 @@ export default function AssignmentSheet(props: {
         >
           <AssignmentGradeTile
             grade={
-              isNumericGrade && props.currentEdits.pointsEarned != null && props.currentEdits.pointsPossible != null
+              isNumericGrade && !isNaN(props.currentEdits.pointsEarned ?? NaN) && !isNaN(props.currentEdits.pointsPossible ?? NaN)
                 ? {
                     pointsEarned: props.currentEdits.pointsEarned,
                     pointsPossible: props.currentEdits.pointsPossible,
@@ -55,7 +55,7 @@ export default function AssignmentSheet(props: {
             }
             testing={props.testing}
             originalGrade={
-              isNumericGrade && props.assignment.points != null && props.assignment.scale != null
+              isNumericGrade && !isNaN(props.assignment.points ?? NaN) && !isNaN(props.assignment.scale ?? NaN)
                 ? {
                     pointsEarned: props.assignment.points,
                     pointsPossible: props.assignment.scale,
