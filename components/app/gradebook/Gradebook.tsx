@@ -222,7 +222,6 @@ function Gradebook(props: {
                       type: "testCategory",
                     });
                     const existingWeight =
-                      100 -
                       categories.reduce((sum, category) => {
                         return sum + (category.weight ?? 0);
                       }, 0);
@@ -248,10 +247,10 @@ function Gradebook(props: {
                                   {
                                     name: "Starting Average",
                                     points: newAverage,
-                                    max: 100,
                                     grade: `${newAverage}%`,
                                     dropped: false,
                                     scale: 100,
+                                    max: 100,
                                     count: 1,
                                     error: false,
                                   },
@@ -266,7 +265,7 @@ function Gradebook(props: {
                             });
                             setExactAverages((averages) => {
                               const newAverages = [...averages];
-                              newAverages.push("NG");
+                              newAverages.push(newAverage.toFixed(2));
                               return newAverages;
                             });
                             setModifiedCategories((oldCategories) => {

@@ -8,8 +8,8 @@ export default function AssignmentAssignDateTile(props: {
   assignment: Assignment;
 }) {
   const assign = useMemo(() => {
-    const parts = (props.assignment.assign as string).split("-");
-    return new Date(
+    const parts = props.assignment.assign?.split("-");
+    return parts && new Date(
       parseInt(parts[2]),
       parseInt(parts[0]) - 1,
       parseInt(parts[1])
@@ -34,7 +34,7 @@ export default function AssignmentAssignDateTile(props: {
           color: colors.text,
         }}
       >
-        {assign}
+        {assign ?? "N/A"}
       </SmallText>
     </SmallGradebookSheetTile>
   );

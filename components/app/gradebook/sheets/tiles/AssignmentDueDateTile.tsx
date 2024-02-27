@@ -10,8 +10,8 @@ export default function AssignmentDueDateTile(props: {
   const { colors } = useTheme();
 
   const due = useMemo(() => {
-    const parts = (props.assignment.due as string).split("-");
-    return new Date(
+    const parts = props.assignment.due?.split("-");
+    return parts && new Date(
       parseInt(parts[2]),
       parseInt(parts[0]) - 1,
       parseInt(parts[1])
@@ -35,7 +35,7 @@ export default function AssignmentDueDateTile(props: {
           color: colors.text,
         }}
       >
-        {due}
+        {due ?? "N/A"}
       </SmallText>
     </SmallGradebookSheetTile>
   );
