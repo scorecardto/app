@@ -4,7 +4,6 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import useColors from "../../core/theme/useColors";
 import { useEffect, useState } from "react";
-import CourseGlyphCategoryChip from "./CourseGlyphCategoryChip";
 export default function CourseGlyphChanger(props: {
   value?: string;
   onChange: (accentLabel: string | undefined) => void;
@@ -35,6 +34,7 @@ export default function CourseGlyphChanger(props: {
     "tennis",
     "football",
     "arm-flex",
+    "thought-bubble",
     "drama-masks",
   ];
 
