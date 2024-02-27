@@ -286,6 +286,7 @@ function Gradebook(props: {
                 >
                   <SummaryTable
                     course={props.course}
+                    carouselChangeHandlers={carouselChangeHandlers}
                     categories={categories}
                     modified={modifiedCategories}
                     changeGradeCategory={(c) => {

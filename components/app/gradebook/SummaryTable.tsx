@@ -1,4 +1,4 @@
-import React from "react";
+import React, {MutableRefObject, useEffect, useRef} from "react";
 import { Dimensions, FlatList, ScrollView, Text, View } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import TableRow from "./TableRow";
@@ -11,11 +11,21 @@ export default function SummaryTable(props: {
     average: string | null;
   }[];
   changeGradeCategory: (category: number) => void;
+  carouselChangeHandlers: MutableRefObject<((idx: number)=>void)[]>
 }) {
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    props.carouselChangeHandlers.current = [...props.carouselChangeHandlers.current, idx => {
+      idx == 0 && scrollRef.current?.flashScrollIndicators();
+    }]
+  }, []);
+
   return (
     <ScrollView
-      style={{ maxHeight: Dimensions.get("window").height - 367 }}
+      style={{ maxHeight: Dimensions.get("window").height - 440 }}
       alwaysBounceVertical={false}
+      ref={scrollRef}
     >
       {props.categories.map((item, index) => {
         const testing = index >= props.course.gradeCategories!.length;
