@@ -44,9 +44,12 @@ export function averageGradeCategories(categories: GradeCategory[]) {
   let count = 0;
 
   categories.forEach((category) => {
+    const avg = parseFloat(category.average)
+    if (isNaN(avg)) return;
+
     let weight = category.weight ?? 100;
 
-    sum += (Math.round(parseFloat(category.average) * 10) / 10) * weight;
+    sum += (Math.round(avg * 10) / 10) * weight;
     count += weight;
   });
 
