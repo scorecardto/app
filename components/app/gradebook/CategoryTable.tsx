@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {MutableRefObject, Ref, useContext, useEffect, useRef, useState} from "react";
 import { Dimensions, FlatList, ScrollView, Text, View } from "react-native";
 import { Assignment, GradeCategory } from "scorecard-types";
 import TableRow from "./TableRow";
@@ -10,11 +10,23 @@ export default function CategoryTable(props: {
   modifiedAssignments: (Assignment | null)[] | null;
   modifyAssignment(a: Assignment, index: number): void;
   removeAssignment(index: number): void;
+  testing: boolean;
+  index: number;
+  carouselChangeHandlers: MutableRefObject<((idx: number)=>void)[]>
 }) {
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    props.carouselChangeHandlers.current = [...props.carouselChangeHandlers.current, idx => {
+      idx == props.index && scrollRef.current?.flashScrollIndicators();
+    }]
+  }, []);
+
   return (
     <ScrollView
-      style={{ maxHeight: Dimensions.get("window").height - 500 }}
+      style={{ maxHeight: Dimensions.get("window").height - (props.testing ? 500 : 440) }}
       alwaysBounceVertical={false}
+      ref={scrollRef}
     >
       {new Array(
         (props.modifiedAssignments ?? props.category.assignments!).length

@@ -54,7 +54,7 @@ export default async function fetchAndStore(
     });
   }
 
-  let newData = false;
+  let hasNewData = false;
   if (oldData[0]) {
     // courseLoop:
     for (const course of newData.courses) {
@@ -72,7 +72,7 @@ export default async function fetchAndStore(
             await updateNotifs(course.key, assignment.name);
             console.log("updating", course.key, assignment.name);
             // continue courseLoop;
-            newData = true;
+            hasNewData = true;
           }
         }
       }
@@ -84,5 +84,5 @@ export default async function fetchAndStore(
     value: JSON.stringify([newData, ...oldData]),
   });
 
-  return newData;
+  return hasNewData;
 }

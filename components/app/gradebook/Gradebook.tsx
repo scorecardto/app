@@ -159,6 +159,8 @@ function Gradebook(props: {
     }
   }, [props.oldGradingPeriodLastUpdated]);
 
+  const carouselChangeHandlers = useRef([setCurrentCard as (idx: number)=>void]);
+
   return (
     <View
       style={{
@@ -380,6 +382,9 @@ function Gradebook(props: {
                   modifiedAssignments={
                     modifiedCategories[index - 1].assignments
                   }
+                  testing={testing}
+                  index={index}
+                  carouselChangeHandlers={carouselChangeHandlers}
                   removeAssignment={(idx: number) => {
                     setModifiedCategories((categories) => {
                       const catIdx = index - 1;
@@ -422,7 +427,7 @@ function Gradebook(props: {
           }
         }}
         onScrollIndexChanged={(index) => {
-          setCurrentCard(index);
+          carouselChangeHandlers.current.forEach(f=>f(index));
         }}
       />
     </View>
