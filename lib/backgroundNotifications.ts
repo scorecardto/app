@@ -133,7 +133,13 @@ export async function setupBackgroundFetch() {
 
 export function setupForegroundNotifications() {
   const handleNotification = async (notification: Notification) => {
-    if (!notification.request.content.data) return;
+    const ret = {
+      shouldShowAlert: false,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    };
+
+    if (!notification.request.content.data) return ret;
 
     const { district, username, password } = store.getState().login;
 
@@ -156,11 +162,7 @@ export function setupForegroundNotifications() {
 
     await fetchAndStore(reportCard, store.dispatch, false);
 
-    return {
-      shouldShowAlert: false,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    };
+    return ret;
   };
 
   Notifications.setNotificationHandler({ handleNotification });
