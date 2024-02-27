@@ -61,7 +61,7 @@ const ConnectAccountScreen = (props: {
             );
           },
         });
-      }, 7000);
+      }, 8000);
 
       const reportCard = fetchAllContent(
         district.url,
@@ -118,6 +118,8 @@ const ConnectAccountScreen = (props: {
           const fetchStoreResult = await fetchAndStore(data, dispatch, true);
         })
         .catch((e: Error) => {
+          clearTimeout(timeoutId);
+
           if (e.message === "INCORRECT_PASSWORD") {
             setLoading(false);
             setPassword("");
