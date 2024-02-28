@@ -73,12 +73,14 @@ export default async function fetchAndStore(
           if (!assignment.name) continue;
           const oldAssignment = oldCategory?.assignments?.find(a=>a.name === assignment.name);
 
-          if (!assignmentHasGrade(oldAssignment) && assignmentHasGrade(assignment)) {
-            modifiedAssignments.push(assignment.name);
-            // continue courseLoop;
-            hasNewData = true;
-          } else {
-            notModifiedAssignmentsExist = true;
+          if (assignmentHasGrade(assignment)) {
+            if (!assignmentHasGrade(oldAssignment)) {
+              modifiedAssignments.push(assignment.name);
+              // continue courseLoop;
+              hasNewData = true;
+            } else if (assignmentHasGrade(assignment)) {
+              notModifiedAssignmentsExist = true;
+            }
           }
         }
       }
