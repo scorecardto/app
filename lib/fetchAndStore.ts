@@ -1,5 +1,5 @@
 import Storage from "expo-storage";
-import { AllContentResponse, GradebookRecord } from "scorecard-types";
+import {AllContentResponse, Assignment, GradebookRecord} from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
 import { AppDispatch } from "../components/core/state/store";
@@ -54,6 +54,7 @@ export default async function fetchAndStore(
     });
   }
 
+  const assignmentHasGrade = (a: Assignment | undefined) => a?.grade && a.grade !== '' && /[^a-z]/.test(a.grade);
   let hasNewData = false;
   if (oldData[0]) {
     // courseLoop:
@@ -63,6 +64,8 @@ export default async function fetchAndStore(
 
       hasNewData = hasNewData || course.grades[course.grades.length-1]?.value !== oldCourse.grades[oldCourse.grades.length-1]?.value;
 
+      let notModifiedAssignmentsExist = false;
+      const modifiedAssignments = [];
       for (const category of course.gradeCategories!) {
         const oldCategory = oldCourse.gradeCategories!.find(c=>c.name === category.name);
 
@@ -70,12 +73,20 @@ export default async function fetchAndStore(
           if (!assignment.name) continue;
           const oldAssignment = oldCategory?.assignments?.find(a=>a.name === assignment.name);
 
-          if ((!oldAssignment || oldAssignment.grade === '') && assignment.grade !== '') {
-            await updateNotifs(course.key, assignment.name);
-            console.log("updating", course.key, assignment.name);
+          if (!assignmentHasGrade(oldAssignment) && assignmentHasGrade(assignment)) {
+            modifiedAssignments.push(assignment.name);
             // continue courseLoop;
             hasNewData = true;
+          } else {
+            notModifiedAssignmentsExist = true;
           }
+        }
+      }
+
+      if (notModifiedAssignmentsExist) {
+        for (const n of modifiedAssignments) {
+          await updateNotifs(course.key, n);
+          console.log("updating", course.key, n);
         }
       }
     }
