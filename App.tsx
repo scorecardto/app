@@ -52,6 +52,7 @@ import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
+setupBackgroundFetch();
 
 const Stack = createNativeStackNavigator();
 
