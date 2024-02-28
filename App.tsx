@@ -48,6 +48,7 @@ import {
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
 import * as Notifications from "expo-notifications";
+import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -172,6 +173,13 @@ export default function App(props: { resetKey: string }) {
                       options={{
                         headerShown: false,
                       }}
+                    />
+                    <Stack.Screen
+                        name="privacyPolicy"
+                        component={PrivacyScreen}
+                        options={{
+                          headerShown: false,
+                        }}
                     />
                     <Stack.Screen
                       name="connectAccount"

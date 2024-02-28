@@ -129,14 +129,6 @@ export default function GeneralSettingsScreen(props: {
                 isPreferred: true,
               },
               {
-                text: "Log Out",
-                style: "default",
-                onPress: () => {
-                  firebase.auth().signOut();
-                  reloadApp();
-                },
-              },
-              {
                 text: "Reset",
                 style: "destructive",
                 onPress: async () => {
