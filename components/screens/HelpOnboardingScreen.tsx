@@ -13,6 +13,7 @@ import LoadingOverlay from "./loader/LoadingOverlay";
 import { useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
 import { TextInput } from "../input/TextInput";
+import {getDeviceDescriptor} from "../../lib/deviceInfo";
 export default function HelpOnboardingScreen(props: {
   route: any;
   navigation: any;
@@ -34,6 +35,7 @@ export default function HelpOnboardingScreen(props: {
       axios
         .post("https://scorecardgrades.com/api/feedback", {
           reason: "ONBOARDING",
+          device: getDeviceDescriptor(),
           message: message.substring(0, 5000),
           respondToMe: true,
           contactMethod: contactMethod,

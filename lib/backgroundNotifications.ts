@@ -21,6 +21,7 @@ import fetchAndStore from "./fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import captureCourseState from "./captureCourseState";
+import {getDeviceId} from "./deviceInfo";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
@@ -292,18 +293,7 @@ export async function updateNotifs(
   });
 }
 
-export async function getDeviceId() {
-  const deviceId = await Storage.getItem({ key: "deviceId" });
 
-  if (!deviceId) {
-    const id = Crypto.randomUUID();
-    await Storage.setItem({ key: "deviceId", value: id });
-
-    return id;
-  }
-
-  return deviceId;
-}
 
 export async function requestPermissions() {
   token = await getExpoToken();

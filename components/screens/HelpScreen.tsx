@@ -11,7 +11,9 @@ import { firebase } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 import LoadingOverlay from "./loader/LoadingOverlay";
 import { useSelector } from "react-redux";
+import * as Device from "expo-device";
 import { RootState } from "../core/state/store";
+import {getDeviceDescriptor} from "../../lib/deviceInfo";
 export default function HelpScreen(props: { route: any; navigation: any }) {
   const { colors } = useTheme();
 
@@ -77,6 +79,7 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
       axios
         .post("https://scorecardgrades.com/api/feedback", {
           reason: reason.toUpperCase(),
+          device: getDeviceDescriptor(),
           firstName: firstName.substring(0, 50),
           lastName: lastName.substring(0, 50),
           message: message.substring(0, 5000),
