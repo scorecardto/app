@@ -79,6 +79,7 @@ export default function AssignmentTableRow(props: {
               currentEdits={currentEdits}
               removeAssignment={props.removeAssignment}
               edit={(edits) => {
+                edits = { ...currentEdits, ...edits };
                 // returns whether the assignment was modified
                 let ret = false;
                 if (
