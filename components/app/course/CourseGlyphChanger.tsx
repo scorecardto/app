@@ -36,6 +36,7 @@ export default function CourseGlyphChanger(props: {
     "arm-flex",
     "thought-bubble",
     "drama-masks",
+    "dance-ballroom",
     "heart"
   ];
 
