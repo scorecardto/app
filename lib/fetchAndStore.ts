@@ -54,7 +54,7 @@ export default async function fetchAndStore(
     });
   }
 
-  const assignmentHasGrade = (a: Assignment | undefined) => a?.grade && a.grade !== '' && /[^a-z]/.test(a.grade);
+  const assignmentHasGrade = (a: Assignment | undefined) => a?.grade && a.grade !== '' && /[^a-z]/i.test(a.grade);
   let hasNewData = false;
   if (oldData[0]) {
     // courseLoop:
