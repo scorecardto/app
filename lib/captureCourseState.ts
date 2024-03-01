@@ -3,7 +3,7 @@ import CourseState from "./types/CourseState";
 
 export default function captureCourseState(c: Course): CourseState {
   return {
-    average: c.grades[c.grades.length - 1]?.value ?? "NG",
+    average: c.grades.findLast(g=>!!g)?.value ?? "NG",
     categories:
       c.gradeCategories?.map((category) => ({
         name: category.name,

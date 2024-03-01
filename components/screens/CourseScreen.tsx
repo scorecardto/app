@@ -35,7 +35,7 @@ import { ActionSheetRef } from "react-native-actions-sheet";
 import CourseNotificationsButton from "../app/course/CourseNotificationsButton";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
-  const { key } = props.route.params;
+  const { key, gradeChangeTable } = props.route.params;
 
   const courseInitial = useSelector(
     (state: RootState) =>
@@ -190,51 +190,15 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     refreshGradingPeriod(true);
   }, [courseInitial]);
 
-  const stateChanges = useSelector(
-    (state: RootState) => {
-      if (
-        state.gradeCategory.category !== state.gradeData.record?.gradeCategory
-      ) {
-        return {
-          exists: false,
-          oldAverage: "",
-        };
-      }
-      const oldState: CourseState = state.oldCourseStates.record[
-        key
-      ] as CourseState;
+  const courseGradeText = course?.grades[gradeCategory]?.value || "NG";
 
-      const currentCourse = state.gradeData.record?.courses.find(
-        (c) => c.key === key
-      );
-
-      if (oldState == null || currentCourse == null)
-        return {
-          exists: false,
-          oldAverage: "",
-        };
-
-      const newState = JSON.stringify(captureCourseState(currentCourse));
-
-      return {
-        exists: JSON.stringify(oldState) !== newState,
-        oldAverage: oldState.average,
-      };
-    },
-    () => true
-  );
-
-  const courseGradeText = course?.grades[gradeCategory]?.value;
-
-  const [showGradeStateChanges, setShowGradeStateChanges] = useState(
-    stateChanges.exists
-  );
+  const [showGradeStateChanges, setShowGradeStateChanges] = useState(gradeChangeTable.changed);
 
   const [gradeText, setGradeText] = useState<string>(
-    stateChanges.exists ? stateChanges.oldAverage : courseGradeText || "NG"
+      gradeChangeTable.changed ? gradeChangeTable.oldAverage : courseGradeText
   );
   const [modifiedAvg, setModifiedAvg] = useState<string | null>(
-    stateChanges.exists ? courseGradeText ?? null : null
+    gradeChangeTable.changed ? courseGradeText ?? null : null
   );
 
   const colors = useColors();
@@ -243,9 +207,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   useEffect(() => {
     if (course == null) return;
 
-    const stateChange = stateChanges.exists;
-
-    if (stateChange) {
+    if (gradeChangeTable.changed) {
       setTimeout(() => {
         dispatch(
           setOldCourseState({
@@ -301,6 +263,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
               setResetKey((prev) => prev + 1);
             }}
             courseKey={key}
+            showingStateChanges={showGradeStateChanges}
             defaultName={course?.name || ""}
             gradeText={gradeText}
             modifiedGradeText={modifiedAvg}
@@ -310,9 +273,10 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             <View>
               <GradeStateChangesCard
                 course={course!}
+                gradeChangeTable={gradeChangeTable}
                 onFinished={() => {
                   setShowGradeStateChanges(false);
-                  setGradeText(courseGradeText || "NG");
+                  setGradeText(courseGradeText);
                   setModifiedAvg(null);
                 }}
               />

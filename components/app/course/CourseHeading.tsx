@@ -14,6 +14,7 @@ import MoreFeaturesSheet from "../vip/MoreFeaturesSheet";
 export default function CourseHeading(props: {
   courseKey: string;
   defaultName: string;
+  showingStateChanges: boolean;
   gradeText: string;
   modifiedGradeText: string | null;
   resetGradeTesting: () => void;
@@ -28,8 +29,11 @@ export default function CourseHeading(props: {
 
   const allowCourseEditSheet = useFeatureFlag("ALLOW_COURSE_EDITING");
 
+  const inGradeTesting = !props.showingStateChanges && props.modifiedGradeText;
+
   return (
     <TouchableOpacity
+        disabled={props.showingStateChanges}
       onPress={() => {
         if (props.modifiedGradeText) {
           props.resetGradeTesting();
@@ -50,9 +54,11 @@ export default function CourseHeading(props: {
     >
       <View style={{ marginHorizontal: 64 }}>
         <Header
-          header={props.modifiedGradeText ? "Tap to Reset" : courseName}
+          header={inGradeTesting ? "Tap to Reset" : courseName}
           subheader={
-            props.modifiedGradeText
+            props.showingStateChanges
+              ? "Changes since you last checked in."
+              : inGradeTesting
               ? "You're using grade testing right now."
               : courseName !== props.defaultName
               ? undefined

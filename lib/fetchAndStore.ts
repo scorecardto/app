@@ -30,7 +30,16 @@ export default async function fetchAndStore(
   );
 
   const newData: GradebookRecord = {
-    courses: data.courses,
+    courses: data.courses.map(c => {
+      if ((c.gradeCategories?.length ?? 0) === 0 || c.gradeCategories!.every(gc=>(gc.assignments?.length ?? 0) === 0)) {
+        for (let i = 0; i < oldData.length; i++) {
+          const oldCourse = oldData[0].courses.find(oc => oc.key === c.key);
+          if (oldCourse) return oldCourse;
+        }
+      }
+
+      return c;
+    }),
     gradeCategory,
     date: Date.now(),
     gradeCategoryNames: data.gradeCategoryNames,

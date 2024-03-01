@@ -7,16 +7,12 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import useColors from "../../core/theme/useColors";
 import useAccents from "../../core/theme/useAccents";
-
-type ChangeTableEntry = {
-  assignmentName: string;
-  primaryData: string;
-  secondaryData: string;
-};
+import {ChangeTable, ChangeTableEntry} from "../../../lib/types/ChangeTableEntry";
 
 export default function GradeStateChangesCard(props: {
   course: Course;
   onFinished: () => void;
+  gradeChangeTable: ChangeTable;
 }) {
   const colors = useColors();
   const accents = useAccents();
@@ -73,52 +69,6 @@ export default function GradeStateChangesCard(props: {
     },
   });
 
-  const oldState = useSelector(
-    (state: RootState) => state.oldCourseStates.record[props.course.key],
-    () => true
-  );
-
-  const newState = captureCourseState(props.course);
-
-  const newGrades: ChangeTableEntry[] = newState.categories
-    .map((newCategory): ChangeTableEntry[] => {
-      const oldCategory = oldState.categories.find(
-        (c) => c.name === newCategory.name
-      );
-
-      const newGrades = newCategory.assignments.filter(
-        (g) =>
-          !oldCategory?.assignments.find(
-            (og) => og.name === g.name && og.grade === g.grade
-          ) && g.grade !== ""
-      );
-
-      return newGrades.map((g) => ({
-        assignmentName: g.name,
-        primaryData: g.grade,
-        secondaryData: newCategory.name,
-      }));
-    })
-    .flat();
-
-  const removedGrades = oldState.categories.map(
-    (oldCategory): ChangeTableEntry[] => {
-      const newCategory = newState.categories.find(
-        (c) => c.name === oldCategory.name
-      );
-
-      const removedGrades = oldCategory.assignments.filter(
-        (g) => !newCategory?.assignments.find((og) => og.name === g.name)
-      );
-
-      return removedGrades.map((g) => ({
-        assignmentName: g.name,
-        primaryData: "Removed",
-        secondaryData: oldCategory.name,
-      }));
-    }
-  );
-
   return (
     <View>
       <ScrollView style={styles.wrapper}>
@@ -140,7 +90,7 @@ export default function GradeStateChangesCard(props: {
             </View>
           </TouchableOpacity>
         </View>
-        {[newGrades, removedGrades].flat(2).map((g: ChangeTableEntry, idx) => (
+        {[props.gradeChangeTable.newGrades, props.gradeChangeTable.removedGrades].flat(2).map((g: ChangeTableEntry, idx) => (
           <TableRow
             key={idx}
             name={g.assignmentName}

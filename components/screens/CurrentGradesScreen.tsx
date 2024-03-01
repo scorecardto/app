@@ -30,6 +30,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import {ChangeTable, ChangeTableEntry} from "../../lib/types/ChangeTableEntry";
+import Button from "../input/Button";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -245,9 +247,7 @@ const CurrentGradesScreen = (props: {
 
   const showCustomizeCard = useFeatureFlag("SHOW_CUSTOMIZE_CARD");
 
-  const oldCourseStates = useSelector(
-    (s: RootState) => s.oldCourseStates.record
-  );
+  const gradeChanges = useRef<{[key: string]: ChangeTable}>({});
 
   return (
     <>
@@ -343,7 +343,6 @@ const CurrentGradesScreen = (props: {
                 })}
                 renderItem={({ item, index }) => {
                   const hidden = courseSettings[item.key]?.hidden;
-
                   if (hidden) return null;
 
                   return (
@@ -369,13 +368,12 @@ const CurrentGradesScreen = (props: {
                         onClick={() => {
                           props.navigation.navigate("course", {
                             key: item.key,
+                            gradeChangeTable: gradeChanges.current[item.key],
                           });
                         }}
-                        newGrades={
-                          oldCourseStates[item.key] &&
-                          JSON.stringify(oldCourseStates[item.key]) !==
-                            JSON.stringify(captureCourseState(item))
-                        }
+                        setGradeChanges={(table: ChangeTable) => {
+                          gradeChanges.current[item.key] = table;
+                        }}
                         onHold={() => {}}
                         course={item}
                         gradingPeriod={currentGradeCategory || 0}
