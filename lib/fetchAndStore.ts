@@ -24,7 +24,6 @@ export default async function fetchAndStore(
       ...data.courses.map((course) => course.grades.filter((g) => g).length)
     ) - 1;
 
-  // data.courses[0].grades[gradeCategory]!.value = "50";
 
   for (const course of data.courses) {
     dispatch(updateCourseIfPinned({
@@ -75,14 +74,16 @@ export default async function fetchAndStore(
   }
 
   const assignmentHasGrade = (a: Assignment | undefined) => a?.grade && a.grade !== '' && /[^a-z]/i.test(a.grade);
-  let hasNewData = false;
+  let hasNewData = new Set();
   if (oldData[0]) {
     // courseLoop:
     for (const course of newData.courses) {
       const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
       if (!oldCourse) continue;
 
-      hasNewData = hasNewData || course.grades[gradeCategory]?.value !== oldCourse.grades[gradeCategory]?.value;
+      if (course.grades[gradeCategory]?.value !== oldCourse.grades[gradeCategory]?.value) {
+        hasNewData.add(course.key)
+      }
 
       let notModifiedAssignmentsExist = false;
       const modifiedAssignments = [];
@@ -97,7 +98,7 @@ export default async function fetchAndStore(
             if (!assignmentHasGrade(oldAssignment)) {
               modifiedAssignments.push(assignment.name);
               // continue courseLoop;
-              hasNewData = true;
+              hasNewData.add(course.key);
             } else if (assignmentHasGrade(assignment)) {
               notModifiedAssignmentsExist = true;
             }
@@ -119,5 +120,5 @@ export default async function fetchAndStore(
     value: JSON.stringify([newData, ...oldData]),
   });
 
-  return hasNewData;
+  return Array.from(hasNewData);
 }

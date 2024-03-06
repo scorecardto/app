@@ -14,7 +14,7 @@ import {
 } from "./fetcher";
 import { AppDispatch, RootState } from "../components/core/state/store";
 import Storage from "expo-storage";
-import { CourseSettings, GradebookRecord } from "scorecard-types";
+import {Course, CourseSettings, GradebookRecord} from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import { setRefreshStatus } from "../components/core/state/grades/refreshStatusSlice";
 import fetchAndStore from "./fetchAndStore";
@@ -107,10 +107,12 @@ export async function setupBackgroundFetch() {
     console.log("getting rpc");
 
     const reportCard = await fetchAllContent(host, username, password);
+    const notifs = await isRegisteredForNotifs(reportCard.courses.map((c) => c.key));
 
     console.log("storing");
 
-    const updated = await fetchAndStore(reportCard, store.dispatch, true);
+    const updated = !!(await fetchAndStore(reportCard, store.dispatch, false)).find(c=>!!notifs?.data.result?.find((n: any)=>n.value !== "OFF" && n.key === c));
+
     if (updated) {
       await Notifications.scheduleNotificationAsync({
         content: {
