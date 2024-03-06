@@ -24,6 +24,8 @@ export default async function fetchAndStore(
       ...data.courses.map((course) => course.grades.filter((g) => g).length)
     ) - 1;
 
+  // data.courses[0].grades[gradeCategory]!.value = "50";
+  // data.courses[0].gradeCategories[0].assignments.splice(0, 1);
 
   for (const course of data.courses) {
     dispatch(updateCourseIfPinned({
@@ -74,7 +76,7 @@ export default async function fetchAndStore(
   }
 
   const assignmentHasGrade = (a: Assignment | undefined) => a?.grade && a.grade !== '' && /[^a-z]/i.test(a.grade);
-  let hasNewData = new Set();
+  let hasNewData = new Set<string>();
   if (oldData[0]) {
     // courseLoop:
     for (const course of newData.courses) {

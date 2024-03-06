@@ -247,8 +247,6 @@ const CurrentGradesScreen = (props: {
 
   const showCustomizeCard = useFeatureFlag("SHOW_CUSTOMIZE_CARD");
 
-  const gradeChanges = useRef<{[key: string]: ChangeTable}>({});
-
   return (
     <>
       <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
@@ -365,15 +363,9 @@ const CurrentGradesScreen = (props: {
                       }
                     >
                       <CourseCard
-                        onClick={() => {
-                          props.navigation.navigate("course", {
-                            key: item.key,
-                            gradeChangeTable: gradeChanges.current[item.key],
-                          });
-                        }}
-                        setGradeChanges={(table: ChangeTable) => {
-                          gradeChanges.current[item.key] = table;
-                        }}
+                        onClick={() => props.navigation.navigate("course", {
+                          key: item.key,
+                        })}
                         onHold={() => {}}
                         course={item}
                         gradingPeriod={currentGradeCategory || 0}
