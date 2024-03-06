@@ -11,6 +11,8 @@ import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import {updateNotifs} from "./backgroundNotifications";
+import {useEffect} from "react";
+import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
@@ -21,6 +23,15 @@ export default async function fetchAndStore(
     Math.max(
       ...data.courses.map((course) => course.grades.filter((g) => g).length)
     ) - 1;
+
+  // data.courses[0].grades[gradeCategory]!.value = "50";
+
+  for (const course of data.courses) {
+    dispatch(updateCourseIfPinned({
+      key: course.key,
+      grade: course.grades[gradeCategory]?.value ?? "NG",
+    }));
+  }
 
   dispatch(setReferer(data.referer));
   dispatch(setSessionId(data.sessionId));
@@ -71,7 +82,7 @@ export default async function fetchAndStore(
       const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
       if (!oldCourse) continue;
 
-      hasNewData = hasNewData || course.grades[course.grades.length-1]?.value !== oldCourse.grades[oldCourse.grades.length-1]?.value;
+      hasNewData = hasNewData || course.grades[gradeCategory]?.value !== oldCourse.grades[gradeCategory]?.value;
 
       let notModifiedAssignmentsExist = false;
       const modifiedAssignments = [];

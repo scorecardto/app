@@ -47,7 +47,6 @@ import {
 } from "./lib/backgroundNotifications";
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
-import * as Notifications from "expo-notifications";
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 
 SplashScreen.preventAutoHideAsync();

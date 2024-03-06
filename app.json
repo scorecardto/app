@@ -24,6 +24,18 @@
         "UIBackgroundModes": [
           "remote-notification",
           "fetch"
+        ],
+        "appExtensions": [
+          {
+            "targetName": "expowidgetsWidgetExtension",
+            "bundleIdentifier": "com.scorecardgrades.mobile.expowidgetsWidgetExtension",
+            "entitlements": {
+              "com.apple.security.application-groups": [
+                "group.com.scorecardgrades.mobile.expowidgets"
+              ],
+              "aps-environment": "development"
+            }
+          }
         ]
       }
     },
@@ -47,6 +59,19 @@
     "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
+      [
+        "@bittingz/expo-widgets",
+        {
+          "ios": {
+            "src": "./widgets/ios",
+            "devTeamId": "H29JJ3FSST",
+            "mode": "development",
+            "moduleDependencies": [],
+            "useLiveActivities": false,
+            "frequentUpdates": false
+          }
+        }
+      ],
       [
         "expo-build-properties",
         {

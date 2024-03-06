@@ -121,7 +121,7 @@ export async function setupBackgroundFetch() {
       });
     }
 
-    console.log("done storing");
+    console.log("done storing", updated);
     return updated ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
   });
 

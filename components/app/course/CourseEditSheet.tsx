@@ -15,9 +15,12 @@ import useColors from "../../core/theme/useColors";
 import Toast from "react-native-toast-message";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { registerNotifs } from "../../../lib/backgroundNotifications";
+import Button from "../../input/Button";
+import {pinCourse, updateCourseIfPinned, unpinCourse} from "../../core/state/widget/widgetSlice";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
+  gradeText: string;
   defaultName: string;
   setOnClose: (onClose: () => void) => void;
 }) {
@@ -55,6 +58,11 @@ export default function CourseEditSheet(props: {
         );
       }
 
+      dispatch(updateCourseIfPinned({
+          key: props.courseKey,
+          title: n || props.defaultName,
+      }));
+
       getAnalytics().logEvent("use_customize", {
         type: "rename",
       });
@@ -86,6 +94,10 @@ export default function CourseEditSheet(props: {
       saveName(name);
     });
   }, [name]);
+
+  const pinned = useSelector((s: RootState) => { return s.widgetData.data });
+  const isPinned = !!pinned.find(c=>c.key === props.courseKey);
+
   return (
     <>
       <BottomSheetView>
@@ -126,6 +138,16 @@ export default function CourseEditSheet(props: {
               );
             }}
           />
+            <Button disabled={!isPinned && pinned.length >= 3} onPress={() => {
+                dispatch(
+                    isPinned ? unpinCourse(props.courseKey)
+                        : pinCourse({
+                            key: props.courseKey,
+                            title: name,
+                            grade: props.gradeText,
+                        })
+                );
+            }}>{isPinned ? "Unpin" : "Pin"}</Button>
           <CourseColorChanger
             initialValue={accentColor}
             onChange={(accentColor) => {
