@@ -49,7 +49,7 @@ export default function AssignmentTableRow(props: {
       : details.count.toString() + "pt" + (details.count === 1 ? "" : "s");
   };
 
-  const currentEdits: AssignmentEdits = {
+  let currentEdits: AssignmentEdits = {
     count: count,
     pointsEarned: points,
     pointsPossible: maxPoints,
@@ -121,6 +121,8 @@ export default function AssignmentTableRow(props: {
                 } else {
                   setDropped(assignment.dropped);
                 }
+
+                currentEdits = edits;
 
                 return ret;
               }}
