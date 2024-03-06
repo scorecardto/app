@@ -42,6 +42,22 @@
           <string>exp+scorecard</string>
         </array>
       </dict>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>scorecardto.firebaseapp.com</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>20</string>
@@ -62,6 +78,10 @@
     </dict>
     <key>NSContactsUsageDescription</key>
     <string>Find and invite friends to Scorecard</string>
+    <key>NSSupportsLiveActivities</key>
+    <false/>
+    <key>NSSupportsLiveActivitiesFrequentUpdates</key>
+    <false/>
     <key>UIBackgroundModes</key>
     <array>
       <string>remote-notification</string>
