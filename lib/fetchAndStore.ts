@@ -25,7 +25,7 @@ export default async function fetchAndStore(
     ) - 1;
 
   // data.courses[0].grades[gradeCategory]!.value = "50";
-  // data.courses[0].gradeCategories[0].assignments.splice(0, 1);
+  // data.courses[1].gradeCategories[0].assignments.splice(0, 1);
 
   for (const course of data.courses) {
     dispatch(updateCourseIfPinned({

@@ -60,14 +60,14 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
   console.log("getting rpc");
 
   const reportCard = await fetchAllContent(host, username, password);
-  const notifs = await isRegisteredForNotifs(reportCard.courses.map((c) => c.key));
+  const notifs = (await isRegisteredForNotifs(reportCard.courses.map((c) => c.key)))?.data.result;
 
   const getName = (key: string) => courseSettings[key]?.name ?? reportCard.courses.find(c=>c.key === key)?.name ?? key;
 
   console.log("storing");
 
   const toNotify = (await fetchAndStore(reportCard, store.dispatch, false))
-      .filter(c=>!!notifs?.data.result?.find((n: any)=>n.value !== "OFF" && n.key === c));
+      .filter(c=>!!notifs?.find((n: any)=>n.value !== "OFF" && n.key === c));
 
   if (toNotify.length > 0) {
     const single = toNotify.length == 1;
@@ -75,7 +75,7 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
       content: {
         title: single
             ? getName(toNotify[0])
-            : "Several courses",
+            : "New grades",
         body: single
             ? "New grades are available. Tap to go to your Scorecard."
             : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
