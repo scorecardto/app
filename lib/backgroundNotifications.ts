@@ -24,78 +24,80 @@ import captureCourseState from "./captureCourseState";
 import {getDeviceId} from "./deviceInfo";
 import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
 import {NavigationContainerRef} from "@react-navigation/native";
+import {TaskManagerTaskBody} from "expo-task-manager/src/TaskManager";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
+const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
 
 let fcmToken: string | undefined;
 export function setFcmToken(token: string | undefined) {
   fcmToken = token;
 }
 
-export async function setupBackgroundNotifications() {
-  TaskManager.defineTask(
-    BACKGROUND_NOTIFICATION_TASK,
-    async ({ data, error, executionInfo }) => {
-      console.log("background notification task")
-      if (AppState.currentState === "active") return;
+async function backgroundTask(body: TaskManagerTaskBody<any>) {
+  console.log("background notification task")
+  if (AppState.currentState === "active") return;
 
-      const id = (data as any).body?.id;
-      if (id) {
-        console.log("making axios request");
+  const id = body.data.body?.id;
+  if (id) {
+    console.log("making axios request");
 
-        await axios.post("https://scorecardgrades.com/api/silent_verification", {
-          id: id,
-          fcmToken,
-        });
-      }
+    await axios.post("https://scorecardgrades.com/api/silent_verification", {
+      id: id,
+      fcmToken,
+    });
+  }
 
-      console.log("getting settings");
+  console.log("getting settings");
 
-      const { username, password, host } = JSON.parse(
-          SecureStore.getItem("login") ?? "{}"
-      );
-      if (!username || !password || !host) return;
-
-      const courseSettings = JSON.parse((await Storage.getItem({ key: "courseSettings" })) ?? "{}");
-
-      console.log("getting rpc");
-
-      const reportCard = await fetchAllContent(host, username, password);
-      const notifs = await isRegisteredForNotifs(reportCard.courses.map((c) => c.key));
-
-      const getName = (key: string) => courseSettings[key]?.name ?? reportCard.courses.find(c=>c.key === key)?.name ?? key;
-
-      console.log("storing");
-
-      const toNotify = (await fetchAndStore(reportCard, store.dispatch, false))
-          .filter(c=>!!notifs?.data.result?.find((n: any)=>n.value !== "OFF" && n.key === c));
-
-      if (toNotify.length > 0) {
-        const single = toNotify.length == 1;
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: single
-                ? getName(toNotify[0])
-                : "Several courses",
-            body: single
-                ? "New grades are available. Tap to go to your Scorecard."
-                : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
-            data: {stored: true, course: single ? toNotify[0] : undefined}
-          },
-          trigger: null,
-        });
-      }
-
-      console.log("done storing");
-
-      if (!id) {
-        return toNotify.length > 0 ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
-      }
-    }
+  const { username, password, host } = JSON.parse(
+      SecureStore.getItem("login") ?? "{}"
   );
+  if (!username || !password || !host) return;
+
+  const courseSettings = JSON.parse((await Storage.getItem({ key: "courseSettings" })) ?? "{}");
+
+  console.log("getting rpc");
+
+  const reportCard = await fetchAllContent(host, username, password);
+  const notifs = await isRegisteredForNotifs(reportCard.courses.map((c) => c.key));
+
+  const getName = (key: string) => courseSettings[key]?.name ?? reportCard.courses.find(c=>c.key === key)?.name ?? key;
+
+  console.log("storing");
+
+  const toNotify = (await fetchAndStore(reportCard, store.dispatch, false))
+      .filter(c=>!!notifs?.data.result?.find((n: any)=>n.value !== "OFF" && n.key === c));
+
+  if (toNotify.length > 0) {
+    const single = toNotify.length == 1;
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: single
+            ? getName(toNotify[0])
+            : "Several courses",
+        body: single
+            ? "New grades are available. Tap to go to your Scorecard."
+            : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
+        data: {stored: true, course: single ? toNotify[0] : undefined}
+      },
+      trigger: null,
+    });
+  }
+
+  console.log("done storing");
+
+  if (!id) {
+    return toNotify.length > 0 ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
+  }
+}
+
+export async function setupBackgroundNotifications() {
+  TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, backgroundTask);
+  TaskManager.defineTask(BACKGROUND_FETCH_TASK, backgroundTask);
 
   await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
-  await BackgroundFetch.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK, {
+  await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
     minimumInterval: 60 * 60, // an hour
     stopOnTerminate: false,
     startOnBoot: true,
