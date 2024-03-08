@@ -145,6 +145,7 @@ export default function CourseEditSheet(props: {
                             key: props.courseKey,
                             title: name,
                             grade: props.gradeText,
+                            color: Color.AccentsMatrix[accentColor].default.primary,
                         })
                 );
             }}>{isPinned ? "Unpin" : "Pin"}</Button>
@@ -160,6 +161,10 @@ export default function CourseEditSheet(props: {
                   save: "STATE_AND_STORAGE",
                 })
               );
+              dispatch(updateCourseIfPinned({
+                    key: props.courseKey,
+                    color: Color.AccentsMatrix[accentColor].default.primary,
+              }))
               getAnalytics().logEvent("use_customize", {
                 type: "color",
                 color: accentColor,

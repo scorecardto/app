@@ -5,12 +5,14 @@ interface CourseData {
     key: string;
     title: string;
     grade: string;
+    color: string;
 }
 
 interface PartialCourseData {
     key: string;
     title?: string;
     grade?: string;
+    color?: string;
 }
 
 interface WidgetData {
