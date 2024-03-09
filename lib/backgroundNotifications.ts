@@ -14,7 +14,7 @@ import {
 } from "./fetcher";
 import { AppDispatch, RootState } from "../components/core/state/store";
 import Storage from "expo-storage";
-import { CourseSettings, GradebookRecord } from "scorecard-types";
+import {Course, CourseSettings, GradebookRecord} from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import { setRefreshStatus } from "../components/core/state/grades/refreshStatusSlice";
 import fetchAndStore from "./fetchAndStore";
@@ -22,6 +22,9 @@ import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import captureCourseState from "./captureCourseState";
 import {getDeviceId} from "./deviceInfo";
+import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
+import {NavigationContainerRef} from "@react-navigation/native";
+import {TaskManagerTaskBody} from "expo-task-manager/src/TaskManager";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
@@ -31,100 +34,69 @@ export function setFcmToken(token: string | undefined) {
   fcmToken = token;
 }
 
-export async function setupBackgroundNotifications() {
-  TaskManager.defineTask(
-    BACKGROUND_NOTIFICATION_TASK,
-    async ({ data, error, executionInfo }) => {
-      if (AppState.currentState === "active") return;
+async function backgroundTask(body: TaskManagerTaskBody<any>) {
+  console.log("background notification task")
+  if (AppState.currentState === "active") return;
 
-      const body = (data as any).body;
+  const id = body.data.body?.id;
+  if (id) {
+    console.log("making axios request");
 
-      console.log("making axios request");
+    await axios.post("https://scorecardgrades.com/api/silent_verification", {
+      id: id,
+      fcmToken,
+    });
+  }
 
-      await axios.post("https://scorecardgrades.com/api/silent_verification", {
-        id: body.id,
-        fcmToken,
-      });
+  console.log("getting settings");
 
-      console.log("did silent verification");
-
-      const { username, password, host } = JSON.parse(
-        SecureStore.getItem("login") ?? "{}"
-      );
-      if (!username || !password || !host) return;
-
-      console.log("got login");
-      const record: GradebookRecord = JSON.parse(
-        (await Storage.getItem({ key: "records" })) ?? "[]"
-      )[0];
-      if (!record) return;
-      const oldCourse = record.courses.find((c) => c.key === body.courseId);
-
-      const reportCard = await fetchReportCard(host, username, password);
-      const course = reportCard.courses.find((c) => c.key === body.courseId);
-      if (!course || !oldCourse) return;
-
-      console.log("fetch repc");
-
-      const gradeCategories = await fetchGradeCategoriesForCourse(
-        host,
-        reportCard.sessionId,
-        reportCard.referer,
-        course
-      );
-
-      const oldState = captureCourseState(oldCourse);
-
-      const newState = captureCourseState({
-        ...course,
-        gradeCategories: gradeCategories.gradeCategories,
-      });
-
-      if (JSON.stringify(oldState) !== JSON.stringify(newState)) {
-        await Notifications.scheduleNotificationAsync({
-          content: {
-            title: body.displayName,
-            body: "New grades are available. Tap to go to your Scorecard.",
-          },
-          trigger: null,
-        });
-      }
-    }
+  const { username, password, host } = JSON.parse(
+      SecureStore.getItem("login") ?? "{}"
   );
+  if (!username || !password || !host) return;
 
-  await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+  const courseSettings = JSON.parse((await Storage.getItem({ key: "courseSettings" })) ?? "{}");
+
+  console.log("getting rpc");
+
+  const reportCard = await fetchAllContent(host, username, password);
+  const notifs = (await isRegisteredForNotifs(reportCard.courses.map((c) => c.key)))?.data.result;
+
+  const getName = (key: string) => courseSettings[key]?.name ?? reportCard.courses.find(c=>c.key === key)?.name ?? key;
+
+  console.log("storing");
+
+  const toNotify = (await fetchAndStore(reportCard, store.dispatch, false))
+      .filter(c=>!!notifs?.find((n: any)=>n.value !== "OFF" && n.key === c));
+
+  if (toNotify.length > 0) {
+    const single = toNotify.length == 1;
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: single
+            ? getName(toNotify[0])
+            : "New grades",
+        body: single
+            ? "New grades are available. Tap to go to your Scorecard."
+            : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
+        data: {stored: true, course: single ? toNotify[0] : undefined}
+      },
+      trigger: null,
+    });
+  }
+
+  console.log("done storing");
+
+  if (!id) {
+    return toNotify.length > 0 ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
+  }
 }
 
-export async function setupBackgroundFetch() {
-  TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    console.log("getting login");
+export async function setupBackgroundNotifications() {
+  TaskManager.defineTask(BACKGROUND_NOTIFICATION_TASK, backgroundTask);
+  TaskManager.defineTask(BACKGROUND_FETCH_TASK, backgroundTask);
 
-    const { username, password, host } = JSON.parse(
-      SecureStore.getItem("login") ?? "{}"
-    );
-    if (!username || !password || !host) return;
-
-    console.log("getting rpc");
-
-    const reportCard = await fetchAllContent(host, username, password);
-
-    console.log("storing");
-
-    const updated = await fetchAndStore(reportCard, store.dispatch, true);
-    if (updated) {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-            title: "New grades",
-            body: "Tap to go to your Scorecard.",
-        },
-        trigger: null,
-      });
-    }
-
-    console.log("done storing");
-    return updated ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
-  });
-
+  await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
   await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
     minimumInterval: 60 * 60, // an hour
     stopOnTerminate: false,
@@ -132,7 +104,7 @@ export async function setupBackgroundFetch() {
   });
 }
 
-export function setupForegroundNotifications() {
+export function setupForegroundNotifications(navigation: NavigationContainerRef<{[idx: string]: any}>) {
   const handleNotification = async (notification: Notification) => {
     const ret = {
       shouldShowAlert: false,
@@ -170,7 +142,12 @@ export function setupForegroundNotifications() {
 
   const listener = Notifications.addNotificationResponseReceivedListener(
     (response) => {
-      handleNotification(response.notification);
+      const {data} = response.notification.request.content;
+      if (data.stored && data.course) {
+        navigation.navigate({name: "course", params: {key: data.course}});
+      } else {
+        handleNotification(response.notification);
+      }
     }
   );
 

@@ -24,12 +24,12 @@ import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
 import {ChangeTable, ChangeTableEntry} from "../../../lib/types/ChangeTableEntry";
 import captureCourseState from "../../../lib/captureCourseState";
+import {setChangeTable} from "../../core/state/grades/changeTablesSlice";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
   onClick: () => void;
   onHold: () => void;
-  setGradeChanges: (t: ChangeTable) => void;
 }) {
   const colors = useColors();
   const dark = useIsDarkMode();
@@ -87,12 +87,8 @@ export default function CourseCard(props: {
 
   const swipeRef = React.useRef<Swipeable>(null);
 
-  const {oldState, baseGradingPeriod} = useSelector(
-      (state: RootState) => {return {
-          oldState: state.oldCourseStates.record[props.course.key],
-          baseGradingPeriod: state.gradeData.record?.gradeCategory,
-      }},
-  );
+  const oldState = useSelector((state: RootState) => state.oldCourseStates.record[props.course.key]);
+  const baseGradingPeriod = useSelector((state: RootState) => state.gradeData.record?.gradeCategory);
 
   const [hasNewGrades, setHasNewGrades] = useState(false);
 
@@ -149,7 +145,7 @@ export default function CourseCard(props: {
             newGrades,
             removedGrades,
         }
-        props.setGradeChanges(changes);
+        dispatch(setChangeTable({key: props.course.key, table: changes}));
 
         setHasNewGrades(changes.changed);
     }, [oldState, props.course]);

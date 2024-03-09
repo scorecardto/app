@@ -8,6 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@bittingz/expo-widgets": "^0.5.55",
     "@expo-google-fonts/anek-kannada": "^0.2.3",
     "@expo-google-fonts/dm-sans": "^0.2.3",
     "@expo-google-fonts/ibm-plex-mono": "^0.2.3",
@@ -27,6 +28,7 @@
     "@types/react-native-snap-carousel": "^3.8.10",
     "color": "^4.2.3",
     "expo": "~49.0.15",
+    "expo-background-fetch": "~11.3.0",
     "expo-build-properties": "~0.8.3",
     "expo-contacts": "~12.2.0",
     "expo-crypto": "~12.4.1",
@@ -67,8 +69,7 @@
     "react-tracked": "^1.7.11",
     "redaxios": "^0.5.1",
     "redux": "^5.0.1",
-    "scorecard-types": "github:scorecardto/types",
-    "expo-background-fetch": "~11.3.0"
+    "scorecard-types": "github:scorecardto/types"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

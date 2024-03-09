@@ -42,6 +42,7 @@ export default function CourseHeading(props: {
             allowCourseEditSheet ? (
               <CourseEditSheet
                 courseKey={props.courseKey}
+                gradeText={props.gradeText}
                 defaultName={props.defaultName}
                 setOnClose={setOnClose}
               />

@@ -24,6 +24,7 @@ import { resetSettings } from "../../core/state/user/settingsSlice";
 import { resetUserRank } from "../../core/state/user/userRank";
 import { resetCourseSettings } from "../../core/state/grades/courseSettingsSlice";
 import * as SecureStorage from "expo-secure-store";
+import {resetPinnedCourses} from "../../core/state/widget/widgetSlice";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -151,6 +152,8 @@ export default function GeneralSettingsScreen(props: {
                   SecureStorage.deleteItemAsync("login");
 
                   firebase.auth().signOut();
+
+                  dispatch(resetPinnedCourses());
 
                   dispatch(resetGradeData());
                   dispatch(resetOldCourseStates());

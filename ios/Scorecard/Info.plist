@@ -2,11 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>remote-notification</string>
-      <string>fetch</string>
-    </array>
     <key>CADisableMinimumFrameDurationOnPhone</key>
     <true/>
     <key>CFBundleDevelopmentRegion</key>
@@ -36,8 +31,12 @@
         </array>
       </dict>
       <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.870859629353-p4k4ptusm5irenbqu4grggodu1oulla4</string>
+        </array>
+      </dict>
+      <dict>
         <key>CFBundleURLSchemes</key>
         <array>
           <string>exp+scorecard</string>
@@ -49,14 +48,6 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>com.googleusercontent.apps.870859629353-p4k4ptusm5irenbqu4grggodu1oulla4</string>
         </array>
       </dict>
       <dict>
@@ -87,6 +78,15 @@
     </dict>
     <key>NSContactsUsageDescription</key>
     <string>Find and invite friends to Scorecard</string>
+    <key>NSSupportsLiveActivities</key>
+    <false/>
+    <key>NSSupportsLiveActivitiesFrequentUpdates</key>
+    <false/>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>remote-notification</string>
+      <string>fetch</string>
+    </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
@@ -113,5 +113,23 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>appExtensions</key>
+    <array>
+      <dict>
+        <key>targetName</key>
+        <string>expowidgetsWidgetExtension</string>
+        <key>bundleIdentifier</key>
+        <string>com.scorecardgrades.mobile.expowidgetsWidgetExtension</string>
+        <key>entitlements</key>
+        <dict>
+          <key>com.apple.security.application-groups</key>
+          <array>
+            <string>group.com.scorecardgrades.mobile.expowidgets</string>
+          </array>
+          <key>aps-environment</key>
+          <string>development</string>
+        </dict>
+      </dict>
+    </array>
   </dict>
 </plist>

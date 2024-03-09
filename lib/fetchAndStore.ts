@@ -11,6 +11,8 @@ import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import {updateNotifs} from "./backgroundNotifications";
+import {useEffect} from "react";
+import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
 
 export default async function fetchAndStore(
   data: AllContentResponse,
@@ -21,6 +23,16 @@ export default async function fetchAndStore(
     Math.max(
       ...data.courses.map((course) => course.grades.filter((g) => g).length)
     ) - 1;
+
+  // data.courses[0].grades[gradeCategory]!.value = "50";
+  // data.courses[1].gradeCategories[0].assignments.splice(0, 1);
+
+  for (const course of data.courses) {
+    dispatch(updateCourseIfPinned({
+      key: course.key,
+      grade: course.grades[gradeCategory]?.value ?? "NG",
+    }));
+  }
 
   dispatch(setReferer(data.referer));
   dispatch(setSessionId(data.sessionId));
@@ -64,14 +76,16 @@ export default async function fetchAndStore(
   }
 
   const assignmentHasGrade = (a: Assignment | undefined) => a?.grade && a.grade !== '' && /[^a-z]/i.test(a.grade);
-  let hasNewData = false;
+  let hasNewData = new Set<string>();
   if (oldData[0]) {
     // courseLoop:
     for (const course of newData.courses) {
       const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
       if (!oldCourse) continue;
 
-      hasNewData = hasNewData || course.grades[course.grades.length-1]?.value !== oldCourse.grades[oldCourse.grades.length-1]?.value;
+      if (course.grades[gradeCategory]?.value !== oldCourse.grades[gradeCategory]?.value) {
+        hasNewData.add(course.key)
+      }
 
       let notModifiedAssignmentsExist = false;
       const modifiedAssignments = [];
@@ -86,7 +100,7 @@ export default async function fetchAndStore(
             if (!assignmentHasGrade(oldAssignment)) {
               modifiedAssignments.push(assignment.name);
               // continue courseLoop;
-              hasNewData = true;
+              hasNewData.add(course.key);
             } else if (assignmentHasGrade(assignment)) {
               notModifiedAssignmentsExist = true;
             }
@@ -108,5 +122,5 @@ export default async function fetchAndStore(
     value: JSON.stringify([newData, ...oldData]),
   });
 
-  return hasNewData;
+  return Array.from(hasNewData);
 }

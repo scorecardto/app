@@ -35,7 +35,12 @@ import { ActionSheetRef } from "react-native-actions-sheet";
 import CourseNotificationsButton from "../app/course/CourseNotificationsButton";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
-  const { key, gradeChangeTable } = props.route.params;
+  const { key } = props.route.params;
+
+  const gradeChangeTable = useSelector(
+    (state: RootState) => state.changeTables.tables[key],
+      () => true
+  ) ?? { changed: false };
 
   const courseInitial = useSelector(
     (state: RootState) =>

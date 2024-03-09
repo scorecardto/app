@@ -8,10 +8,10 @@ import { BottomSheetView } from "@gorhom/bottom-sheet";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import {
   getCurrentToken,
-  getDeviceId,
   updateNotifs,
 } from "../../../lib/backgroundNotifications";
 import Storage from "expo-storage";
+import {getDeviceId} from "../../../lib/deviceInfo";
 
 export default function AccountScreen(props: { route: any; navigation: any }) {
   const sheets = useContext(BottomSheetContext);
