@@ -139,13 +139,17 @@ export default function CourseEditSheet(props: {
             }}
           />
             <Button disabled={!isPinned && pinned.length >= 3} onPress={() => {
+                const courseOrder = useSelector((s: RootState) => s.courseOrder.order);
                 dispatch(
                     isPinned ? unpinCourse(props.courseKey)
                         : pinCourse({
-                            key: props.courseKey,
-                            title: name,
-                            grade: props.gradeText,
-                            color: Color.AccentsMatrix[accentColor].default.primary,
+                            course: {
+                                key: props.courseKey,
+                                title: name,
+                                grade: props.gradeText,
+                                color: Color.AccentsMatrix[accentColor].default.primary,
+                            },
+                            order: courseOrder,
                         })
                 );
             }}>{isPinned ? "Unpin" : "Pin"}</Button>
