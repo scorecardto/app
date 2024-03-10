@@ -66,8 +66,7 @@ export default function DraggableComponent(props: {
             style={[
                 {
                     transform,
-                    opacity: active ? 0.5 : undefined,
-                    zIndex: active ? 999 : undefined,
+                    opacity: active ? 0.65 : undefined,
                 },
             ]}
             onLayout={evt => {

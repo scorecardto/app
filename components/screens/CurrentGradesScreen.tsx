@@ -357,11 +357,17 @@ const CurrentGradesScreen = (props: {
                         if (Math.abs(truePos) > layout.height) {
                           const dir = Math.sign(truePos);
 
-                          const targetIdx = courseCardPositions.current.findIndex(i => i == courseCardPositions.current[index] + dir);
-                          if (targetIdx < 0 || targetIdx >= courses.length) return
+                          let targetIdx: number;
+                          let offset = 0;
+                          do {
+                            offset += dir;
+                            targetIdx = courseCardPositions.current.findIndex(i => i == courseCardPositions.current[index] + offset);
 
-                          courseCardPositions.current[index] += dir;
-                          courseCardPositions.current[targetIdx] -= dir;
+                            if (targetIdx < 0 || targetIdx >= courses.length) return
+                          } while (courseSettings[courses[targetIdx].key]?.hidden);
+
+                          courseCardPositions.current[index] += offset;
+                          courseCardPositions.current[targetIdx] -= offset;
 
                           courseCardOffsetValues.current[index] += layout.height * dir;
                           courseCardOffsets.current[targetIdx].setValue(courseCardOffsetValues.current[targetIdx] -= layout.height * dir);
