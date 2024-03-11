@@ -92,6 +92,10 @@ export default async function fetchAndStore(
       for (const category of course.gradeCategories!) {
         const oldCategory = oldCourse.gradeCategories!.find(c=>c.name === category.name);
 
+        if (category.average !== oldCategory?.average) {
+          hasNewData.add(course.key)
+        }
+
         for (const assignment of category.assignments!) {
           if (!assignment.name) continue;
           const oldAssignment = oldCategory?.assignments?.find(a=>a.name === assignment.name);
