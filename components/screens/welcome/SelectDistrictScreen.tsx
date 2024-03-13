@@ -105,7 +105,7 @@ export default function SelectDistrictScreen(props: {
 
                       setTimeout(() => {
                         setLoading(false);
-                        props.navigation.navigate("privacyPolicy", {
+                        props.navigation.navigate("connectAccount", {
                           district: item,
                         });
                       }, 1000);

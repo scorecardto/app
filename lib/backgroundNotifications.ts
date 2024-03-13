@@ -21,7 +21,7 @@ import fetchAndStore from "./fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import captureCourseState from "./captureCourseState";
-import {getDeviceId} from "./deviceInfo";
+import { getDeviceId } from "./deviceInfo";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
@@ -92,13 +92,11 @@ export async function setupBackgroundNotifications() {
     }
   );
 
-  await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+  await Notifications?.registerTaskAsync?.(BACKGROUND_NOTIFICATION_TASK);
 }
 
 export async function setupBackgroundFetch() {
   TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
-    console.log("getting login");
-
     const { username, password, host } = JSON.parse(
       SecureStore.getItem("login") ?? "{}"
     );
@@ -114,18 +112,20 @@ export async function setupBackgroundFetch() {
     if (updated) {
       await Notifications.scheduleNotificationAsync({
         content: {
-            title: "New grades",
-            body: "Tap to go to your Scorecard.",
+          title: "New grades",
+          body: "Tap to go to your Scorecard.",
         },
         trigger: null,
       });
     }
 
     console.log("done storing");
-    return updated ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
+    return updated
+      ? BackgroundFetch.BackgroundFetchResult.NewData
+      : BackgroundFetch.BackgroundFetchResult.NoData;
   });
 
-  await BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+  await BackgroundFetch?.registerTaskAsync?.(BACKGROUND_FETCH_TASK, {
     minimumInterval: 60 * 60, // an hour
     stopOnTerminate: false,
     startOnBoot: true,
@@ -292,8 +292,6 @@ export async function updateNotifs(
     assignmentId,
   });
 }
-
-
 
 export async function requestPermissions() {
   token = await getExpoToken();

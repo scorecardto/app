@@ -30,7 +30,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import {ChangeTable, ChangeTableEntry} from "../../lib/types/ChangeTableEntry";
+import {
+  ChangeTable,
+  ChangeTableEntry,
+} from "../../lib/types/ChangeTableEntry";
 import Button from "../input/Button";
 
 const CurrentGradesScreen = (props: {
@@ -247,7 +250,7 @@ const CurrentGradesScreen = (props: {
 
   const showCustomizeCard = useFeatureFlag("SHOW_CUSTOMIZE_CARD");
 
-  const gradeChanges = useRef<{[key: string]: ChangeTable}>({});
+  const gradeChanges = useRef<{ [key: string]: ChangeTable }>({});
 
   return (
     <>

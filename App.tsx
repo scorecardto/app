@@ -176,11 +176,11 @@ export default function App(props: { resetKey: string }) {
                       }}
                     />
                     <Stack.Screen
-                        name="privacyPolicy"
-                        component={PrivacyScreen}
-                        options={{
-                          headerShown: false,
-                        }}
+                      name="privacyPolicy"
+                      component={PrivacyScreen}
+                      options={{
+                        headerShown: false,
+                      }}
                     />
                     <Stack.Screen
                       name="connectAccount"

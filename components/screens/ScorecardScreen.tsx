@@ -4,7 +4,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import * as Contacts from "expo-contacts";
 import React, { useEffect, useState } from "react";
+import axios from "redaxios";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import CurrentGradesScreen from "./CurrentGradesScreen";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -49,7 +51,10 @@ export default function ScorecardScreen(props: {
   );
   const courseKeys = useSelector(
     (state: RootState) =>
-      state.gradeData.record?.courses.map((c) => c.key) || []
+      state.gradeData.record?.courses.map((c) => c.key) || [],
+    (prevState, newState) => {
+      return prevState.length === newState.length;
+    }
   );
   const dispatch = useDispatch();
 

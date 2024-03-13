@@ -80,7 +80,7 @@ function useFeatureFlag(flag: FeatureFlag): boolean {
       const allowFeatures =
         state.userRank.type !== "DEFAULT" ||
         Platform.OS === "android" ||
-        numInvitedNumbers > 2 ||
+        numInvitedNumbers >= 2 ||
         !vipProgramEnabled;
 
       return flag === "SHOW_CUSTOMIZE_CARD" ? !allowFeatures : allowFeatures;
