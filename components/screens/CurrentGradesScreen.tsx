@@ -35,6 +35,9 @@ import {
   ChangeTableEntry,
 } from "../../lib/types/ChangeTableEntry";
 import Button from "../input/Button";
+import DraggableComponent from "../util/DraggableComponent";
+import { setCourseOrder } from "../core/state/grades/courseOrderSlice";
+import { updateCourseOrder } from "../core/state/widget/widgetSlice";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -250,7 +253,26 @@ const CurrentGradesScreen = (props: {
 
   const showCustomizeCard = useFeatureFlag("SHOW_CUSTOMIZE_CARD");
 
-  const gradeChanges = useRef<{ [key: string]: ChangeTable }>({});
+  const [courseOrder, setNewCourseOrder] = useState(
+    useSelector(
+      (s: RootState) => s.courseOrder.order,
+      () => true
+    )
+  );
+
+  const courseCardOffsets = useRef(
+    courseOrder.map((_) => new Animated.Value(0))
+  );
+  const courseCardOffsetValues = useRef(courseOrder.map((_) => 0));
+  const courseCardPositions = useRef(courseOrder.map((_, i) => i));
+  const orderRef = useRef(courseOrder);
+
+  useEffect(() => {
+    courseCardOffsets.current.forEach((v) => v.setValue(0));
+    courseCardOffsetValues.current.fill(0);
+    courseCardPositions.current = courseCardPositions.current.map((_, i) => i);
+    orderRef.current = courseOrder;
+  }, [courseOrder]);
 
   return (
     <>
@@ -328,60 +350,101 @@ const CurrentGradesScreen = (props: {
                 }}
                 scrollEnabled={false}
                 data={[...courses].sort((a: Course, b: Course) => {
-                  const aPrd = parseCourseKey(a.key)?.dayCodeIndex;
-                  const bPrd = parseCourseKey(b.key)?.dayCodeIndex;
-
-                  if (aPrd && bPrd) {
-                    if (aPrd > bPrd) return 1;
-                    if (aPrd < bPrd) return -1;
-                  } else if (aPrd) {
-                    return -1;
-                  } else if (bPrd) {
-                    return 1;
-                  } else {
-                    return a.key.localeCompare(b.key);
-                  }
-
-                  return 0;
+                  return (
+                    courseOrder.indexOf(a.key) - courseOrder.indexOf(b.key)
+                  );
                 })}
                 renderItem={({ item, index }) => {
                   const hidden = courseSettings[item.key]?.hidden;
                   if (hidden) return null;
 
                   return (
-                    <Animated.View
-                      style={
-                        changeIndex !== -1 &&
-                        changeIndex !== undefined &&
-                        index > changeIndex
-                          ? {
-                              transform: [
-                                {
-                                  translateY: translateY.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [66, 0],
-                                  }),
-                                },
-                              ],
-                            }
-                          : []
-                      }
+                    <DraggableComponent
+                      posListener={(layout) => {
+                        const truePos =
+                          layout.y - courseCardOffsetValues.current[index];
+
+                        if (Math.abs(truePos) > layout.height) {
+                          const dir = Math.sign(truePos);
+
+                          let targetIdx: number;
+                          let offset = 0;
+                          do {
+                            offset += dir;
+                            targetIdx = courseCardPositions.current.findIndex(
+                              (i) =>
+                                i == courseCardPositions.current[index] + offset
+                            );
+
+                            if (targetIdx < 0 || targetIdx >= courses.length)
+                              return;
+                          } while (
+                            courseSettings[courses[targetIdx].key]?.hidden
+                          );
+
+                          courseCardPositions.current[index] += offset;
+                          courseCardPositions.current[targetIdx] -= offset;
+
+                          courseCardOffsetValues.current[index] +=
+                            layout.height * dir;
+                          courseCardOffsets.current[targetIdx].setValue(
+                            (courseCardOffsetValues.current[targetIdx] -=
+                              layout.height * dir)
+                          );
+                        }
+                      }}
+                      stopDragging={(layout) => {
+                        const newOrder = courseCardPositions.current
+                          .map((i, idx) => {
+                            return { idx: i, key: orderRef.current[idx] };
+                          })
+                          .sort((a, b) => a.idx - b.idx)
+                          .map((c) => c.key);
+
+                        setNewCourseOrder(newOrder);
+                        dispatch(setCourseOrder(newOrder));
+                        dispatch(updateCourseOrder(newOrder));
+
+                        return {
+                          x: 0,
+                          y:
+                            Math.round(layout.y / layout.height) *
+                            layout.height,
+                        };
+                      }}
+                      offsetY={courseCardOffsets.current[index]}
+                      disableX={true}
                     >
-                      <CourseCard
-                        onClick={() => {
-                          props.navigation.navigate("course", {
-                            key: item.key,
-                            gradeChangeTable: gradeChanges.current[item.key],
-                          });
-                        }}
-                        setGradeChanges={(table: ChangeTable) => {
-                          gradeChanges.current[item.key] = table;
-                        }}
-                        onHold={() => {}}
-                        course={item}
-                        gradingPeriod={currentGradeCategory || 0}
-                      />
-                    </Animated.View>
+                      <Animated.View
+                        style={
+                          changeIndex !== -1 &&
+                          changeIndex !== undefined &&
+                          index > changeIndex
+                            ? {
+                                transform: [
+                                  {
+                                    translateY: translateY.interpolate({
+                                      inputRange: [0, 1],
+                                      outputRange: [66, 0],
+                                    }),
+                                  },
+                                ],
+                              }
+                            : []
+                        }
+                      >
+                        <CourseCard
+                          onClick={() =>
+                            props.navigation.navigate("course", {
+                              key: item.key,
+                            })
+                          }
+                          onHold={() => {}}
+                          course={item}
+                          gradingPeriod={currentGradeCategory || 0}
+                        />
+                      </Animated.View>
+                    </DraggableComponent>
                   );
                 }}
                 keyExtractor={(item) => item.key}

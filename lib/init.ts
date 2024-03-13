@@ -28,6 +28,8 @@ import { setGradeCategory } from "../components/core/state/grades/gradeCategoryS
 import { setNotification } from "../components/core/state/user/notificationSettingsSlice";
 import { isRegisteredForNotifs } from "./backgroundNotifications";
 import * as SecureStorage from "expo-secure-store";
+import {setCourseOrder} from "../components/core/state/grades/courseOrderSlice";
+import parseCourseKey from "./parseCourseKey";
 type NextScreen =
   | "start"
   | "scorecard"
@@ -47,6 +49,7 @@ export default async function initialize(
   const oldCourseStates = await Storage.getItem({ key: "oldCourseStates" });
   const courseSettings = await Storage.getItem({ key: "courseSettings" });
   const appSettings = await Storage.getItem({ key: "appSettings" });
+  const courseOrder = await Storage.getItem({ key: "courseOrder" });
   const openInviteSheetDate = await Storage.getItem({
     key: "openInviteSheetDate",
   });
@@ -131,7 +134,23 @@ export default async function initialize(
 
     dispatch(setGradeRecord(data));
     dispatch(setGradeCategory(data.gradeCategory));
+    dispatch(setCourseOrder(courseOrder ? JSON.parse(courseOrder) : data.courses.map(c=>c.key).sort((a, b) => {
+      const aPrd = parseCourseKey(a)?.dayCodeIndex;
+      const bPrd = parseCourseKey(b)?.dayCodeIndex;
 
+      if (aPrd && bPrd) {
+        if (aPrd > bPrd) return 1;
+        if (aPrd < bPrd) return -1;
+      } else if (aPrd) {
+        return -1;
+      } else if (bPrd) {
+        return 1;
+      } else {
+        return a.localeCompare(b);
+      }
+
+      return 0;
+    })));
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
     const { username, password, host, school, grade } = JSON.parse(login);

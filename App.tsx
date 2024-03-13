@@ -43,16 +43,15 @@ import {
   setupForegroundNotifications,
   setupBackgroundNotifications,
   requestPermissions,
-  setupBackgroundFetch,
 } from "./lib/backgroundNotifications";
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
-import * as Notifications from "expo-notifications";
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
+import * as Notifications from "expo-notifications";
+import Button from "./components/input/Button";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
-setupBackgroundFetch();
 
 const Stack = createNativeStackNavigator();
 
@@ -98,10 +97,10 @@ export default function App(props: { resetKey: string }) {
   }, [schoolName, gradeLabel]);
 
   useEffect(() => {
-    if (appReady) {
-      return setupForegroundNotifications();
+    if (navigationRef.current) {
+      return setupForegroundNotifications(navigationRef.current);
     }
-  }, [appReady]);
+  }, [navigationRef.current]);
   return (
     <MobileDataProvider>
       <AppInitializer

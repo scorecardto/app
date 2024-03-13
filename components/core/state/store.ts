@@ -12,6 +12,8 @@ import courseSettingsReducer from "./grades/courseSettingsSlice";
 import gradeCategoryReducer from "./grades/gradeCategorySlice";
 import virtualSheetsReducer from "./view/virtualSheetsSlice";
 import notificationSettingsReducer from "./user/notificationSettingsSlice";
+import widgetReducer from "./widget/widgetSlice";
+import changeTablesReducer from "./grades/changeTablesSlice"
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +30,8 @@ export const store = configureStore({
     gradeCategory: gradeCategoryReducer,
     virtualSheets: virtualSheetsReducer,
     notificationSettings: notificationSettingsReducer,
+    widgetData: widgetReducer,
+    changeTables: changeTablesReducer
   },
 });
 
