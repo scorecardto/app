@@ -189,7 +189,7 @@ const CurrentGradesScreen = (props: {
     const mins = Math.floor((Date.now() - lastRecordDate) / 1000 / 60);
 
     if (mins > MINS_TO_REFRESH) {
-      onRefresh();
+      // onRefresh();
     }
   }, [currentTime, lastRecordDate, refreshing, showRefreshControl]);
 
@@ -276,7 +276,7 @@ const CurrentGradesScreen = (props: {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+      <View>
         <HeaderBanner
           label={gradeCategoryNames?.[currentGradeCategory] ?? "Your Scorecard"}
           show={scrollProgress > 80}
@@ -454,7 +454,7 @@ const CurrentGradesScreen = (props: {
             <GradeCategorySelectorSheet ref={selector} />
           </View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </>
   );
 };

@@ -25,7 +25,9 @@ import { enableAllNotifications } from "../core/state/user/notificationSettingsS
 import * as Notifications from "expo-notifications";
 import Storage from "expo-storage";
 import { registerNotifs } from "../../lib/backgroundNotifications";
-const Tab = createBottomTabNavigator();
+import TabBar from "../navigation/TabBar";
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function ScorecardScreen(props: {
   navigation: NavigationProp<any>;
@@ -84,143 +86,30 @@ export default function ScorecardScreen(props: {
         backgroundColor: colors.background,
       }}
     >
-      <Tab.Navigator
-        screenOptions={{
-          lazy: true,
-        }}
-        tabBar={(props) => (
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor: colors.card,
-              height: height,
-              borderTopWidth: 0,
-              elevation: 0,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              paddingBottom: (insets?.bottom ?? 0) / 2,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              shadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 0,
-              },
-              shadowOpacity: 0.1,
-            }}
-          >
-            {props.state.routes.map((route, index) => {
-              const { options } = props.descriptors[route.key];
-              const label =
-                options.tabBarLabel !== undefined
-                  ? options.tabBarLabel
-                  : options.title !== undefined
-                  ? options.title
-                  : route.name;
-
-              const isFocused = props.state.index === index;
-
-              const onPress = () => {
-                const event = props.navigation.emit({
-                  type: "tabPress",
-                  target: route.key,
-                  canPreventDefault: true,
-                });
-
-                if (!isFocused && !event.defaultPrevented) {
-                  props.navigation.navigate(route.name);
-                }
-              };
-
-              const onLongPress = () => {
-                props.navigation.emit({
-                  type: "tabLongPress",
-                  target: route.key,
-                });
-              };
-
-              return (
-                <TouchableWithoutFeedback
-                  key={index}
-                  accessibilityRole="button"
-                  accessibilityState={isFocused ? { selected: true } : {}}
-                  accessibilityLabel={options.tabBarAccessibilityLabel}
-                  testID={options.tabBarTestID}
-                  onPress={onPress}
-                  onLongPress={onLongPress}
-                >
-                  <View
-                    style={{
-                      paddingHorizontal: 40,
-                      paddingVertical: 10,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {options?.tabBarIcon?.({
-                      focused: isFocused,
-                      size: 28,
-                      color: isFocused ? colors.primary : colors.text,
-                    })}
-                  </View>
-                </TouchableWithoutFeedback>
-              );
-            })}
-          </View>
-        )}
-        // tabBarPosition="bottom"
-        initialRouteName="current"
-      >
+      <Tab.Navigator tabBar={TabBar}>
         <Tab.Screen
-          name="account"
+          name="Account"
           component={AccountScreen}
-          options={{
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarIcon: ({ focused, size }) => (
-              <Ionicons
-                name="person-circle"
-                size={size}
-                color={focused ? colors.primary : colors.text}
-              />
-            ),
+          initialParams={{
+            color: "#3A7885",
           }}
         />
         <Tab.Screen
-          name="current"
+          name="Grades"
           component={CurrentGradesScreen}
-          options={{
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarIcon: ({ focused, size }) => (
-              <Foundation
-                name="home"
-                size={size}
-                color={focused ? colors.primary : colors.text}
-              />
-            ),
+          initialParams={{
+            color: "#4798E5",
           }}
         />
         <Tab.Screen
-          name="archive"
+          name="Archive"
           component={ArchiveScreen}
-          options={{
-            headerShown: false,
-            tabBarShowLabel: false,
-            tabBarIcon: ({ focused, size }) => (
-              <Ionicons
-                name="time"
-                size={size}
-                color={focused ? colors.primary : colors.text}
-              />
-            ),
+          initialParams={{
+            color: "#853A5A",
           }}
         />
       </Tab.Navigator>
+
       {showWelcomeScreen && (
         <FinalWelcomeScreen
           close={() => {

@@ -11,13 +11,13 @@ import {
   updateNotifs,
 } from "../../../lib/backgroundNotifications";
 import Storage from "expo-storage";
-import {getDeviceId} from "../../../lib/deviceInfo";
+import { getDeviceId } from "../../../lib/deviceInfo";
 
 export default function AccountScreen(props: { route: any; navigation: any }) {
   const sheets = useContext(BottomSheetContext);
 
   return (
-    <SafeAreaView>
+    <View>
       <Header header="Account" />
 
       <View>
@@ -130,6 +130,6 @@ export default function AccountScreen(props: { route: any; navigation: any }) {
           }}
         ></AccountOptionCard> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

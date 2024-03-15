@@ -29,7 +29,7 @@ interface WidgetData {
 const MAX_PINNED = 3;
 
 const initialState: WidgetData = {
-  data: JSON.parse(ExpoWidgets?.getWidgetData?.() || "{}"),
+  data: JSON.parse(ExpoWidgets?.getWidgetData?.() || `{"data":[]}`),
 };
 
 const widgetSlice = createSlice({
@@ -51,13 +51,13 @@ const widgetSlice = createSlice({
 
       const { course, order } = action.payload;
 
-      state.data.push(course);
-      state.data.sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
+      state.data?.push?.(course);
+      state.data?.sort?.((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 
       ExpoWidgets.setWidgetData(JSON.stringify(state.data));
     },
     updateCourseIfPinned: (state, action: PayloadAction<PartialCourseData>) => {
-      const newData = state.data.map((course) =>
+      const newData = state?.data?.map?.((course) =>
         course.key === action.payload.key
           ? { ...course, ...action.payload }
           : course

@@ -25,7 +25,7 @@ export default function ArchiveScreen(props: {
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   return (
-    <SafeAreaView>
+    <View>
       <ScrollView
         ref={scrollViewRef}
         onScroll={(e) => {
@@ -81,6 +81,6 @@ export default function ArchiveScreen(props: {
           });
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }

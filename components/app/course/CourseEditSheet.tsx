@@ -16,7 +16,11 @@ import Toast from "react-native-toast-message";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { registerNotifs } from "../../../lib/backgroundNotifications";
 import Button from "../../input/Button";
-import {pinCourse, updateCourseIfPinned, unpinCourse} from "../../core/state/widget/widgetSlice";
+// import {
+//   pinCourse,
+//   updateCourseIfPinned,
+//   unpinCourse,
+// } from "../../core/state/widget/widgetSlice";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
@@ -58,10 +62,12 @@ export default function CourseEditSheet(props: {
         );
       }
 
-      dispatch(updateCourseIfPinned({
-          key: props.courseKey,
-          title: n || props.defaultName,
-      }));
+      // dispatch(
+      //   updateCourseIfPinned({
+      //     key: props.courseKey,
+      //     title: n || props.defaultName,
+      //   })
+      // );
 
       getAnalytics().logEvent("use_customize", {
         type: "rename",
@@ -95,8 +101,10 @@ export default function CourseEditSheet(props: {
     });
   }, [name]);
 
-  const pinned = useSelector((s: RootState) => { return s.widgetData.data });
-  const isPinned = !!pinned.find(c=>c.key === props.courseKey);
+  const pinned = useSelector((s: RootState) => {
+    return s.widgetData.data;
+  });
+  const isPinned = !!pinned?.find?.((c) => c.key === props.courseKey);
 
   return (
     <>
@@ -138,21 +146,7 @@ export default function CourseEditSheet(props: {
               );
             }}
           />
-            <Button disabled={!isPinned && pinned.length >= 3} onPress={() => {
-                const courseOrder = useSelector((s: RootState) => s.courseOrder.order);
-                dispatch(
-                    isPinned ? unpinCourse(props.courseKey)
-                        : pinCourse({
-                            course: {
-                                key: props.courseKey,
-                                title: name,
-                                grade: props.gradeText,
-                                color: Color.AccentsMatrix[accentColor].default.primary,
-                            },
-                            order: courseOrder,
-                        })
-                );
-            }}>{isPinned ? "Unpin" : "Pin"}</Button>
+
           <CourseColorChanger
             initialValue={accentColor}
             onChange={(accentColor) => {
@@ -165,10 +159,12 @@ export default function CourseEditSheet(props: {
                   save: "STATE_AND_STORAGE",
                 })
               );
-              dispatch(updateCourseIfPinned({
-                    key: props.courseKey,
-                    color: Color.AccentsMatrix[accentColor].default.primary,
-              }))
+              // dispatch(
+              //   updateCourseIfPinned({
+              //     key: props.courseKey,
+              //     color: Color.AccentsMatrix[accentColor].default.primary,
+              //   })
+              // );
               getAnalytics().logEvent("use_customize", {
                 type: "color",
                 color: accentColor,

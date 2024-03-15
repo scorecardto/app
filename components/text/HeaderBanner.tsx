@@ -10,7 +10,6 @@ export default function HeaderBanner(props: {
   label: string;
 }) {
   const { colors } = useTheme();
-  const insets = React.useContext(SafeAreaInsetsContext);
 
   const opacityAnimation = React.useMemo(() => new Animated.Value(0), []);
 
@@ -37,8 +36,7 @@ export default function HeaderBanner(props: {
         top: 0,
         left: 0,
         width: "100%",
-        height: 42 + (insets?.top || 0),
-        paddingTop: insets?.top || 0,
+        height: 42,
         backgroundColor: colors.background,
         zIndex: 100,
         opacity: opacityAnimation,
