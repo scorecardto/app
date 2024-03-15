@@ -38,6 +38,8 @@ import Button from "../input/Button";
 import DraggableComponent from "../util/DraggableComponent";
 import { setCourseOrder } from "../core/state/grades/courseOrderSlice";
 import { updateCourseOrder } from "../core/state/widget/widgetSlice";
+import PageThemeProvider from "../core/context/PageThemeProvider";
+import Background from "../util/Background";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -276,185 +278,196 @@ const CurrentGradesScreen = (props: {
 
   return (
     <>
-      <View>
-        <HeaderBanner
-          label={gradeCategoryNames?.[currentGradeCategory] ?? "Your Scorecard"}
-          show={scrollProgress > 80}
-          onPress={() => {
-            scrollViewRef.current?.scrollTo({
-              y: 0,
-              animated: true,
-            });
-          }}
-        />
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              style={refreshing && !showRefreshControl ? { opacity: 0 } : {}}
-              refreshing={showRefreshControl}
-              onRefresh={() => {
-                if (refreshing) return;
-
-                setShowRefreshControl(true);
-                onRefresh();
-
-                setTimeout(() => {
-                  setShowRefreshControl(false);
-                }, 100);
-              }}
-            />
-          }
-          style={{ height: "100%" }}
-          ref={scrollViewRef}
-          onScroll={(e) => {
-            setScrollProgress(e.nativeEvent.contentOffset.y);
-          }}
-          scrollEventThrottle={16}
-        >
-          <View
-            style={{
-              paddingBottom: footerHeight + 32,
+      <PageThemeProvider
+        theme={{
+          default: {
+            background: "#F4FAFF",
+          },
+        }}
+      >
+        <Background>
+          <HeaderBanner
+            label={
+              gradeCategoryNames?.[currentGradeCategory] ?? "Your Scorecard"
+            }
+            show={scrollProgress > 80}
+            onPress={() => {
+              scrollViewRef.current?.scrollTo({
+                y: 0,
+                animated: true,
+              });
             }}
+          />
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                style={refreshing && !showRefreshControl ? { opacity: 0 } : {}}
+                refreshing={showRefreshControl}
+                onRefresh={() => {
+                  if (refreshing) return;
+
+                  setShowRefreshControl(true);
+                  onRefresh();
+
+                  setTimeout(() => {
+                    setShowRefreshControl(false);
+                  }, 100);
+                }}
+              />
+            }
+            style={{ height: "100%" }}
+            ref={scrollViewRef}
+            onScroll={(e) => {
+              setScrollProgress(e.nativeEvent.contentOffset.y);
+            }}
+            scrollEventThrottle={16}
           >
-            <TouchableOpacity
-              onPress={() => {
-                selector.current?.show();
-                getAnalytics().logEvent("show_grading_period_selector");
+            <View
+              style={{
+                paddingBottom: footerHeight + 32,
               }}
             >
-              <Header
-                header={
-                  showLastUpdated
-                    ? lastUpdatedHeader ?? "No Data"
-                    : onCurrentGradingPeriod
-                    ? "Your Scorecard"
-                    : gradeCategoryNames?.[currentGradeCategory] ??
-                      "Other Grading Period"
-                }
-                subheader={
-                  showLastUpdated
-                    ? updatedSubheader ?? "No Data"
-                    : onCurrentGradingPeriod
-                    ? gradeCategoryNames?.[currentGradeCategory || 0]
-                    : "Tap to change grading period"
-                }
-              />
-            </TouchableOpacity>
-
-            <InviteOthersCard show={showCustomizeCard} />
-
-            {courses && Date.now() > 0 && (
-              <FlatList
-                style={{
-                  paddingBottom: 66,
+              <TouchableOpacity
+                onPress={() => {
+                  selector.current?.show();
+                  getAnalytics().logEvent("show_grading_period_selector");
                 }}
-                scrollEnabled={false}
-                data={[...courses].sort((a: Course, b: Course) => {
-                  return (
-                    courseOrder.indexOf(a.key) - courseOrder.indexOf(b.key)
-                  );
-                })}
-                renderItem={({ item, index }) => {
-                  const hidden = courseSettings[item.key]?.hidden;
-                  if (hidden) return null;
+              >
+                <Header
+                  header={
+                    showLastUpdated
+                      ? lastUpdatedHeader ?? "No Data"
+                      : onCurrentGradingPeriod
+                      ? "Your Scorecard"
+                      : gradeCategoryNames?.[currentGradeCategory] ??
+                        "Other Grading Period"
+                  }
+                  subheader={
+                    showLastUpdated
+                      ? updatedSubheader ?? "No Data"
+                      : onCurrentGradingPeriod
+                      ? gradeCategoryNames?.[currentGradeCategory || 0]
+                      : "Tap to change grading period"
+                  }
+                />
+              </TouchableOpacity>
 
-                  return (
-                    <DraggableComponent
-                      posListener={(layout) => {
-                        const truePos =
-                          layout.y - courseCardOffsetValues.current[index];
+              <InviteOthersCard show={showCustomizeCard} />
 
-                        if (Math.abs(truePos) > layout.height) {
-                          const dir = Math.sign(truePos);
+              {courses && Date.now() > 0 && (
+                <FlatList
+                  style={{
+                    paddingBottom: 66,
+                  }}
+                  scrollEnabled={false}
+                  data={[...courses].sort((a: Course, b: Course) => {
+                    return (
+                      courseOrder.indexOf(a.key) - courseOrder.indexOf(b.key)
+                    );
+                  })}
+                  renderItem={({ item, index }) => {
+                    const hidden = courseSettings[item.key]?.hidden;
+                    if (hidden) return null;
 
-                          let targetIdx: number;
-                          let offset = 0;
-                          do {
-                            offset += dir;
-                            targetIdx = courseCardPositions.current.findIndex(
-                              (i) =>
-                                i == courseCardPositions.current[index] + offset
+                    return (
+                      <DraggableComponent
+                        posListener={(layout) => {
+                          const truePos =
+                            layout.y - courseCardOffsetValues.current[index];
+
+                          if (Math.abs(truePos) > layout.height) {
+                            const dir = Math.sign(truePos);
+
+                            let targetIdx: number;
+                            let offset = 0;
+                            do {
+                              offset += dir;
+                              targetIdx = courseCardPositions.current.findIndex(
+                                (i) =>
+                                  i ==
+                                  courseCardPositions.current[index] + offset
+                              );
+
+                              if (targetIdx < 0 || targetIdx >= courses.length)
+                                return;
+                            } while (
+                              courseSettings[courses[targetIdx].key]?.hidden
                             );
 
-                            if (targetIdx < 0 || targetIdx >= courses.length)
-                              return;
-                          } while (
-                            courseSettings[courses[targetIdx].key]?.hidden
-                          );
+                            courseCardPositions.current[index] += offset;
+                            courseCardPositions.current[targetIdx] -= offset;
 
-                          courseCardPositions.current[index] += offset;
-                          courseCardPositions.current[targetIdx] -= offset;
-
-                          courseCardOffsetValues.current[index] +=
-                            layout.height * dir;
-                          courseCardOffsets.current[targetIdx].setValue(
-                            (courseCardOffsetValues.current[targetIdx] -=
-                              layout.height * dir)
-                          );
-                        }
-                      }}
-                      stopDragging={(layout) => {
-                        const newOrder = courseCardPositions.current
-                          .map((i, idx) => {
-                            return { idx: i, key: orderRef.current[idx] };
-                          })
-                          .sort((a, b) => a.idx - b.idx)
-                          .map((c) => c.key);
-
-                        setNewCourseOrder(newOrder);
-                        dispatch(setCourseOrder(newOrder));
-                        dispatch(updateCourseOrder(newOrder));
-
-                        return {
-                          x: 0,
-                          y:
-                            Math.round(layout.y / layout.height) *
-                            layout.height,
-                        };
-                      }}
-                      offsetY={courseCardOffsets.current[index]}
-                      disableX={true}
-                    >
-                      <Animated.View
-                        style={
-                          changeIndex !== -1 &&
-                          changeIndex !== undefined &&
-                          index > changeIndex
-                            ? {
-                                transform: [
-                                  {
-                                    translateY: translateY.interpolate({
-                                      inputRange: [0, 1],
-                                      outputRange: [66, 0],
-                                    }),
-                                  },
-                                ],
-                              }
-                            : []
-                        }
-                      >
-                        <CourseCard
-                          onClick={() =>
-                            props.navigation.navigate("course", {
-                              key: item.key,
-                            })
+                            courseCardOffsetValues.current[index] +=
+                              layout.height * dir;
+                            courseCardOffsets.current[targetIdx].setValue(
+                              (courseCardOffsetValues.current[targetIdx] -=
+                                layout.height * dir)
+                            );
                           }
-                          onHold={() => {}}
-                          course={item}
-                          gradingPeriod={currentGradeCategory || 0}
-                        />
-                      </Animated.View>
-                    </DraggableComponent>
-                  );
-                }}
-                keyExtractor={(item) => item.key}
-              />
-            )}
+                        }}
+                        stopDragging={(layout) => {
+                          const newOrder = courseCardPositions.current
+                            .map((i, idx) => {
+                              return { idx: i, key: orderRef.current[idx] };
+                            })
+                            .sort((a, b) => a.idx - b.idx)
+                            .map((c) => c.key);
 
-            <GradeCategorySelectorSheet ref={selector} />
-          </View>
-        </ScrollView>
-      </View>
+                          setNewCourseOrder(newOrder);
+                          dispatch(setCourseOrder(newOrder));
+                          dispatch(updateCourseOrder(newOrder));
+
+                          return {
+                            x: 0,
+                            y:
+                              Math.round(layout.y / layout.height) *
+                              layout.height,
+                          };
+                        }}
+                        offsetY={courseCardOffsets.current[index]}
+                        disableX={true}
+                      >
+                        <Animated.View
+                          style={
+                            changeIndex !== -1 &&
+                            changeIndex !== undefined &&
+                            index > changeIndex
+                              ? {
+                                  transform: [
+                                    {
+                                      translateY: translateY.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [66, 0],
+                                      }),
+                                    },
+                                  ],
+                                }
+                              : []
+                          }
+                        >
+                          <CourseCard
+                            onClick={() =>
+                              props.navigation.navigate("course", {
+                                key: item.key,
+                              })
+                            }
+                            onHold={() => {}}
+                            course={item}
+                            gradingPeriod={currentGradeCategory || 0}
+                          />
+                        </Animated.View>
+                      </DraggableComponent>
+                    );
+                  }}
+                  keyExtractor={(item) => item.key}
+                />
+              )}
+
+              <GradeCategorySelectorSheet ref={selector} />
+            </View>
+          </ScrollView>
+        </Background>
+      </PageThemeProvider>
     </>
   );
 };

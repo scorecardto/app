@@ -8,6 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderBanner from "../text/HeaderBanner";
 import { useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
+import PageThemeProvider from "../core/context/PageThemeProvider";
+import Background from "../util/Background";
 
 export default function ArchiveScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -25,62 +27,51 @@ export default function ArchiveScreen(props: {
   const [scrollProgress, setScrollProgress] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   return (
-    <View>
-      <ScrollView
-        ref={scrollViewRef}
-        onScroll={(e) => {
-          setScrollProgress(e.nativeEvent.contentOffset.y);
-        }}
-        scrollEventThrottle={16}
-        style={{
-          height: "100%",
-          backgroundColor: colors.background,
-        }}
-      >
-        <View
+    <PageThemeProvider
+      theme={{
+        default: {
+          background: "#FFF8FE",
+          border: "#FFF2F8",
+        },
+      }}
+    >
+      <Background>
+        <ScrollView
+          ref={scrollViewRef}
+          onScroll={(e) => {
+            setScrollProgress(e.nativeEvent.contentOffset.y);
+          }}
+          scrollEventThrottle={16}
           style={{
-            paddingBottom: 72,
+            height: "100%",
           }}
         >
           <View
             style={{
-              zIndex: 1,
+              paddingBottom: 72,
+              paddingTop: 24,
             }}
           >
-            <Header header="Archive">
-              {/* <ArchiveDemoTable gradeCategoryNames={gradeCategoryNames || []} /> */}
-            </Header>
+            <View
+              style={{
+                paddingHorizontal: 12,
+              }}
+            >
+              {courses?.map((course, idx) => {
+                return (
+                  <ArchiveCourseCard
+                    course={course}
+                    gradeCategoryNames={gradeCategoryNames || []}
+                    navigation={props.navigation}
+                    key={idx}
+                    cellCount={cellCount}
+                  />
+                );
+              })}
+            </View>
           </View>
-
-          <View
-            style={{
-              paddingHorizontal: 12,
-            }}
-          >
-            {courses?.map((course, idx) => {
-              return (
-                <ArchiveCourseCard
-                  course={course}
-                  gradeCategoryNames={gradeCategoryNames || []}
-                  navigation={props.navigation}
-                  key={idx}
-                  cellCount={cellCount}
-                />
-              );
-            })}
-          </View>
-        </View>
-      </ScrollView>
-      <HeaderBanner
-        label="Archive"
-        show={scrollProgress > 80}
-        onPress={() => {
-          scrollViewRef.current?.scrollTo({
-            y: 0,
-            animated: true,
-          });
-        }}
-      />
-    </View>
+        </ScrollView>
+      </Background>
+    </PageThemeProvider>
   );
 }

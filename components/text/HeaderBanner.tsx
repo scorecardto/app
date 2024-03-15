@@ -4,12 +4,13 @@ import { useTheme } from "@react-navigation/native";
 import { SafeAreaInsetsContext } from "react-native-safe-area-context";
 import MediumText from "./MediumText";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import useColors from "../core/theme/useColors";
 export default function HeaderBanner(props: {
   show: boolean;
   onPress: () => void;
   label: string;
 }) {
-  const { colors } = useTheme();
+  const colors = useColors();
 
   const opacityAnimation = React.useMemo(() => new Animated.Value(0), []);
 
