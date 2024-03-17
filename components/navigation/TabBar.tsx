@@ -39,8 +39,6 @@ export default function MyTabBar({ state, descriptors, navigation, position }) {
         }}
       >
         {state.routes.map((route, index) => {
-          console.log(route);
-
           const { options } = descriptors[route.key];
           const label =
             options.tabBarLabel !== undefined

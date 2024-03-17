@@ -39,7 +39,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
   const gradeChangeTable = useSelector(
     (state: RootState) => state.changeTables.tables[key],
-      () => true
+    () => true
   ) ?? { changed: false };
 
   const courseInitial = useSelector(
@@ -48,9 +48,9 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
     () => true
   );
 
-  const gradeCategory = props.route.params.gradeCategory ?? useSelector(
-    (root: RootState) => root.gradeCategory.category
-  );
+  const gradeCategory =
+    props.route.params.gradeCategory ??
+    useSelector((root: RootState) => root.gradeCategory.category);
 
   const recordGrade = useSelector(
     (root: RootState) => root.gradeData.record?.gradeCategory
@@ -197,10 +197,12 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
 
   const courseGradeText = course?.grades[gradeCategory]?.value || "NG";
 
-  const [showGradeStateChanges, setShowGradeStateChanges] = useState(gradeChangeTable.changed);
+  const [showGradeStateChanges, setShowGradeStateChanges] = useState(
+    gradeChangeTable.changed
+  );
 
   const [gradeText, setGradeText] = useState<string>(
-      gradeChangeTable.changed ? gradeChangeTable.oldAverage : courseGradeText
+    gradeChangeTable.changed ? gradeChangeTable.oldAverage : courseGradeText
   );
   const [modifiedAvg, setModifiedAvg] = useState<string | null>(
     gradeChangeTable.changed ? courseGradeText ?? null : null
@@ -274,7 +276,17 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             modifiedGradeText={modifiedAvg}
           />
 
-          {showGradeStateChanges ? (
+          <GradebookWrapper
+            course={course}
+            setModifiedGrade={setModifiedAvg}
+            oldGradingPeriodLastUpdated={lastUpdatedOldGradingPeriod}
+            refreshOldGradingPeriod={() => {
+              refreshGradingPeriod(false);
+            }}
+            resetKey={`${resetKey}`}
+          />
+
+          {/* {showGradeStateChanges ? (
             <View>
               <GradeStateChangesCard
                 course={course!}
@@ -296,7 +308,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
               }}
               resetKey={`${resetKey}`}
             />
-          )}
+          )} */}
         </View>
         <CourseScreenGradient />
       </SafeAreaView>
