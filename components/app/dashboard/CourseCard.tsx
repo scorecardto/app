@@ -1,4 +1,4 @@
-import React, {MutableRefObject, useEffect, useState} from "react";
+import React, {MutableRefObject, useEffect, useMemo, useState} from "react";
 import {
   Animated,
   StyleSheet,
@@ -88,6 +88,8 @@ export default function CourseCard(props: {
   const swipeRef = React.useRef<Swipeable>(null);
 
   const oldState = useSelector((state: RootState) => state.oldCourseStates.record[props.course.key]);
+
+  const oldGradingPeriod = useSelector((state: RootState) => state.gradeData.oldRecord?.gradeCategory);
   const baseGradingPeriod = useSelector((state: RootState) => state.gradeData.record?.gradeCategory);
 
   const [hasNewGrades, setHasNewGrades] = useState(false);
@@ -95,7 +97,9 @@ export default function CourseCard(props: {
     useEffect(() => {
         const newState = captureCourseState(props.course);
 
-        const newGrades: ChangeTableEntry[] = newState.categories
+        const gradingPeriodChanged = props.gradingPeriod !== baseGradingPeriod || props.gradingPeriod !== oldGradingPeriod;
+
+        const newGrades = gradingPeriodChanged ? undefined : newState.categories
             .map((newCategory): ChangeTableEntry[] => {
                 const oldCategory = oldState.categories.find(
                     (c) => c.name === newCategory.name
@@ -116,7 +120,7 @@ export default function CourseCard(props: {
             })
             .flat();
 
-        const removedGrades = oldState.categories.map(
+        const removedGrades = gradingPeriodChanged ? undefined : oldState.categories.map(
             (oldCategory): ChangeTableEntry[] => {
                 const newCategory = newState.categories.find(
                     (c) => c.name === oldCategory.name
@@ -138,8 +142,8 @@ export default function CourseCard(props: {
         const newAverage = newState.average;
 
         const changes = {
-            changed: props.gradingPeriod === baseGradingPeriod &&
-                (oldAverage !== newAverage || newGrades.length > 0 || removedGrades.find(l=>l.length > 0) != undefined),
+            changed: !gradingPeriodChanged &&
+                (oldAverage !== newAverage || newGrades!.length > 0 || removedGrades!.find(l=>l.length > 0) != undefined),
             oldAverage,
             newAverage,
             newGrades,

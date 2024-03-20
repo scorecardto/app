@@ -21,7 +21,7 @@ import {
 } from "../components/core/state/user/invitedNumbersSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
-import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
+import {setGradeRecord, setPreviousGradeRecord} from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import { setNotification } from "../components/core/state/user/notificationSettingsSlice";
 import { isRegisteredForNotifs } from "./backgroundNotifications";
@@ -42,7 +42,6 @@ export default async function initialize(
 ): Promise<NextScreen> {
   const login = SecureStorage.getItem("login");
   const name = await Storage.getItem({ key: "name" });
-  const notifs = await Storage.getItem({ key: "notifs" });
   const records = await Storage.getItem({ key: "records" });
   const oldCourseStates = await Storage.getItem({ key: "oldCourseStates" });
   const courseSettings = await Storage.getItem({ key: "courseSettings" });
@@ -80,8 +79,9 @@ export default async function initialize(
   if (login && !!JSON.parse(records ?? "[]")[0]) {
     dispatch(setAllCourseSettings(JSON.parse(courseSettings ?? "{}")));
 
-    const data = JSON.parse(records ?? "[]")[0] as GradebookRecord;
+    const recordData = JSON.parse(records ?? "[]") as GradebookRecord[];
 
+    const data = recordData[0];
     isRegisteredForNotifs(data.courses.map((c) => c.key)).then((res) => {
       if (res?.data.success) {
         for (const result of res.data.result) {
@@ -96,6 +96,7 @@ export default async function initialize(
     });
 
     dispatch(setGradeRecord(data));
+    dispatch(setPreviousGradeRecord(recordData[1]))
     dispatch(setGradeCategory(data.gradeCategory));
     dispatch(setCourseOrder(courseOrder ? JSON.parse(courseOrder) : data.courses.map(c=>c.key).sort((a, b) => {
       const aPrd = parseCourseKey(a)?.dayCodeIndex;

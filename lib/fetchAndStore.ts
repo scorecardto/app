@@ -20,9 +20,9 @@ export default async function fetchAndStore(
   updateCourseStates: boolean
 ) {
   const gradeCategory =
-    Math.max(
-      ...data.courses.map((course) => course.grades.filter((g) => g).length)
-    ) - 1;
+      Math.max(
+          ...data.courses.map((course) => course.grades.filter((g) => g).length)
+      ) - 1;
 
   // data.courses[0].grades[gradeCategory]!.value = "50";
   // data.courses[1].gradeCategories[0].assignments.splice(0, 1);
@@ -38,14 +38,14 @@ export default async function fetchAndStore(
   dispatch(setSessionId(data.sessionId));
 
   const oldData: GradebookRecord[] = JSON.parse(
-    (await Storage.getItem({ key: "records" })) ?? "[]"
+      (await Storage.getItem({key: "records"})) ?? "[]"
   );
 
   const newData: GradebookRecord = {
     courses: data.courses.map(c => {
-      if ((c.gradeCategories?.length ?? 0) === 0 || c.gradeCategories!.every(gc=>(gc.assignments?.length ?? 0) === 0)) {
+      if ((c.gradeCategories?.length ?? 0) === 0 || c.gradeCategories!.every(gc => (gc.assignments?.length ?? 0) === 0)) {
         for (let i = 0; i < oldData.length; i++) {
-          const oldCourse = oldData[0].courses.find(oc => oc.key === c.key);
+          const oldCourse = oldData[i].courses.find(oc => oc.key === c.key);
           if (oldCourse) return oldCourse;
         }
       }
@@ -80,7 +80,7 @@ export default async function fetchAndStore(
   if (oldData[0]) {
     // courseLoop:
     for (const course of newData.courses) {
-      const oldCourse = oldData[0].courses.find(c=>c.key === course.key);
+      const oldCourse = oldData[0].courses.find(c => c.key === course.key);
       if (!oldCourse) continue;
 
       if (course.grades[gradeCategory]?.value !== oldCourse.grades[gradeCategory]?.value) {
@@ -90,7 +90,7 @@ export default async function fetchAndStore(
       let notModifiedAssignmentsExist = false;
       const modifiedAssignments = [];
       for (const category of course.gradeCategories!) {
-        const oldCategory = oldCourse.gradeCategories!.find(c=>c.name === category.name);
+        const oldCategory = oldCourse.gradeCategories!.find(c => c.name === category.name);
 
         if (category.average !== oldCategory?.average) {
           hasNewData.add(course.key)
@@ -98,7 +98,7 @@ export default async function fetchAndStore(
 
         for (const assignment of category.assignments!) {
           if (!assignment.name) continue;
-          const oldAssignment = oldCategory?.assignments?.find(a=>a.name === assignment.name);
+          const oldAssignment = oldCategory?.assignments?.find(a => a.name === assignment.name);
 
           if (assignmentHasGrade(assignment)) {
             if (!assignmentHasGrade(oldAssignment)) {
