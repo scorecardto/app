@@ -13,6 +13,8 @@ import { RootState } from "../core/state/store";
 import ContactListView from "../app/vip/ContactListView";
 import axios from "redaxios";
 import formatPhoneNumber from "phone";
+import Storage from "expo-storage";
+import auth from "@react-native-firebase/auth";
 import {
   addInvitedNumber,
   saveInvitedNumbers,
@@ -26,6 +28,7 @@ import ContactShareDoneView from "../app/vip/ContactShareDoneView";
 import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 import FeatureExplanationSheet from "../app/vip/FeatureExplanationSheet";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 
 export default function InviteOthersScreen(props: {
   navigation: NavigationProp<any>;
@@ -49,10 +52,52 @@ export default function InviteOthersScreen(props: {
 
   const sheets = useContext(BottomSheetContext);
 
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    setUser(user);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
   useEffect(() => {
     (async () => {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status === "granted") {
+        const hasProcessedContacts = await Storage.getItem({
+          key: "hasProcessedContacts",
+        });
+
+        if (!hasProcessedContacts) {
+          const { data } = await Contacts.getContactsAsync({
+            sort: "userDefault",
+          });
+
+          const result = await axios.post(
+            "https://scorecardgrades.com/api/metrics/processContactList",
+            {
+              contacts: data.map((c: Contacts.Contact) => ({
+                ...c,
+                rawImage: undefined,
+                imageAvailable: undefined,
+                image: undefined,
+              })),
+              token: await user?.getIdToken(),
+              graph: true,
+            }
+          );
+
+          if (result.data.success) {
+            Storage.setItem({
+              key: "hasProcessedContacts",
+              value: "true",
+            });
+          }
+        }
+
         setView("list");
 
         const { data } = await Contacts.getContactsAsync({

@@ -14,17 +14,17 @@ import {
 } from "./fetcher";
 import { AppDispatch, RootState } from "../components/core/state/store";
 import Storage from "expo-storage";
-import {Course, CourseSettings, GradebookRecord} from "scorecard-types";
+import { Course, CourseSettings, GradebookRecord } from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import { setRefreshStatus } from "../components/core/state/grades/refreshStatusSlice";
 import fetchAndStore from "./fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as SecureStore from "expo-secure-store";
 import captureCourseState from "./captureCourseState";
-import {getDeviceId} from "./deviceInfo";
-import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
-import {NavigationContainerRef} from "@react-navigation/native";
-import {TaskManagerTaskBody} from "expo-task-manager/src/TaskManager";
+import { getDeviceId } from "./deviceInfo";
+import { updateCourseIfPinned } from "../components/core/state/widget/widgetSlice";
+import { NavigationContainerRef } from "@react-navigation/native";
+import { TaskManagerTaskBody } from "expo-task-manager/src/TaskManager";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
@@ -35,7 +35,7 @@ export function setFcmToken(token: string | undefined) {
 }
 
 async function backgroundTask(body: TaskManagerTaskBody<any>) {
-  console.log("background notification task")
+  console.log("background notification task");
   if (AppState.currentState === "active") return;
 
   const id = body.data.body?.id;
@@ -51,35 +51,41 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
   console.log("getting settings");
 
   const { username, password, host } = JSON.parse(
-      SecureStore.getItem("login") ?? "{}"
+    SecureStore.getItem("login") ?? "{}"
   );
   if (!username || !password || !host) return;
 
-  const courseSettings = JSON.parse((await Storage.getItem({ key: "courseSettings" })) ?? "{}");
+  const courseSettings = JSON.parse(
+    (await Storage.getItem({ key: "courseSettings" })) ?? "{}"
+  );
 
   console.log("getting rpc");
 
   const reportCard = await fetchAllContent(host, username, password);
-  const notifs = (await isRegisteredForNotifs(reportCard.courses.map((c) => c.key)))?.data.result;
+  const notifs = (
+    await isRegisteredForNotifs(reportCard.courses.map((c) => c.key))
+  )?.data.result;
 
-  const getName = (key: string) => courseSettings[key]?.name ?? reportCard.courses.find(c=>c.key === key)?.name ?? key;
+  const getName = (key: string) =>
+    courseSettings[key]?.name ??
+    reportCard.courses.find((c) => c.key === key)?.name ??
+    key;
 
   console.log("storing");
 
-  const toNotify = (await fetchAndStore(reportCard, store.dispatch, false))
-      .filter(c=>!!notifs?.find((n: any)=>n.value !== "OFF" && n.key === c));
+  const toNotify = (
+    await fetchAndStore(reportCard, store.dispatch, false)
+  ).filter((c) => !!notifs?.find((n: any) => n.value !== "OFF" && n.key === c));
 
   if (toNotify.length > 0) {
     const single = toNotify.length == 1;
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: single
-            ? getName(toNotify[0])
-            : "New grades",
+        title: single ? getName(toNotify[0]) : "New grades",
         body: single
-            ? "New grades are available. Tap to go to your Scorecard."
-            : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
-        data: {stored: true, course: single ? toNotify[0] : undefined}
+          ? "New grades are available. Tap to go to your Scorecard."
+          : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
+        data: { stored: true, course: single ? toNotify[0] : undefined },
       },
       trigger: null,
     });
@@ -88,7 +94,9 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
   console.log("done storing");
 
   if (!id) {
-    return toNotify.length > 0 ? BackgroundFetch.BackgroundFetchResult.NewData : BackgroundFetch.BackgroundFetchResult.NoData;
+    return toNotify.length > 0
+      ? BackgroundFetch.BackgroundFetchResult.NewData
+      : BackgroundFetch.BackgroundFetchResult.NoData;
   }
 }
 
@@ -104,7 +112,9 @@ export async function setupBackgroundNotifications() {
   });
 }
 
-export function setupForegroundNotifications(navigation: NavigationContainerRef<{[idx: string]: any}>) {
+export function setupForegroundNotifications(
+  navigation: NavigationContainerRef<{ [idx: string]: any }>
+) {
   const handleNotification = async (notification: Notification) => {
     const ret = {
       shouldShowAlert: false,
@@ -142,9 +152,9 @@ export function setupForegroundNotifications(navigation: NavigationContainerRef<
 
   const listener = Notifications.addNotificationResponseReceivedListener(
     (response) => {
-      const {data} = response.notification.request.content;
+      const { data } = response.notification.request.content;
       if (data.stored && data.course) {
-        navigation.navigate({name: "course", params: {key: data.course}});
+        navigation.navigate({ name: "course", params: { key: data.course } });
       } else {
         handleNotification(response.notification);
       }
@@ -269,8 +279,6 @@ export async function updateNotifs(
     assignmentId,
   });
 }
-
-
 
 export async function requestPermissions() {
   token = await getExpoToken();

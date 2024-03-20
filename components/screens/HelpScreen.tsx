@@ -13,7 +13,7 @@ import LoadingOverlay from "./loader/LoadingOverlay";
 import { useSelector } from "react-redux";
 import * as Device from "expo-device";
 import { RootState } from "../core/state/store";
-import {getDeviceDescriptor} from "../../lib/deviceInfo";
+import { getDeviceDescriptor } from "../../lib/deviceInfo";
 export default function HelpScreen(props: { route: any; navigation: any }) {
   const { colors } = useTheme();
 

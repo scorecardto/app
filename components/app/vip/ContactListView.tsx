@@ -66,7 +66,7 @@ export default function ContactListView(props: {
           header={headerText}
           subheader="then, send them a link"
         />
-        <View>
+        {/* <View>
           <TextInput
             value={search}
             onChangeText={(text) => setSearch(text)}
@@ -77,7 +77,7 @@ export default function ContactListView(props: {
             placeholderTextColor={colors.text}
             placeholder="Search for a contact"
           ></TextInput>
-        </View>
+        </View> */}
         <FlatList
           // list including multiple phone numbers for each contact
           data={contacts}

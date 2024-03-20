@@ -94,8 +94,8 @@ export default function CourseCard(props: {
 
   const [hasNewGrades, setHasNewGrades] = useState(false);
 
-    useEffect(() => {
-        const newState = captureCourseState(props.course);
+  useEffect(() => {
+    const newState = captureCourseState(props.course);
 
         const gradingPeriodChanged = props.gradingPeriod !== baseGradingPeriod || props.gradingPeriod !== oldGradingPeriod;
 
@@ -105,20 +105,20 @@ export default function CourseCard(props: {
                     (c) => c.name === newCategory.name
                 );
 
-                const newGrades = newCategory.assignments.filter(
-                    (g) =>
-                        !oldCategory?.assignments.find(
-                            (og) => og.name === g.name && og.grade === g.grade
-                        ) && g.grade !== ""
-                );
+        const newGrades = newCategory.assignments.filter(
+          (g) =>
+            !oldCategory?.assignments.find(
+              (og) => og.name === g.name && og.grade === g.grade
+            ) && g.grade !== ""
+        );
 
-                return newGrades.map((g) => ({
-                    assignmentName: g.name,
-                    primaryData: g.grade,
-                    secondaryData: newCategory.name,
-                }));
-            })
-            .flat();
+        return newGrades.map((g) => ({
+          assignmentName: g.name,
+          primaryData: g.grade,
+          secondaryData: newCategory.name,
+        }));
+      })
+      .flat();
 
         const removedGrades = gradingPeriodChanged ? undefined : oldState.categories.map(
             (oldCategory): ChangeTableEntry[] => {
@@ -126,20 +126,20 @@ export default function CourseCard(props: {
                     (c) => c.name === oldCategory.name
                 );
 
-                const removedGrades = oldCategory.assignments.filter(
-                    (g) => !newCategory?.assignments.find((og) => og.name === g.name)
-                );
-
-                return removedGrades.map((g) => ({
-                    assignmentName: g.name,
-                    primaryData: "Removed",
-                    secondaryData: oldCategory.name,
-                }));
-            }
+        const removedGrades = oldCategory.assignments.filter(
+          (g) => !newCategory?.assignments.find((og) => og.name === g.name)
         );
 
-        const oldAverage = oldState.average
-        const newAverage = newState.average;
+        return removedGrades.map((g) => ({
+          assignmentName: g.name,
+          primaryData: "Removed",
+          secondaryData: oldCategory.name,
+        }));
+      }
+    );
+
+    const oldAverage = oldState.average;
+    const newAverage = newState.average;
 
         const changes = {
             changed: !gradingPeriodChanged &&
@@ -151,8 +151,8 @@ export default function CourseCard(props: {
         }
         dispatch(setChangeTable({key: props.course.key, table: changes}));
 
-        setHasNewGrades(changes.changed);
-    }, [oldState, props.course]);
+    setHasNewGrades(changes.changed);
+  }, [oldState, props.course]);
 
   const inner = (
     <>
@@ -255,170 +255,7 @@ export default function CourseCard(props: {
           marginBottom: 10,
         }}
       >
-        <Swipeable
-          ref={swipeRef}
-          onEnded={(o) => {
-            // @ts-ignore
-            if (o.nativeEvent.translationX > 100) {
-              props.onClick();
-              setShow(false);
-
-              setTimeout(() => {
-                setShow(true);
-              }, 600);
-            }
-
-            // @ts-ignore
-            if (o.nativeEvent.translationX < -100) {
-              Toast.show({
-                type: "info",
-                text1: "Course Hidden",
-                text2: "You can unhide it in Archive. Tap to undo.",
-                visibilityTime: 3000,
-                onPress: () => {
-                  setShow(true);
-                  setHiding(false);
-
-                  dispatch(
-                    setCourseSetting({
-                      key: props.course.key,
-                      save: "STATE_AND_STORAGE",
-                      value: { hidden: false },
-                    })
-                  );
-                  Toast.hide();
-                },
-              });
-
-              dispatch(
-                setCourseSetting({
-                  key: props.course.key,
-                  save: "STATE",
-                  value: { hidden: true },
-                })
-              );
-              setHiding(true);
-              setShow(false);
-
-              dispatch(
-                setCourseSetting({
-                  key: props.course.key,
-                  save: "STORAGE",
-                  value: { hidden: true },
-                })
-              );
-            }
-
-            setTimeout(() => {
-              swipeRef.current?.close();
-            }, 100);
-          }}
-          renderLeftActions={(progress, dragX) => {
-            const trans = dragX.interpolate({
-              inputRange: [0, 50, 100, 101],
-              outputRange: [-60, -30, 0, 0],
-            });
-
-            const opacity = dragX.interpolate({
-              inputRange: [0, 20, 100, 101],
-              outputRange: [0, 0, 1, 1],
-            });
-
-            const scale = dragX.interpolate({
-              inputRange: [0, 95, 100],
-              outputRange: [0.5, 0.7, 1],
-              extrapolate: "clamp",
-            });
-
-            dragX.addListener(({ value }) => {
-              if (Math.floor(value) > 100 || Math.floor(value) < -100) {
-                setPlayedVibration((prev) => {
-                  if (!prev) {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                  }
-                  return true;
-                });
-              } else {
-                setPlayedVibration(false);
-              }
-            });
-            return (
-              <Animated.View
-                style={[
-                  {
-                    width: 80,
-                    height: "100%",
-                    paddingLeft: 18,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  },
-                  {
-                    transform: [{ translateX: trans }, { scale: scale }],
-                    opacity: opacity,
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontWeight: "bold",
-                    fontSize: 16,
-                  }}
-                >
-                  Open
-                </Text>
-              </Animated.View>
-            );
-          }}
-          renderRightActions={(progress, dragX) => {
-            const trans = dragX.interpolate({
-              inputRange: [-101, -100, -50, 0],
-              outputRange: [0, 0, 30, 60],
-            });
-
-            const opacity = dragX.interpolate({
-              inputRange: [-101, -100, -20, 0],
-              outputRange: [1, 1, 0, 0],
-            });
-
-            const scale = dragX.interpolate({
-              inputRange: [-100, -95, 0],
-              outputRange: [1, 0.7, 0.5],
-              extrapolate: "clamp",
-            });
-
-            return (
-              <Animated.View
-                style={[
-                  {
-                    width: 80,
-                    height: "100%",
-                    paddingRight: 18,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  },
-                  {
-                    transform: [{ translateX: trans }, { scale: scale }],
-                    opacity: opacity,
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    color: colors.text,
-                    fontWeight: "bold",
-                    fontSize: 16,
-                  }}
-                >
-                  Hide
-                </Text>
-              </Animated.View>
-            );
-          }}
-          overshootLeft={true}
-        >
+        <View>
           {hasNewGrades ? (
             <LinearGradient
               colors={[
@@ -451,7 +288,7 @@ export default function CourseCard(props: {
               {inner}
             </View>
           )}
-        </Swipeable>
+        </View>
       </TouchableOpacity>
     </Animated.View>
   );

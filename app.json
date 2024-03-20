@@ -2,7 +2,7 @@
   "expo": {
     "name": "Scorecard",
     "slug": "scorecard",
-    "version": "0.1.0",
+    "version": "1.1.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "20",
+      "buildNumber": "28",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification",

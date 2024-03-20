@@ -30,11 +30,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import {ChangeTable, ChangeTableEntry} from "../../lib/types/ChangeTableEntry";
+import {
+  ChangeTable,
+  ChangeTableEntry,
+} from "../../lib/types/ChangeTableEntry";
 import Button from "../input/Button";
 import DraggableComponent from "../util/DraggableComponent";
-import {setCourseOrder} from "../core/state/grades/courseOrderSlice";
-import {updateCourseOrder} from "../core/state/widget/widgetSlice";
+import { setCourseOrder } from "../core/state/grades/courseOrderSlice";
+import { updateCourseOrder } from "../core/state/widget/widgetSlice";
 
 const CurrentGradesScreen = (props: {
   navigation: NavigationProp<any, any>;
@@ -250,22 +253,26 @@ const CurrentGradesScreen = (props: {
 
   const showCustomizeCard = useFeatureFlag("SHOW_CUSTOMIZE_CARD");
 
-  const [courseOrder, setNewCourseOrder] = useState(useSelector(
+  const [courseOrder, setNewCourseOrder] = useState(
+    useSelector(
       (s: RootState) => s.courseOrder.order,
-      () => true,
-  ));
+      () => true
+    )
+  );
 
-  const courseCardOffsets = useRef(courseOrder.map(_ => new Animated.Value(0)));
-  const courseCardOffsetValues = useRef(courseOrder.map(_ => 0));
+  const courseCardOffsets = useRef(
+    courseOrder.map((_) => new Animated.Value(0))
+  );
+  const courseCardOffsetValues = useRef(courseOrder.map((_) => 0));
   const courseCardPositions = useRef(courseOrder.map((_, i) => i));
   const orderRef = useRef(courseOrder);
 
   useEffect(() => {
-    courseCardOffsets.current.forEach(v => v.setValue(0));
+    courseCardOffsets.current.forEach((v) => v.setValue(0));
     courseCardOffsetValues.current.fill(0);
     courseCardPositions.current = courseCardPositions.current.map((_, i) => i);
     orderRef.current = courseOrder;
-  }, [courseOrder])
+  }, [courseOrder]);
 
   return (
     <>
@@ -343,7 +350,9 @@ const CurrentGradesScreen = (props: {
                 }}
                 scrollEnabled={false}
                 data={[...courses].sort((a: Course, b: Course) => {
-                  return courseOrder.indexOf(a.key) - courseOrder.indexOf(b.key);
+                  return (
+                    courseOrder.indexOf(a.key) - courseOrder.indexOf(b.key)
+                  );
                 })}
                 renderItem={({ item, index }) => {
                   const hidden = courseSettings[item.key]?.hidden;
@@ -351,8 +360,9 @@ const CurrentGradesScreen = (props: {
 
                   return (
                     <DraggableComponent
-                      posListener={layout => {
-                        const truePos = layout.y - courseCardOffsetValues.current[index];
+                      posListener={(layout) => {
+                        const truePos =
+                          layout.y - courseCardOffsetValues.current[index];
 
                         if (Math.abs(truePos) > layout.height) {
                           const dir = Math.sign(truePos);
@@ -361,29 +371,46 @@ const CurrentGradesScreen = (props: {
                           let offset = 0;
                           do {
                             offset += dir;
-                            targetIdx = courseCardPositions.current.findIndex(i => i == courseCardPositions.current[index] + offset);
+                            targetIdx = courseCardPositions.current.findIndex(
+                              (i) =>
+                                i == courseCardPositions.current[index] + offset
+                            );
 
-                            if (targetIdx < 0 || targetIdx >= courses.length) return
-                          } while (courseSettings[courses[targetIdx].key]?.hidden);
+                            if (targetIdx < 0 || targetIdx >= courses.length)
+                              return;
+                          } while (
+                            courseSettings[courses[targetIdx].key]?.hidden
+                          );
 
                           courseCardPositions.current[index] += offset;
                           courseCardPositions.current[targetIdx] -= offset;
 
-                          courseCardOffsetValues.current[index] += layout.height * dir;
-                          courseCardOffsets.current[targetIdx].setValue(courseCardOffsetValues.current[targetIdx] -= layout.height * dir);
+                          courseCardOffsetValues.current[index] +=
+                            layout.height * dir;
+                          courseCardOffsets.current[targetIdx].setValue(
+                            (courseCardOffsetValues.current[targetIdx] -=
+                              layout.height * dir)
+                          );
                         }
                       }}
-                      stopDragging={layout => {
+                      stopDragging={(layout) => {
                         const newOrder = courseCardPositions.current
-                            .map((i, idx) => {return {idx: i, key: orderRef.current[idx]}})
-                            .sort((a, b) => a.idx - b.idx)
-                            .map(c => c.key);
+                          .map((i, idx) => {
+                            return { idx: i, key: orderRef.current[idx] };
+                          })
+                          .sort((a, b) => a.idx - b.idx)
+                          .map((c) => c.key);
 
                         setNewCourseOrder(newOrder);
                         dispatch(setCourseOrder(newOrder));
                         dispatch(updateCourseOrder(newOrder));
 
-                        return {x: 0, y: Math.round(layout.y/layout.height)*layout.height}
+                        return {
+                          x: 0,
+                          y:
+                            Math.round(layout.y / layout.height) *
+                            layout.height,
+                        };
                       }}
                       offsetY={courseCardOffsets.current[index]}
                       disableX={true}
@@ -407,9 +434,11 @@ const CurrentGradesScreen = (props: {
                         }
                       >
                         <CourseCard
-                          onClick={() => props.navigation.navigate("course", {
-                            key: item.key,
-                          })}
+                          onClick={() =>
+                            props.navigation.navigate("course", {
+                              key: item.key,
+                            })
+                          }
                           onHold={() => {}}
                           course={item}
                           gradingPeriod={currentGradeCategory || 0}

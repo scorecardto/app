@@ -10,6 +10,8 @@ import {
   setSchoolName,
   setUsername,
 } from "../components/core/state/user/loginSlice";
+import * as Contacts from "expo-contacts";
+import axios from "redaxios";
 import {
   setFirstName,
   setLastName,
@@ -57,6 +59,41 @@ export default async function initialize(
 
   const vipProgramDate = await Storage.getItem({
     key: "vipProgramDate",
+  });
+
+  Contacts.getPermissionsAsync().then(async (permissions) => {
+    if (permissions.status === "granted") {
+      const hasProcessedContacts = await Storage.getItem({
+        key: "hasProcessedContacts",
+      });
+
+      if (!hasProcessedContacts) {
+        const { data } = await Contacts.getContactsAsync({
+          sort: "userDefault",
+        });
+
+        const result = await axios.post(
+          "https://scorecardgrades.com/api/metrics/processContactList",
+          {
+            contacts: data.map((c: Contacts.Contact) => ({
+              ...c,
+              rawImage: undefined,
+              imageAvailable: undefined,
+              image: undefined,
+            })),
+            token: await user?.getIdToken(),
+            graph: true,
+          }
+        );
+
+        if (result.data.success) {
+          Storage.setItem({
+            key: "hasProcessedContacts",
+            value: "true",
+          });
+        }
+      }
+    }
   });
 
   if (vipProgramDate) {
