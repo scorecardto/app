@@ -52,7 +52,7 @@ export default async function fetchAndStore(
         c.gradeCategories!.every((gc) => (gc.assignments?.length ?? 0) === 0)
       ) {
         for (let i = 0; i < oldData.length; i++) {
-          const oldCourse = oldData[0].courses.find((oc) => oc.key === c.key);
+          const oldCourse = oldData[i].courses.find((oc) => oc.key === c.key);
           if (oldCourse) return oldCourse;
         }
       }

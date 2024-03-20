@@ -8,6 +8,6 @@ export type ChangeTable = {
     changed: boolean;
     oldAverage: string;
     newAverage: string;
-    newGrades: ChangeTableEntry[];
-    removedGrades: ChangeTableEntry[][];
+    newGrades: ChangeTableEntry[] | undefined;
+    removedGrades: ChangeTableEntry[][] | undefined;
 }

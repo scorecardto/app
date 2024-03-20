@@ -3,10 +3,12 @@ import { GradebookRecord } from "scorecard-types";
 
 interface GradeData {
   record: GradebookRecord | null;
+  oldRecord: GradebookRecord | null;
 }
 
 const initialState: GradeData = {
   record: null,
+  oldRecord: null
 };
 
 const gradeDataSlice = createSlice({
@@ -14,15 +16,18 @@ const gradeDataSlice = createSlice({
   initialState,
   reducers: {
     resetGradeData: (state) => {
-      state.record = null;
+      state.record = state.oldRecord = null;
     },
     setGradeRecord: (state, action: PayloadAction<GradeData["record"]>) => {
       state.record = action.payload;
     },
+    setPreviousGradeRecord: (state, action: PayloadAction<GradeData["oldRecord"]>) => {
+      state.oldRecord = action.payload;
+    }
   },
 });
 
-export const { setGradeRecord, resetGradeData } = gradeDataSlice.actions;
+export const { setGradeRecord, setPreviousGradeRecord, resetGradeData } = gradeDataSlice.actions;
 
 export { GradeData };
 

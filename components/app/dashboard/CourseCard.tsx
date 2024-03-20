@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useState } from "react";
+import React, {MutableRefObject, useEffect, useMemo, useState} from "react";
 import {
   Animated,
   StyleSheet,
@@ -22,12 +22,9 @@ import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import Storage from "expo-storage";
 import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
-import {
-  ChangeTable,
-  ChangeTableEntry,
-} from "../../../lib/types/ChangeTableEntry";
+import {ChangeTable, ChangeTableEntry} from "../../../lib/types/ChangeTableEntry";
 import captureCourseState from "../../../lib/captureCourseState";
-import { setChangeTable } from "../../core/state/grades/changeTablesSlice";
+import {setChangeTable} from "../../core/state/grades/changeTablesSlice";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
@@ -90,23 +87,23 @@ export default function CourseCard(props: {
 
   const swipeRef = React.useRef<Swipeable>(null);
 
-  const oldState = useSelector(
-    (state: RootState) => state.oldCourseStates.record[props.course.key]
-  );
-  const baseGradingPeriod = useSelector(
-    (state: RootState) => state.gradeData.record?.gradeCategory
-  );
+  const oldState = useSelector((state: RootState) => state.oldCourseStates.record[props.course.key]);
+
+  const oldGradingPeriod = useSelector((state: RootState) => state.gradeData.oldRecord?.gradeCategory);
+  const baseGradingPeriod = useSelector((state: RootState) => state.gradeData.record?.gradeCategory);
 
   const [hasNewGrades, setHasNewGrades] = useState(false);
 
   useEffect(() => {
     const newState = captureCourseState(props.course);
 
-    const newGrades: ChangeTableEntry[] = newState.categories
-      .map((newCategory): ChangeTableEntry[] => {
-        const oldCategory = oldState.categories.find(
-          (c) => c.name === newCategory.name
-        );
+        const gradingPeriodChanged = props.gradingPeriod !== baseGradingPeriod || props.gradingPeriod !== oldGradingPeriod;
+
+        const newGrades = gradingPeriodChanged ? undefined : newState.categories
+            .map((newCategory): ChangeTableEntry[] => {
+                const oldCategory = oldState.categories.find(
+                    (c) => c.name === newCategory.name
+                );
 
         const newGrades = newCategory.assignments.filter(
           (g) =>
@@ -123,11 +120,11 @@ export default function CourseCard(props: {
       })
       .flat();
 
-    const removedGrades = oldState.categories.map(
-      (oldCategory): ChangeTableEntry[] => {
-        const newCategory = newState.categories.find(
-          (c) => c.name === oldCategory.name
-        );
+        const removedGrades = gradingPeriodChanged ? undefined : oldState.categories.map(
+            (oldCategory): ChangeTableEntry[] => {
+                const newCategory = newState.categories.find(
+                    (c) => c.name === oldCategory.name
+                );
 
         const removedGrades = oldCategory.assignments.filter(
           (g) => !newCategory?.assignments.find((og) => og.name === g.name)
@@ -144,18 +141,15 @@ export default function CourseCard(props: {
     const oldAverage = oldState.average;
     const newAverage = newState.average;
 
-    const changes = {
-      changed:
-        props.gradingPeriod === baseGradingPeriod &&
-        (oldAverage !== newAverage ||
-          newGrades.length > 0 ||
-          removedGrades.find((l) => l.length > 0) != undefined),
-      oldAverage,
-      newAverage,
-      newGrades,
-      removedGrades,
-    };
-    // props.setGradeChanges(changes);
+        const changes = {
+            changed: !gradingPeriodChanged &&
+                (oldAverage !== newAverage || newGrades!.length > 0 || removedGrades!.find(l=>l.length > 0) != undefined),
+            oldAverage,
+            newAverage,
+            newGrades,
+            removedGrades,
+        }
+        dispatch(setChangeTable({key: props.course.key, table: changes}));
 
     setHasNewGrades(changes.changed);
   }, [oldState, props.course]);
