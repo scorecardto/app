@@ -49,6 +49,7 @@ import NotificationsScreen from "./components/screens/welcome/NotificationsScree
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 import * as Notifications from "expo-notifications";
 import Button from "./components/input/Button";
+import AppStateListener from "./components/util/AppStateListener";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -149,6 +150,7 @@ export default function App(props: { resetKey: string }) {
                     accentLabel: "red",
                   }}
                 >
+                  <AppStateListener />
                   <RefreshIndicator />
                   <BottomSheetDisplay />
 

@@ -202,7 +202,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
   );
 
   const [gradeText, setGradeText] = useState<string>(
-    gradeChangeTable.changed ? gradeChangeTable.oldAverage : courseGradeText
+    gradeChangeTable.changed ? gradeChangeTable.oldAverage! : courseGradeText
   );
   const [modifiedAvg, setModifiedAvg] = useState<string | null>(
     gradeChangeTable.changed ? courseGradeText ?? null : null
@@ -276,17 +276,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
             modifiedGradeText={modifiedAvg}
           />
 
-          <GradebookWrapper
-            course={course}
-            setModifiedGrade={setModifiedAvg}
-            oldGradingPeriodLastUpdated={lastUpdatedOldGradingPeriod}
-            refreshOldGradingPeriod={() => {
-              refreshGradingPeriod(false);
-            }}
-            resetKey={`${resetKey}`}
-          />
-
-          {/* {showGradeStateChanges ? (
+          {showGradeStateChanges ? (
             <View>
               <GradeStateChangesCard
                 course={course!}
@@ -299,16 +289,16 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
               />
             </View>
           ) : (
-            <GradebookWrapper
-              course={course}
-              setModifiedGrade={setModifiedAvg}
-              oldGradingPeriodLastUpdated={lastUpdatedOldGradingPeriod}
-              refreshOldGradingPeriod={() => {
-                refreshGradingPeriod(false);
-              }}
-              resetKey={`${resetKey}`}
-            />
-          )} */}
+              <GradebookWrapper
+                  course={course}
+                  setModifiedGrade={setModifiedAvg}
+                  oldGradingPeriodLastUpdated={lastUpdatedOldGradingPeriod}
+                  refreshOldGradingPeriod={() => {
+                      refreshGradingPeriod(false);
+                  }}
+                  resetKey={`${resetKey}`}
+              />
+          )}
         </View>
         <CourseScreenGradient />
       </SafeAreaView>

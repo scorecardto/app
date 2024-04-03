@@ -9,18 +9,19 @@ func getEntry() -> CourseGradeEntry {
         let decoder = JSONDecoder()
       do {
         courses = try decoder.decode([CourseData].self, from: data)
-        for i in 1...3 {
-          if (i <= courses.count) {
-            continue
-          }
-
-          courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
-        }
       } catch (_) {}
     }
 
+    for i in 1...3 {
+      if (i <= courses.count) {
+        continue
+      }
+
+      courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
+    }
+
     return CourseGradeEntry(
-      date: Date(),
+      date: .now,
       courses: courses
     )
 }
@@ -35,7 +36,7 @@ func getColor(_ hex: String) -> Color {
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> CourseGradeEntry {
-        getEntry()
+      getEntry()
     }
 
     func getSnapshot(in context: Context, completion: @escaping (CourseGradeEntry) -> ()) {
@@ -46,7 +47,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let date = Date()
         let entry = getEntry()
-        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 15, to: date)!
+        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 60, to: date)!
         let timeline = Timeline(
             entries: [ entry ],
             policy: .after(nextUpdateDate)
@@ -64,19 +65,6 @@ struct CourseGradeEntryView : View {
   var entry: Provider.Entry
 
   var body: some View {
-//      let stack = VStack(alignment: .leading) {
-//        ForEach(entry.courses, id: \.key) { course in
-//          HStack {
-//            Text(course.title)
-//            Text("\(course.grade)")
-//          }
-//        }
-//        if (entry.courses.count == 0) {
-//          Text("Pin up to 3 courses in Scorecard!")
-//        }
-//      }
-//    let gradeWidth = ;
-
     let view = GeometryReader { metrics in
       VStack {
         HStack {
@@ -157,13 +145,13 @@ struct CourseGradeWidget: Widget {
 #Preview(as: .systemSmall) {
   CourseGradeWidget()
 } timeline: {
-  CourseGradeEntry(date: .now, courses: [])
+  getEntry()
 }
 
 struct MyWidget_Previews: PreviewProvider {
     static var previews: some View {
 
-      CourseGradeEntryView(entry: CourseGradeEntry(date: .now, courses: []))
+      CourseGradeEntryView(entry: getEntry())
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

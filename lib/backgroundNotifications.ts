@@ -67,7 +67,7 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
   )?.data.result;
 
   const getName = (key: string) =>
-    courseSettings[key]?.name ??
+    courseSettings[key]?.displayName ??
     reportCard.courses.find((c) => c.key === key)?.name ??
     key;
 
@@ -84,7 +84,7 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
         title: single ? getName(toNotify[0]) : "New grades",
         body: single
           ? "New grades are available. Tap to go to your Scorecard."
-          : `New grades are available for ${toNotify.length} courses. Tap to go to your Scorecard.`,
+          : `${toNotify.length} courses have been updated. Tap to go to your Scorecard.`,
         data: { stored: true, course: single ? toNotify[0] : undefined },
       },
       trigger: null,
@@ -155,8 +155,6 @@ export function setupForegroundNotifications(
       const { data } = response.notification.request.content;
       if (data.stored && data.course) {
         navigation.navigate({ name: "course", params: { key: data.course } });
-      } else {
-        handleNotification(response.notification);
       }
     }
   );
