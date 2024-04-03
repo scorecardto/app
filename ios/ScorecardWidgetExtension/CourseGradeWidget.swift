@@ -13,7 +13,7 @@ func getEntry() -> CourseGradeEntry {
           if (i <= courses.count) {
             continue
           }
-          
+
           courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
         }
       } catch (_) {}
@@ -76,7 +76,7 @@ struct CourseGradeEntryView : View {
 //        }
 //      }
 //    let gradeWidth = ;
-    
+
     let view = GeometryReader { metrics in
       VStack {
         HStack {
@@ -104,7 +104,7 @@ struct CourseGradeEntryView : View {
                   //                    .fixedSize()
                   //                    .clipped()
                   //                    .foregroundStyle(LinearGradient(colors: [Color.black, Color.clear], startPoint: UnitPoint(x: 0.85, y: 0), endPoint: .trailing))
-                  
+
                   //                  Text(course.title)
                   //                    .font(.system(size: 12, design: .rounded))
                   //                    .lineLimit(1)
@@ -130,7 +130,7 @@ struct CourseGradeEntryView : View {
         Spacer()
         }
       }.background(getColor(0xEBF5FF))
-    
+
       if #available(iOSApplicationExtension 17.0, *) {
         view.containerBackground(.clear, for: .widget)
       } else {

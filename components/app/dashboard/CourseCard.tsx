@@ -99,7 +99,7 @@ export default function CourseCard(props: {
 
         const gradingPeriodChanged = props.gradingPeriod !== baseGradingPeriod || props.gradingPeriod !== oldGradingPeriod;
 
-        const newGrades = gradingPeriodChanged ? undefined : newState.categories
+        const newGrades = gradingPeriodChanged || !oldState ? undefined : newState.categories
             .map((newCategory): ChangeTableEntry[] => {
                 const oldCategory = oldState.categories.find(
                     (c) => c.name === newCategory.name
@@ -120,7 +120,7 @@ export default function CourseCard(props: {
       })
       .flat();
 
-        const removedGrades = gradingPeriodChanged ? undefined : oldState.categories.map(
+        const removedGrades = gradingPeriodChanged || !oldState ? undefined : oldState.categories.map(
             (oldCategory): ChangeTableEntry[] => {
                 const newCategory = newState.categories.find(
                     (c) => c.name === oldCategory.name
@@ -138,11 +138,11 @@ export default function CourseCard(props: {
       }
     );
 
-    const oldAverage = oldState.average;
+    const oldAverage = oldState?.average;
     const newAverage = newState.average;
 
         const changes = {
-            changed: !gradingPeriodChanged &&
+            changed: oldState && !gradingPeriodChanged &&
                 (oldAverage !== newAverage || newGrades!.length > 0 || removedGrades!.find(l=>l.length > 0) != undefined),
             oldAverage,
             newAverage,
