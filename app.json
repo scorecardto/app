@@ -19,7 +19,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "28",
+      "buildNumber": "47",
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification",
@@ -36,7 +36,16 @@
               "aps-environment": "development"
             }
           }
-        ]
+        ],
+        "NSSupportsLiveActivities": false,
+        "NSSupportsLiveActivitiesFrequentUpdates": false,
+        "NSContactsUsageDescription": "Find and invite friends to Scorecard"
+      },
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.scorecardgrades.mobile.expowidgets"
+        ],
+        "aps-environment": "development"
       }
     },
     "android": {
@@ -46,7 +55,11 @@
       },
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 2
+      "versionCode": 2,
+      "permissions": [
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -94,6 +107,10 @@
           }
         }
       ]
-    ]
+    ],
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/6bea7059-7418-45b5-979f-2df2a8758239"
+    }
   }
 }

@@ -11,7 +11,7 @@ func getEntry() -> CourseGradeEntry {
         courses = try decoder.decode([CourseData].self, from: data)
       } catch (_) {}
     }
-    
+
     for i in 1...3 {
       if (i <= courses.count) {
         continue

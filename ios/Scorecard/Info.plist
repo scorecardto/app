@@ -42,25 +42,9 @@
           <string>exp+scorecard</string>
         </array>
       </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>scorecardto.firebaseapp.com</string>
-        </array>
-      </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>28</string>
+    <string>47</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
