@@ -49,6 +49,17 @@ const fetchReportCard = async (
   }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<CourseResponse> => {
+  await axios({
+    url: `https://${host}/selfserve/ParentSelfServeSignOutAction.do?x-tab-id=undefined`,
+    method: "POST",
+    data: toFormData({
+      selectedIndexId: -1,
+      selectedTable: "",
+      smartFormName: "backForm",
+      focusElement: "",
+    }),
+  })
+
   const cookie = generateSessionId();
 
   onStatusUpdate?.({
@@ -62,27 +73,23 @@ const fetchReportCard = async (
     url: `https://${host}/selfserve/EntryPointHomeAction.do?parent=false`,
     method: "GET",
     headers: {
-      Cookie: `JSESSIONID=${cookie}`,
-      Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
+      // Cookie: `JSESSIONID=${cookie}`,
+      // Connection: "keep-alive",
     },
   };
 
-  await axios(ENTRY_POINT);
+  // await axios(ENTRY_POINT);
 
   const ENTRY_POINT_LOGIN: Options = {
     url: `https://${host}/selfserve/HomeLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "GET",
     headers: {
-      Referer: ENTRY_POINT.url!,
+      // Referer: ENTRY_POINT.url!,
       Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
     },
   };
 
-  await axios(ENTRY_POINT_LOGIN);
+  // await axios(ENTRY_POINT_LOGIN);
 
   const HOME_LOGIN = {
     url: `https://${host}/selfserve/SignOnLoginAction.do?parent=false&teamsStaffUser=N`,
@@ -98,8 +105,6 @@ const fetchReportCard = async (
     headers: {
       Referer: ENTRY_POINT_LOGIN.url!,
       Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
     },
   };
 
@@ -123,17 +128,6 @@ const fetchReportCard = async (
     throw new Error("INCORRECT_USERNAME");
   }
 
-  // const name = JSON.parse(
-  //   homeLoginHtml.querySelector("#teamsSidekickJson")?.innerText || "{}"
-  // ).userPersonName;
-
-  // const firstName = name?.split(" ")?.[0];
-  // const lastName = name?.split(" ")?.slice(1)?.join(" ");
-
-  // if (onLoginSuccess) {
-  //   onLoginSuccess({ firstName, lastName });
-  // }
-
   onStatusUpdate?.({
     tasksCompleted: 1,
     taskRemaining: 10,
@@ -150,8 +144,6 @@ const fetchReportCard = async (
     headers: {
       Referer: HOME_LOGIN.url!,
       Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
     },
   };
 
@@ -286,6 +278,8 @@ function makeXmlHttpRequest(options: XMLOptions) {
 
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
+        console.log("request finished", options.url, "at", new Date().getMinutes()+":"+new Date().getSeconds()+":"+new Date().getMilliseconds());
+
         resolve(xhr.responseText);
       } else {
         reject(xhr.statusText);
@@ -299,16 +293,15 @@ function makeXmlHttpRequest(options: XMLOptions) {
       else reject(xhr.statusText);
     };
 
+    console.log("making request", options.url, "at", new Date().getMinutes()+":"+new Date().getSeconds()+":"+new Date().getMilliseconds());
     xhr.send(options.data);
   });
 }
 const fetchGradeCategoriesForCourse = async (
   host: string,
-  sessionId: string,
-  referer: string,
   course: Course,
   gradeIndex?: number
-): Promise<GradeCategoriesResponse> => {
+): Promise<GradeCategory[]> => {
   const ASSIGNMENTS: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
     method: "POST",
@@ -324,19 +317,13 @@ const fetchGradeCategoriesForCourse = async (
       selectedTdId: "",
     }),
     headers: {
-      Referer: referer,
+      Referer: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
       Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
     },
     responseType: "text",
   };
 
   const assignmentsResponseRaw = await makeXmlHttpRequest(ASSIGNMENTS);
-  // const assignmentsResponse = iso88592.decode(
-  //   // @ts-ignore
-  //   new Uint8Array(assignmentsResponseRaw.data)
-  // );
 
   const assignmentsHtml = parse(assignmentsResponseRaw as string);
 
@@ -429,12 +416,6 @@ const fetchGradeCategoriesForCourse = async (
         note,
         error,
       });
-
-      return {
-        sessionId,
-        referer: ASSIGNMENTS.url!,
-        assignments,
-      };
     });
 
     return {
@@ -447,45 +428,27 @@ const fetchGradeCategoriesForCourse = async (
     };
   });
 
-  const formData = {
-    selectedIndexId: undefined,
-    selectedTable: undefined,
-    smartFormName: "SmartForm",
-    focusElement: "",
-  };
-
-  // gradeCategories.forEach((c) => {
-  //   // @ts-ignore
-  //   formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_SortOrder`] = "";
-  //   // @ts-ignore
-  //   formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_record_count`] =
-  //     c.assignments?.length;
-  //   // @ts-ignore
-  //   formData[`tableMetaInfo_PSSViewGradeBookEntries_${c.id}_FilterMeta`] = {};
-  //   // @ts-ignore
-  //   formData[`tableId_${c.id}`] = c.id;
-  // });
 
   const BACK_TO_REPORT_CARD: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
-    data: toFormDataData(formData),
+    data: toFormDataData({
+      selectedIndexId: undefined,
+      selectedTable: undefined,
+      smartFormName: "SmartForm",
+      focusElement: "",
+    }),
     responseType: "text",
     headers: {
-      Referer: ASSIGNMENTS.url!,
+      // Referer: ASSIGNMENTS.url!,
       Connection: "keep-alive",
-      "Accept-Encoding": "gzip, deflate, br",
-      Accept: "*/*",
     },
   };
 
   await makeXmlHttpRequest(BACK_TO_REPORT_CARD);
 
-  return {
-    referer: BACK_TO_REPORT_CARD.url!,
-    sessionId,
-    gradeCategories: gradeCategories,
-  };
+  console.log("returning", course.name, gradeCategories.map(c=>c.name));
+  return gradeCategories;
 };
 
 const fetchAllContent = async (
@@ -545,12 +508,13 @@ const fetchGradeCategoriesForCourses = async (
   onStatusUpdate?: (status: RefreshStatus) => void,
   gradeIndex?: number
 ): Promise<AllCoursesResponse> => {
-  const all: Course[] = [];
+  const all: Course[] = new Array(reportCard.courses.length);
+  const foundCourses: number[] = [];
 
   let sessionId = reportCard.sessionId;
-  let referer = reportCard.referer;
+  let referer = `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`;
 
-  for (let i = 0; i < reportCard.courses.length; i++) {
+  for (let i = 0; i < all.length; i++) {
     const course = reportCard.courses[i];
 
     onStatusUpdate?.({
@@ -561,22 +525,29 @@ const fetchGradeCategoriesForCourses = async (
       courseKey: course.key,
     });
 
-    const assignmentsResponse = await fetchGradeCategoriesForCourse(
-      host,
-      sessionId,
-      referer,
-      course,
-      gradeIndex
-    );
-
-    all.push({
-      ...course,
-      gradeCategories: assignmentsResponse.gradeCategories,
-    });
-
-    referer = assignmentsResponse.referer;
+    const categories = await fetchGradeCategoriesForCourse(
+        host,
+        course,
+        gradeIndex
+    )//.then(categories => {
+      console.log("got course", course.name, i, categories.map(c=>c.name));
+      foundCourses.push(i);
+      all[i] = {
+        ...course,
+        gradeCategories: categories,
+      };
+    //})
   }
 
+  const wait = async (resolve: (val: void) => void) => {
+    if (foundCourses.length == reportCard.courses.length) resolve();
+
+    setTimeout(() => wait(resolve), 50);
+  }
+
+  await new Promise(res => wait(res));
+
+  console.log(JSON.stringify(all));
   return {
     sessionId,
     referer,

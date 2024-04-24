@@ -53,7 +53,9 @@ export default async function fetchAndStore(
         (c.gradeCategories?.length ?? 0) === 0 ||
         c.gradeCategories!.every((gc) => (gc.assignments?.length ?? 0) === 0)
       ) {
+        console.log("latest data empty")
         for (let i = 0; i < oldData.length; i++) {
+          if (oldData[i].gradeCategory != gradeCategory) continue;
           const oldCourse = oldData[i].courses.find((oc) => oc.key === c.key);
           if (oldCourse) return oldCourse;
         }
