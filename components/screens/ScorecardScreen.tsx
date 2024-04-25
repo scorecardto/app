@@ -86,7 +86,7 @@ export default function ScorecardScreen(props: {
         backgroundColor: colors.background,
       }}
     >
-      <Tab.Navigator tabBar={TabBar}>
+      <Tab.Navigator initialRouteName={"Grades"} tabBar={TabBar}>
         <Tab.Screen
           name="Account"
           component={AccountScreen}

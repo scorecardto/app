@@ -127,9 +127,9 @@ const fetchReportCard = async (
   const REPORT_CARDS: Options = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
-    data: toFormData({
-      "x-tab-id": "undefined",
-    }),
+    // data: toFormData({
+    //   "x-tab-id": "undefined",
+    // }),
     headers: {
       // Referer: HOME_LOGIN.url!,
       // Connection: "keep-alive",
@@ -421,12 +421,12 @@ const fetchGradeCategoriesForCourse = async (
   const BACK_TO_REPORT_CARD: XMLOptions = {
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
-    data: toFormDataData({
+    // data: toFormDataData({
       // selectedIndexId: undefined,
       // selectedTable: undefined,
       // smartFormName: "SmartForm",
       // focusElement: "",
-    }),
+    // }),
     responseType: "text",
     headers: {
       // Referer: ASSIGNMENTS.url!,
