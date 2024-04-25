@@ -49,17 +49,6 @@ const fetchReportCard = async (
   }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void
 ): Promise<CourseResponse> => {
-  await axios({
-    url: `https://${host}/selfserve/ParentSelfServeSignOutAction.do?x-tab-id=undefined`,
-    method: "POST",
-    data: toFormData({
-      selectedIndexId: -1,
-      selectedTable: "",
-      smartFormName: "backForm",
-      focusElement: "",
-    }),
-  })
-
   const cookie = generateSessionId();
 
   onStatusUpdate?.({
@@ -78,33 +67,33 @@ const fetchReportCard = async (
     },
   };
 
-  // await axios(ENTRY_POINT);
+  await axios(ENTRY_POINT);
 
   const ENTRY_POINT_LOGIN: Options = {
     url: `https://${host}/selfserve/HomeLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "GET",
     headers: {
       // Referer: ENTRY_POINT.url!,
-      Connection: "keep-alive",
+      // Connection: "keep-alive",
     },
   };
 
-  // await axios(ENTRY_POINT_LOGIN);
+  await axios(ENTRY_POINT_LOGIN);
 
   const HOME_LOGIN = {
     url: `https://${host}/selfserve/SignOnLoginAction.do?parent=false&teamsStaffUser=N`,
     method: "POST",
     data: toFormData({
-      selectedIndexId: -1,
-      selectedTable: "",
-      smartFormName: "SmartForm",
-      focusElement: "",
+      // selectedIndexId: -1,
+      // selectedTable: "",
+      // smartFormName: "SmartForm",
+      // focusElement: "",
       userLoginId: username,
       userPassword: password,
     }),
     headers: {
-      Referer: ENTRY_POINT_LOGIN.url!,
-      Connection: "keep-alive",
+      // Referer: ENTRY_POINT_LOGIN.url!,
+      // Connection: "keep-alive",
     },
   };
 
@@ -142,8 +131,8 @@ const fetchReportCard = async (
       "x-tab-id": "undefined",
     }),
     headers: {
-      Referer: HOME_LOGIN.url!,
-      Connection: "keep-alive",
+      // Referer: HOME_LOGIN.url!,
+      // Connection: "keep-alive",
     },
   };
 
@@ -246,7 +235,7 @@ const fetchReportCard = async (
   return {
     courses,
     sessionId: cookie,
-    referer: REPORT_CARDS.url!,
+    referer: '',//REPORT_CARDS.url!,
     gradeCategoryNames: columnNames,
   };
 };
@@ -306,19 +295,19 @@ const fetchGradeCategoriesForCourse = async (
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
     method: "POST",
     data: toFormDataData({
-      selectedIndexId: -1,
-      selectedTable: "",
-      smartFormName: "SmartForm",
-      focusElement: "",
+      // selectedIndexId: -1,
+      // selectedTable: "",
+      // smartFormName: "SmartForm",
+      // focusElement: "",
       gradeBookKey:
         gradeIndex != null ? course.grades[gradeIndex]?.key : course.key,
-      replaceObjectParam1: "",
-      selectedCell: "",
-      selectedTdId: "",
+      // replaceObjectParam1: "",
+      // selectedCell: "",
+      // selectedTdId: "",
     }),
     headers: {
-      Referer: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
-      Connection: "keep-alive",
+      // Referer: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+      // Connection: "keep-alive",
     },
     responseType: "text",
   };
@@ -433,15 +422,15 @@ const fetchGradeCategoriesForCourse = async (
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
     method: "POST",
     data: toFormDataData({
-      selectedIndexId: undefined,
-      selectedTable: undefined,
-      smartFormName: "SmartForm",
-      focusElement: "",
+      // selectedIndexId: undefined,
+      // selectedTable: undefined,
+      // smartFormName: "SmartForm",
+      // focusElement: "",
     }),
     responseType: "text",
     headers: {
       // Referer: ASSIGNMENTS.url!,
-      Connection: "keep-alive",
+      // Connection: "keep-alive",
     },
   };
 
