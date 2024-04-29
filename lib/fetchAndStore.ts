@@ -1,25 +1,17 @@
 import Storage from "expo-storage";
-import {
-  AllContentResponse,
-  Assignment, Course,
-  GradebookRecord,
-} from "scorecard-types";
+import {Assignment, GradebookRecord,} from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
-import { AppDispatch } from "../components/core/state/store";
-import {
-  setReferer,
-  setSessionId,
-} from "../components/core/state/user/loginSlice";
-import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
-import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
-import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
-import { updateNotifs } from "./backgroundNotifications";
-import { useEffect } from "react";
+import {AppDispatch} from "../components/core/state/store";
+import {setGradeRecord} from "../components/core/state/grades/gradeDataSlice";
+import {setOldCourseStates} from "../components/core/state/grades/oldCourseStatesSlice";
+import {setGradeCategory} from "../components/core/state/grades/gradeCategorySlice";
+import {updateNotifs} from "./backgroundNotifications";
 import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
+import {AllContent} from "./fetcher";
 
 export default async function fetchAndStore(
-  data: AllContentResponse,
+  data: AllContent,
   dispatch: AppDispatch,
   updateCourseStates: boolean,
   updateWidget = true,
@@ -39,9 +31,6 @@ export default async function fetchAndStore(
       }));
     }
   }
-
-  dispatch(setReferer(data.referer));
-  dispatch(setSessionId(data.sessionId));
 
   const oldData: GradebookRecord[] = JSON.parse(
     (await Storage.getItem({ key: "records" })) ?? "[]"

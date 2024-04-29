@@ -45,6 +45,7 @@
     "expo-status-bar": "~1.6.0",
     "expo-storage": "^48.1.0",
     "expo-task-manager": "~11.3.0",
+    "expo-updates": "~0.18.19",
     "iso-8859-2": "^3.0.4",
     "moti": "^0.27.2",
     "node-html-parser": "^6.1.12",
@@ -69,8 +70,7 @@
     "react-tracked": "^1.7.11",
     "redaxios": "^0.5.1",
     "redux": "^5.0.1",
-    "scorecard-types": "github:scorecardto/types",
-    "expo-updates": "~0.18.19"
+    "scorecard-types": "github:scorecardto/types"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

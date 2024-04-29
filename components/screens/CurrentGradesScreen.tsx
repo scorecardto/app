@@ -126,6 +126,7 @@ export default function CurrentGradesScreen(props: {
 
     const reportCard = fetchAllContent(
       s.login.district,
+      courses.length,
       s.login.username,
       s.login.password,
       undefined,

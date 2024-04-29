@@ -12,8 +12,8 @@ import LoadingOverlay from "../loader/LoadingOverlay";
 import fetchAndStore from "../../../lib/fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as loginSlice from "../../core/state/user/loginSlice";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../core/state/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../core/state/store";
 import StatusText from "../../text/StatusText";
 import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
 import * as SecureStorage from "expo-secure-store";
@@ -65,6 +65,7 @@ const ConnectAccountScreen = (props: {
 
       const reportCard = fetchAllContent(
         district.url,
+        undefined,
         username,
         password,
         (name) => {

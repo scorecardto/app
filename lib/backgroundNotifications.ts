@@ -9,8 +9,6 @@ import { Notification } from "expo-notifications";
 import { store } from "../components/core/state/store";
 import {
   fetchAllContent,
-  fetchGradeCategoriesForCourse,
-  fetchReportCard,
 } from "./fetcher";
 import { AppDispatch, RootState } from "../components/core/state/store";
 import Storage from "expo-storage";
@@ -61,7 +59,11 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
 
   console.log("getting rpc");
 
-  const reportCard = await fetchAllContent(host, username, password);
+  const reportCard = await fetchAllContent(
+      host,
+      (JSON.parse((await Storage.getItem({key: "records"})) ?? "[]"))[0].courses.length,
+      username,
+      password);
   const notifs = (
     await isRegisteredForNotifs(reportCard.courses.map((c) => c.key))
   )?.data.result;
@@ -133,8 +135,11 @@ export function setupForegroundNotifications(
       visibilityTime: 3000,
     });
 
+
+
     const reportCard = await fetchAllContent(
       district,
+      (JSON.parse((await Storage.getItem({key: "records"})) ?? "[]"))[0].courses.length,
       username,
       password,
       undefined,

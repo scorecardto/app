@@ -19,9 +19,7 @@ import oldCourseStatesSlice, {
 } from "../core/state/grades/oldCourseStatesSlice";
 import Storage from "expo-storage";
 import {
-  fetchGradeCategoriesForCourse,
-  fetchGradeCategoriesForCourses,
-  fetchReportCard,
+    fetchAllContent
 } from "../../lib/fetcher";
 import {
   setRSMessage,
@@ -47,6 +45,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       state.gradeData.record?.courses.find((c) => c.key === key),
     () => true
   );
+  const numCourses = useSelector((state: RootState) => state.gradeData.record?.courses.length);
 
   const gradeCategory =
     props.route.params.gradeCategory ??
@@ -97,86 +96,37 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
         }
       }
 
-      const reportCard = await fetchReportCard(
-        login.district,
-        login.username,
-        login.password,
-        () => {},
-        (status) => {
-          dispatch(setRefreshStatus(status));
-        }
-      );
-
       dispatch(
-        setRefreshStatus({
-          type: "GETTING_COURSES",
-          status: "Loading old grades...",
-          taskRemaining: 1,
-          tasksCompleted: 3,
-        })
+          setRefreshStatus({
+              type: "GETTING_COURSES",
+              status: "Loading old grades...",
+              taskRemaining: 1,
+              tasksCompleted: 3,
+          })
       );
+      const content = await fetchAllContent(login.district, numCourses, login.username, login.password, undefined,
+      (status) => { dispatch(setRefreshStatus(status)); }, (course) => {
+          if (course.key != courseInitial.key) return;
 
-      const categories = await fetchGradeCategoriesForCourse(
-        login.district,
-        reportCard.sessionId,
-        reportCard.referer,
-        {
-          ...courseInitial,
-          key: alternateKey || "",
-        }
-      );
+          dispatch(setRSType("IDLE"));
 
-      dispatch(setRSType("IDLE"));
+          setCourse(course);
 
-      setCourse({
-        ...courseInitial,
-        gradeCategories: categories.gradeCategories,
+          setGradeText(courseInitial.grades[gradeCategory]?.value || "NG");
+
+          setLastUpdatedOldGradingPeriod(new Date().toISOString());
+      }, gradeCategory)
+
+      content.courses.forEach((c) => {
+        oldGradebooks[c.grades[gradeCategory]?.key ?? c.key] = {
+          ...c,
+          lastUpdated: new Date().toISOString(),
+        };
       });
-
-      setGradeText(courseInitial.grades[gradeCategory]?.value || "NG");
-
-      setLastUpdatedOldGradingPeriod(new Date().toISOString());
-
-      oldGradebooks[alternateKey] = {
-        ...courseInitial,
-        gradeCategories: categories.gradeCategories,
-        lastUpdated: new Date().toISOString(),
-      };
 
       Storage.setItem({
         key: "oldGradebooks",
         value: JSON.stringify(oldGradebooks),
-      });
-
-      fetchGradeCategoriesForCourses(
-        login.district,
-        {
-          ...reportCard,
-          courses: reportCard.courses.map((c) => {
-            return {
-              ...c,
-              key: c.grades[gradeCategory]?.key || c.key,
-            };
-          }),
-        },
-        () => {},
-        gradeCategory
-      ).then(async (categories: AllCoursesResponse) => {
-        const oldGradebooks = JSON.parse(
-          ((await Storage.getItem({ key: "oldGradebooks" })) || "{}") as string
-        );
-
-        categories.courses.forEach((c) => {
-          oldGradebooks[c.key] = {
-            ...c,
-            lastUpdated: new Date().toISOString(),
-          };
-        });
-
-        Storage.setItem({
-          key: "oldGradebooks",
-          value: JSON.stringify(oldGradebooks),
-        });
       });
     },
     [courseInitial, gradeCategory, login]
