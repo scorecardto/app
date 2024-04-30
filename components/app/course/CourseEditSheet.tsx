@@ -1,5 +1,5 @@
-import { Keyboard, ScrollView, Dimensions, View } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import {Keyboard, ScrollView, Dimensions, View, TouchableOpacity, Text} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
 import CourseColorChanger from "./CourseColorChanger";
@@ -21,6 +21,7 @@ import {
   updateCourseIfPinned,
   unpinCourse,
 } from "../../core/state/widget/widgetSlice";
+import SmallText from "../../text/SmallText";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
@@ -107,6 +108,8 @@ return s.widgetData.data;
   });
   const isPinned = !!pinned?.find?.((c) => c.key === props.courseKey);
 
+  const disablePinned = !isPinned && pinned.length >= 3;
+
   return (
     <>
       <BottomSheetView>
@@ -147,20 +150,51 @@ return s.widgetData.data;
               );
             }}
           />
-            <Button disabled={!isPinned && pinned.length >= 3} onPress={() => {
-                dispatch(
-                    isPinned ? unpinCourse(props.courseKey)
-                        : pinCourse({
-                            course: {
-                                key: props.courseKey,
-                                title: name,
-                                grade: props.gradeText,
-                                color: Color.AccentsMatrix[accentColor].default.primary,
-                            },
-                            order: courseOrder,
-                        })
-                );
-            }}>{isPinned ? "Unpin" : "Pin"}</Button>
+            <SmallText style={{ fontSize: 16, marginBottom: 8, color: colors.primary }}>
+                Widget
+            </SmallText>
+            <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity style={{
+                    alignSelf: 'flex-start',
+                    opacity: disablePinned ? 0.5 : undefined,
+                }} disabled={disablePinned} onPress={() => {
+                    dispatch(
+                        isPinned ? unpinCourse(props.courseKey)
+                            : pinCourse({
+                                course: {
+                                    key: props.courseKey,
+                                    title: name,
+                                    grade: props.gradeText,
+                                    color: Color.AccentsMatrix[accentColor].default.primary,
+                                },
+                                order: courseOrder,
+                            })
+                    );
+                }}>
+                    <View style={{
+                        backgroundColor: colors.button,
+                        borderColor: "rgba(0,0,0,0.2)",
+                        borderWidth: 1,
+                        borderBottomWidth: 2,
+                        borderRadius: 5,
+                    }}>
+                        <Text style={{
+                            color: "#FFF",
+                            fontSize: 14,
+                            paddingVertical: 9,
+                            paddingHorizontal: 26,
+                            textAlign: 'center',
+                        }}>
+                            {isPinned ? "Unpin" : "Pin"}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                {disablePinned && <View style={{ justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ color: colors.text, fontSize: 12, marginLeft: 5 }}>
+                        Max pins reached
+                    </Text>
+                </View>}
+            </View>
           <CourseColorChanger
             initialValue={accentColor}
             onChange={(accentColor) => {
