@@ -1,4 +1,3 @@
-// import Storage from "expo-storage";
 // import { CourseSettings, DataProvider } from "scorecard-types";
 // import { AppDispatch } from "../components/core/state/store";
 // import { GradeData } from "../components/core/state/grades/gradeDataSlice";

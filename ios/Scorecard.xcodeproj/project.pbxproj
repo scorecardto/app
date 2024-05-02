@@ -20,6 +20,10 @@
 		765F6E5D745087D376B9C875 /* Pods_Scorecard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDA445572C80FDD322F4A600 /* Pods_Scorecard.framework */; };
 		7B1F1CB407184123ACA52D0C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F29B7174914241CB8E9CA7B7 /* GoogleService-Info.plist */; };
 		887EEEAF7A144AA396C6F505 /* ScorecardWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 221FA9CB05154AD2AE75610B /* ScorecardWidgetExtension.appex */; };
+		8D41EF0F2BE2F22E00CCEC93 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D41EF0E2BE2F22E00CCEC93 /* Storage.swift */; };
+		8D78299A2BE1A3D000F5634F /* Fetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D7829992BE1A3D000F5634F /* Fetcher.swift */; };
+		8D78299C2BE1B44E00F5634F /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D78299B2BE1B44E00F5634F /* StringExtension.swift */; };
+		8D78299E2BE1B97B00F5634F /* ScorecardTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D78299D2BE1B97B00F5634F /* ScorecardTypes.swift */; };
 		930D69E5BD974DA481876ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78FB8126C2F3451287F71BE4 /* Assets.xcassets */; };
 		A671EDAAEDEC4F09AD1FFA33 /* ScorecardWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889AA78D9BF43728F9A66FE /* ScorecardWidgetBundle.swift */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
@@ -104,6 +108,10 @@
 		7A4D352CD337FB3A3BF06240 /* Pods-Scorecard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Scorecard.release.xcconfig"; path = "Target Support Files/Pods-Scorecard/Pods-Scorecard.release.xcconfig"; sourceTree = "<group>"; };
 		839B782F6D294756A0554711 /* WidgetKit.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8D35FBF5C3A84925B376C176 /* SwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		8D41EF0E2BE2F22E00CCEC93 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		8D7829992BE1A3D000F5634F /* Fetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fetcher.swift; sourceTree = "<group>"; };
+		8D78299B2BE1B44E00F5634F /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		8D78299D2BE1B97B00F5634F /* ScorecardTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScorecardTypes.swift; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Scorecard/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BA81E24A271042FA877A5E8F /* SwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
@@ -278,6 +286,10 @@
 				78FB8126C2F3451287F71BE4 /* Assets.xcassets */,
 				4882122D426D4C41ABE60824 /* ScorecardWidgetExtension.entitlements */,
 				E7BD6F6A1E104E3FAB37263C /* Info.plist */,
+				8D7829992BE1A3D000F5634F /* Fetcher.swift */,
+				8D78299B2BE1B44E00F5634F /* StringExtension.swift */,
+				8D78299D2BE1B97B00F5634F /* ScorecardTypes.swift */,
+				8D41EF0E2BE2F22E00CCEC93 /* Storage.swift */,
 			);
 			path = ScorecardWidgetExtension;
 			sourceTree = "<group>";
@@ -606,7 +618,11 @@
 			files = (
 				5DB55DCF41EF433AB1D21BAE /* CourseData.swift in Sources */,
 				D13FA5C0D29143F9B158D478 /* CourseGradeWidget.swift in Sources */,
+				8D78299C2BE1B44E00F5634F /* StringExtension.swift in Sources */,
 				A671EDAAEDEC4F09AD1FFA33 /* ScorecardWidgetBundle.swift in Sources */,
+				8D78299A2BE1A3D000F5634F /* Fetcher.swift in Sources */,
+				8D41EF0F2BE2F22E00CCEC93 /* Storage.swift in Sources */,
+				8D78299E2BE1B97B00F5634F /* ScorecardTypes.swift in Sources */,
 				2D2D49C166CC5BB39E728993 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

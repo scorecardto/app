@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import UserRankType from "../../../../lib/types/UserRankType";
 import CourseStateRecord from "../../../../lib/types/CourseStateRecord";
 import CourseState from "../../../../lib/types/CourseState";
-import Storage from "expo-storage";
+import ScorecardModule from "../../../../lib/expoModuleBridge";
 
 interface OldCourseStates {
   record: CourseStateRecord;
@@ -35,10 +35,7 @@ const oldCourseStatesSlice = createSlice({
       }
 
       if (action.payload.save !== "STATE") {
-        Storage.setItem({
-          key: "oldCourseStates",
-          value: JSON.stringify(state.record),
-        });
+        ScorecardModule.storeItem("oldCourseStates", JSON.stringify(state.record))
       }
     },
   },

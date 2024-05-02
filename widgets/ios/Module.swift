@@ -1,6 +1,7 @@
 import ExpoModulesCore
 import ActivityKit
 import WidgetKit
+import CommonCrypto
 
 public class ExpoWidgetsModule: Module {
     public func definition() -> ModuleDefinition {
@@ -15,12 +16,25 @@ public class ExpoWidgetsModule: Module {
         }
 
         Function("setWidgetData") { (json: String) in
-          let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
-          widgetSuite?.set(json.data(using: .utf8)!, forKey: "courses")
+            let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
+            widgetSuite?.set(json.data(using: .utf8)!, forKey: "courses")
 
-          if #available(iOS 14.0, *) {
+            if #available(iOS 14.0, *) {
                 WidgetCenter.shared.reloadAllTimelines()
-          }
+            }
+        }
+
+        Function("getItem") { (key: String) -> String? in
+            let data = getItem(key)
+            return data == nil ? nil : String(data: data!, encoding: .utf8)
+        }
+
+        Function("storeItem") { (key: String, item: String) in
+            try storeItem(key, item.data(using: .utf8)!)
+        }
+
+        Function("clearStorage") { () in
+            try clearStorage()
         }
     }
 }

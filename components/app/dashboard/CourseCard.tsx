@@ -19,7 +19,6 @@ import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../core/state/store";
 import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
-import Storage from "expo-storage";
 import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
 import {ChangeTable, ChangeTableEntry} from "../../../lib/types/ChangeTableEntry";

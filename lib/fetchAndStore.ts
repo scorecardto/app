@@ -1,4 +1,3 @@
-import Storage from "expo-storage";
 import {Assignment, GradebookRecord,} from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
@@ -9,6 +8,7 @@ import {setGradeCategory} from "../components/core/state/grades/gradeCategorySli
 import {updateNotifs} from "./backgroundNotifications";
 import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
 import {AllContent} from "./fetcher";
+import ScorecardModule from "./expoModuleBridge";
 
 export default async function fetchAndStore(
   data: AllContent,
@@ -33,7 +33,7 @@ export default async function fetchAndStore(
   }
 
   const oldData: GradebookRecord[] = JSON.parse(
-    (await Storage.getItem({ key: "records" })) ?? "[]"
+    ScorecardModule.getItem("records") ?? "[]"
   );
 
   const newData: GradebookRecord = {
@@ -68,10 +68,7 @@ export default async function fetchAndStore(
 
     dispatch(setOldCourseStates(oldCourseStates));
 
-    await Storage.setItem({
-      key: "oldCourseStates",
-      value: JSON.stringify(oldCourseStates),
-    });
+    ScorecardModule.storeItem("oldCourseStates", JSON.stringify(oldCourseStates))
   }
 
   const assignmentHasGrade = (a: Assignment | undefined) =>
@@ -128,10 +125,7 @@ export default async function fetchAndStore(
     }
   }
 
-  await Storage.setItem({
-    key: "records",
-    value: JSON.stringify([newData, ...oldData]),
-  });
+  ScorecardModule.storeItem("records", JSON.stringify([newData, ...oldData]))
 
   return Array.from(hasNewData);
 }

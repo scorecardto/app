@@ -1810,6 +1810,7 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.15)
   - SocketRocket (0.6.1)
+  - SwiftSoup (2.7.2)
   - UMAppLoader (4.2.0)
   - Yoga (1.14.0)
 
@@ -1897,6 +1898,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - SwiftSoup
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -1937,6 +1939,7 @@ SPEC REPOS:
     - SDWebImageSVGCoder
     - SDWebImageWebPCoder
     - SocketRocket
+    - SwiftSoup
 
 EXTERNAL SOURCES:
   boost:
@@ -2224,9 +2227,10 @@ SPEC CHECKSUMS:
   SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
   SDWebImageWebPCoder: 295a6573c512f54ad2dd58098e64e17dcf008499
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  SwiftSoup: 4164c6bd8af69acd119c23fb36906975a60d71bb
   UMAppLoader: e83f024f75f07802fce99739f04b4537d188caaf
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
 
-PODFILE CHECKSUM: 106c6e90642eb61e9343cd065829a8d795af38e7
+PODFILE CHECKSUM: f94c795819df0436c40e8848674d3884abe67dd0
 
 COCOAPODS: 1.14.3

@@ -17,7 +17,6 @@ import GradebookWrapper from "../app/gradebook/GradebookWrapper";
 import oldCourseStatesSlice, {
   setOldCourseState,
 } from "../core/state/grades/oldCourseStatesSlice";
-import Storage from "expo-storage";
 import {
     fetchAllContent
 } from "../../lib/fetcher";
@@ -31,6 +30,7 @@ import { AllCoursesResponse } from "scorecard-types";
 import NotificationsSelectorSheet from "../app/course/NotificationsSelectorSheet";
 import { ActionSheetRef } from "react-native-actions-sheet";
 import CourseNotificationsButton from "../app/course/CourseNotificationsButton";
+import ScorecardModule from "../../lib/expoModuleBridge";
 
 export default function CourseScreen(props: { route: any; navigation: any }) {
   const { key } = props.route.params;
@@ -69,7 +69,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
       setLastUpdatedOldGradingPeriod(undefined);
 
       const oldGradebooks = JSON.parse(
-        ((await Storage.getItem({ key: "oldGradebooks" })) || "{}") as string
+        (ScorecardModule.getItem("oldGradebooks") || "{}") as string
       );
 
       const alternateKey = courseInitial?.grades[gradeCategory]?.key;
@@ -124,10 +124,7 @@ export default function CourseScreen(props: { route: any; navigation: any }) {
         };
       });
 
-      Storage.setItem({
-        key: "oldGradebooks",
-        value: JSON.stringify(oldGradebooks),
-      });
+      ScorecardModule.storeItem("oldGradebooks", JSON.stringify(oldGradebooks));
     },
     [courseInitial, gradeCategory, login]
   );

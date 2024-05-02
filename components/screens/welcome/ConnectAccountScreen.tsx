@@ -4,7 +4,6 @@ import { NavigationProp, useTheme } from "@react-navigation/native";
 import Button from "../../input/Button";
 import { TextInput } from "../../input/TextInput";
 import { fetchAllContent } from "../../../lib/fetcher";
-import Storage from "expo-storage";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import SmallText from "../../text/SmallText";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
@@ -16,7 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../core/state/store";
 import StatusText from "../../text/StatusText";
 import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
-import * as SecureStorage from "expo-secure-store";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 const ConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -94,26 +93,16 @@ const ConnectAccountScreen = (props: {
             loginSlice.setDistrictVipProgramDate(district.vipProgramDate)
           );
 
-          await SecureStorage.setItemAsync(
-            "login",
-            JSON.stringify({
+          ScorecardModule.storeItem("login", JSON.stringify({
               host: district.url,
               username,
               password,
               school: schoolLabel,
               grade: gradeLabel,
-            }),
-            {
-              requireAuthentication: false,
-              keychainAccessible: SecureStorage.ALWAYS,
-            }
-          );
+          }))
 
           if (district.vipProgramDate) {
-            await Storage.setItem({
-              key: "vipProgramDate",
-              value: district.vipProgramDate,
-            });
+              ScorecardModule.storeItem("vipProgramDate", district.vipProgramDate)
           }
 
           const fetchStoreResult = await fetchAndStore(data, dispatch, true);

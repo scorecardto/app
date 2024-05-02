@@ -2,28 +2,72 @@ import WidgetKit
 import SwiftUI
 
 func getEntry() -> CourseGradeEntry {
-    let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
+  let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")!
 
-    var courses: [CourseData] = []
-    if let data = widgetSuite?.data(forKey: "courses") {
-        let decoder = JSONDecoder()
-      do {
-        courses = try decoder.decode([CourseData].self, from: data)
-      } catch (_) {}
-    }
+  var courses: [CourseData] = []
+  if let data = widgetSuite.data(forKey: "courses") {
+    do {
+      courses = try JSONDecoder().decode([CourseData].self, from: data)
+    } catch (_) {}
+  }
 
-    for i in 1...3 {
-      if (i <= courses.count) {
-        continue
+  let lastFetched = widgetSuite.double(forKey: "lastFetched")
+  let time = Double(Date().timeIntervalSince1970); // in seconds
+
+  if (time - lastFetched >= 3600) {
+    widgetSuite.set(time, forKey: "lastFetched")
+
+    let constCourses = courses
+    Task {
+      var widgetData = constCourses
+      let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")!
+
+      let recordData = getItem("records")
+      let loginData = getItem("login")
+
+      var records = recordData == nil ? [] : try JSONDecoder().decode([GradebookRecord].self, from: recordData!)
+
+      if ((records.isEmpty || time-records[0].date/1000 >= 3600) && loginData != nil) {
+        let login = try JSONSerialization.jsonObject(with: loginData!) as! [String:String]
+
+        do {
+          var content = try await fetchAllContent(login["host"]!, records.isEmpty ? nil : records[0].courses.count, login["username"]!, login["password"]!)
+
+          let gradeCategory = content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1
+
+          records.insert(GradebookRecord(gradeCategoryNames: content.gradeCategoryNames, date: time*1000, courses: content.courses, gradeCategory: gradeCategory), at: 0)
+
+          for i in widgetData.indices {
+            let data = widgetData[i]
+
+            for course in content.courses {
+              if (data.key == course.key) {
+                widgetData[i].grade = course.grades[gradeCategory]?.value ?? data.grade
+              }
+            }
+          }
+
+          try widgetSuite.set(JSONEncoder().encode(widgetData), forKey: "courses")
+
+          try storeItem("records", JSONEncoder().encode(records))
+          WidgetCenter.shared.reloadAllTimelines()
+        } catch (_) {}
       }
+    }
+  }
 
-      courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
+  for i in 1...3 {
+    if (i <= courses.count) {
+      continue
     }
 
-    return CourseGradeEntry(
-      date: .now,
-      courses: courses
-    )
+    courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
+  }
+
+  return CourseGradeEntry(
+    date: .now,
+    courses: courses
+  )
 }
 
 func getColor(_ hex: Int) -> Color {

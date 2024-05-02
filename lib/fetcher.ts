@@ -58,7 +58,7 @@ async function login(host: string, cookies: string, username: string, password: 
   }
 }
 
-async function parseHome(idx: number, host: string, cookies: string, infoCallback?:
+async function parseHome(host: string, cookies: string, infoCallback?:
     (info: { firstName: string; lastName: string; school: string; grade: string; }) => void) {
   const homeData = parse((await axios({
     url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
@@ -71,7 +71,7 @@ async function parseHome(idx: number, host: string, cookies: string, infoCallbac
       homeData.querySelector("#pageMessageDiv .message .info")?.innerText ===
       "Your session has expired.  Please use the Close button and log in again."
   ) {
-    throw new Error(`[${idx}] SESSION_EXPIRED`);
+    throw new Error(`SESSION_EXPIRED`);
   }
 
   const courseElements = homeData.querySelectorAll(
@@ -162,8 +162,7 @@ async function parseHome(idx: number, host: string, cookies: string, infoCallbac
 }
 
 async function parseCourse(host: string, cookies: string, courseKey: string) {
-  let raw;
-  const assignments = parse((raw = await axios({
+  const assignments = parse((await axios({
     url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
     method: "POST",
     data: qs.stringify({
@@ -288,7 +287,7 @@ async function fetchCourse(host: string, username: string, password: string, cou
   const cookies = await entryPoint(host);
   await login(host, cookies, username, password);
 
-  const {courses, gradeCategoryNames} = await parseHome(courseKeyOrIdx as number, host, cookies, infoCallback);
+  const {courses, gradeCategoryNames} = await parseHome(host, cookies, infoCallback);
   courseInfoCallback && courseInfoCallback(courses.length, gradeCategoryNames);
 
   const course = typeof (courseKeyOrIdx) == "number" ? courses[courseKeyOrIdx] : courses.find(c=>c.key == courseKeyOrIdx);
@@ -336,10 +335,9 @@ async function fetchAllContent(
         for (let i = numCourses; i < realNum; i++) {
           runCourse(i);
         }
-
-        numCourses = realNum;
       }
 
+      numCourses = realNum
       gradeCategoryNames = names;
     }, infoCallback, gradeCategory).then(course => {
       if (course) {

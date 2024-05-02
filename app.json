@@ -79,7 +79,7 @@
             "src": "./widgets/ios",
             "devTeamId": "H29JJ3FSST",
             "mode": "development",
-            "moduleDependencies": [],
+            "moduleDependencies": ["Storage.swift"],
             "useLiveActivities": false,
             "frequentUpdates": false
           }

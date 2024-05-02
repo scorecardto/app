@@ -15,11 +15,11 @@ import {
   setInvitedNumbers,
   setOpenInviteSheetDate,
 } from "../../core/state/user/invitedNumbersSlice";
-import Storage from "expo-storage";
 import FeatureBadge from "./FeatureBadge";
 import ActionButton from "../../input/ActionButton";
 import CountdownButton from "../../input/CountdownButton";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 
 export default function MoreFeaturesSheet(props: {
   close: () => void;
@@ -46,15 +46,9 @@ export default function MoreFeaturesSheet(props: {
         firstTime: true,
         from: props.source,
       });
-      Storage.setItem({
-        key: "invitedNumbers",
-        value: JSON.stringify([]),
-      });
+      ScorecardModule.storeItem("invitedNumbers", JSON.stringify([]));
 
-      Storage.setItem({
-        key: "openInviteSheetDate",
-        value: new Date().toISOString(),
-      });
+      ScorecardModule.storeItem("openInviteSheetDate", new Date().toISOString());
 
       dispatch(setInvitedNumbers([]));
 

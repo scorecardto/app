@@ -11,18 +11,17 @@ import {
   fetchAllContent,
 } from "./fetcher";
 import { AppDispatch, RootState } from "../components/core/state/store";
-import Storage from "expo-storage";
 import { Course, CourseSettings, GradebookRecord } from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import { setRefreshStatus } from "../components/core/state/grades/refreshStatusSlice";
 import fetchAndStore from "./fetchAndStore";
 import Toast from "react-native-toast-message";
-import * as SecureStore from "expo-secure-store";
 import captureCourseState from "./captureCourseState";
 import { getDeviceId } from "./deviceInfo";
 import { updateCourseIfPinned } from "../components/core/state/widget/widgetSlice";
 import { NavigationContainerRef } from "@react-navigation/native";
 import { TaskManagerTaskBody } from "expo-task-manager/src/TaskManager";
+import ScorecardModule from "./expoModuleBridge";
 
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 const BACKGROUND_FETCH_TASK = "BACKGROUND-FETCH-TASK";
@@ -49,19 +48,19 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
   console.log("getting settings");
 
   const { username, password, host } = JSON.parse(
-    SecureStore.getItem("login") ?? "{}"
+      ScorecardModule.getItem("login") ?? "{}"
   );
   if (!username || !password || !host) return;
 
   const courseSettings = JSON.parse(
-    (await Storage.getItem({ key: "courseSettings" })) ?? "{}"
+    ScorecardModule.getItem("courseSettings") ?? "{}"
   );
 
   console.log("getting rpc");
 
   const reportCard = await fetchAllContent(
       host,
-      (JSON.parse((await Storage.getItem({key: "records"})) ?? "[]"))[0].courses.length,
+      (JSON.parse(ScorecardModule.getItem("records") ?? "[]"))[0].courses.length,
       username,
       password);
   const notifs = (
@@ -139,7 +138,7 @@ export function setupForegroundNotifications(
 
     const reportCard = await fetchAllContent(
       district,
-      (JSON.parse((await Storage.getItem({key: "records"})) ?? "[]"))[0].courses.length,
+      (JSON.parse(ScorecardModule.getItem("records") ?? "[]"))[0].courses.length,
       username,
       password,
       undefined,
