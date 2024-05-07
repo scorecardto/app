@@ -29,6 +29,7 @@ import { Course } from "scorecard-types";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import DraggableComponent from "../util/DraggableComponent";
 import {setCourseOrder} from "../core/state/grades/courseOrderSlice";
+import {updateCourseOrder} from "../core/state/widget/widgetSlice";
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
 }) {
@@ -267,7 +268,7 @@ export default function CurrentGradesScreen(props: {
 
                             setNewCourseOrder(newOrder);
                             dispatch(setCourseOrder(newOrder));
-                            // dispatch(updateCourseOrder(newOrder));
+                            dispatch(updateCourseOrder(newOrder));
 
                             return {
                               x: 0,

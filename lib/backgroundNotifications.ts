@@ -76,7 +76,13 @@ async function backgroundTask(body: TaskManagerTaskBody<any>) {
 
   const toNotify = (
     await fetchAndStore(reportCard, store.dispatch, false)
-  ).filter((c) => !!notifs?.find((n: any) => n.value !== "OFF" && n.key === c));
+  ).filter((c) => !courseSettings[c]?.hidden && !!notifs?.find((n: any) => n.value !== "OFF" && n.key === c));
+
+  for (const notif of notifs) {
+    if (toNotify.includes(notif.key) && notif.value == "ON_ONCE") {
+      await deregisterNotifs(notif.key);
+    }
+  }
 
   if (toNotify.length > 0) {
     const single = toNotify.length == 1;

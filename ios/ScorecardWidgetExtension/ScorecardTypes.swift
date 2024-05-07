@@ -1,8 +1,16 @@
+struct CourseSettings: Codable {
+  var displayName: String?
+  var lastUpdated: Double?
+  var hidden: Bool?
+  var accentColor: String?
+  var glyph: String?
+}
+
 struct GradebookRecord: Codable {
   var gradeCategoryNames: [String]
   var date: Double
   var courses: [Course]
-  var gradeCategory: Int
+  var gradeCategory: Int?
 }
 
 struct Course: Codable {
@@ -39,4 +47,11 @@ struct Assignment: Codable {
   var count: Double?
   var note: String?
   var error: Bool
+}
+
+struct CourseData: Codable {
+    var key: String
+    var title: String
+    var grade: String
+    var color: String
 }

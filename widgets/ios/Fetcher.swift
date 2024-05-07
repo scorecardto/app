@@ -168,7 +168,7 @@ struct AllContent {
   var gradeCategoryNames: [String]
 }
 
-func fetchAllContent(_ host: String, _ oldNumCourses: Int?, _ username: String, _ password: String) async throws -> AllContent {
+func fetchAllContent(_ host: String, _ oldNumCourses: Int?, _ username: String, _ password: String) throws -> AllContent {
   var numCourses = (oldNumCourses == 0 ? nil : oldNumCourses) ?? 8
 
   var courses: [Course?] = []
@@ -208,24 +208,9 @@ func fetchAllContent(_ host: String, _ oldNumCourses: Int?, _ username: String, 
     runCourse(i)
   }
 
-  let wait = Task {
-    var cycles = 0;
-
-    while (true) {
-      var exit = false;
-
-      serialQueue.sync {
-        exit = resolved.count >= numCourses
-      }
-
-      if (exit) {
-        break
-      }
-
-      try await Task.sleep(nanoseconds: 50_000_000) // 50 ms
-    }
+  while (resolved.count < numCourses) {
+    usleep(50000)
   }
-  try await wait.value;
 
   return AllContent(courses: courses.filter({c in c != nil}).map({c in c!}), gradeCategoryNames: gradeCategoryNames)
 }

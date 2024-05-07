@@ -41,7 +41,7 @@ const widgetSlice = createSlice({
       ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     updateCourseOrder: (state, action: PayloadAction<string[]>) => {
-      state?.data?.sort?.(
+      state.data?.sort?.(
         (a, b) => action.payload.indexOf(a.key) - action.payload.indexOf(b.key)
       );
       ScorecardModule.setWidgetData(JSON.stringify(state.data));

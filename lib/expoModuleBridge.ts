@@ -1,6 +1,12 @@
 import ExpoModule from "@bittingz/expo-widgets/src/ExpoWidgetsModule";
 
 const ScorecardModule = {
+    getEnabledNotifs(): string {
+        return ExpoModule.getEnabledNotifs();
+    },
+    setEnabledNotifs(json: string) {
+        ExpoModule.setEnabledNotifs(json);
+    },
     setWidgetData(json: string) {
         ExpoModule.setWidgetData(json);
     },

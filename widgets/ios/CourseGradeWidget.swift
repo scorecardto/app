@@ -11,50 +11,126 @@ func getEntry() -> CourseGradeEntry {
     } catch (_) {}
   }
 
-  let lastFetched = widgetSuite.double(forKey: "lastFetched")
   let time = Double(Date().timeIntervalSince1970); // in seconds
+  do {
+    var recordData =  getItem("records")
+    let loginData = getItem("login")
 
-  if (time - lastFetched >= 3600) {
-    widgetSuite.set(time, forKey: "lastFetched")
+    let recordString = recordData == nil ? nil : String(data: recordData!, encoding: .utf8)!
+    let lastFetch = recordString == nil ? nil : Double((recordString as? NSString)!.substring(with: try NSRegularExpression(pattern: "\"date\": ?([0-9]*)").firstMatch(in: recordString!, range: NSMakeRange(0, recordString!.count))!.range(at: 1)))
+    if ((lastFetch == nil || time-lastFetch!/1000 >= 3600) && loginData != nil) {
+      let login = try JSONSerialization.jsonObject(with: loginData!) as! [String:String]
 
-    let constCourses = courses
-    Task {
-      var widgetData = constCourses
-      let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")!
+      let firstCourses = recordString == nil ? nil : try /{.*?}(?=,{\"(courses|date|gradeCategoryNames|gradeCategory)\":)/.firstMatch(in: recordString!)?.range
+      let oldRecord = firstCourses == nil ? nil : try JSONDecoder().decode(GradebookRecord.self, from: recordString![firstCourses!].data(using: .utf8)!)
 
-      let recordData = getItem("records")
-      let loginData = getItem("login")
+      let content = try fetchAllContent(login["host"]!, oldRecord?.courses.count, login["username"]!, login["password"]!)
 
-      var records = recordData == nil ? [] : try JSONDecoder().decode([GradebookRecord].self, from: recordData!)
+      let gradeCategory = content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1
 
-      if ((records.isEmpty || time-records[0].date/1000 >= 3600) && loginData != nil) {
-        let login = try JSONSerialization.jsonObject(with: loginData!) as! [String:String]
+      if (recordData == nil) {
+        recordData = "[]".data(using: .utf8)
+      } else {
+        recordData!.insert(contentsOf: ",".data(using: .utf8)!, at: 1)
 
-        do {
-          var content = try await fetchAllContent(login["host"]!, records.isEmpty ? nil : records[0].courses.count, login["username"]!, login["password"]!)
+      }
+      recordData!.insert(contentsOf: try JSONEncoder().encode(GradebookRecord(gradeCategoryNames: content.gradeCategoryNames, date: time*1000, courses: content.courses, gradeCategory: gradeCategory)), at: 1)
 
-          let gradeCategory = content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1
+      for i in courses.indices {
+        let data = courses[i]
 
-          records.insert(GradebookRecord(gradeCategoryNames: content.gradeCategoryNames, date: time*1000, courses: content.courses, gradeCategory: gradeCategory), at: 0)
+        for course in content.courses {
+          if (data.key == course.key) {
+            courses[i].grade = course.grades[gradeCategory]?.value ?? data.grade
+          }
+        }
+      }
 
-          for i in widgetData.indices {
-            let data = widgetData[i]
+      try widgetSuite.set(JSONEncoder().encode(courses), forKey: "courses")
 
-            for course in content.courses {
-              if (data.key == course.key) {
-                widgetData[i].grade = course.grades[gradeCategory]?.value ?? data.grade
+      try storeItem("records", recordData!)
+
+      if (oldRecord != nil) {
+        var changedCourses: [Course] = []
+
+        let courseSettingsData = getItem("courseSettings")
+        let courseSettings = courseSettingsData == nil ? [:] : try JSONDecoder().decode([String:CourseSettings].self, from: courseSettingsData!)
+
+        let assignmentHasGrade = {(a: Assignment?) in try a?.grade != nil && !a!.grade!.isEmpty && /[^a-z]/.firstMatch(in: a!.grade!.lowercased()) != nil};
+        let getCourseName = {(c: Course) in courseSettings[c.key]?.displayName ?? c.name}
+
+        var notifs = try JSONDecoder().decode([String:String].self, from: widgetSuite.data(forKey: "notifs")!)
+
+        courseLoop:
+        // TODO: filter by courses with notifs on
+        for course in content.courses {
+          if (courseSettings[course.key]?.hidden == true || notifs[course.key] == "OFF") {
+            continue;
+          }
+
+          let oldCourse = oldRecord!.courses.first(where: {c in c.key == course.key});
+          if (oldCourse == nil) {
+            continue;
+          }
+
+          let handleChanged = {() in
+            if (notifs[course.key] == "ON_ONCE") {
+              notifs[course.key] = "OFF"
+            }
+            changedCourses.append(course)
+          }
+
+          if (course.grades[gradeCategory]?.value != oldCourse!.grades[gradeCategory]?.value) {
+            handleChanged()
+            continue courseLoop
+          }
+
+          for category in course.gradeCategories! {
+            let oldCategory = oldCourse!.gradeCategories!.first(where: {c in c.name == category.name});
+
+            if (category.average != oldCategory?.average) {
+              handleChanged()
+              continue courseLoop
+            }
+
+            for assignment in category.assignments! {
+              if (assignment.name == nil || assignment.name!.isEmpty) {
+                continue;
+              }
+              let oldAssignment = oldCategory?.assignments?.first(where: {a in a.name == assignment.name});
+
+              if (try assignmentHasGrade(assignment)) {
+                if (!(try assignmentHasGrade(oldAssignment))) {
+                  handleChanged()
+                  continue courseLoop
+                }
               }
             }
           }
+        }
 
-          try widgetSuite.set(JSONEncoder().encode(widgetData), forKey: "courses")
+        widgetSuite.set(try JSONEncoder().encode(notifs), forKey: "notifs")
 
-          try storeItem("records", JSONEncoder().encode(records))
-          WidgetCenter.shared.reloadAllTimelines()
-        } catch (_) {}
+        let notif = UNMutableNotificationContent()
+        notif.sound = .default
+
+        if (changedCourses.count == 1) {
+          notif.title = getCourseName(changedCourses[0])
+          notif.body = "New grades are available. Tap to go to your Scorecard."
+          notif.userInfo = ["stored": true, "course": changedCourses[0]]
+        } else if (changedCourses.count > 1) {
+          notif.title = "New Grades"
+          notif.body = "\(changedCourses.count) courses have been updated. Tap to go to your Scorecard."
+        } else {
+          // TODO: debug, don't send notif if changedCourses is empty
+          notif.title = "Fetch Complete"
+          notif.body = "No new grades"
+        }
+
+        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
       }
     }
-  }
+  } catch (_) {}
 
   for i in 1...3 {
     if (i <= courses.count) {

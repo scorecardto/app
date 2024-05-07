@@ -24,6 +24,19 @@ public class ExpoWidgetsModule: Module {
             }
         }
 
+        Function("getEnabledNotifs") { (json: String) in
+            let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
+            if let data = widgetSuite?.data(forKey: "notifs") {
+                return String(decoding: data, as: UTF8.self)
+            }
+            return "{}"
+        }
+
+        Function("setEnabledNotifs") { (json: String) in
+            let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
+            widgetSuite?.set(json.data(using: .utf8)!, forKey: "notifs")
+        }
+
         Function("getItem") { (key: String) -> String? in
             let data = getItem(key)
             return data == nil ? nil : String(data: data!, encoding: .utf8)

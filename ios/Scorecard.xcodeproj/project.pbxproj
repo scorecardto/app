@@ -13,7 +13,6 @@
 		2D2D49C166CC5BB39E728993 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 057DC9EBBAC33BC965D8BB88 /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		54F8CA98D2104B579B6B8E09 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D35FBF5C3A84925B376C176 /* SwiftUI.framework */; };
-		5DB55DCF41EF433AB1D21BAE /* CourseData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA97188806040D89B526D46 /* CourseData.swift */; };
 		6226F0A5193E41FCA1730ECD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE2294A242004F81A364AD54 /* WidgetKit.framework */; };
 		6AC2583D2D7E23906E9834EA /* Pods_ScorecardWidgetExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1969959CE7408361F2ECEFEF /* Pods_ScorecardWidgetExtension.framework */; };
 		6B2997511A9C4DC7A6429D5A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F5851AFB7F4658ACDE1BA5 /* WidgetKit.framework */; };
@@ -122,7 +121,6 @@
 		DDA445572C80FDD322F4A600 /* Pods_Scorecard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Scorecard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7BD6F6A1E104E3FAB37263C /* Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		EEA97188806040D89B526D46 /* CourseData.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; path = CourseData.swift; sourceTree = "<group>"; };
 		F29B7174914241CB8E9CA7B7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "Scorecard/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Scorecard/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -280,7 +278,6 @@
 		EC88715D901C48D893171993 /* ScorecardWidgetExtension */ = {
 			isa = PBXGroup;
 			children = (
-				EEA97188806040D89B526D46 /* CourseData.swift */,
 				2FD7C738821740C680B1F619 /* CourseGradeWidget.swift */,
 				1889AA78D9BF43728F9A66FE /* ScorecardWidgetBundle.swift */,
 				78FB8126C2F3451287F71BE4 /* Assets.xcassets */,
@@ -616,7 +613,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DB55DCF41EF433AB1D21BAE /* CourseData.swift in Sources */,
 				D13FA5C0D29143F9B158D478 /* CourseGradeWidget.swift in Sources */,
 				8D78299C2BE1B44E00F5634F /* StringExtension.swift in Sources */,
 				A671EDAAEDEC4F09AD1FFA33 /* ScorecardWidgetBundle.swift in Sources */,
