@@ -17,7 +17,7 @@ export default function AlertFetcher(): undefined {
             if (!seen.includes(doc.id)) {
                 seen.push(doc.id)
                 sheets?.addSheet(p => <BottomSheetView><RenderHTML
-                    contentWidth={Dimensions.window().width}
+                    contentWidth={Dimensions.get("window").width}
                     source={{html: doc.get<string>("html")}}
                 /></BottomSheetView>)
             }
