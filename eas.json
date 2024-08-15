@@ -17,6 +17,7 @@
       "autoIncrement": true
     },
     "production": {
+      "config": "build.yml",
       "autoIncrement": true
     }
   }

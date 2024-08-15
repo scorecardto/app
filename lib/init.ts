@@ -1,5 +1,4 @@
 import { GradebookRecord } from "scorecard-types";
-import Storage from "expo-storage";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { AppDispatch } from "../components/core/state/store";
 import {
@@ -27,9 +26,9 @@ import {setGradeRecord, setPreviousGradeRecord} from "../components/core/state/g
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import { setNotification } from "../components/core/state/user/notificationSettingsSlice";
 import { isRegisteredForNotifs } from "./backgroundNotifications";
-import * as SecureStorage from "expo-secure-store";
 import {setCourseOrder} from "../components/core/state/grades/courseOrderSlice";
 import parseCourseKey from "./parseCourseKey";
+import ScorecardModule from "./expoModuleBridge";
 type NextScreen =
   | "start"
   | "scorecard"
@@ -38,34 +37,45 @@ type NextScreen =
   | "reAddPhoneNumber"
   | "addPhoneNumber"
   | "addName";
+
+import * as SecureStorage from "expo-secure-store";
+import Storage from "expo-storage";
 export default async function initialize(
   dispatch: AppDispatch,
   user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
-  const login = SecureStorage.getItem("login");
-  const name = await Storage.getItem({ key: "name" });
-  const records = await Storage.getItem({ key: "records" });
-  const oldCourseStates = await Storage.getItem({ key: "oldCourseStates" });
-  const courseSettings = await Storage.getItem({ key: "courseSettings" });
-  const appSettings = await Storage.getItem({ key: "appSettings" });
-  const courseOrder = await Storage.getItem({ key: "courseOrder" });
-  const openInviteSheetDate = await Storage.getItem({
-    key: "openInviteSheetDate",
-  });
+  // LEGACY SUPPORT
+  {
+    const legacyKeys = ["courseOrder", "invitedNumbers", "openInviteSheetDate", "courseSettings", "oldCourseStates", "oldGradebooks", "login", "vipProgramDate", "name", "deviceId", "records", "hasProcessedContacts"]
+    for (const key of legacyKeys) {
+      const value = await Storage.getItem({key});
 
-  const invitedNumbers = await Storage.getItem({
-    key: "invitedNumbers",
-  });
+      if (value) {
+        ScorecardModule.storeItem(key, value);
+        await Storage.removeItem({key});
+      }
+    }
+    const legacyLogin = SecureStorage.getItem("login")
+    if (legacyLogin) {
+      ScorecardModule.storeItem("login", legacyLogin);
+      await SecureStorage.deleteItemAsync("login");
+    }
+  }
 
-  const vipProgramDate = await Storage.getItem({
-    key: "vipProgramDate",
-  });
+  const login = ScorecardModule.getItem("login");
+  const name = ScorecardModule.getItem("name");
+  const records = ScorecardModule.getItem("records");
+  const oldCourseStates = ScorecardModule.getItem("oldCourseStates");
+  const courseSettings = ScorecardModule.getItem("courseSettings");
+  const appSettings = ScorecardModule.getItem("appSettings");
+  const courseOrder = ScorecardModule.getItem("courseOrder");
+  const openInviteSheetDate = ScorecardModule.getItem("openInviteSheetDate");
+  const invitedNumbers = ScorecardModule.getItem("invitedNumbers");
+  const vipProgramDate = ScorecardModule.getItem("vipProgramDate");
 
   Contacts.getPermissionsAsync().then(async (permissions) => {
     if (permissions.status === "granted") {
-      const hasProcessedContacts = await Storage.getItem({
-        key: "hasProcessedContacts",
-      });
+      const hasProcessedContacts = ScorecardModule.getItem("hasProcessedContacts");
 
       if (!hasProcessedContacts) {
         const { data } = await Contacts.getContactsAsync({
@@ -87,10 +97,7 @@ export default async function initialize(
         );
 
         if (result.data.success) {
-          Storage.setItem({
-            key: "hasProcessedContacts",
-            value: "true",
-          });
+          ScorecardModule.storeItem("hasProcessedContacts", "true");
         }
       }
     }
@@ -121,6 +128,16 @@ export default async function initialize(
     const data = recordData[0];
     isRegisteredForNotifs(data.courses.map((c) => c.key)).then((res) => {
       if (res?.data.success) {
+        const widgetNotifs = JSON.parse(ScorecardModule.getWidgetData())
+
+        for (let i = 0; i < res.data.result.length; i++) {
+          const result = res.data.result[i];
+          if (result.value == "ON_ONCE" && widgetNotifs[result.key] == "OFF") {
+            res.data.result[i].value = "OFF"
+          }
+        }
+
+        ScorecardModule.setEnabledNotifs(JSON.stringify(res.data.result.reduce((val: any, res: any) => val[res.key] = res.value, {})))
         for (const result of res.data.result) {
           dispatch(
             setNotification({

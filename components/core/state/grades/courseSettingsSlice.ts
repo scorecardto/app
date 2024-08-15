@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { CourseSettings } from "scorecard-types";
-import Storage from "expo-storage";
+import ScorecardModule from "../../../../lib/expoModuleBridge";
 
 interface AllCourseSettings {
   [key: string]: CourseSettings;
@@ -33,10 +33,7 @@ const courseSettingsSlice = createSlice({
       }
 
       if (action.payload.save !== "STATE") {
-        Storage.setItem({
-          key: "courseSettings",
-          value: JSON.stringify(state),
-        });
+        ScorecardModule.storeItem("courseSettings", JSON.stringify(state))
       }
     },
     setAllCourseSettings: (state, action: PayloadAction<AllCourseSettings>) => {

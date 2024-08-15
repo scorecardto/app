@@ -46,12 +46,6 @@ const loginSlice = createSlice({
     setPassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload;
     },
-    setReferer: (state, action: PayloadAction<string>) => {
-      state.referer = action.payload;
-    },
-    setSessionId: (state, action: PayloadAction<string>) => {
-      state.sessionId = action.payload;
-    },
     setDistrictName: (state, action: PayloadAction<string>) => {
       state.districtName = action.payload;
     },
@@ -75,8 +69,6 @@ export const {
   setDistrict,
   setUsername,
   setPassword,
-  setReferer,
-  setSessionId,
   setDistrictVipProgramDate,
   setDistrictName,
   setSchoolName,

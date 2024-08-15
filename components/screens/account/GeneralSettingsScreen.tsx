@@ -9,7 +9,6 @@ import { useTheme } from "@react-navigation/native";
 import DeleteInput from "../../input/DeleteInput";
 
 import { firebase, FirebaseAuthTypes } from "@react-native-firebase/auth";
-import Storage from "expo-storage";
 import { reloadApp } from "../../../lib/reloadApp";
 import * as nameSlice from "../../core/state/user/nameSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,8 +22,8 @@ import { resetName } from "../../core/state/user/nameSlice";
 import { resetSettings } from "../../core/state/user/settingsSlice";
 import { resetUserRank } from "../../core/state/user/userRank";
 import { resetCourseSettings } from "../../core/state/grades/courseSettingsSlice";
-import * as SecureStorage from "expo-secure-store";
 import {resetPinnedCourses} from "../../core/state/widget/widgetSlice";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -55,10 +54,7 @@ export default function GeneralSettingsScreen(props: {
     dispatch(nameSlice.setFirstName(firstName));
     dispatch(nameSlice.setLastName(lastName));
 
-    Storage.setItem({
-      key: "name",
-      value: JSON.stringify({ firstName, lastName }),
-    });
+    ScorecardModule.storeItem("name", JSON.stringify({ firstName, lastName }))
   }, [firstName, lastName]);
   return (
     <AccountSubpageScreen
@@ -133,23 +129,7 @@ export default function GeneralSettingsScreen(props: {
                 text: "Reset",
                 style: "destructive",
                 onPress: async () => {
-                  for (const key of [
-                    "name",
-                    "vipProgramDate",
-                    "enableGradebookNotifications",
-                    "gradebookCheckInterval",
-                    "notifs",
-                    "invitedNumbers",
-                    "openInviteSheetDate",
-                    "records",
-                    "courseSettings",
-                    "appSettings",
-                    "oldCourseStates",
-                    "oldGradebooks",
-                  ]) {
-                    await Storage.removeItem({ key });
-                  }
-                  SecureStorage.deleteItemAsync("login");
+                  ScorecardModule.clearStorage();
 
                   firebase.auth().signOut();
 

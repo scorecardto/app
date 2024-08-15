@@ -11,12 +11,13 @@ import LoadingIndicatorButton from "../../input/LoadingIndicatorButton";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import * as SecureStorage from "expo-secure-store";
 import {
   setDistrict,
   setPassword,
   setUsername,
 } from "../../core/state/user/loginSlice";
+import ScorecardModule from "../../../lib/expoModuleBridge";
+
 const icon = require("../../../assets/icon.svg");
 export default function FinalWelcomeScreen(props: { close: () => void }) {
   const colors = useColors();
@@ -147,14 +148,15 @@ export default function FinalWelcomeScreen(props: { close: () => void }) {
             {doneFetchingGrades ? (
               <Button
                 onPress={() => {
-                  SecureStorage.getItemAsync("login").then((result) => {
-                    if (result === null) return;
+                  const login = ScorecardModule.getItem("login");
 
-                    const { username, host, password } = JSON.parse(result);
-                    dispatch(setUsername(username));
-                    dispatch(setDistrict(host));
-                    dispatch(setPassword(password));
-                  });
+                  if (login) {
+                      const { username, host, password } = JSON.parse(login);
+                      dispatch(setUsername(username));
+                      dispatch(setDistrict(host));
+                      dispatch(setPassword(password));
+                  }
+
                   close();
                   getAnalytics().logTutorialComplete();
                 }}

@@ -2,27 +2,148 @@ import WidgetKit
 import SwiftUI
 
 func getEntry() -> CourseGradeEntry {
-    let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
+  let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")!
 
-    var courses: [CourseData] = []
-    if let data = widgetSuite?.data(forKey: "courses") {
-        let decoder = JSONDecoder()
-      do {
-        courses = try decoder.decode([CourseData].self, from: data)
-        for i in 1...3 {
-          if (i <= courses.count) {
-            continue
+  var courses: [CourseData] = []
+  if let data = widgetSuite.data(forKey: "courses") {
+    do {
+      courses = try JSONDecoder().decode([CourseData].self, from: data)
+    } catch (_) {}
+  }
+
+  let time = Double(Date().timeIntervalSince1970); // in seconds
+  do {
+    var recordData =  getItem("records")
+    let loginData = getItem("login")
+
+    let recordString = recordData == nil ? nil : String(data: recordData!, encoding: .utf8)!
+    let lastFetch = recordString == nil ? nil : Double((recordString as? NSString)!.substring(with: try NSRegularExpression(pattern: "\"date\": ?([0-9]*)").firstMatch(in: recordString!, range: NSMakeRange(0, recordString!.count))!.range(at: 1)))
+    if ((lastFetch == nil || time-lastFetch!/1000 >= 3600) && loginData != nil) {
+      let login = try JSONSerialization.jsonObject(with: loginData!) as! [String:String]
+
+      let firstCourses = recordString == nil ? nil : try /{.*?}(?=,{\"(courses|date|gradeCategoryNames|gradeCategory)\":)/.firstMatch(in: recordString!)?.range
+      let oldRecord = firstCourses == nil ? nil : try JSONDecoder().decode(GradebookRecord.self, from: recordString![firstCourses!].data(using: .utf8)!)
+
+      let content = try fetchAllContent(login["host"]!, oldRecord?.courses.count, login["username"]!, login["password"]!)
+
+      let gradeCategory = content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1
+
+      if (recordData == nil) {
+        recordData = "[]".data(using: .utf8)
+      } else {
+        recordData!.insert(contentsOf: ",".data(using: .utf8)!, at: 1)
+
+      }
+      recordData!.insert(contentsOf: try JSONEncoder().encode(GradebookRecord(gradeCategoryNames: content.gradeCategoryNames, date: time*1000, courses: content.courses, gradeCategory: gradeCategory)), at: 1)
+
+      for i in courses.indices {
+        let data = courses[i]
+
+        for course in content.courses {
+          if (data.key == course.key) {
+            courses[i].grade = course.grades[gradeCategory]?.value ?? data.grade
+          }
+        }
+      }
+
+      try widgetSuite.set(JSONEncoder().encode(courses), forKey: "courses")
+
+      try storeItem("records", recordData!)
+
+      if (oldRecord != nil) {
+        var changedCourses: [Course] = []
+
+        let courseSettingsData = getItem("courseSettings")
+        let courseSettings = courseSettingsData == nil ? [:] : try JSONDecoder().decode([String:CourseSettings].self, from: courseSettingsData!)
+
+        let assignmentHasGrade = {(a: Assignment?) in try a?.grade != nil && !a!.grade!.isEmpty && /[^a-z]/.firstMatch(in: a!.grade!.lowercased()) != nil};
+        let getCourseName = {(c: Course) in courseSettings[c.key]?.displayName ?? c.name}
+
+        var notifs = try JSONDecoder().decode([String:String].self, from: widgetSuite.data(forKey: "notifs")!)
+
+        courseLoop:
+        // TODO: filter by courses with notifs on
+        for course in content.courses {
+          if (courseSettings[course.key]?.hidden == true || notifs[course.key] == "OFF") {
+            continue;
           }
 
-          courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
+          let oldCourse = oldRecord!.courses.first(where: {c in c.key == course.key});
+          if (oldCourse == nil) {
+            continue;
+          }
+
+          let handleChanged = {() in
+            if (notifs[course.key] == "ON_ONCE") {
+              notifs[course.key] = "OFF"
+            }
+            changedCourses.append(course)
+          }
+
+          if (course.grades[gradeCategory]?.value != oldCourse!.grades[gradeCategory]?.value) {
+            handleChanged()
+            continue courseLoop
+          }
+
+          for category in course.gradeCategories! {
+            let oldCategory = oldCourse!.gradeCategories!.first(where: {c in c.name == category.name});
+
+            if (category.average != oldCategory?.average) {
+              handleChanged()
+              continue courseLoop
+            }
+
+            for assignment in category.assignments! {
+              if (assignment.name == nil || assignment.name!.isEmpty) {
+                continue;
+              }
+              let oldAssignment = oldCategory?.assignments?.first(where: {a in a.name == assignment.name});
+
+              if (try assignmentHasGrade(assignment)) {
+                if (!(try assignmentHasGrade(oldAssignment))) {
+                  handleChanged()
+                  continue courseLoop
+                }
+              }
+            }
+          }
         }
-      } catch (_) {}
+
+        widgetSuite.set(try JSONEncoder().encode(notifs), forKey: "notifs")
+
+        let notif = UNMutableNotificationContent()
+        notif.sound = .default
+
+        if (changedCourses.count == 1) {
+          notif.title = getCourseName(changedCourses[0])
+          notif.body = "New grades are available. Tap to go to your Scorecard."
+          notif.userInfo = ["stored": true, "course": changedCourses[0]]
+        } else if (changedCourses.count > 1) {
+          notif.title = "New Grades"
+          notif.body = "\(changedCourses.count) courses have been updated. Tap to go to your Scorecard."
+        } else {
+          // TODO: debug, don't send notif if changedCourses is empty
+          notif.title = "Fetch Complete"
+          notif.body = "No new grades"
+        }
+
+        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+      }
+    }
+  } catch (_) {}
+
+  for i in 1...3 {
+    if (i <= courses.count) {
+      continue
     }
 
-    return CourseGradeEntry(
-      date: Date(),
-      courses: courses
-    )
+    courses.append(CourseData(key: "\(i)", title: "Course slot \(i)", grade: "", color: ""))
+  }
+
+  return CourseGradeEntry(
+    date: .now,
+    courses: courses
+  )
 }
 
 func getColor(_ hex: Int) -> Color {
@@ -35,7 +156,7 @@ func getColor(_ hex: String) -> Color {
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> CourseGradeEntry {
-        getEntry()
+      getEntry()
     }
 
     func getSnapshot(in context: Context, completion: @escaping (CourseGradeEntry) -> ()) {
@@ -46,7 +167,7 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let date = Date()
         let entry = getEntry()
-        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 15, to: date)!
+        let nextUpdateDate = Calendar.current.date(byAdding: .minute, value: 60, to: date)!
         let timeline = Timeline(
             entries: [ entry ],
             policy: .after(nextUpdateDate)
@@ -64,19 +185,6 @@ struct CourseGradeEntryView : View {
   var entry: Provider.Entry
 
   var body: some View {
-//      let stack = VStack(alignment: .leading) {
-//        ForEach(entry.courses, id: \.key) { course in
-//          HStack {
-//            Text(course.title)
-//            Text("\(course.grade)")
-//          }
-//        }
-//        if (entry.courses.count == 0) {
-//          Text("Pin up to 3 courses in Scorecard!")
-//        }
-//      }
-//    let gradeWidth = ;
-
     let view = GeometryReader { metrics in
       VStack {
         HStack {
@@ -157,13 +265,13 @@ struct CourseGradeWidget: Widget {
 #Preview(as: .systemSmall) {
   CourseGradeWidget()
 } timeline: {
-  CourseGradeEntry(date: .now, courses: [])
+  getEntry()
 }
 
 struct MyWidget_Previews: PreviewProvider {
     static var previews: some View {
 
-      CourseGradeEntryView(entry: CourseGradeEntry(date: .now, courses: []))
+      CourseGradeEntryView(entry: getEntry())
             .previewContext(WidgetPreviewContext(family: .systemSmall))
     }
 }

@@ -1,13 +1,13 @@
-import Storage from "expo-storage";
 import * as Crypto from "expo-crypto";
 import * as Device from "expo-device";
+import ScorecardModule from "./expoModuleBridge";
 
 export async function getDeviceId() {
-    const deviceId = await Storage.getItem({ key: "deviceId" });
+    const deviceId = ScorecardModule.getItem("deviceId");
 
     if (!deviceId) {
         const id = Crypto.randomUUID();
-        await Storage.setItem({ key: "deviceId", value: id });
+        ScorecardModule.storeItem("deviceId", id);
 
         return id;
     }
