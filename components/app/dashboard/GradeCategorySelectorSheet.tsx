@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import { Ref, forwardRef } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
@@ -10,11 +10,17 @@ import { AppDispatch, RootState } from "../../core/state/store";
 import { setGradeCategory } from "../../core/state/grades/gradeCategorySlice";
 import useColors from "../../core/theme/useColors";
 import { getAnalytics } from "@react-native-firebase/analytics";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MediumText from "../../text/MediumText";
 const starred = require("../../../assets/starred.svg");
 
 const GradeCategorySelectorSheet = forwardRef(
-  (props: {}, ref: Ref<ActionSheetRef>) => {
+  (
+    props: {
+      onSelect(): void;
+    },
+    ref: Ref<ActionSheetRef>
+  ) => {
     const gradeCategoryNames = useSelector(
       (s: RootState) => s.gradeData.record?.gradeCategoryNames
     );
@@ -42,6 +48,7 @@ const GradeCategorySelectorSheet = forwardRef(
         }}
       >
         <BottomSheetHeader>Grading Period</BottomSheetHeader>
+
         {gradeCategoryNames?.map((category, idx) => {
           const selected = idx === currentGradeCategory;
 
@@ -61,6 +68,7 @@ const GradeCategorySelectorSheet = forwardRef(
                     from: recordGradeCategory,
                     to: idx,
                   });
+                  props.onSelect();
                 }}
               >
                 <View

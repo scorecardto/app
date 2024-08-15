@@ -9,6 +9,7 @@ import CourseCard from "../app/dashboard/CourseCard";
 import { Course } from "scorecard-types";
 import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
+import DashboardToolbar from "../app/dashboard/DashboardToolbar";
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
 }) {
@@ -41,6 +42,7 @@ export default function CurrentGradesScreen(props: {
             height: "100%",
           }}
         >
+          <DashboardToolbar />
           {courses && (
             <FlatList
               scrollEnabled={false}
