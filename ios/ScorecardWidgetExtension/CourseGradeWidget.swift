@@ -24,9 +24,10 @@ func getEntry() -> CourseGradeEntry {
       let firstCourses = recordString == nil ? nil : try /{.*?}(?=,{\"(courses|date|gradeCategoryNames|gradeCategory)\":)/.firstMatch(in: recordString!)?.range
       let oldRecord = firstCourses == nil ? nil : try JSONDecoder().decode(GradebookRecord.self, from: recordString![firstCourses!].data(using: .utf8)!)
       
-      let content = try fetchAllContent(login["host"]!, oldRecord?.courses.count, login["username"]!, login["password"]!)
+      /*let*/var content = try fetchAllContent(login["host"]!, oldRecord?.courses.count, login["username"]!, login["password"]!)
       
       let gradeCategory = content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1
+      content.courses[0].grades[gradeCategory]!.value = "0"
       
       if (recordData == nil) {
         recordData = "[]".data(using: .utf8)

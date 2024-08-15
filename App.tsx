@@ -50,6 +50,7 @@ import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 import * as Notifications from "expo-notifications";
 import Button from "./components/input/Button";
 import AppStateListener from "./components/util/AppStateListener";
+import AlertFetcher from "./components/core/AlertFetcher";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -289,6 +290,7 @@ export default function App(props: { resetKey: string }) {
                     />
                   </Stack.Navigator>
                   <ToastConfig />
+                  <AlertFetcher />
                 </NavigationContainer>
               </BottomSheetProvider>
             </GestureHandlerRootView>
