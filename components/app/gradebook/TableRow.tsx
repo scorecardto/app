@@ -50,7 +50,7 @@ export default function TableRow(props: {
       color: props.red?.grade ? "red" : colors.primary,
     },
     worth: {
-      fontSize: 14,
+      fontSize: 12,
       color: props.red?.worth ? "red" : colors.text,
     },
   });

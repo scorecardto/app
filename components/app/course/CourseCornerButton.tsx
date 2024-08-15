@@ -7,6 +7,7 @@ export default function CourseCornerButton(props: {
   icon: string;
   iconSize?: number;
   iconPadding?: number;
+  iconColor?: string;
   onPress: () => void;
 }) {
   const colors = useColors();
@@ -16,18 +17,18 @@ export default function CourseCornerButton(props: {
         <View
           style={[
             {
-              paddingVertical: 16,
+              paddingVertical: props.iconPadding,
             },
             props.side === "left"
               ? {
                   paddingRight: 16,
-                  paddingLeft: props.iconPadding || 8,
+                  paddingLeft: props.iconPadding ?? 8,
                   borderTopRightRadius: 32,
                   borderBottomRightRadius: 32,
                 }
               : {
-                  paddingLeft: 16,
-                  paddingRight: props.iconPadding || 8,
+                  paddingLeft: props.iconPadding ?? 8,
+                  paddingRight: props.iconPadding ?? 8,
                   borderTopLeftRadius: 32,
                   borderBottomLeftRadius: 32,
                 },
@@ -37,7 +38,7 @@ export default function CourseCornerButton(props: {
             // @ts-ignore
             name={props.icon}
             size={props.iconSize || 36}
-            color={colors.text}
+            color={props.iconColor || colors.text}
           />
         </View>
       </View>

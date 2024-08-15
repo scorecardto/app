@@ -30,16 +30,20 @@ export default function GradebookCard(props: {
     wrapper: {
       backgroundColor: colors.card,
       borderRadius: 12,
+      flexDirection: "column",
+      maxHeight: "100%",
     },
     header: {
-      paddingVertical: 24,
+      paddingTop: 20,
+      paddingBottom: 16,
       paddingHorizontal: 24,
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
+      flexShrink: 0,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: 18,
       color: colors.primary,
       flex: 1,
     },
@@ -49,11 +53,16 @@ export default function GradebookCard(props: {
       marginLeft: 6,
     },
     footer: {
+      flexShrink: 0,
       marginTop: 12,
       flexDirection: "row",
       justifyContent: "space-between",
       paddingBottom: 16,
       paddingHorizontal: 24,
+    },
+    inner: {
+      flexShrink: 1,
+      overflow: "hidden",
     },
     footerLeft: {
       flexDirection: "column",
@@ -82,7 +91,7 @@ export default function GradebookCard(props: {
             </MediumText>
           )}
         </View>
-        {props.children}
+        <View style={styles.inner}>{props.children}</View>
         <View style={styles.footer}>
           <View style={styles.footerLeft}>
             {Object.keys(props.bottom).map((key, idx) => {

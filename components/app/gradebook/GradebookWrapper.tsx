@@ -1,4 +1,4 @@
-import { View, Text, Animated } from "react-native";
+import { View, Text, Animated, ActivityIndicator } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { Course } from "scorecard-types";
 import Gradebook from "./Gradebook";
@@ -18,7 +18,7 @@ export default function GradebookWrapper(props: {
     setTimeout(() => {
       Animated.timing(opacityAnimation, {
         toValue: 1,
-        duration: 300,
+        duration: 150,
         useNativeDriver: true,
       }).start();
       setShow(true);
@@ -26,21 +26,23 @@ export default function GradebookWrapper(props: {
   }, []);
 
   return (
-    <Animated.View
-      style={{
-        opacity: opacityAnimation,
-      }}
-    >
-      {show && (
-        <Gradebook
-          course={props.course}
-          resetKey={props.resetKey}
-          key={props.resetKey}
-          setModifiedGrade={props.setModifiedGrade}
-          oldGradingPeriodLastUpdated={props.oldGradingPeriodLastUpdated}
-          refreshOldGradingPeriod={props.refreshOldGradingPeriod}
-        />
-      )}
-    </Animated.View>
+    <>
+      <Animated.View
+        style={{
+          opacity: opacityAnimation,
+        }}
+      >
+        {show && (
+          <Gradebook
+            course={props.course}
+            resetKey={props.resetKey}
+            key={props.resetKey}
+            setModifiedGrade={props.setModifiedGrade}
+            oldGradingPeriodLastUpdated={props.oldGradingPeriodLastUpdated}
+            refreshOldGradingPeriod={props.refreshOldGradingPeriod}
+          />
+        )}
+      </Animated.View>
+    </>
   );
 }

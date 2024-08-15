@@ -49,6 +49,7 @@ import NotificationsScreen from "./components/screens/welcome/NotificationsScree
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 import * as Notifications from "expo-notifications";
 import Button from "./components/input/Button";
+import CourseEditScreen from "./components/screens/CourseEditScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -152,7 +153,13 @@ export default function App(props: { resetKey: string }) {
                   <RefreshIndicator />
                   <BottomSheetDisplay />
 
-                  <Stack.Navigator initialRouteName={nextScreen}>
+                  <Stack.Navigator
+                    initialRouteName={nextScreen}
+                    screenOptions={{
+                      animation: "simple_push",
+                      animationDuration: 250,
+                    }}
+                  >
                     <Stack.Screen
                       name="start"
                       component={StartScreen}
@@ -258,6 +265,13 @@ export default function App(props: { resetKey: string }) {
                     <Stack.Screen
                       name="course"
                       component={CourseScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="editCourse"
+                      component={CourseEditScreen}
                       options={{
                         headerShown: false,
                       }}

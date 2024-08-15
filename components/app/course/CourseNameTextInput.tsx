@@ -1,6 +1,5 @@
-import { TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import SmallText from "../../text/SmallText";
 import useColors from "../../core/theme/useColors";
 import StatusText from "../../text/StatusText";
@@ -33,6 +32,8 @@ export default function CourseNameTextInput(props: {
       <View
         style={{
           backgroundColor: colors.backgroundNeutral,
+          borderColor: "rgba(0,0,0,0.1)",
+          borderWidth: 1,
           paddingHorizontal: 20,
           alignSelf: "flex-start",
           borderRadius: 8,
@@ -40,7 +41,7 @@ export default function CourseNameTextInput(props: {
           position: "relative",
         }}
       >
-        <BottomSheetTextInput
+        <TextInput
           ref={ref}
           defaultValue={props.value}
           onFocus={() => {
@@ -48,7 +49,7 @@ export default function CourseNameTextInput(props: {
             ref.current?.setNativeProps({
               selection: {
                 start: 0,
-                end: props.value.length,
+                end: props?.value?.length,
               },
             });
           }}

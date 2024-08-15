@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Dimensions, View } from "react-native";
+import { Dimensions, Text, View } from "react-native";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import GradebookCard from "./GradebookCard";
 import CategoryTable from "./CategoryTable";
-// import Carousel, { Pagination } from "react-native-snap-carousel";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import SummaryTable from "./SummaryTable";
 // import { set } from "react-native-reanimated";
 import {
   averageAssignments,
   averageGradeCategories,
 } from "../../../lib/gradeTesting";
-import Carousel, { Pagination } from "react-native-snap-carousel";
 import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AddCategorySheet from "./sheets/AddCategorySheet";
 import useAccents from "../../core/theme/useAccents";
 import GradebookInfoCard from "./GradebookInfoCard";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import useColors from "../../core/theme/useColors";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -29,7 +30,7 @@ function Gradebook(props: {
 }) {
   const sheets = useContext(BottomSheetContext);
 
-  const accents = useAccents();
+  const colors = useColors();
   const ref = useRef<Carousel<GradeCategory | null>>(null);
 
   //   const cardAnimation = useDynamicAnimation(() => ({
@@ -159,277 +160,329 @@ function Gradebook(props: {
     }
   }, [props.oldGradingPeriodLastUpdated]);
 
-  const carouselChangeHandlers = useRef([setCurrentCard as (idx: number)=>void]);
+  const carouselChangeHandlers = useRef([
+    setCurrentCard as (idx: number) => void,
+  ]);
 
   return (
     <View
       style={{
+        height: "100%",
         flexDirection: "column",
         alignItems: "center",
       }}
     >
-      <Pagination
-        dotsLength={(categories.length ?? 0) + 1}
-        activeDotIndex={currentCard}
-        containerStyle={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          paddingVertical: 0,
-          paddingHorizontal: 0,
-          marginBottom: 16,
+      <View
+        style={{
+          flexShrink: 0,
         }}
-        dotStyle={{
-          width: 6,
-          height: 6,
-          borderRadius: 3,
-          backgroundColor: accents.primary,
-        }}
-        inactiveDotOpacity={0.3}
-        inactiveDotScale={1}
-      />
+      >
+        <Pagination
+          dotsLength={(categories.length ?? 0) + 1}
+          activeDotIndex={currentCard}
+          containerStyle={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            paddingVertical: 0,
+            paddingHorizontal: 0,
+            marginBottom: 16,
+            marginVertical: 0,
+            marginTop: 0,
+          }}
+          dotStyle={{
+            width: 6,
+            height: 6,
+            borderRadius: 3,
+            backgroundColor: colors.text,
+          }}
+          dotContainerStyle={{
+            marginHorizontal: 8,
+            marginVertical: 0,
+          }}
+          inactiveDotOpacity={0.3}
+          inactiveDotScale={1}
+        />
+      </View>
 
-      <Carousel
-        ref={ref}
-        data={[null, ...categories]}
-        renderItem={({ item, index }) => {
-          if (!item) {
+      <View
+        style={{
+          flexShrink: 1,
+          flex: 1,
+          height: "100%",
+        }}
+      >
+        <Carousel
+          ref={ref}
+          data={[null, ...categories]}
+          renderItem={({ item, index }) => {
             return (
-              <View>
-                {lastUpdatedText && (
-                  <GradebookInfoCard
-                    header="Old Grading Period"
-                    text={lastUpdatedText}
-                    buttonText="Refresh"
-                    onPress={props.refreshOldGradingPeriod || (() => {})}
-                  />
-                )}
+              <View
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  flex: 1,
+                }}
+              >
+                {(() => {
+                  if (!item) {
+                    return (
+                      <View>
+                        {lastUpdatedText && (
+                          <GradebookInfoCard
+                            header="Old Grading Period"
+                            text={lastUpdatedText}
+                            buttonText="Refresh"
+                            onPress={
+                              props.refreshOldGradingPeriod || (() => {})
+                            }
+                          />
+                        )}
 
-                <GradebookCard
-                  key={index}
-                  title="Summary"
-                  bottom={{
-                    Weight: { text: "100%", red: false },
-                    "Exact Average": {
-                      text: `${exactAverage.toFixed(2)}`,
-                      red: isGradeModified,
-                    },
-                  }}
-                  removable={false}
-                  remove={() => {}}
-                  buttonAction={() => {
-                    getAnalytics().logEvent("use_grade_testing", {
-                      type: "testCategory",
-                    });
-                    const existingWeight =
-                      categories.reduce((sum, category) => {
-                        return sum + (category.weight ?? 0);
-                      }, 0);
+                        <GradebookCard
+                          key={index}
+                          title="Summary"
+                          bottom={{
+                            Weight: { text: "100%", red: false },
+                            "Exact Average": {
+                              text: `${exactAverage.toFixed(2)}`,
+                              red: isGradeModified,
+                            },
+                          }}
+                          removable={false}
+                          remove={() => {}}
+                          buttonAction={() => {
+                            getAnalytics().logEvent("use_grade_testing", {
+                              type: "testCategory",
+                            });
+                            const existingWeight = categories.reduce(
+                              (sum, category) => {
+                                return sum + (category.weight ?? 0);
+                              },
+                              0
+                            );
 
-                    sheets?.addSheet(({ close }) => (
-                      <>
-                        <AddCategorySheet
-                          close={close}
-                          suggestWeight={
-                            existingWeight < 100 ? 100 - existingWeight : 100
-                          }
-                          add={(weight, newAverage) => {
-                            setCategories((oldCategories) => {
-                              const newCategories = [...oldCategories];
-                              newCategories.push({
-                                name: "Test Category " + numTestCats,
-                                id: "",
-                                weight: weight,
-                                average: `${newAverage}`,
-                                error: false,
+                            sheets?.addSheet(({ close }) => (
+                              <>
+                                <AddCategorySheet
+                                  close={close}
+                                  suggestWeight={
+                                    existingWeight < 100
+                                      ? 100 - existingWeight
+                                      : 100
+                                  }
+                                  add={(weight, newAverage) => {
+                                    setCategories((oldCategories) => {
+                                      const newCategories = [...oldCategories];
+                                      newCategories.push({
+                                        name: "Test Category " + numTestCats,
+                                        id: "",
+                                        weight: weight,
+                                        average: `${newAverage}`,
+                                        error: false,
 
-                                assignments: [
-                                  {
-                                    name: "Starting Average",
-                                    points: newAverage,
-                                    grade: `${newAverage}%`,
-                                    dropped: false,
-                                    scale: 100,
-                                    max: 100,
-                                    count: 1,
-                                    error: false,
-                                  },
-                                ],
-                              });
-                              setNumTestCats(numTestCats + 1);
+                                        assignments: [
+                                          {
+                                            name: "Starting Average",
+                                            points: newAverage,
+                                            grade: `${newAverage}%`,
+                                            dropped: false,
+                                            scale: 100,
+                                            max: 100,
+                                            count: 1,
+                                            error: false,
+                                          },
+                                        ],
+                                      });
+                                      setNumTestCats(numTestCats + 1);
 
+                                      setTimeout(() => {
+                                        ref.current?.snapToItem(
+                                          categories.length + 1
+                                        );
+                                      }, 100);
+                                      return newCategories;
+                                    });
+                                    setExactAverages((averages) => {
+                                      const newAverages = [...averages];
+                                      newAverages.push(newAverage.toFixed(2));
+                                      return newAverages;
+                                    });
+                                    setModifiedCategories((oldCategories) => {
+                                      const newCategories = [...oldCategories];
+                                      newCategories.push({
+                                        assignments: null,
+                                        average: null,
+                                        exactAverage: null,
+                                      });
+                                      return newCategories;
+                                    });
+                                  }}
+                                />
+                              </>
+                            ));
+                          }}
+                        >
+                          <SummaryTable
+                            course={props.course}
+                            carouselChangeHandlers={carouselChangeHandlers}
+                            categories={categories}
+                            modified={modifiedCategories}
+                            changeGradeCategory={(c) => {
+                              ref.current?.snapToItem(c + 1);
+                              setAnimatedIndex(c + 1);
+                              setAnimatingCard(c);
                               setTimeout(() => {
-                                ref.current?.snapToItem(categories.length + 1);
-                              }, 100);
+                                setAnimatingCard(-1);
+                              }, 300);
+                            }}
+                          />
+                        </GradebookCard>
+                      </View>
+                    );
+                  }
+                  const gradeText =
+                    "" +
+                    (modifiedCategories[index - 1].average ?? item.average);
+                  const testing = index > props.course.gradeCategories!.length;
+                  return (
+                    <View
+                      style={{
+                        height: "100%",
+                      }}
+                      // animate={{
+                      //   opacity:
+                      //     index - 1 === animatingCard || animatingCard === -1 ? 1 : 0.2,
+                      // }}
+                      // transition={{
+                      //   type: "timing",
+                      //   duration: 0,
+                      // }}
+                    >
+                      <GradebookCard
+                        key={index}
+                        title={item.name}
+                        grade={{
+                          text: gradeText ? gradeText : "NG",
+                          red:
+                            testing ||
+                            modifiedCategories[index - 1].average !== null,
+                        }}
+                        bottom={{
+                          Weight: { text: `${item.weight}%`, red: testing },
+                          "Exact Average": {
+                            text: `${
+                              modifiedCategories[index - 1].exactAverage ??
+                              exactAverages[index - 1]
+                            }`,
+                            red:
+                              testing ||
+                              modifiedCategories[index - 1].average !== null,
+                          },
+                        }}
+                        removable={testing}
+                        remove={() => {
+                          setCategories((oldCategories) => {
+                            oldCategories.splice(index - 1, 1);
+                            return [...oldCategories];
+                          });
+                          setModifiedCategories((oldCategories) => {
+                            oldCategories.splice(index - 1, 1);
+                            return [...oldCategories];
+                          });
+                          setExactAverages((oldAverages) => {
+                            oldAverages.splice(index - 1, 1);
+                            return [...oldAverages];
+                          });
+                          ref.current?.snapToItem(0);
+                        }}
+                        buttonAction={() => {
+                          getAnalytics().logEvent("use_grade_testing", {
+                            type: "testAssignment",
+                          });
+                          setModifiedCategories((categories) => {
+                            const catIdx = index - 1;
+                            const newCategories = [...categories];
+                            if (newCategories[catIdx].assignments === null) {
+                              newCategories[catIdx].assignments = new Array(
+                                item?.assignments?.length
+                              ).fill(null);
+                            }
+                            newCategories[catIdx].assignments!.push({
+                              name: "Test Assignment " + numTestAssignments,
+                              points: 100,
+                              grade: "100%",
+                              dropped: false,
+                              scale: 100,
+                              count: 1,
+                              error: false,
+                            });
+                            setNumTestAssignments(numTestAssignments + 1);
+                            updateAverage(newCategories, catIdx);
+                            return newCategories;
+                          });
+                        }}
+                      >
+                        <CategoryTable
+                          category={item}
+                          modifiedAssignments={
+                            modifiedCategories[index - 1].assignments
+                          }
+                          testing={testing}
+                          index={index}
+                          carouselChangeHandlers={carouselChangeHandlers}
+                          removeAssignment={(idx: number) => {
+                            setModifiedCategories((categories) => {
+                              const catIdx = index - 1;
+                              const newCategories = [...categories];
+                              if (newCategories[catIdx].assignments !== null) {
+                                newCategories[catIdx].assignments!.splice(
+                                  idx,
+                                  1
+                                );
+                              }
+                              updateAverage(newCategories, catIdx);
                               return newCategories;
                             });
-                            setExactAverages((averages) => {
-                              const newAverages = [...averages];
-                              newAverages.push(newAverage.toFixed(2));
-                              return newAverages;
-                            });
+                          }}
+                          modifyAssignment={(a: Assignment, idx: number) => {
                             setModifiedCategories((oldCategories) => {
+                              const catIdx = index - 1;
                               const newCategories = [...oldCategories];
-                              newCategories.push({
-                                assignments: null,
-                                average: null,
-                                exactAverage: null,
-                              });
+                              if (newCategories[catIdx].assignments === null) {
+                                if (a === null) {
+                                  return oldCategories;
+                                }
+                                newCategories[catIdx].assignments = new Array(
+                                  item?.assignments?.length
+                                ).fill(null);
+                              }
+                              newCategories[catIdx].assignments![idx] = a;
+                              updateAverage(newCategories, catIdx);
                               return newCategories;
                             });
                           }}
                         />
-                      </>
-                    ));
-                  }}
-                >
-                  <SummaryTable
-                    course={props.course}
-                    carouselChangeHandlers={carouselChangeHandlers}
-                    categories={categories}
-                    modified={modifiedCategories}
-                    changeGradeCategory={(c) => {
-                      ref.current?.snapToItem(c + 1);
-                      setAnimatedIndex(c + 1);
-                      setAnimatingCard(c);
-                      setTimeout(() => {
-                        setAnimatingCard(-1);
-                      }, 300);
-                    }}
-                  />
-                </GradebookCard>
+                      </GradebookCard>
+                    </View>
+                  );
+                })()}
               </View>
             );
-          }
-          const gradeText =
-            "" + (modifiedCategories[index - 1].average ?? item.average);
-          const testing = index > props.course.gradeCategories!.length;
-          return (
-            <View
-            // animate={{
-            //   opacity:
-            //     index - 1 === animatingCard || animatingCard === -1 ? 1 : 0.2,
-            // }}
-            // transition={{
-            //   type: "timing",
-            //   duration: 0,
-            // }}
-            >
-              <GradebookCard
-                key={index}
-                title={item.name}
-                grade={{
-                  text: gradeText ? gradeText : "NG",
-                  red:
-                    testing || modifiedCategories[index - 1].average !== null,
-                }}
-                bottom={{
-                  Weight: { text: `${item.weight}%`, red: testing },
-                  "Exact Average": {
-                    text: `${
-                      modifiedCategories[index - 1].exactAverage ??
-                      exactAverages[index - 1]
-                    }`,
-                    red:
-                      testing || modifiedCategories[index - 1].average !== null,
-                  },
-                }}
-                removable={testing}
-                remove={() => {
-                  setCategories((oldCategories) => {
-                    oldCategories.splice(index - 1, 1);
-                    return [...oldCategories];
-                  });
-                  setModifiedCategories((oldCategories) => {
-                    oldCategories.splice(index - 1, 1);
-                    return [...oldCategories];
-                  });
-                  setExactAverages((oldAverages) => {
-                    oldAverages.splice(index - 1, 1);
-                    return [...oldAverages];
-                  });
-                  ref.current?.snapToItem(0);
-                }}
-                buttonAction={() => {
-                  getAnalytics().logEvent("use_grade_testing", {
-                    type: "testAssignment",
-                  });
-                  setModifiedCategories((categories) => {
-                    const catIdx = index - 1;
-                    const newCategories = [...categories];
-                    if (newCategories[catIdx].assignments === null) {
-                      newCategories[catIdx].assignments = new Array(
-                        item?.assignments?.length
-                      ).fill(null);
-                    }
-                    newCategories[catIdx].assignments!.push({
-                      name: "Test Assignment " + numTestAssignments,
-                      points: 100,
-                      grade: "100%",
-                      dropped: false,
-                      scale: 100,
-                      count: 1,
-                      error: false,
-                    });
-                    setNumTestAssignments(numTestAssignments + 1);
-                    updateAverage(newCategories, catIdx);
-                    return newCategories;
-                  });
-                }}
-              >
-                <CategoryTable
-                  category={item}
-                  modifiedAssignments={
-                    modifiedCategories[index - 1].assignments
-                  }
-                  testing={testing}
-                  index={index}
-                  carouselChangeHandlers={carouselChangeHandlers}
-                  removeAssignment={(idx: number) => {
-                    setModifiedCategories((categories) => {
-                      const catIdx = index - 1;
-                      const newCategories = [...categories];
-                      if (newCategories[catIdx].assignments !== null) {
-                        newCategories[catIdx].assignments!.splice(idx, 1);
-                      }
-                      updateAverage(newCategories, catIdx);
-                      return newCategories;
-                    });
-                  }}
-                  modifyAssignment={(a: Assignment, idx: number) => {
-                    setModifiedCategories((oldCategories) => {
-                      const catIdx = index - 1;
-                      const newCategories = [...oldCategories];
-                      if (newCategories[catIdx].assignments === null) {
-                        if (a === null) {
-                          return oldCategories;
-                        }
-                        newCategories[catIdx].assignments = new Array(
-                          item?.assignments?.length
-                        ).fill(null);
-                      }
-                      newCategories[catIdx].assignments![idx] = a;
-                      updateAverage(newCategories, catIdx);
-                      return newCategories;
-                    });
-                  }}
-                />
-              </GradebookCard>
-            </View>
-          );
-        }}
-        sliderWidth={viewportWidth}
-        itemWidth={viewportWidth - 48}
-        vertical={false}
-        onSnapToItem={(index) => {
-          if (index !== animatedIndex) {
-            setAnimatedIndex(-1);
-          }
-        }}
-        onScrollIndexChanged={(index) => {
-          carouselChangeHandlers.current.forEach(f=>f(index));
-        }}
-      />
+          }}
+          sliderWidth={viewportWidth}
+          itemWidth={viewportWidth - 32}
+          vertical={false}
+          onSnapToItem={(index) => {
+            if (index !== animatedIndex) {
+              setAnimatedIndex(-1);
+            }
+          }}
+          onScrollIndexChanged={(index) => {
+            carouselChangeHandlers.current.forEach((f) => f(index));
+          }}
+        />
+      </View>
     </View>
   );
 }

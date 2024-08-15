@@ -8,25 +8,27 @@ export default function CourseScreenGradient() {
 
   const colorList = [
     { offset: "0%", color: accents.gradientCenter, opacity: "1" },
-    { offset: "100%", color: accents.gradientCenter, opacity: "0" },
+    { offset: "100%", color: accents.gradientCenter, opacity: "0.5" },
   ];
   return (
     <View
       style={{
         position: "absolute",
-        top: 0,
-        left: 0,
+        bottom: 0,
+        right: 0,
         width: "100%",
         height: "100%",
       }}
     >
-      <RadialGradient
-        x="50%"
-        y="0"
-        rx="384"
-        ry="288"
-        colorList={colorList}
-      ></RadialGradient>
+      <View style={{ height: "100%" }}>
+        <RadialGradient
+          rx="50%"
+          ry="50%"
+          x="50%"
+          y="0"
+          colorList={colorList}
+        ></RadialGradient>
+      </View>
     </View>
   );
 }

@@ -2,48 +2,57 @@ import { View, Text } from "react-native";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CourseCornerButton from "./CourseCornerButton";
+import useColors from "../../core/theme/useColors";
+import useAccents from "../../core/theme/useAccents";
 export default function CourseCornerButtonContainer(props: {
-  onPress: () => void;
-  type: "BACK" | "NOTIFICATIONS";
+  onPressLeft: () => void;
+  onPressRight: () => void;
+  hideRight?: boolean;
 }) {
   const insets = useSafeAreaInsets();
+  const accents = useAccents();
+  const colors = useColors();
   return (
     <View
       pointerEvents="box-none"
       style={[
         {
           zIndex: 50,
-          position: "absolute",
-          top: insets.top + 12,
+          paddingTop: 32,
           width: "100%",
           display: "flex",
           flexDirection: "row",
-          justifyContent: props.type === "BACK" ? "flex-start" : "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
         },
       ]}
     >
       <CourseCornerButton
-        side={
-          props.type === "BACK"
-            ? "left"
-            : props.type === "NOTIFICATIONS"
-            ? "right"
-            : "left"
-        }
-        icon={
-          props.type === "BACK"
-            ? "chevron-left"
-            : props.type === "NOTIFICATIONS"
-            ? "notifications"
-            : "chevron-left"
-        }
-        iconPadding={
-          props.type === "BACK" ? 8 : props.type === "NOTIFICATIONS" ? 16 : 8
-        }
-        iconSize={30}
-        onPress={() => props.onPress()}
+        side={"left"}
+        icon={"chevron-left"}
+        iconPadding={0}
+        iconSize={36}
+        onPress={() => props.onPressLeft()}
       />
+      {!props.hideRight && (
+        <View>
+          <View
+            style={{
+              backgroundColor: accents.gradientCenter,
+              borderRadius: 99,
+            }}
+          >
+            <CourseCornerButton
+              side={"right"}
+              icon={"edit"}
+              iconColor={"#FFFFFF"}
+              iconPadding={12}
+              iconSize={24}
+              onPress={() => props.onPressRight()}
+            />
+          </View>
+        </View>
+      )}
     </View>
   );
 }
