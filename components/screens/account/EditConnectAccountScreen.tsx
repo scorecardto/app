@@ -4,7 +4,6 @@ import { NavigationProp, useTheme } from "@react-navigation/native";
 import Button from "../../input/Button";
 import { TextInput } from "../../input/TextInput";
 import { fetchAllContent } from "../../../lib/fetcher";
-import Storage from "expo-storage";
 import SmallText from "../../text/SmallText";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
 import LoadingOverlay from "../loader/LoadingOverlay";
@@ -12,11 +11,11 @@ import fetchAndStore from "../../../lib/fetchAndStore";
 import AccountSubpageScreen from "../../app/account/AccountSubpageScreen";
 import Toast from "react-native-toast-message";
 import ReactNative from "react-native";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../core/state/store";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../../core/state/store";
 import * as loginSlice from "../../core/state/user/loginSlice";
 import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
-import * as SecureStorage from "expo-secure-store";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 const EditConnectAccountScreen = (props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -40,12 +39,14 @@ const EditConnectAccountScreen = (props: {
   const usernameRef = useRef<ReactNative.TextInput>(null);
   const passwordRef = useRef<ReactNative.TextInput>(null);
 
+  const numCourses = useSelector((state: RootState) => state.gradeData.record?.courses.length);
   useEffect(() => {
     if (loading) {
       let schoolLabel = "";
       let gradeLabel = "";
       const reportCard = fetchAllContent(
         district.url,
+        numCourses,
         username,
         password,
         (name) => {
@@ -76,7 +77,7 @@ const EditConnectAccountScreen = (props: {
           loginSlice.setPassword(password);
           loginSlice.setDistrictVipProgramDate(district.vipProgramDate);
 
-          SecureStorage.setItem(
+          ScorecardModule.storeItem(
             "login",
             JSON.stringify({
               host: district.url,
@@ -84,18 +85,11 @@ const EditConnectAccountScreen = (props: {
               password,
               schoolLabel,
               gradeLabel,
-            }),
-            {
-              requireAuthentication: false,
-              keychainAccessible: SecureStorage.ALWAYS,
-            }
-          );
+            })
+          )
 
           if (district.vipProgramDate) {
-            await Storage.setItem({
-              key: "vipProgramDate",
-              value: district.vipProgramDate,
-            });
+              ScorecardModule.storeItem("vipProgramDate", district.vipProgramDate)
           }
 
           await fetchAndStore(data, dispatch, true);

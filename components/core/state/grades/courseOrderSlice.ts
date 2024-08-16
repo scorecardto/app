@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import Storage from "expo-storage";
+import ScorecardModule from "../../../../lib/expoModuleBridge";
 
 interface CourseOrder {
   order: string[];
@@ -15,7 +15,7 @@ const courseOrderSlice = createSlice({
   reducers: {
     setCourseOrder: (state, action: PayloadAction<string[]>) => {
       state.order = action.payload;
-      Storage.setItem({ key: "courseOrder", value: JSON.stringify(action.payload) });
+      ScorecardModule.storeItem("courseOrder", JSON.stringify(action.payload));
     },
   },
 });

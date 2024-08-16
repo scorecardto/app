@@ -118,36 +118,32 @@ export default function ArchiveCourseCard(props: {
                       height: 60,
                     }}
                   >
-                    {props.course.grades[idx]?.value != null && (
-                      <>
-                        <TouchableOpacity
-                          onPress={() => {
-                            props.navigation.navigate("course", {
-                              key: props.course.key,
-                              gradeCategory: idx,
-                            });
-                          }}
-                        >
-                          <ArchiveCourseChip
-                            accentColorLabel={
-                              courseSettings[props.course.key]?.accentColor ||
-                              "blue"
-                            }
-                            active={props.course.grades[idx]?.active || false}
-                            grade={props.course.grades[idx]?.value || ""}
-                          />
-                        </TouchableOpacity>
-                        <Text
-                          style={{
-                            color: colors.text,
-                            fontSize: 10,
-                            marginVertical: 4,
-                          }}
-                        >
-                          {props.gradeCategoryNames[idx]}
-                        </Text>
-                      </>
-                    )}
+                    <TouchableOpacity
+                      onPress={() => {
+                        props.navigation.navigate("course", {
+                          key: props.course.key,
+                          gradeCategory: idx,
+                        });
+                      }}
+                    >
+                      <ArchiveCourseChip
+                        accentColorLabel={
+                          courseSettings[props.course.key]?.accentColor ||
+                          "blue"
+                        }
+                        active={props.course.grades[idx]?.active || false}
+                        grade={props.course.grades[idx]?.value || "NG"}
+                      />
+                    </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: colors.text,
+                        fontSize: 10,
+                        marginVertical: 4,
+                      }}
+                    >
+                      {props.gradeCategoryNames[idx]}
+                    </Text>
                   </View>
                 </View>
               );

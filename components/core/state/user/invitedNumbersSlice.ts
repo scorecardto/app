@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import Storage from "expo-storage";
+import ScorecardModule from "../../../../lib/expoModuleBridge";
 interface InvitedNumbers {
   numbers: string[] | null;
   openInviteSheetDate: number | null;
@@ -32,10 +32,7 @@ const invitedNumbersSlice = createSlice({
       state.openInviteSheetDate = action.payload;
     },
     saveInvitedNumbers: (state) => {
-      Storage.setItem({
-        key: "invitedNumbers",
-        value: JSON.stringify(state.numbers),
-      });
+      ScorecardModule.storeItem("invitedNumbers", JSON.stringify(state.numbers))
     },
   },
 });

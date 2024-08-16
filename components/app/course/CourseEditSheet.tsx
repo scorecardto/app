@@ -1,5 +1,5 @@
-import { Keyboard, ScrollView, Dimensions, View } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import {Keyboard, ScrollView, Dimensions, View, TouchableOpacity, Text} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import CourseNameTextInput from "./CourseNameTextInput";
 import CourseColorChanger from "./CourseColorChanger";
@@ -16,11 +16,12 @@ import Toast from "react-native-toast-message";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { registerNotifs } from "../../../lib/backgroundNotifications";
 import Button from "../../input/Button";
-// import {
-//   pinCourse,
-//   updateCourseIfPinned,
-//   unpinCourse,
-// } from "../../core/state/widget/widgetSlice";
+import {
+  pinCourse,
+  updateCourseIfPinned,
+  unpinCourse,
+} from "../../core/state/widget/widgetSlice";
+import SmallText from "../../text/SmallText";
 
 export default function CourseEditSheet(props: {
   courseKey: string;
@@ -62,12 +63,12 @@ export default function CourseEditSheet(props: {
         );
       }
 
-      // dispatch(
-      //   updateCourseIfPinned({
-      //     key: props.courseKey,
-      //     title: n || props.defaultName,
-      //   })
-      // );
+      dispatch(
+        updateCourseIfPinned({
+          key: props.courseKey,
+          title: n || props.defaultName,
+        })
+      );
 
       getAnalytics().logEvent("use_customize", {
         type: "rename",
@@ -101,10 +102,13 @@ export default function CourseEditSheet(props: {
     });
   }, [name]);
 
+  const courseOrder = useSelector((s: RootState) => s.courseOrder.order);
   const pinned = useSelector((s: RootState) => {
-    return s.widgetData.data;
+return s.widgetData.data;
   });
   const isPinned = !!pinned?.find?.((c) => c.key === props.courseKey);
+
+  const disablePinned = !isPinned && pinned.length >= 3;
 
   return (
     <>
@@ -146,7 +150,51 @@ export default function CourseEditSheet(props: {
               );
             }}
           />
-
+            <SmallText style={{ fontSize: 16, marginBottom: 8, color: colors.primary }}>
+                Widget
+            </SmallText>
+            <View style={{flexDirection: 'row'}}>
+                <TouchableOpacity style={{
+                    alignSelf: 'flex-start',
+                    opacity: disablePinned ? 0.5 : undefined,
+                }} disabled={disablePinned} onPress={() => {
+                    dispatch(
+                        isPinned ? unpinCourse(props.courseKey)
+                            : pinCourse({
+                                course: {
+                                    key: props.courseKey,
+                                    title: name,
+                                    grade: props.gradeText,
+                                    color: Color.AccentsMatrix[accentColor].default.primary,
+                                },
+                                order: courseOrder,
+                            })
+                    );
+                }}>
+                    <View style={{
+                        backgroundColor: colors.button,
+                        borderColor: "rgba(0,0,0,0.2)",
+                        borderWidth: 1,
+                        borderBottomWidth: 2,
+                        borderRadius: 5,
+                    }}>
+                        <Text style={{
+                            color: "#FFF",
+                            fontSize: 14,
+                            paddingVertical: 9,
+                            paddingHorizontal: 26,
+                            textAlign: 'center',
+                        }}>
+                            {isPinned ? "Unpin" : "Pin"}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                {disablePinned && <View style={{ justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ color: colors.text, fontSize: 12, marginLeft: 5 }}>
+                        Max pins reached
+                    </Text>
+                </View>}
+            </View>
           <CourseColorChanger
             initialValue={accentColor}
             onChange={(accentColor) => {
@@ -159,12 +207,12 @@ export default function CourseEditSheet(props: {
                   save: "STATE_AND_STORAGE",
                 })
               );
-              // dispatch(
-              //   updateCourseIfPinned({
-              //     key: props.courseKey,
-              //     color: Color.AccentsMatrix[accentColor].default.primary,
-              //   })
-              // );
+              dispatch(
+                updateCourseIfPinned({
+                  key: props.courseKey,
+                  color: Color.AccentsMatrix[accentColor].default.primary,
+                })
+              );
               getAnalytics().logEvent("use_customize", {
                 type: "color",
                 color: accentColor,

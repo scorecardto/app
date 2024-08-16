@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import ExpoWidgets from "@bittingz/expo-widgets/src/ExpoWidgetsModule";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import ScorecardModule from "../../../../lib/expoModuleBridge";
 
 interface CourseData {
   key: string;
@@ -29,7 +29,7 @@ interface WidgetData {
 const MAX_PINNED = 3;
 
 const initialState: WidgetData = {
-  data: JSON.parse(ExpoWidgets?.getWidgetData?.() || `{"data":[]}`),
+  data: JSON.parse(ScorecardModule.getWidgetData() || `{"data":[]}`),
 };
 
 const widgetSlice = createSlice({
@@ -38,13 +38,13 @@ const widgetSlice = createSlice({
   reducers: {
     resetPinnedCourses: (state, action: PayloadAction) => {
       state.data = [];
-      ExpoWidgets.setWidgetData(JSON.stringify(state.data));
+      ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     updateCourseOrder: (state, action: PayloadAction<string[]>) => {
-      state?.data?.sort?.(
+      state.data?.sort?.(
         (a, b) => action.payload.indexOf(a.key) - action.payload.indexOf(b.key)
       );
-      ExpoWidgets.setWidgetData(JSON.stringify(state.data));
+      ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     pinCourse: (state, action: PayloadAction<CourseProps>) => {
       if (state.data.length >= MAX_PINNED) return;
@@ -54,7 +54,7 @@ const widgetSlice = createSlice({
       state.data?.push?.(course);
       state.data?.sort?.((a, b) => order.indexOf(a.key) - order.indexOf(b.key));
 
-      ExpoWidgets.setWidgetData(JSON.stringify(state.data));
+      ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     updateCourseIfPinned: (state, action: PayloadAction<PartialCourseData>) => {
       const newData = state?.data?.map?.((course) =>
@@ -66,12 +66,12 @@ const widgetSlice = createSlice({
       if (JSON.stringify(newData) === JSON.stringify(state.data)) return;
       state.data = newData;
 
-      ExpoWidgets.setWidgetData(JSON.stringify(state.data));
+      ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     unpinCourse: (state, action: PayloadAction<string>) => {
       state.data = state.data.filter((course) => course.key !== action.payload);
 
-      ExpoWidgets.setWidgetData(JSON.stringify(state.data));
+      ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
   },
 });

@@ -1,0 +1,20 @@
+build:
+  name: List files
+  steps:
+    - eas/checkout
+    - eas/use_npm_token
+    - eas/install_node_modules
+    - eas/resolve_apple_team_id_from_credentials:
+        id: resolve_apple_team_id_from_credentials
+    - run:
+        name: Install pods
+        working_directory: ./ios
+        command: pod install
+    - run: cp widgets/ios/Module.swift node_modules/@bittingz/expo-widgets/ios/ExpoWidgetsModule.swift
+    - eas/configure_ios_credentials
+    - eas/configure_ios_version
+    - eas/generate_gymfile_from_template:
+        inputs:
+          credentials: ${ eas.job.secrets.buildCredentials }
+    - eas/run_fastlane
+    - eas/find_and_upload_build_artifacts

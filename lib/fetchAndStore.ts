@@ -1,48 +1,39 @@
-import Storage from "expo-storage";
-import {
-  AllContentResponse,
-  Assignment,
-  GradebookRecord,
-} from "scorecard-types";
+import {Assignment, GradebookRecord,} from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
-import { AppDispatch } from "../components/core/state/store";
-import {
-  setReferer,
-  setSessionId,
-} from "../components/core/state/user/loginSlice";
-import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
-import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
-import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
-import { updateNotifs } from "./backgroundNotifications";
-import { useEffect } from "react";
-// import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
+import {AppDispatch} from "../components/core/state/store";
+import {setGradeRecord} from "../components/core/state/grades/gradeDataSlice";
+import {setOldCourseStates} from "../components/core/state/grades/oldCourseStatesSlice";
+import {setGradeCategory} from "../components/core/state/grades/gradeCategorySlice";
+import {updateNotifs} from "./backgroundNotifications";
+import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
+import {AllContent} from "./fetcher";
+import ScorecardModule from "./expoModuleBridge";
 
 export default async function fetchAndStore(
-  data: AllContentResponse,
+  data: AllContent,
   dispatch: AppDispatch,
-  updateCourseStates: boolean
+  updateCourseStates: boolean,
+  updateWidget = true,
 ) {
   const gradeCategory =
     Math.max(
       ...data.courses.map((course) => course.grades.filter((g) => g).length)
     ) - 1;
 
-  // data.courses[0].grades[gradeCategory]!.value = "50";
-  // data.courses[1].gradeCategories[0].assignments.splice(0, 1);
+  // data.courses[0].grades[gradeCategory]!.value = "0";
 
-  // for (const course of data.courses) {
-  //   dispatch(updateCourseIfPinned({
-  //     key: course.key,
-  //     grade: course.grades[gradeCategory]?.value ?? "NG",
-  //   }));
-  // }
-
-  dispatch(setReferer(data.referer));
-  dispatch(setSessionId(data.sessionId));
+  if (updateWidget) {
+    for (const course of data.courses) {
+      dispatch(updateCourseIfPinned({
+        key: course.key,
+        grade: course.grades[gradeCategory]?.value ?? "NG",
+      }));
+    }
+  }
 
   const oldData: GradebookRecord[] = JSON.parse(
-    (await Storage.getItem({ key: "records" })) ?? "[]"
+    ScorecardModule.getItem("records") ?? "[]"
   );
 
   const newData: GradebookRecord = {
@@ -52,6 +43,7 @@ export default async function fetchAndStore(
         c.gradeCategories!.every((gc) => (gc.assignments?.length ?? 0) === 0)
       ) {
         for (let i = 0; i < oldData.length; i++) {
+          if (oldData[i].gradeCategory != gradeCategory) continue;
           const oldCourse = oldData[i].courses.find((oc) => oc.key === c.key);
           if (oldCourse) return oldCourse;
         }
@@ -76,10 +68,7 @@ export default async function fetchAndStore(
 
     dispatch(setOldCourseStates(oldCourseStates));
 
-    await Storage.setItem({
-      key: "oldCourseStates",
-      value: JSON.stringify(oldCourseStates),
-    });
+    ScorecardModule.storeItem("oldCourseStates", JSON.stringify(oldCourseStates))
   }
 
   const assignmentHasGrade = (a: Assignment | undefined) =>
@@ -136,10 +125,7 @@ export default async function fetchAndStore(
     }
   }
 
-  await Storage.setItem({
-    key: "records",
-    value: JSON.stringify([newData, ...oldData]),
-  });
+  ScorecardModule.storeItem("records", JSON.stringify([newData, ...oldData]))
 
   return Array.from(hasNewData);
 }

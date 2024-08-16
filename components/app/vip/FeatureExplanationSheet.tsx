@@ -15,7 +15,6 @@ import {
   setInvitedNumbers,
   setOpenInviteSheetDate,
 } from "../../core/state/user/invitedNumbersSlice";
-import Storage from "expo-storage";
 import FeatureBadge from "./FeatureBadge";
 import ActionButton from "../../input/ActionButton";
 import CountdownButton from "../../input/CountdownButton";
