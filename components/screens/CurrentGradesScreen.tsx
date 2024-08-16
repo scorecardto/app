@@ -55,6 +55,7 @@ export default function CurrentGradesScreen(props: {
                     onClick={() =>
                       props.navigation.navigate("course", {
                         key: item.key,
+                        gradeCategory: currentGradeCategory
                       })
                     }
                     onHold={() => {}}

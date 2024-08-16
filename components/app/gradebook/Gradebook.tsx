@@ -23,9 +23,7 @@ const { width: viewportWidth, height: viewportHeight } =
 
 function Gradebook(props: {
   course: Course;
-  oldGradingPeriodLastUpdated?: string;
   setModifiedGrade(avg: string | null): void;
-  refreshOldGradingPeriod?(): void;
   resetKey?: string;
 }) {
   const sheets = useContext(BottomSheetContext);
@@ -135,31 +133,6 @@ function Gradebook(props: {
     updateAverage(modifiedCategories);
   }, [categories]);
 
-  const lastUpdatedText = useMemo(() => {
-    if (
-      props.oldGradingPeriodLastUpdated === "" ||
-      props.oldGradingPeriodLastUpdated == null
-    ) {
-      return null;
-    }
-
-    const lastUpdated = new Date(props.oldGradingPeriodLastUpdated);
-
-    const now = new Date();
-
-    const diff = now.getTime() - lastUpdated.getTime();
-
-    const diffDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (diffDays === 0) {
-      return "This is a saved copy of an old grading period. It was last updated today.";
-    } else if (diffDays === 1) {
-      return "This is a saved copy of an old grading period. It was last updated yesterday.";
-    } else {
-      return `This is a saved copy of an old grading period. It was last updated ${diffDays} days ago.`;
-    }
-  }, [props.oldGradingPeriodLastUpdated]);
-
   const carouselChangeHandlers = useRef([
     setCurrentCard as (idx: number) => void,
   ]);
@@ -228,17 +201,6 @@ function Gradebook(props: {
                   if (!item) {
                     return (
                       <View>
-                        {lastUpdatedText && (
-                          <GradebookInfoCard
-                            header="Old Grading Period"
-                            text={lastUpdatedText}
-                            buttonText="Refresh"
-                            onPress={
-                              props.refreshOldGradingPeriod || (() => {})
-                            }
-                          />
-                        )}
-
                         <GradebookCard
                           key={index}
                           title="Summary"
