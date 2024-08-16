@@ -121,7 +121,17 @@ export default function CurrentGradesScreen(props: {
 
   const [courseOrder, setNewCourseOrder] = useState(
     useSelector(
-      (s: RootState) => s.courseOrder.order,
+      (s: RootState) => {
+        const stored = s.courseOrder.order
+            .filter(key => courses.find(c => c.key === key) != undefined);
+        for (const key of courses.map(c => c.key)) {
+            if (!stored.includes(key)) {
+                stored.push(key);
+            }
+        }
+
+        return stored;
+      },
       () => true
     )
   );

@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
 import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
+import {Course} from "scorecard-types";
 
 export default function ArchiveScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -20,7 +21,10 @@ export default function ArchiveScreen(props: {
     (s: RootState) => s.gradeData.record?.gradeCategoryNames
   );
 
-  const courses = useSelector((s: RootState) => s.gradeData.record?.courses);
+  const courses = useSelector((s: RootState) => s.gradeData.record == null ? null :
+      [...s.gradeData.record?.courses].sort((a: Course, b: Course) => {
+        return s.courseOrder.order.indexOf(a.key) - s.courseOrder.order.indexOf(b.key);
+      }));
 
   const cellCount = Math.ceil((gradeCategoryNames?.length || 0) / 4) * 4;
 

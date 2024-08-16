@@ -115,10 +115,11 @@ export default function ArchiveCourseCard(props: {
                       padding: 8,
                       width: "100%",
                       backgroundColor: colors.card,
-                      height: 60,
+                      height: 62,
                     }}
                   >
-                    <TouchableOpacity
+                  {props.course.grades[idx] && <>
+                          <TouchableOpacity
                       onPress={() => {
                         props.navigation.navigate("course", {
                           key: props.course.key,
@@ -131,19 +132,20 @@ export default function ArchiveCourseCard(props: {
                           courseSettings[props.course.key]?.accentColor ||
                           "blue"
                         }
-                        active={props.course.grades[idx]?.active || false}
-                        grade={props.course.grades[idx]?.value || "NG"}
+                        active={props.course.grades[idx]!.active}
+                        grade={props.course.grades[idx]!.value}
                       />
                     </TouchableOpacity>
                     <Text
                       style={{
                         color: colors.text,
-                        fontSize: 10,
+                        fontSize: 8,
                         marginVertical: 4,
                       }}
                     >
                       {props.gradeCategoryNames[idx]}
                     </Text>
+                  </>}
                   </View>
                 </View>
               );
