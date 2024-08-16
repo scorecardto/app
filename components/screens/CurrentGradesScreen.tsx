@@ -1,6 +1,6 @@
 import { NavigationProp } from "@react-navigation/native";
 
-import { Animated, ScrollView, View } from "react-native";
+import { Animated, RefreshControl, ScrollView, View } from "react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
@@ -155,6 +155,16 @@ export default function CurrentGradesScreen(props: {
           style={{
             height: "100%",
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                if (refreshing) return;
+
+                onRefresh();
+              }}
+            />
+          }
         >
           <DashboardToolbar />
           {courses && (
