@@ -178,12 +178,12 @@ export default function CourseScreen(props: {
                 modifiedAverage={modifiedAvg ?? undefined}
               />
             </View>
-              <View>
+              {recordCategory != gradeCategory && <View>
                   <OldGradingPeriodDisplay
                       lastUpdatedOldGradingPeriod={lastUpdatedOldGradingPeriod}
                       refreshGradingPeriod={refreshGradingPeriod}
                       />
-              </View>
+              </View>}
           </View>
         </View>
         <View
