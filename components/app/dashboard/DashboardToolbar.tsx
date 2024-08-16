@@ -46,7 +46,7 @@ export default function DashboardToolbar() {
                 fontSize: 14,
               }}
             >
-              {currentGradingPeriod}
+              {currentGradingPeriod || "No Grades"}
             </MediumText>
           </View>
         </TouchableOpacity>

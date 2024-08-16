@@ -17,6 +17,8 @@ import { fetchAllContent } from "../../lib/fetcher";
 import RefreshStatus from "../../lib/types/RefreshStatus";
 import useColors from "../core/theme/useColors";
 import StatusText from "../text/StatusText";
+import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
+import fetchAndStore from "../../lib/fetchAndStore";
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
 }) {
@@ -81,20 +83,21 @@ export default function CurrentGradesScreen(props: {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
 
-    // const reportCard = fetchAllContent(
-    //   district,
-    //   username,
-    //   password,
-    //   undefined,
-    //   (s: RefreshStatus) => {
-    //     dispatch(setRefreshStatus(s));
-    //   }
-    // );
+    const reportCard = fetchAllContent(
+      district,
+      undefined,
+      username,
+      password,
+      undefined,
+      (s: RefreshStatus) => {
+        dispatch(setRefreshStatus(s));
+      }
+    );
 
-    // reportCard.then(async (data) => {
-    //   await fetchAndStore(data, dispatch, false);
-    setRefreshing(false);
-    // });
+    reportCard.then(async (data) => {
+      await fetchAndStore(data, dispatch, false);
+      setRefreshing(false);
+    });
   }, []);
 
   const MINS_TO_REFRESH = 60;
@@ -161,7 +164,7 @@ export default function CurrentGradesScreen(props: {
                 return courseOrder.indexOf(a.key) - courseOrder.indexOf(b.key);
               })}
               renderItem={({ item, index }) => {
-                if (courseSettings[item.key].hidden) return null;
+                if (courseSettings[item.key]?.hidden) return null;
 
                 return (
                   <DraggableComponent
