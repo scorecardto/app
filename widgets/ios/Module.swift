@@ -24,7 +24,7 @@ public class ExpoWidgetsModule: Module {
             }
         }
 
-        Function("getEnabledNotifs") { (json: String) -> String in
+        Function("getEnabledNotifs") { () -> String in
             let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")
             if let data = widgetSuite?.data(forKey: "notifs") {
                 return String(decoding: data, as: UTF8.self)
