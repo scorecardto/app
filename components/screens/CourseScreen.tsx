@@ -65,7 +65,9 @@ export default function CourseScreen(props: {
               }}
               onPressRight={() => {
                 props.navigation.navigate("editCourse", {
-                  key: key,
+                    key: key,
+                    gradeText: average,
+                    defaultName: course?.name ?? ""
                 });
               }}
             />
