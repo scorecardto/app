@@ -46,6 +46,10 @@ const widgetSlice = createSlice({
       );
       ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
+    unpinUnknownCourses: (state, action: PayloadAction<string[]>) => {
+        state.data = state.data.filter((course) => action.payload.includes(course.key));
+        ScorecardModule.setWidgetData(JSON.stringify(state.data));
+    },
     pinCourse: (state, action: PayloadAction<CourseProps>) => {
       if (state.data.length >= MAX_PINNED) return;
 
@@ -82,6 +86,7 @@ export const {
   pinCourse,
   unpinCourse,
   updateCourseIfPinned,
+  unpinUnknownCourses
 } = widgetSlice.actions;
 
 export default widgetSlice.reducer;
