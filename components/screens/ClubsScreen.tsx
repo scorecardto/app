@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useRef, useState } from "react";
 import { NavigationProp, useTheme } from "@react-navigation/native";
 import Header from "../text/Header";
@@ -15,11 +15,14 @@ import { Course } from "scorecard-types";
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
 }) {
+  const connected = useSelector((r: RootState) => {
+    return r.social.connected;
+  });
   return (
     <PageThemeProvider
       theme={{
         default: {
-          background: "#FFF8FE",
+          background: "#EDF6FF",
           border: "#FFF2F8",
         },
       }}
@@ -41,7 +44,9 @@ export default function ClubsScreen(props: {
               style={{
                 paddingHorizontal: 12,
               }}
-            ></View>
+            >
+              <Text>{connected ? "Connected" : "Not connected"}</Text>
+            </View>
           </View>
         </ScrollView>
       </Background>

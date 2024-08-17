@@ -12,7 +12,10 @@ import Background from "../util/Background";
 import DashboardToolbar from "../app/dashboard/DashboardToolbar";
 import DraggableComponent from "../util/DraggableComponent";
 import { setCourseOrder } from "../core/state/grades/courseOrderSlice";
-import {unpinUnknownCourses, updateCourseOrder} from "../core/state/widget/widgetSlice";
+import {
+  unpinUnknownCourses,
+  updateCourseOrder,
+} from "../core/state/widget/widgetSlice";
 import { fetchAllContent } from "../../lib/fetcher";
 import RefreshStatus from "../../lib/types/RefreshStatus";
 import useColors from "../core/theme/useColors";
@@ -70,7 +73,7 @@ export default function CurrentGradesScreen(props: {
       setTime(Date.now());
     }, 1000);
 
-    dispatch(unpinUnknownCourses(courses.map(c => c.key)));
+    dispatch(unpinUnknownCourses(courses.map((c) => c.key)));
     return () => {
       clearInterval(i);
     };
@@ -123,12 +126,13 @@ export default function CurrentGradesScreen(props: {
   const [courseOrder, setNewCourseOrder] = useState(
     useSelector(
       (s: RootState) => {
-        const stored = s.courseOrder.order
-            .filter(key => courses.find(c => c.key === key) != undefined);
-        for (const key of courses.map(c => c.key)) {
-            if (!stored.includes(key)) {
-                stored.push(key);
-            }
+        const stored = s.courseOrder.order.filter(
+          (key) => courses.find((c) => c.key === key) != undefined
+        );
+        for (const key of courses.map((c) => c.key)) {
+          if (!stored.includes(key)) {
+            stored.push(key);
+          }
         }
 
         return stored;

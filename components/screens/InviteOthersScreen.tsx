@@ -1,12 +1,6 @@
-import { View, Text, FlatList } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import * as Contacts from "expo-contacts";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Header from "../text/Header";
-import InviteButton from "../app/vip/InviteButton";
-import ContactCard from "../app/vip/ContactCard";
-import { NavigationProp, useTheme } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
+import { NavigationProp } from "@react-navigation/native";
 import ContactRequestView from "../app/vip/ContactRequestView";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
@@ -18,7 +12,6 @@ import auth from "@react-native-firebase/auth";
 import {
   addInvitedNumber,
   saveInvitedNumbers,
-  setInvitedNumbers,
 } from "../core/state/user/invitedNumbersSlice";
 import LoadingOverlay from "./loader/LoadingOverlay";
 import ContactListDone1View from "../app/vip/ContactListDone1View";
