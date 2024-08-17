@@ -106,7 +106,6 @@ let token: string | undefined;
 export function getCurrentToken() {
   return token;
 }
-// TODO: store token in FB
 export async function requestPermissions() {
   if (token) return;
 

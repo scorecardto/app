@@ -26,7 +26,7 @@ func getEntry() -> CourseGradeEntry {
 
       let content = try fetchAllContent(login["host"]!, oldRecord?.courses.count, login["username"]!, login["password"]!)
 
-      let gradeCategory = content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1
+      let gradeCategory = max(content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1, 0)
 
       if (recordData == nil) {
         recordData = "[]".data(using: .utf8)
@@ -106,6 +106,7 @@ func getEntry() -> CourseGradeEntry {
         let notif = UNMutableNotificationContent()
         notif.sound = .default
 
+        var dontSend = false
         if (changedCourses.count == 1) {
           notif.title = getCourseName(changedCourses[0])
           notif.body = "New grades are available. Tap to go to your Scorecard."
@@ -114,12 +115,12 @@ func getEntry() -> CourseGradeEntry {
           notif.title = "New Grades"
           notif.body = "\(changedCourses.count) courses have been updated. Tap to go to your Scorecard."
         } else {
-          // TODO: debug, don't send notif if changedCourses is empty
-          notif.title = "Fetch Complete"
-          notif.body = "No new grades"
+          dontSend = true
         }
 
-        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+        if (!dontSend) {
+            UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+        }
       }
     }
   } catch (_) {}
