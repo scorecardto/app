@@ -5,7 +5,6 @@ import {AppDispatch} from "../components/core/state/store";
 import {setGradeRecord} from "../components/core/state/grades/gradeDataSlice";
 import {setOldCourseStates} from "../components/core/state/grades/oldCourseStatesSlice";
 import {setGradeCategory} from "../components/core/state/grades/gradeCategorySlice";
-import {updateNotifs} from "./backgroundNotifications";
 import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
 import {AllContent} from "./fetcher";
 import ScorecardModule from "./expoModuleBridge";
@@ -87,7 +86,6 @@ export default async function fetchAndStore(
         hasNewData.add(course.key);
       }
 
-      let notModifiedAssignmentsExist = false;
       const modifiedAssignments = [];
       for (const category of course.gradeCategories!) {
         const oldCategory = oldCourse.gradeCategories!.find(
@@ -109,17 +107,8 @@ export default async function fetchAndStore(
               modifiedAssignments.push(assignment.name);
               // continue courseLoop;
               hasNewData.add(course.key);
-            } else if (assignmentHasGrade(assignment)) {
-              notModifiedAssignmentsExist = true;
             }
           }
-        }
-      }
-
-      if (notModifiedAssignmentsExist) {
-        for (const n of modifiedAssignments) {
-          await updateNotifs(course.key, n);
-          console.log("updating", course.key, n);
         }
       }
     }

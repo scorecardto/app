@@ -22,7 +22,6 @@
       "buildNumber": "51",
       "infoPlist": {
         "UIBackgroundModes": [
-          "remote-notification",
           "fetch"
         ],
         "appExtensions": [
@@ -50,7 +49,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.scorecardgrades.mobile",
@@ -82,6 +81,10 @@
             "moduleDependencies": ["Storage.swift"],
             "useLiveActivities": false,
             "frequentUpdates": false
+          },
+          "android": {
+            "src": "./widgets/android",
+            "widgets": [ { "name": "ScorecardWidget", "resourceName": "@xml/sample_widget_info" } ]
           }
         }
       ],

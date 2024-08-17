@@ -59,12 +59,9 @@ func getEntry() -> CourseGradeEntry {
         let assignmentHasGrade = {(a: Assignment?) in try a?.grade != nil && !a!.grade!.isEmpty && /[^a-z]/.firstMatch(in: a!.grade!.lowercased()) != nil};
         let getCourseName = {(c: Course) in courseSettings[c.key]?.displayName ?? c.name}
 
-        var notifs = try JSONDecoder().decode([String:String].self, from: widgetSuite.data(forKey: "notifs")!)
-
         courseLoop:
-        // TODO: filter by courses with notifs on
         for course in content.courses {
-          if (courseSettings[course.key]?.hidden == true || notifs[course.key] == "OFF") {
+          if (courseSettings[course.key]?.hidden == true) {
             continue;
           }
 
@@ -74,9 +71,6 @@ func getEntry() -> CourseGradeEntry {
           }
 
           let handleChanged = {() in
-            if (notifs[course.key] == "ON_ONCE") {
-              notifs[course.key] = "OFF"
-            }
             changedCourses.append(course)
           }
 
@@ -109,15 +103,13 @@ func getEntry() -> CourseGradeEntry {
           }
         }
 
-        widgetSuite.set(try JSONEncoder().encode(notifs), forKey: "notifs")
-
         let notif = UNMutableNotificationContent()
         notif.sound = .default
 
         if (changedCourses.count == 1) {
           notif.title = getCourseName(changedCourses[0])
           notif.body = "New grades are available. Tap to go to your Scorecard."
-          notif.userInfo = ["stored": true, "course": changedCourses[0]]
+          notif.userInfo = ["course": changedCourses[0]]
         } else if (changedCourses.count > 1) {
           notif.title = "New Grades"
           notif.body = "\(changedCourses.count) courses have been updated. Tap to go to your Scorecard."

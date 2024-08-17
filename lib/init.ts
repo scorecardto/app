@@ -24,8 +24,6 @@ import { setOldCourseStates } from "../components/core/state/grades/oldCourseSta
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
 import {setGradeRecord, setPreviousGradeRecord} from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
-import { setNotification } from "../components/core/state/user/notificationSettingsSlice";
-import { isRegisteredForNotifs } from "./backgroundNotifications";
 import {setCourseOrder} from "../components/core/state/grades/courseOrderSlice";
 import parseCourseKey from "./parseCourseKey";
 import ScorecardModule from "./expoModuleBridge";
@@ -126,29 +124,6 @@ export default async function initialize(
     const recordData = JSON.parse(records ?? "[]") as GradebookRecord[];
 
     const data = recordData[0];
-    isRegisteredForNotifs(data.courses.map((c) => c.key)).then((res) => {
-      if (res?.data.success) {
-        const widgetNotifs = JSON.parse(ScorecardModule.getWidgetData())
-
-        for (let i = 0; i < res.data.result.length; i++) {
-          const result = res.data.result[i];
-          if (result.value == "ON_ONCE" && widgetNotifs[result.key] == "OFF") {
-            res.data.result[i].value = "OFF"
-          }
-        }
-
-        ScorecardModule.setEnabledNotifs(JSON.stringify(res.data.result.reduce((val: any, res: any) => val[res.key] = res.value, {})))
-        for (const result of res.data.result) {
-          dispatch(
-            setNotification({
-              key: result.key,
-              value: result.value,
-            })
-          );
-        }
-      }
-    });
-
     dispatch(setGradeRecord(data));
     dispatch(setPreviousGradeRecord(recordData[1]))
     dispatch(setGradeCategory(data.gradeCategory));

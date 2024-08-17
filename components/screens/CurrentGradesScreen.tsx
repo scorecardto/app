@@ -19,9 +19,25 @@ import useColors from "../core/theme/useColors";
 import StatusText from "../text/StatusText";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import fetchAndStore from "../../lib/fetchAndStore";
+import {getCurrentToken, requestPermissions} from "../../lib/backgroundNotifications";
+import axios from "redaxios";
+import {firebase} from "@react-native-firebase/auth";
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
 }) {
+  useEffect(() => {
+    return firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        requestPermissions().then(async () =>
+            axios.post("https://api.scorecardgrades.com/v1/register_token", {
+              token: await user.getIdToken(),
+              pushToken: getCurrentToken()
+            })
+        );
+      }
+    });
+  }, []);
+
   const dispatch = useDispatch();
 
   const courses = useSelector(

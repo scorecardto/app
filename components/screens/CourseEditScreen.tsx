@@ -19,7 +19,6 @@ import { NavigationProp } from "@react-navigation/native";
 import CourseGlyphChanger from "../app/course/CourseGlyphChanger";
 import CourseColorChanger from "../app/course/CourseColorChanger";
 import CourseNameTextInput from "../app/course/CourseNameTextInput";
-import { registerNotifs } from "../../lib/backgroundNotifications";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { setCourseSetting } from "../core/state/grades/courseSettingsSlice";
 import Toast from "react-native-toast-message";
@@ -40,27 +39,12 @@ export default function CourseEditScreen(props: {
 
   const [name, setName] = useState(courseSettings?.displayName || defaultName);
 
-  const notificationSettings = useSelector((s: RootState) => {
-    return s.notificationSettings[key];
-  });
-
   const accentColor = courseSettings?.accentColor || Color.defaultAccentLabel;
 
   const glyph = courseSettings?.glyph || undefined;
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (
-        notificationSettings === "ON_ALWAYS" ||
-        notificationSettings === "ON_ONCE"
-      ) {
-        registerNotifs(
-          key,
-          name || defaultName,
-          notificationSettings === "ON_ONCE"
-        );
-      }
-
       // dispatch(
       //   updateCourseIfPinned({
       //     key: props.courseKey,

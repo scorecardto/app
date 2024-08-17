@@ -8,7 +8,6 @@ import { BottomSheetView } from "@gorhom/bottom-sheet";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import {
   getCurrentToken,
-  updateNotifs,
 } from "../../../lib/backgroundNotifications";
 import Storage from "expo-storage";
 import { getDeviceId } from "../../../lib/deviceInfo";
