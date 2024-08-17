@@ -5,6 +5,7 @@ import ArchiveScreen from "./ArchiveScreen";
 import AccountScreen from "./account/AccountScreen";
 import { NavigationProp } from "@react-navigation/native";
 import TabBar from "../navigation/TabBar";
+import ClubsScreen from "./ClubsScreen";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -31,6 +32,13 @@ export default function ScorecardScreen(props: {
           component={CurrentGradesScreen}
           initialParams={{
             color: "#4798E5",
+          }}
+        />
+        <Tab.Screen
+          name="Clubs"
+          component={ClubsScreen}
+          initialParams={{
+            color: "#113157",
           }}
         />
         <Tab.Screen
