@@ -11,6 +11,7 @@ import { RootState } from "../core/state/store";
 import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
 import { Course } from "scorecard-types";
+import ClubsToolbar from "../app/clubs/ClubsToolbar";
 
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -34,6 +35,7 @@ export default function ClubsScreen(props: {
             height: "100%",
           }}
         >
+          <ClubsToolbar />
           <View
             style={{
               paddingBottom: 72,

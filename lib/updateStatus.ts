@@ -2,6 +2,7 @@ import { Course } from "scorecard-types";
 import ScorecardModule from "./expoModuleBridge";
 import parseCourseKey from "./parseCourseKey";
 import axios from "redaxios";
+import API_HOST from "./API_HOST";
 
 export async function updateStatus(
   courses: Course[],
@@ -34,7 +35,7 @@ export async function updateStatus(
   });
 
   const result = await axios.post(
-    "http://localhost:3000/v1/school/status",
+    `${API_HOST}/v1/school/status`,
     {
       token,
       schoolName: school,

@@ -39,7 +39,7 @@ export const TextInput = forwardRef<
     input: {
       paddingHorizontal: 18,
       paddingVertical: 12,
-      backgroundColor: colors.backgroundNeutral,
+      backgroundColor: colors.textInput,
       borderRadius: 4,
       marginBottom: props.disableMarginBottom ? 0 : 10,
       fontSize: 16,
