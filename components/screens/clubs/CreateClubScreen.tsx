@@ -1,5 +1,11 @@
 import ReactNative, { View, Text, ScrollView } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import CourseCornerButton from "../../app/course/CourseCornerButton";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import { NavigationProp } from "@react-navigation/native";
@@ -9,6 +15,10 @@ import { TextInput } from "../../input/TextInput";
 import StatusText from "../../text/StatusText";
 import Button from "../../input/Button";
 import MediumText from "../../text/MediumText";
+import useUser from "../../util/hooks/useUser";
+import axios from "redaxios";
+import API_HOST from "../../../lib/API_HOST";
+import Toast from "react-native-toast-message";
 
 export default function CreateClubScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -22,10 +32,127 @@ export default function CreateClubScreen(props: {
   const passwordRef = useRef<ReactNative.TextInput>(null);
 
   const [tickerValid, setTickerValid] = useState(false);
+  const [loadingTickerValid, setLoadingTickerValid] = useState(false);
+  const [tickerValidMessage, setTickerValidMessage] = useState("");
+  const user = useUser();
+
+  const performCheck = useCallback(() => {
+    if (ticker === "") {
+      setTickerValid(false);
+      setLoadingTickerValid(false);
+      setTickerValidMessage("");
+    } else {
+      user?.getIdToken().then((t) => {
+        axios
+          .post(`${API_HOST}/v1/clubs/checkTicker`, {
+            token: t,
+            ticker: ticker.toUpperCase(),
+          })
+          .then((r) => {
+            setLoadingTickerValid(false);
+            setTickerValidMessage(r.data.result);
+
+            if (r.data.result === "success") {
+              setTickerValid(true);
+            }
+          });
+      });
+    }
+  }, [ticker]);
+
+  const [loading, setLoading] = useState(false);
+
+  const create = useCallback(() => {
+    setLoading((l) => {
+      if (l) return true;
+      else {
+        user?.getIdToken().then((t) => {
+          axios
+            .post(`${API_HOST}/v1/clubs/create`, {
+              name,
+              token: t,
+              ticker: ticker.toUpperCase(),
+            })
+            .then((r) => {
+              Toast.show({
+                type: "info",
+                text1: "Success",
+              });
+            })
+            .catch((r) => {
+              Toast.show({
+                type: "info",
+                text1: "Something went wrong",
+              });
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        });
+        return true;
+      }
+    });
+  }, [ticker]);
 
   useEffect(() => {
     setTickerValid(false);
+    setLoadingTickerValid(true);
+
+    const timeout = setTimeout(() => {
+      performCheck();
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [ticker]);
+
+  useEffect(() => {
+    if (loadingTickerValid) {
+      const timeout = setTimeout(() => {
+        performCheck();
+      }, 2000);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [loadingTickerValid]);
+
+  const tickerTooltip = useMemo(() => {
+    if (!ticker) {
+      return `For example, "DOGS" or "MODELUN"`;
+    }
+    if (loadingTickerValid) {
+      return "checking...";
+    }
+    if (tickerValidMessage === "success") {
+      return "This club code is available!";
+    }
+    if (tickerValidMessage === "TOO LONG") {
+      return "Must be 10 characters or less.";
+    }
+    if (tickerValidMessage === "TOO SHORT") {
+      return "Must be at least 2 characters.";
+    }
+    if (tickerValidMessage === "INCORRECT FORMAT") {
+      return "Must be alphanumeric, with no spaces or special characters.";
+    }
+    if (tickerValidMessage === "TAKEN") {
+      return "This club code is not available.";
+    }
+    return "Something went wrong on our end.";
+  }, [tickerValidMessage, ticker, loadingTickerValid]);
+
+  const tickerColor = useMemo(() => {
+    if (tickerValidMessage === "" || ticker === "" || loadingTickerValid) {
+      return "gray";
+    } else if (tickerValidMessage === "success") {
+      return "green";
+    } else {
+      return "red";
+    }
+  }, [tickerValidMessage, ticker, loadingTickerValid]);
   return (
     <View
       style={{
@@ -101,13 +228,13 @@ export default function CreateClubScreen(props: {
           </MediumText>
           <StatusText
             style={{
-              color: colors.text,
+              color: tickerColor,
               fontSize: 14,
               marginTop: 8,
               marginBottom: 16,
             }}
           >
-            For example, "DOGS" or "MODELUN"
+            {tickerTooltip}
           </StatusText>
           <TextInput
             label="Club Code"
@@ -117,7 +244,14 @@ export default function CreateClubScreen(props: {
             ref={passwordRef}
           />
 
-          <Button onPress={() => {}}>Login</Button>
+          <Button
+            onPress={() => {
+              create();
+            }}
+            disabled={!name || !tickerValid}
+          >
+            Create
+          </Button>
         </View>
       </ScrollView>
     </View>

@@ -36,6 +36,7 @@ const Button = forwardRef<
       backgroundColor: props.secondary
         ? colors.backgroundNeutral
         : colors.button,
+      opacity: props.disabled ? 0.5 : 1,
     },
     text: {
       fontSize: 16,
