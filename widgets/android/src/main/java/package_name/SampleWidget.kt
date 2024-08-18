@@ -49,7 +49,7 @@ internal fun updateAppWidget(
         val data = JSONObject(jsonData)
     
         val views = RemoteViews(context.packageName, com.scorecardgrades.mobile.R.layout.sample_widget)
-        views.setTextViewText(com.scorecardgrades.mobile.R.id.appwidget_text, data.getString("message"))
+        views.setTextViewText(com.scorecardgrades.mobile.R.id.appwidget_text, /*data.getString("message")*/"Hello World")
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views)

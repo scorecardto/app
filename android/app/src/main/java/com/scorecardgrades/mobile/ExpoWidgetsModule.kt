@@ -1,3 +1,5 @@
+// TODO: get this to replace the existing ExpoWidgetsModule.kt file in @bittingz/expo-widgets
+
 package expo.modules.widgets
 
 import android.content.Context
