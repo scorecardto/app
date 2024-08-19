@@ -11,7 +11,7 @@ export default function AlertFetcher(): undefined {
     const sheets = useContext(BottomSheetContext);
 
     firestore().collection("alerts").get().then(snapshot => {
-        const seen = JSON.parse(ScorecardModule.getItem("seenAlerts")) ?? [];
+        const seen = JSON.parse(ScorecardModule.getItem("seenAlerts") || "[]");
 
         for (const doc of snapshot.docs) {
             if (!seen.includes(doc.id)) {

@@ -1,5 +1,3 @@
-// TODO: get this to replace the existing ExpoWidgetsModule.kt file in @bittingz/expo-widgets
-
 package expo.modules.widgets
 
 import android.content.Context
@@ -12,24 +10,31 @@ class ExpoWidgetsModule : Module() {
     Name("ExpoWidgets")
 
     Function("setWidgetData") { json: String -> 
-      //getPreferences().edit().putString("widgetdata", json).commit()
+      getPreferences().edit().putString("widgetdata", json).commit()
     }
 
     Function("getWidgetData") {
-        return@Function ""
+        return@Function getPreferences().getString("widgetdata", null)
     }
 
     Function("getItem") { key: String ->
-        return@Function ""
+        return@Function getItem(dir, key)
     }
 
     Function("storeItem") { key: String, value: String ->
-        //getPreferences().edit().putString(key, value).commit()
+        storeItem(dir, key, value)
+    }
+
+    Function("clearStorage") {
+        clearStorage(dir)
     }
   }
 
+  private val dir
+    get() = context.getDir("storage", Context.MODE_PRIVATE)
+
   private val context
-  get() = requireNotNull(appContext.reactContext)
+    get() = requireNotNull(appContext.reactContext)
 
   private fun getPreferences(): SharedPreferences {
     return context.getSharedPreferences(context.packageName + ".widgetdata", Context.MODE_PRIVATE)

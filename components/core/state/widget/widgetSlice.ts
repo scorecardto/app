@@ -29,7 +29,7 @@ interface WidgetData {
 const MAX_PINNED = 3;
 
 const initialState: WidgetData = {
-  data: JSON.parse(ScorecardModule.getWidgetData() || `{"data":[]}`),
+  data: JSON.parse(ScorecardModule.getWidgetData() || "[]"),
 };
 
 const widgetSlice = createSlice({
@@ -47,8 +47,8 @@ const widgetSlice = createSlice({
       ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     unpinUnknownCourses: (state, action: PayloadAction<string[]>) => {
-        state.data = state.data.filter((course) => action.payload.includes(course.key));
-        ScorecardModule.setWidgetData(JSON.stringify(state.data));
+      state.data = state.data.filter((course) => action.payload.includes(course.key));
+      ScorecardModule.setWidgetData(JSON.stringify(state.data));
     },
     pinCourse: (state, action: PayloadAction<CourseProps>) => {
       if (state.data.length >= MAX_PINNED) return;

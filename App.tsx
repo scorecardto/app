@@ -52,6 +52,7 @@ import Button from "./components/input/Button";
 import CourseEditScreen from "./components/screens/CourseEditScreen";
 import AppStateListener from "./components/util/AppStateListener";
 import AlertFetcher from "./components/core/AlertFetcher";
+import ScorecardModule from "./lib/expoModuleBridge";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -104,6 +105,7 @@ export default function App(props: { resetKey: string }) {
       return setupForegroundNotifications(navigationRef.current);
     }
   }, [navigationRef.current]);
+
   return (
     <MobileDataProvider>
       <AppInitializer

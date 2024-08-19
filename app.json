@@ -84,6 +84,7 @@
           },
           "android": {
             "src": "./widgets/android",
+            "moduleDependencies": ["Storage.kt"],
             "widgets": [ { "name": "ScorecardWidget", "resourceName": "@xml/sample_widget_info" } ]
           }
         }
