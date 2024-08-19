@@ -12,6 +12,7 @@ import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
 import { Course } from "scorecard-types";
 import ClubsToolbar from "../app/clubs/ClubsToolbar";
+import AllClubsList from "../app/clubs/AllClubsList";
 
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -49,6 +50,7 @@ export default function ClubsScreen(props: {
             >
               <Text>{connected ? "Connected" : "Not connected"}</Text>
             </View>
+            <AllClubsList />
           </View>
         </ScrollView>
       </Background>

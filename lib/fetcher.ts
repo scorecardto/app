@@ -82,6 +82,27 @@ async function parseHome(
     grade: string;
   }) => void
 ) {
+  const scheduleData = parse(
+    (
+      await axios({
+        url: `https://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
+        method: "POST",
+        headers: { Cookie: cookies },
+        fetch: customFetch,
+        data: qs.stringify({
+          selectedIndexId: "undefined",
+          selectedTable: "table",
+          smartFormName: "SmartForm",
+          focusElement: "",
+          gradeBookKey: "",
+          replaceObjectParam1: "",
+          selectedCell: "",
+          selectedTdId: "",
+        }),
+      })
+    ).data as string
+  );
+
   const homeData = parse(
     (
       await axios({
@@ -89,10 +110,11 @@ async function parseHome(
         method: "POST",
         headers: { Cookie: cookies },
         fetch: customFetch,
-        data: "selectedIndexId=-1&selectedTable=table&smartFormName=SmartForm&focusElement=&formatCombo=&yearCombo=2022&tableMetaInfo_PSSStudent4YearPlanEdit_table_SortOrder=&tableMetaInfo_PSSStudent4YearPlanEdit_table_record_count=28&tableMetaInfo_PSSStudent4YearPlanEdit_table_FilterMeta=&tableId_table=table&copyFromtxt=&copyFrom=",
       })
     ).data as string
   );
+
+  console.log(homeData.innerHTML);
 
   if (
     homeData.querySelector("#pageMessageDiv .message .info")?.innerText ===
