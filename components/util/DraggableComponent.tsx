@@ -5,6 +5,7 @@ export default function DraggableComponent(props: {
     disableX?: boolean,
     disableY?: boolean,
     posListener?: (layout: LayoutRectangle) => void,
+    startDragging?: () => void,
     stopDragging?: (layout: LayoutRectangle) => {x: number, y: number} | void,
     offsetX?: Animated.Value,
     offsetY?: Animated.Value,
@@ -37,7 +38,9 @@ export default function DraggableComponent(props: {
         onShouldBlockNativeResponder: isActive,
         onPanResponderMove: (e, {dx, dy}) => {
             if (isActive()) {
-                setActive(true);
+                if (!active) {
+                    setActive(true);
+                }
                 position.setValue({ x: dx, y: dy });
             } else {
                 setActive(false);
@@ -59,9 +62,17 @@ export default function DraggableComponent(props: {
     props.offsetX && transform.push({translateX: props.offsetX});
     props.offsetY && transform.push({translateY: props.offsetY});
 
+    const timeout = useRef<NodeJS.Timeout>();
     return (
         <Animated.View
-            onTouchStart={() => scrollStart.current = Date.now()}
+            onTouchStart={() => {
+                scrollStart.current = Date.now();
+                timeout.current = setTimeout(() => {
+                    props.startDragging?.();
+                }, 245);
+            }}
+            onTouchCancel={() => timeout.current && clearTimeout(timeout.current)}
+            onTouchEnd={() => timeout.current && clearTimeout(timeout.current)}
             {...panResponder.panHandlers}
             style={[
                 {

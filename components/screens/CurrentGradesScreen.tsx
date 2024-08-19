@@ -30,8 +30,9 @@ export default function CurrentGradesScreen(props: {
       if (user) {
         requestPermissions().then(async () =>
             axios.post("https://api.scorecardgrades.com/v1/register_token", {
-              token: await user.getIdToken(),
               pushToken: getCurrentToken()
+            }, {
+              headers: { Authorization: await user.getIdToken() }
             })
         );
       }
@@ -158,6 +159,7 @@ export default function CurrentGradesScreen(props: {
   const courseCardOffsetValues = useRef(courseOrder.map((_) => 0));
   const courseCardPositions = useRef(courseOrder.map((_, i) => i));
   const orderRef = useRef(courseOrder);
+  const [dragging, setDragging] = useState(false);
   useEffect(() => {
     courseCardOffsets.current.forEach((v) => v.setValue(0));
     courseCardOffsetValues.current.fill(0);
@@ -184,6 +186,7 @@ export default function CurrentGradesScreen(props: {
           }}
           refreshControl={
             <RefreshControl
+              enabled={!dragging}
               refreshing={refreshing}
               onRefresh={() => {
                 if (refreshing) return;
@@ -205,6 +208,7 @@ export default function CurrentGradesScreen(props: {
 
                 return (
                   <DraggableComponent
+                    startDragging={() => setDragging(true)}
                     posListener={(layout) => {
                       const truePos =
                         layout.y - courseCardOffsetValues.current[index];
@@ -239,6 +243,8 @@ export default function CurrentGradesScreen(props: {
                       }
                     }}
                     stopDragging={(layout) => {
+                      setDragging(false);
+
                       const newOrder = courseCardPositions.current
                         .map((i, idx) => {
                           return { idx: i, key: orderRef.current[idx] };
