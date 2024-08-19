@@ -1,21 +1,29 @@
-package expo.modules.widgets.example
-//package com.scorecardgrades.mobile.R
+package com.scorecardgrades.mobile
 
-import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
-import android.content.Context
+import android.appwidget.*
+import android.content.*
 import android.widget.RemoteViews
 import android.content.SharedPreferences
 import java.util.logging.Logger
-import org.json.JSONException
-import org.json.JSONObject
+import org.json.*
+import android.view.View
+import android.graphics.Color;
+import android.content.res.ColorStateList
+import android.util.TypedValue
 
-val Log: Logger = Logger.getLogger(SampleWidget::class.java.name)
+public val IS_WIDGET_UPDATE ="isWidgetUpdate";
 
 /**
  * Implementation of App Widget functionality.
  */
 class SampleWidget : AppWidgetProvider() {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.hasExtra(IS_WIDGET_UPDATE)) {
+            this.onUpdate(context, AppWidgetManager.getInstance(context),
+                AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, SampleWidget::class.java)));
+        } else super.onReceive(context, intent)
+    }
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -36,25 +44,35 @@ class SampleWidget : AppWidgetProvider() {
     }
 }
 
-internal fun updateAppWidget(
+ fun updateAppWidget(
     context: Context,
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-    try {
-        val jsonData = context
-        .getSharedPreferences("${context.packageName}.widgetdata", Context.MODE_PRIVATE)
-        .getString("widgetdata", "{}")
+    val data = JSONArray(context.getSharedPreferences("${context.packageName}.widgetdata", Context.MODE_PRIVATE)
+                    .getString("widgetdata", "{}"));
 
-        val data = JSONObject(jsonData)
-    
-        val views = RemoteViews(context.packageName, com.scorecardgrades.mobile.R.layout.sample_widget)
-        views.setTextViewText(com.scorecardgrades.mobile.R.id.appwidget_text, /*data.getString("message")*/"Hello World")
+    val views = RemoteViews(context.packageName, com.scorecardgrades.mobile.R.layout.sample_widget)
 
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views)
-    } catch (e: JSONException) {
-        Log.warning("An error occurred parsing widget json!")
-        Log.warning(e.message)
+    for (i in 0..2) {
+        try {
+            val courseData = if (i < data.length()) data.getJSONObject(i) else null;
+
+            val nameView = R.id::class.java.getField("slot${i+1}_name").getInt(null);
+            views.setTextViewText(nameView, courseData?.getString("title") ?: "Course slot ${i+1}")
+            views.setTextViewTextSize(nameView, TypedValue.COMPLEX_UNIT_DIP, if (courseData != null) 15f else 13f)
+            views.setTextColor(nameView, Color.parseColor(if (courseData != null) "#000000" else "#c9c9c9"))
+
+            val gradeView = R.id::class.java.getField("slot${i+1}_grade").getInt(null);
+            views.setTextViewText(gradeView, courseData?.getString("grade") ?: "")
+            views.setViewVisibility(gradeView, if (courseData != null) View.VISIBLE else View.INVISIBLE)
+
+            views.setColorStateList(gradeView, "setBackgroundTintList", ColorStateList.valueOf(
+                Color.parseColor(courseData?.getString("color") ?: "#000000")))
+        } catch (e: JSONException) {
+            continue;
+        }
     }
+
+    appWidgetManager.updateAppWidget(appWidgetId, views)
 }

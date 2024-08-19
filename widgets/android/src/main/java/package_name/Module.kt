@@ -1,5 +1,10 @@
 package expo.modules.widgets
 
+import com.scorecardgrades.mobile.*
+
+import android.appwidget.*
+import android.content.Intent
+import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import expo.modules.kotlin.modules.Module
@@ -11,6 +16,11 @@ class ExpoWidgetsModule : Module() {
 
     Function("setWidgetData") { json: String -> 
       getPreferences().edit().putString("widgetdata", json).commit()
+
+      val updateIntent = Intent();
+      updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+      updateIntent.putExtra("isWidgetUpdate", true);
+      context.sendBroadcast(updateIntent);
     }
 
     Function("getWidgetData") {

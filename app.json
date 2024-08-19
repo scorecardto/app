@@ -48,10 +48,7 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
-        "backgroundColor": "#ffffff"
-      },
+      "icon": "./assets/icon.png",
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
       "versionCode": 2,

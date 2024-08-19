@@ -14,7 +14,6 @@ import { setCourseSetting } from "../../core/state/grades/courseSettingsSlice";
 import useColors from "../../core/theme/useColors";
 import Toast from "react-native-toast-message";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import { registerNotifs } from "../../../lib/backgroundNotifications";
 import Button from "../../input/Button";
 import {
   pinCourse,
@@ -42,27 +41,12 @@ export default function CourseEditSheet(props: {
     courseSettings?.displayName || props.defaultName
   );
 
-  const notificationSettings = useSelector((s: RootState) => {
-    return s.notificationSettings[props.courseKey];
-  });
-
   const accentColor = courseSettings?.accentColor || Color.defaultAccentLabel;
 
   const glyph = courseSettings?.glyph || undefined;
 
   const saveName = useCallback(
     (n: string) => {
-      if (
-        notificationSettings === "ON_ALWAYS" ||
-        notificationSettings === "ON_ONCE"
-      ) {
-        registerNotifs(
-          props.courseKey,
-          n || props.defaultName,
-          notificationSettings === "ON_ONCE"
-        );
-      }
-
       dispatch(
         updateCourseIfPinned({
           key: props.courseKey,

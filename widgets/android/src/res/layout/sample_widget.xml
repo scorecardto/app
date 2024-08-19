@@ -1,19 +1,147 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Widget.EASWidgetExample.AppWidget.Container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:theme="@style/AppTheme.AppWidgetContainer">
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:background="@drawable/header_gradient">
 
-    <TextView
-        android:id="@+id/appwidget_text"
-        style="@style/Widget.EASWidgetExample.AppWidget.InnerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:contentDescription="@string/appwidget_text"
-        android:text="@string/appwidget_text"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
-</RelativeLayout>
+    <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/icon"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="120dp"
+                  android:orientation="vertical"
+                  android:background="#EBF5FF">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="7dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="0dp"
+                android:layout_weight="0.7"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView android:id="@+id/slot1_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:text="Course slot 1"
+                        android:gravity="bottom"
+                        android:textSize="13dp"
+                        android:textColor="#c9c9c9"/>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4.5dp"
+                        android:background="#c2c2c2"/>
+            </LinearLayout>
+            <TextView android:id="@+id/slot1_grade"
+                    android:ellipsize="end"
+                    android:backgroundTint="#FE5885"
+                    android:backgroundTintMode="src_over"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.3"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="1.75dp"
+                    android:text=""
+                    android:textSize="13dp"
+                    android:textColor="#FFFFFF"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:background="@drawable/grade_chip"
+                    android:visibility="invisible"
+                    android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:orientation="horizontal"
+                      android:layout_marginTop="7dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginRight="8dp">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_width="0dp"
+                          android:layout_weight="0.7"
+                          android:layout_height="match_parent"
+                          android:orientation="vertical">
+                <TextView android:id="@+id/slot2_name"
+                          android:layout_width="match_parent"
+                          android:layout_height="20dp"
+                          android:text="Course slot 2"
+                          android:gravity="bottom"
+                          android:textSize="13dp"
+                          android:textColor="#c9c9c9"/>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4.5dp"
+                        android:background="#c2c2c2"/>
+            </LinearLayout>
+            <TextView android:id="@+id/slot2_grade"
+                      android:ellipsize="end"
+                      android:backgroundTint="#FE5885"
+                      android:backgroundTintMode="src_over"
+                      android:layout_width="0dp"
+                      android:layout_weight="0.3"
+                      android:layout_height="25dp"
+                      android:layout_marginTop="1.75dp"
+                      android:text=""
+                      android:textSize="13dp"
+                      android:textColor="#FFFFFF"
+                      android:gravity="center"
+                      android:textStyle="bold"
+                      android:background="@drawable/grade_chip"
+                      android:visibility="invisible"
+                      android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:orientation="horizontal"
+                      android:layout_marginTop="7dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginRight="8dp">
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                          android:layout_width="0dp"
+                          android:layout_weight="0.7"
+                          android:layout_height="match_parent"
+                          android:orientation="vertical">
+                <TextView android:id="@+id/slot3_name"
+                          android:layout_width="match_parent"
+                          android:layout_height="20dp"
+                          android:text="Course slot 3"
+                          android:gravity="bottom"
+                          android:textSize="13dp"
+                          android:textColor="#c9c9c9"/>
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="4.5dp"
+                        android:background="#c2c2c2"/>
+            </LinearLayout>
+            <TextView android:id="@+id/slot3_grade"
+                      android:ellipsize="end"
+                      android:backgroundTint="#FE5885"
+                      android:backgroundTintMode="src_over"
+                      android:layout_width="0dp"
+                      android:layout_weight="0.3"
+                      android:layout_height="25dp"
+                      android:layout_marginTop="1.75dp"
+                      android:text=""
+                      android:textSize="13dp"
+                      android:textColor="#FFFFFF"
+                      android:gravity="center"
+                      android:textStyle="bold"
+                      android:background="@drawable/grade_chip"
+                      android:visibility="invisible"
+                      android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

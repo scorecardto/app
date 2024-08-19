@@ -1,4 +1,4 @@
-package expo.modules.widgets
+package com.scorecardgrades.mobile
 
 import java.io.File;
 import java.io.FileNotFoundException;
