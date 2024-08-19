@@ -114,8 +114,6 @@ async function parseHome(
     ).data as string
   );
 
-  console.log(homeData.innerHTML);
-
   if (
     homeData.querySelector("#pageMessageDiv .message .info")?.innerText ===
     "Your session has expired.  Please use the Close button and log in again."

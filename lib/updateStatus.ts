@@ -14,8 +14,6 @@ export async function updateStatus(
   const { host, school, grade, realFirstName, realLastName } =
     JSON.parse(login);
 
-  console.log(login);
-
   const { firstName, lastName } = JSON.parse(name);
 
   const schedule: {

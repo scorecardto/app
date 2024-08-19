@@ -1,25 +1,35 @@
 import { ScrollView, Text, View } from "react-native";
-import { useRef, useState } from "react";
-import { NavigationProp, useTheme } from "@react-navigation/native";
-import Header from "../text/Header";
-import ArchiveCourseCard from "../app/archive/ArchiveCourseCard";
-import ArchiveDemoTable from "../app/archive/ArchiveDemoTable";
-import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderBanner from "../text/HeaderBanner";
+import { useContext, useEffect } from "react";
+import { NavigationProp } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
 import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
-import { Course } from "scorecard-types";
 import ClubsToolbar from "../app/clubs/ClubsToolbar";
 import AllClubsList from "../app/clubs/AllClubsList";
-
+import useSocial from "../util/hooks/useSocial";
+import { MobileDataContext } from "../core/context/MobileDataContext";
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
 }) {
   const connected = useSelector((r: RootState) => {
     return r.social.connected;
   });
+
+  const clubs = useSelector((r: RootState) => {
+    return r.social.clubs;
+  });
+
+  const social = useSocial();
+
+  useEffect(() => {
+    if (connected) {
+      social.refreshClubs();
+    }
+  }, [connected]);
+
+  const user = useContext(MobileDataContext).user;
+
   return (
     <PageThemeProvider
       theme={{
@@ -40,17 +50,10 @@ export default function ClubsScreen(props: {
           <View
             style={{
               paddingBottom: 72,
-              paddingTop: 24,
+              paddingTop: 0,
             }}
           >
-            <View
-              style={{
-                paddingHorizontal: 12,
-              }}
-            >
-              <Text>{connected ? "Connected" : "Not connected"}</Text>
-            </View>
-            <AllClubsList />
+            <AllClubsList clubs={clubs} />
           </View>
         </ScrollView>
       </Background>

@@ -4,7 +4,7 @@ import {
 } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
-import auth from "@react-native-firebase/auth";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
@@ -34,7 +34,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import HelpScreen from "./components/screens/HelpScreen";
 import RefreshIndicator from "./components/app/dashboard/RefreshIndicator";
 import AppInitializer from "./components/core/AppInitializer";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 import { useFeatureFlag } from "./lib/featureFlag";
@@ -106,6 +106,7 @@ export default function App(props: { resetKey: string }) {
       return setupForegroundNotifications(navigationRef.current);
     }
   }, [navigationRef.current]);
+
   return (
     <MobileDataProvider>
       <AppInitializer

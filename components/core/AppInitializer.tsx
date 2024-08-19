@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 
@@ -14,6 +14,7 @@ import initialize from "../../lib/init";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./state/store";
 import { setFcmToken } from "../../lib/backgroundNotifications";
+import { MobileDataContext } from "./context/MobileDataContext";
 
 export default function AppInitializer(props: {
   setAppReady: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,9 +32,11 @@ export default function AppInitializer(props: {
 
   const [userReady, setUserReady] = useState(false);
 
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+  const { user, setUser } = useContext(MobileDataContext);
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    console.log(user);
+
     setUser(user);
     // user?.getIdToken().then(console.log);
     user?.getIdToken().then(setFcmToken);
@@ -85,7 +88,7 @@ export default function AppInitializer(props: {
     if (userReady) {
       prepare();
     }
-  }, [userReady, props.resetKey]);
+  }, [userReady, props.resetKey, user]);
 
   return <></>;
 }

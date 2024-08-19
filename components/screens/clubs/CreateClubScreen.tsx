@@ -1,12 +1,5 @@
-import ReactNative, { View, Text, ScrollView } from "react-native";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import CourseCornerButton from "../../app/course/CourseCornerButton";
+import ReactNative, { View, ScrollView } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import { NavigationProp } from "@react-navigation/native";
 import LargeText from "../../text/LargeText";
@@ -15,10 +8,10 @@ import { TextInput } from "../../input/TextInput";
 import StatusText from "../../text/StatusText";
 import Button from "../../input/Button";
 import MediumText from "../../text/MediumText";
-import useUser from "../../util/hooks/useUser";
 import axios from "redaxios";
 import API_HOST from "../../../lib/API_HOST";
 import Toast from "react-native-toast-message";
+import useScApi from "../../util/hooks/useScApi";
 
 export default function CreateClubScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -34,7 +27,8 @@ export default function CreateClubScreen(props: {
   const [tickerValid, setTickerValid] = useState(false);
   const [loadingTickerValid, setLoadingTickerValid] = useState(false);
   const [tickerValidMessage, setTickerValidMessage] = useState("");
-  const user = useUser();
+
+  const api = useScApi();
 
   const performCheck = useCallback(() => {
     if (ticker === "") {
@@ -42,28 +36,22 @@ export default function CreateClubScreen(props: {
       setLoadingTickerValid(false);
       setTickerValidMessage("");
     } else {
-      user?.getIdToken().then((t) => {
-        axios
-          .post(
-            `${API_HOST}/v1/clubs/checkTicker`,
-            {
-              ticker: ticker.toUpperCase(),
-            },
-            {
-              headers: {
-                Authorization: t,
-              },
-            }
-          )
-          .then((r) => {
-            setLoadingTickerValid(false);
-            setTickerValidMessage(r.data.result);
+      api
+        .post({
+          pathname: "/v1/clubs/checkTicker",
+          auth: true,
+          body: {
+            ticker: ticker.toUpperCase(),
+          },
+        })
+        .then((r) => {
+          setLoadingTickerValid(false);
+          setTickerValidMessage(r.data.result);
 
-            if (r.data.result === "success") {
-              setTickerValid(true);
-            }
-          });
-      });
+          if (r.data.result === "success") {
+            setTickerValid(true);
+          }
+        });
     }
   }, [ticker]);
 
@@ -73,36 +61,30 @@ export default function CreateClubScreen(props: {
     setLoading((l) => {
       if (l) return true;
       else {
-        user?.getIdToken().then((t) => {
-          axios
-            .post(
-              `${API_HOST}/v1/clubs/create`,
-              {
-                name,
-                ticker: ticker.toUpperCase(),
-              },
-              {
-                headers: {
-                  Authorization: t,
-                },
-              }
-            )
-            .then((r) => {
-              Toast.show({
-                type: "info",
-                text1: "Success",
-              });
-            })
-            .catch((r) => {
-              Toast.show({
-                type: "info",
-                text1: "Something went wrong",
-              });
-            })
-            .finally(() => {
-              setLoading(false);
+        api
+          .post({
+            pathname: "/v1/clubs/create",
+            auth: true,
+            body: {
+              name,
+              ticker: ticker.toUpperCase(),
+            },
+          })
+          .then((r) => {
+            Toast.show({
+              type: "info",
+              text1: "Success",
             });
-        });
+          })
+          .catch((r) => {
+            Toast.show({
+              type: "info",
+              text1: "Something went wrong",
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+          });
         return true;
       }
     });
