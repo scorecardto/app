@@ -44,10 +44,17 @@ export default function CreateClubScreen(props: {
     } else {
       user?.getIdToken().then((t) => {
         axios
-          .post(`${API_HOST}/v1/clubs/checkTicker`, {
-            token: t,
-            ticker: ticker.toUpperCase(),
-          })
+          .post(
+            `${API_HOST}/v1/clubs/checkTicker`,
+            {
+              ticker: ticker.toUpperCase(),
+            },
+            {
+              headers: {
+                Authorization: t,
+              },
+            }
+          )
           .then((r) => {
             setLoadingTickerValid(false);
             setTickerValidMessage(r.data.result);
@@ -68,11 +75,18 @@ export default function CreateClubScreen(props: {
       else {
         user?.getIdToken().then((t) => {
           axios
-            .post(`${API_HOST}/v1/clubs/create`, {
-              name,
-              token: t,
-              ticker: ticker.toUpperCase(),
-            })
+            .post(
+              `${API_HOST}/v1/clubs/create`,
+              {
+                name,
+                ticker: ticker.toUpperCase(),
+              },
+              {
+                headers: {
+                  Authorization: t,
+                },
+              }
+            )
             .then((r) => {
               Toast.show({
                 type: "info",

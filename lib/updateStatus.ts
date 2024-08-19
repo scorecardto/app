@@ -39,7 +39,6 @@ export async function updateStatus(
   const result = await axios.post(
     `${API_HOST}/v1/school/status`,
     {
-      token,
       schoolName: school,
       districtHost: host,
       gradeLevel: grade,
@@ -51,6 +50,7 @@ export async function updateStatus(
     },
     {
       headers: {
+        Authorization: token,
         "Content-Type": "application/x-www-form-urlencoded",
       },
     }
