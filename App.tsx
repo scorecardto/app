@@ -54,6 +54,7 @@ import AppStateListener from "./components/util/AppStateListener";
 import AlertFetcher from "./components/core/AlertFetcher";
 import ManageClubsScreen from "./components/screens/clubs/ManageClubsScreen";
 import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
+import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -315,6 +316,13 @@ export default function App(props: { resetKey: string }) {
                     <Stack.Screen
                       name="createClub"
                       component={CreateClubScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="clubAdmin"
+                      component={ClubAdminScreen}
                       options={{
                         headerShown: false,
                       }}

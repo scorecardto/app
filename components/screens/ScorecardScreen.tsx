@@ -5,7 +5,7 @@ import ArchiveScreen from "./ArchiveScreen";
 import AccountScreen from "./account/AccountScreen";
 import { NavigationProp } from "@react-navigation/native";
 import TabBar from "../navigation/TabBar";
-import ClubsScreen from "./ClubsScreen";
+import ClubsScreen from "./clubs/ClubsScreen";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../core/state/store";

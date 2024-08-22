@@ -1,12 +1,6 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { useEffect, useRef } from "react";
+import { View, TouchableOpacity } from "react-native";
 import useColors from "../../core/theme/useColors";
 import MediumText from "../../text/MediumText";
-import { useSelector } from "react-redux";
-import { RootState } from "../../core/state/store";
-import { ActionSheetRef } from "react-native-actions-sheet";
-import CreateClubSheet from "./CreateClubSheet";
-import ClubNameTextInput from "./ClubNameTextInput";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ClubsToolbar() {
@@ -45,7 +39,7 @@ export default function ClubsToolbar() {
                 fontSize: 14,
               }}
             >
-              Create
+              Manage
             </MediumText>
           </View>
         </TouchableOpacity>

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import CourseCornerButton from "../../app/course/CourseCornerButton";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
@@ -9,16 +9,16 @@ import Button from "../../input/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import ManageClubPreview from "../../app/clubs/ManageClubPreview";
+import ClubAdminToolbar from "../../app/clubs/ClubAdminToolbar";
+import ClubCustomizeView from "./ClubCustomizeView";
 
-export default function ManageClubsScreen(props: {
+export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
 }) {
   const colors = useColors();
   const navigation = useNavigation();
 
-  const clubs = useSelector((r: RootState) => {
-    return r.social.clubs;
-  });
+  const [tab, setTab] = useState("home");
 
   return (
     <View
@@ -62,9 +62,10 @@ export default function ManageClubsScreen(props: {
                 numberOfLines: 1,
               }}
             >
-              My Clubs
+              Control Panel
             </LargeText>
           </View>
+          <ClubAdminToolbar tab={tab} setTab={setTab} />
         </View>
       </View>
       <ScrollView
@@ -80,25 +81,7 @@ export default function ManageClubsScreen(props: {
             flex: 1,
           }}
         >
-          <View
-            style={{
-              marginBottom: 24,
-            }}
-          >
-            {clubs
-              .filter((c) => c.isOwner)
-              .map((c) => {
-                return <ManageClubPreview club={c} />;
-              })}
-          </View>
-          <Button
-            onPress={() => {
-              // @ts-ignore
-              navigation.navigate("createClub");
-            }}
-          >
-            Create Club
-          </Button>
+          {tab === "edit" && <ClubCustomizeView />}
         </View>
       </ScrollView>
     </View>
