@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import ManageClubPreview from "../../app/clubs/ManageClubPreview";
 import ClubAdminToolbar from "../../app/clubs/ClubAdminToolbar";
-import ClubCustomizeView from "./ClubCustomizeView";
+import ClubCustomizeView from "../../app/clubs/ClubCustomizeView";
 
 export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
