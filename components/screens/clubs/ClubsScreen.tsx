@@ -1,14 +1,14 @@
-import { ScrollView, Text, View } from "react-native";
-import { useContext, useEffect } from "react";
-import { NavigationProp } from "@react-navigation/native";
-import { useSelector } from "react-redux";
-import { RootState } from "../../core/state/store";
+import {ScrollView, View} from "react-native";
+import {useEffect} from "react";
+import {NavigationProp} from "@react-navigation/native";
+import {useSelector} from "react-redux";
+import {RootState} from "../../core/state/store";
 import PageThemeProvider from "../../core/context/PageThemeProvider";
 import Background from "../../util/Background";
 import ClubsToolbar from "../../app/clubs/ClubsToolbar";
 import AllClubsList from "../../app/clubs/AllClubsList";
 import useSocial from "../../util/hooks/useSocial";
-import { MobileDataContext } from "../../core/context/MobileDataContext";
+
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
 }) {
