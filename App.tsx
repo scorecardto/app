@@ -55,6 +55,7 @@ import AlertFetcher from "./components/core/AlertFetcher";
 import ManageClubsScreen from "./components/screens/clubs/ManageClubsScreen";
 import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
 import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";
+import PickEmojiScreen from "./components/screens/PickEmojiScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -323,6 +324,13 @@ export default function App(props: { resetKey: string }) {
                     <Stack.Screen
                       name="clubAdmin"
                       component={ClubAdminScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="pickEmoji"
+                      component={PickEmojiScreen}
                       options={{
                         headerShown: false,
                       }}

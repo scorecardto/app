@@ -73,6 +73,7 @@
     "react-tracked": "^1.7.11",
     "redaxios": "^0.5.1",
     "redux": "^5.0.1",
+    "rn-emoji-picker": "^1.1.6",
     "scorecard-types": "github:scorecardto/types"
   },
   "devDependencies": {
