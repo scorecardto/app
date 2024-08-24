@@ -1040,6 +1040,8 @@ PODS:
     - expo-dev-menu/SafeAreaView
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - ExpoClipboard (4.3.1):
+    - ExpoModulesCore
   - ExpoCrypto (12.4.1):
     - ExpoModulesCore
   - ExpoDevice (5.4.0):
@@ -1644,6 +1646,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-view-shot (3.7.0):
+    - React-Core
   - React-NativeModulesApple (0.72.6):
     - hermes-engine
     - React-callinvoker
@@ -1848,6 +1852,7 @@ DEPENDENCIES:
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
+  - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
   - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoDevice (from `../node_modules/expo-device/ios`)
   - ExpoHaptics (from `../node_modules/expo-haptics/ios`)
@@ -1889,6 +1894,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-view-shot (from `../node_modules/react-native-view-shot`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -2000,6 +2006,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu"
   expo-dev-menu-interface:
     :path: "../node_modules/expo-dev-menu-interface/ios"
+  ExpoClipboard:
+    :path: "../node_modules/expo-clipboard/ios"
   ExpoCrypto:
     :path: "../node_modules/expo-crypto/ios"
   ExpoDevice:
@@ -2079,6 +2087,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-view-shot:
+    :path: "../node_modules/react-native-view-shot"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -2162,6 +2172,7 @@ SPEC CHECKSUMS:
   expo-dev-launcher: 4abaa5997c1063e77432bb23ca05da364803e297
   expo-dev-menu: 7cc0b6c9ed9fc99740e5d3ba1335bcd1537da9e8
   expo-dev-menu-interface: bda969497e73dadc2663c479e0fa726ca79a306e
+  ExpoClipboard: 695f274f8e028cd113837f917da40c76850877eb
   ExpoCrypto: a382ab9a2fa91f0b511ce1fe4d6baecee40a1615
   ExpoDevice: 1c1b0c9cad96c292c1de73948649cfd654b2b3c0
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
@@ -2227,6 +2238,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
+  react-native-view-shot: f5507655f122e6b104888a11130f267a427f0d57
   React-NativeModulesApple: 1802a680a4cd891d2ab97780771bcb2ff11fdc0b
   React-perflogger: e3596db7e753f51766bceadc061936ef1472edc3
   React-RCTActionSheet: 17ab132c748b4471012abbcdcf5befe860660485

@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "Scorecard",
-    "scheme": "scorecard",
     "slug": "scorecard",
     "version": "1.2.1",
     "orientation": "portrait",
@@ -21,6 +20,9 @@
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
       "buildNumber": "51",
+      "associatedDomains": [
+        "applinks:scorecardgrades.com"
+      ],
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["instagram-stories", "snapchat"],
         "UIBackgroundModes": [
@@ -58,6 +60,20 @@
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
       "versionCode": 2,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "scorecardgrades.com",
+              "pathPrefix": "/joinclub"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "permissions": [
         "android.permission.READ_CONTACTS",
         "android.permission.WRITE_CONTACTS"

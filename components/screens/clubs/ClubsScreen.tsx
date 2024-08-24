@@ -12,6 +12,7 @@ import QRCode from "react-native-qrcode-svg";
 import * as MediaLibrary from "expo-media-library"
 import * as FileSystem from "expo-file-system"
 import MediumText from "../../text/MediumText";
+import ScorecardQRCode from "../../util/ScorecardQRCode";
 
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -50,14 +51,7 @@ export default function ClubsScreen(props: {
           }}
         >
           <ClubsToolbar />
-          <View
-            style={{
-              paddingBottom: 72,
-              paddingTop: 0,
-            }}
-          >
-            <AllClubsList clubs={clubs} />
-          </View>
+          <ScorecardQRCode link={"https://scorecardgrades.com/joinclub/TEST"} size={256} />
         </ScrollView>
       </Background>
     </PageThemeProvider>

@@ -48,16 +48,6 @@
 				<string>exp+scorecard</string>
 			</array>
 		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>com.scorecardgrades.mobile</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>scorecard</string>
-			</array>
-		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>51</string>
