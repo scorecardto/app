@@ -977,6 +977,10 @@ PODS:
   - EXJSONUtils (0.7.1)
   - EXManifests (0.7.2):
     - ExpoModulesCore
+  - EXMediaLibrary (15.4.1):
+    - ExpoModulesCore
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - EXNotifications (0.20.1):
     - ExpoModulesCore
   - Expo (49.0.23):
@@ -1036,6 +1040,8 @@ PODS:
     - expo-dev-menu/SafeAreaView
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
+  - ExpoClipboard (4.3.1):
+    - ExpoModulesCore
   - ExpoCrypto (12.4.1):
     - ExpoModulesCore
   - ExpoDevice (5.4.0):
@@ -1640,6 +1646,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-view-shot (3.7.0):
+    - React-Core
   - React-NativeModulesApple (0.72.6):
     - hermes-engine
     - React-callinvoker
@@ -1803,6 +1811,8 @@ PODS:
   - RNScreens (3.22.1):
     - React-Core
     - React-RCTImage
+  - RNShare (10.2.1):
+    - React-Core
   - RNSVG (13.9.0):
     - React-Core
   - SDWebImage (5.15.8):
@@ -1835,12 +1845,14 @@ DEPENDENCIES:
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
   - EXManifests (from `../node_modules/expo-manifests/ios`)
+  - EXMediaLibrary (from `../node_modules/expo-media-library/ios`)
   - EXNotifications (from `../node_modules/expo-notifications/ios`)
   - Expo (from `../node_modules/expo`)
   - expo-dev-client (from `../node_modules/expo-dev-client/ios`)
   - expo-dev-launcher (from `../node_modules/expo-dev-launcher`)
   - expo-dev-menu (from `../node_modules/expo-dev-menu`)
   - expo-dev-menu-interface (from `../node_modules/expo-dev-menu-interface/ios`)
+  - ExpoClipboard (from `../node_modules/expo-clipboard/ios`)
   - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoDevice (from `../node_modules/expo-device/ios`)
   - ExpoHaptics (from `../node_modules/expo-haptics/ios`)
@@ -1882,6 +1894,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-view-shot (from `../node_modules/react-native-view-shot`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -1907,6 +1920,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - SwiftSoup
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
@@ -1978,6 +1992,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-json-utils/ios"
   EXManifests:
     :path: "../node_modules/expo-manifests/ios"
+  EXMediaLibrary:
+    :path: "../node_modules/expo-media-library/ios"
   EXNotifications:
     :path: "../node_modules/expo-notifications/ios"
   Expo:
@@ -1990,6 +2006,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-dev-menu"
   expo-dev-menu-interface:
     :path: "../node_modules/expo-dev-menu-interface/ios"
+  ExpoClipboard:
+    :path: "../node_modules/expo-clipboard/ios"
   ExpoCrypto:
     :path: "../node_modules/expo-crypto/ios"
   ExpoDevice:
@@ -2069,6 +2087,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-view-shot:
+    :path: "../node_modules/react-native-view-shot"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -2119,6 +2139,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   UMAppLoader:
@@ -2143,12 +2165,14 @@ SPEC CHECKSUMS:
   EXImageLoader: 34b214f9387e98f3c73989f15d8d5b399c9ab3f7
   EXJSONUtils: 6802be4282d42b97c51682468ddc1026a06f8276
   EXManifests: cf66451b11b2c2f6464917528d792759f7fd6ce0
+  EXMediaLibrary: 88ee9eed37c4fe38a4b5b35b73a4f9fa056c999e
   EXNotifications: 09394cbd7165f9a4a00a53328aa09bf874bae717
   Expo: ba9abdf444dc6d2c05a82c4c1b51a2400beb6167
   expo-dev-client: 1e20e0d67534fd63da37604747a60e7d69fc46f5
   expo-dev-launcher: 4abaa5997c1063e77432bb23ca05da364803e297
   expo-dev-menu: 7cc0b6c9ed9fc99740e5d3ba1335bcd1537da9e8
   expo-dev-menu-interface: bda969497e73dadc2663c479e0fa726ca79a306e
+  ExpoClipboard: 695f274f8e028cd113837f917da40c76850877eb
   ExpoCrypto: a382ab9a2fa91f0b511ce1fe4d6baecee40a1615
   ExpoDevice: 1c1b0c9cad96c292c1de73948649cfd654b2b3c0
   ExpoHaptics: 360af6898407ee4e8265d30a1a8fb16491a660eb
@@ -2214,6 +2238,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
+  react-native-view-shot: f5507655f122e6b104888a11130f267a427f0d57
   React-NativeModulesApple: 1802a680a4cd891d2ab97780771bcb2ff11fdc0b
   React-perflogger: e3596db7e753f51766bceadc061936ef1472edc3
   React-RCTActionSheet: 17ab132c748b4471012abbcdcf5befe860660485
@@ -2240,6 +2265,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
+  RNShare: 0fad69ae2d71de9d1f7b9a43acf876886a6cb99c
   RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
   SDWebImage: cb032eba469c54e0000e78bcb0a13cdde0a52798
   SDWebImageAVIFCoder: 8348fef6d0ec69e129c66c9fe4d74fbfbf366112

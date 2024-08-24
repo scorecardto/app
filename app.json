@@ -20,7 +20,11 @@
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
       "buildNumber": "51",
+      "associatedDomains": [
+        "applinks:scorecardgrades.com"
+      ],
       "infoPlist": {
+        "LSApplicationQueriesSchemes": ["instagram-stories", "snapchat"],
         "UIBackgroundModes": [
           "remote-notification",
           "fetch"
@@ -56,6 +60,20 @@
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
       "versionCode": 2,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "scorecardgrades.com",
+              "pathPrefix": "/joinclub"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ],
       "permissions": [
         "android.permission.READ_CONTACTS",
         "android.permission.WRITE_CONTACTS"
@@ -97,6 +115,12 @@
         "expo-contacts",
         {
           "contactsPermission": "Find and invite friends to Scorecard"
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Save club invite QR code to your library"
         }
       ],
       [
