@@ -3,14 +3,13 @@ import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import ReactNative from "react-native";
 import { StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
-export const LongTextInput = forwardRef<
+export const SimpleTextInput = forwardRef<
   ReactNative.TextInput,
   {
     label: string;
     value: string;
     setValue: (text: string) => void;
     disabled?: boolean;
-    allowLineBreak?: boolean;
     disableMarginBottom?: boolean;
   }
 >((props, ref) => {
@@ -24,14 +23,15 @@ export const LongTextInput = forwardRef<
       marginBottom: 10,
     },
     input: {
-      paddingHorizontal: 16,
-      paddingTop: props.disableMarginBottom ? 0 : 10,
-      paddingBottom: props.allowLineBreak ? 10 : 40,
+      paddingHorizontal: 18,
+      paddingVertical: 12,
       backgroundColor: colors.textInput,
       borderRadius: 4,
-      marginBottom: 10,
+      marginBottom: props.disableMarginBottom ? 0 : 10,
       fontSize: 16,
-      lineHeight: 24,
+      // borderColor: colors.borderNeutral,
+      // borderWidth: 1,
+      // borderBottomWidth: 2,
       color: colors.primary,
     },
   });
@@ -43,16 +43,14 @@ export const LongTextInput = forwardRef<
         ref={ref}
         defaultValue={props.value}
         style={styles.input}
-        multiline={true}
         placeholder={props.label}
         placeholderTextColor={colors.text}
         onChangeText={(v) => {
           if (!props.disabled) props.setValue(v);
         }}
         editable={!props.disabled}
-        returnKeyType={props.allowLineBreak ? "default" : "done"}
-        // press button to submit, not to make a new line
-        blurOnSubmit={!props.allowLineBreak}
+        returnKeyType={"done"}
+        multiline={false}
       />
     </View>
   );

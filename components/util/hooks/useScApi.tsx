@@ -8,6 +8,9 @@ function useScApi() {
   type ScApiGetParams = {
     pathname: string;
     auth: boolean;
+    params?: {
+      [x: string]: string;
+    };
   };
 
   const get = useCallback(
@@ -23,8 +26,11 @@ function useScApi() {
         ...(token ? { authorization: token } : {}),
       };
 
+      // const params = new URLSearchParams(p.params);
+
       return await axios.get(`${API_HOST}${p.pathname}`, {
         headers,
+        params: p.params,
       });
     },
     [user]

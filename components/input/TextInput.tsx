@@ -20,6 +20,7 @@ export const TextInput = forwardRef<
     inputProps?: ReactNative.TextInputProps;
     clearTextOnFocus?: boolean;
     disableMarginBottom?: boolean;
+    ignoreValueSync?: boolean;
   }
 >((props, ref) => {
   const disableCorrections =
@@ -57,7 +58,9 @@ export const TextInput = forwardRef<
         ref={ref}
         clearTextOnFocus={props.clearTextOnFocus}
         style={styles.input}
-        value={props.value}
+        {...{
+          [`${props.ignoreValueSync ? "defaultValue" : "value"}`]: props.value,
+        }}
         placeholder={props.label}
         placeholderTextColor={colors.text}
         onChangeText={props.setValue}

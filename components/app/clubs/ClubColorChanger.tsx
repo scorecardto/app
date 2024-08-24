@@ -9,7 +9,7 @@ import useIsDarkMode from "../../core/theme/useIsDarkMode";
 import MediumText from "../../text/MediumText";
 
 export default function ClubColorChanger(props: {
-  initialValue: string;
+  initialValue?: string;
   onChange: (accentLabel: string) => void;
 }) {
   const colors = useColors();
@@ -18,7 +18,9 @@ export default function ClubColorChanger(props: {
   const [value, setValue] = useState(props.initialValue);
 
   useEffect(() => {
-    props.onChange(value);
+    if (value) {
+      props.onChange(value);
+    }
   }, [value]);
 
   const colorOptions = [
@@ -52,7 +54,9 @@ export default function ClubColorChanger(props: {
   ];
   return (
     <View style={{}}>
-      <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+      <MediumText
+        style={{ marginTop: 10, marginBottom: 12, color: colors.primary }}
+      >
         Accent Color
       </MediumText>
       <View>
@@ -86,7 +90,7 @@ export default function ClubColorChanger(props: {
                     backgroundColor: c,
                   }}
                 >
-                  {c === value && (
+                  {(c === value || (index === 0 && !value)) && (
                     <MaterialIcons
                       name="check"
                       size={20}

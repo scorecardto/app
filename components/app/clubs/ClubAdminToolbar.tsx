@@ -64,7 +64,7 @@ export default function ClubAdminToolbar(props: {
         style={{
           flexDirection: "row",
           marginTop: 8,
-          marginBottom: 12,
+          marginBottom: 8,
           width: "100%",
           justifyContent: "space-between",
         }}

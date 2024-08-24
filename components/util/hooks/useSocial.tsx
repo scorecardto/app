@@ -12,6 +12,8 @@ function useSocial() {
       pathname: "/v1/clubs/list",
     });
 
+    console.log(r);
+
     dispatch(setClubs(r.data.clubs));
   };
   return {

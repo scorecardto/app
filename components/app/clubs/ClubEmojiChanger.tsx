@@ -9,7 +9,7 @@ import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ClubEmojiChanger(props: {
-  initialValue: string;
+  initialValue?: string;
   onChange: (accentLabel: string) => void;
 }) {
   const colors = useColors();
@@ -37,7 +37,7 @@ export default function ClubEmojiChanger(props: {
             backgroundColor: colors.secondaryNeutral,
             paddingVertical: 12,
             paddingHorizontal: 8,
-            marginBottom: 24,
+            marginBottom: 16,
             width: "100%",
           }}
         >
@@ -49,7 +49,7 @@ export default function ClubEmojiChanger(props: {
             }}
           >
             <Text style={{ fontSize: 36, marginHorizontal: 10 }}>
-              {props.initialValue}
+              {props.initialValue || "🙂"}
             </Text>
             <View
               style={{

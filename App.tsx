@@ -325,6 +325,7 @@ export default function App(props: { resetKey: string }) {
                       name="clubAdmin"
                       component={ClubAdminScreen}
                       options={{
+                        gestureEnabled: false,
                         headerShown: false,
                       }}
                     />
