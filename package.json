@@ -12,6 +12,8 @@
     "@expo-google-fonts/anek-kannada": "^0.2.3",
     "@expo-google-fonts/dm-sans": "^0.2.3",
     "@expo-google-fonts/ibm-plex-mono": "^0.2.3",
+    "@expo-google-fonts/league-spartan": "^0.2.3",
+    "@expo-google-fonts/rubik": "^0.2.3",
     "@expo/webpack-config": "^19.0.0",
     "@gorhom/bottom-sheet": "^4.6.0",
     "@react-native-cookies/cookies": "^6.2.1",

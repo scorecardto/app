@@ -15,6 +15,7 @@ import CourseSaveArrayContainer from "../../app/course/CourseSaveArrayContainer"
 import { Club } from "scorecard-types";
 import useScApi from "../../util/hooks/useScApi";
 import { TextInput } from "../../input/TextInput";
+import ClubHomeView from "../../app/clubs/ClubHomeView";
 
 export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -25,7 +26,7 @@ export default function ClubAdminScreen(props: {
   const colors = useColors();
   const navigation = useNavigation();
 
-  const [tab, setTab] = useState("edit");
+  const [tab, setTab] = useState("home");
 
   const [club, setClub] = useState<Club | null>(null);
   const [activeClub, setActiveClub] = useState<Club | null>(null);
@@ -142,7 +143,7 @@ export default function ClubAdminScreen(props: {
               flex: 1,
             }}
           >
-            {/* {loading && <ActivityIndicator />} */}
+            {tab === "home" && <ClubHomeView />}
             {tab === "edit" && clubCustomizeView}
           </View>
         )}
