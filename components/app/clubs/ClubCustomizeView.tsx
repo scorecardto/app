@@ -33,7 +33,7 @@ export default function ClubCustomizeView(props: {
     });
   }, [name, color, bio, link, emoji]);
   return (
-    <KeyboardAvoidingView
+    <View
       style={{
         flex: 1,
       }}
@@ -72,6 +72,6 @@ export default function ClubCustomizeView(props: {
 
       <ClubColorChanger initialValue={color} onChange={setColor} />
       <ClubEmojiChanger initialValue={emoji} onChange={setEmoji} />
-    </KeyboardAvoidingView>
+    </View>
   );
 }

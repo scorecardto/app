@@ -1,16 +1,13 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import CourseCornerButton from "./CourseCornerButton";
 import useColors from "../../core/theme/useColors";
 import useAccents from "../../core/theme/useAccents";
-export default function CourseSaveArrayContainer(props: {
+import CourseCornerButton from "../course/CourseCornerButton";
+import MediumText from "../../text/MediumText";
+export default function ClubPostArrayContainer(props: {
   onPressLeft: () => void;
   onPressRight: () => void;
-  hideRight?: boolean;
-  canSave?: boolean;
-  saving?: boolean;
-  save: boolean;
 }) {
   const insets = useSafeAreaInsets();
   const accents = useAccents();
@@ -45,25 +42,25 @@ export default function CourseSaveArrayContainer(props: {
           iconSize={28}
           onPress={() => props.onPressLeft()}
         />
-        {props.save && (
-          <TouchableOpacity>
-            <View>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontStyle: "italic",
-                  color: colors.text,
-                }}
-              >
-                {props.saving
-                  ? "Saving..."
-                  : props.canSave
-                  ? "Waiting..."
-                  : "All Changes Saved"}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity onPress={() => props.onPressRight()}>
+          <View
+            style={{
+              backgroundColor: colors.button,
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              borderRadius: 99,
+            }}
+          >
+            <MediumText
+              style={{
+                color: "#FFFFFF",
+                fontSize: 14,
+              }}
+            >
+              Continue
+            </MediumText>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -85,7 +85,14 @@ export default function ClubAdminToolbar(props: {
           icon="format-paint"
           active={props.tab === "edit"}
         ></Button>
-        <Button onPress={() => {}} name="Post" icon="add-box"></Button>
+        <Button
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate("createClubPost");
+          }}
+          name="Post"
+          icon="add-box"
+        ></Button>
         <Button
           onPress={() => {
             props.setTab("members");

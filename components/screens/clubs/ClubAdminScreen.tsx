@@ -16,6 +16,7 @@ import { Club } from "scorecard-types";
 import useScApi from "../../util/hooks/useScApi";
 import { TextInput } from "../../input/TextInput";
 import ClubHomeView from "../../app/clubs/ClubHomeView";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -129,15 +130,16 @@ export default function ClubAdminScreen(props: {
           <ClubAdminToolbar tab={tab} setTab={setTab} />
         </View>
       </View>
-      <ScrollView
+      <View
         style={{
           flexGrow: 1,
-          padding: 16,
+          paddingHorizontal: 16,
+          paddingVertical: 4,
           flex: 1,
         }}
       >
         {club && (
-          <View
+          <KeyboardAwareScrollView
             style={{
               height: "100%",
               flex: 1,
@@ -145,9 +147,9 @@ export default function ClubAdminScreen(props: {
           >
             {tab === "home" && <ClubHomeView />}
             {tab === "edit" && clubCustomizeView}
-          </View>
+          </KeyboardAwareScrollView>
         )}
-      </ScrollView>
+      </View>
     </View>
   );
 }

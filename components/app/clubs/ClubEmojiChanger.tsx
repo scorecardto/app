@@ -38,6 +38,7 @@ export default function ClubEmojiChanger(props: {
             paddingVertical: 12,
             paddingHorizontal: 8,
             marginBottom: 16,
+            marginTop: 24,
             width: "100%",
           }}
         >
