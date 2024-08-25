@@ -57,6 +57,8 @@ import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
 import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";
 import PickEmojiScreen from "./components/screens/PickEmojiScreen";
 import CreateClubPostScreen from "./components/screens/clubs/CreateClubPostScreen";
+import ShareClubSnapchat from "./components/app/clubs/socials/ShareClubSnapchat";
+import ShareClubInstagram from "./components/app/clubs/socials/ShareClubInstagram";
 import FinishClubPostScreen from "./components/screens/clubs/FinishClubPostScreen";
 
 SplashScreen.preventAutoHideAsync();
@@ -337,6 +339,22 @@ export default function App(props: { resetKey: string }) {
                       options={{
                         headerShown: false,
                       }}
+                    />
+                    <Stack.Screen
+                        name={"shareClubSnapchat"}
+                        component={ShareClubSnapchat}
+                        options={{
+                          headerShown: false,
+                          gestureEnabled: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name={"shareClubInstagram"}
+                        component={ShareClubInstagram}
+                        options={{
+                          headerShown: false,
+                          gestureEnabled: false,
+                        }}
                     />
                     <Stack.Screen
                       name="createClubPost"

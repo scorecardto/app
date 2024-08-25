@@ -1642,8 +1642,7 @@ PODS:
   - react-native-keyboard-controller (1.13.2):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - react-native-pager-view (6.4.0):
-    - RCT-Folly (= 2021.07.22.00)
+  - react-native-pager-view (6.2.0):
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
@@ -1833,6 +1832,15 @@ PODS:
   - SDWebImageWebPCoder (0.11.0):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.15)
+  - snap-kit-react-native (0.4.0):
+    - React-Core
+    - SnapSDK/SCSDKCreativeKit (~> 1.15.0)
+    - SnapSDK/SCSDKLoginKit (~> 1.15.0)
+  - SnapSDK/SCSDKCoreKit (1.15.0)
+  - SnapSDK/SCSDKCreativeKit (1.15.0):
+    - SnapSDK/SCSDKCoreKit
+  - SnapSDK/SCSDKLoginKit (1.15.0):
+    - SnapSDK/SCSDKCoreKit
   - SocketRocket (0.6.1)
   - SwiftSoup (2.7.3)
   - UMAppLoader (4.2.0)
@@ -1931,6 +1939,7 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
+  - "snap-kit-react-native (from `../node_modules/@snapchat/snap-kit-react-native`)"
   - SwiftSoup
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -1971,6 +1980,7 @@ SPEC REPOS:
     - SDWebImageAVIFCoder
     - SDWebImageSVGCoder
     - SDWebImageWebPCoder
+    - SnapSDK
     - SocketRocket
     - SwiftSoup
 
@@ -2156,6 +2166,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-share"
   RNSVG:
     :path: "../node_modules/react-native-svg"
+  snap-kit-react-native:
+    :path: "../node_modules/@snapchat/snap-kit-react-native"
   UMAppLoader:
     :path: "../node_modules/unimodules-app-loader/ios"
   Yoga:
@@ -2250,7 +2262,7 @@ SPEC CHECKSUMS:
   react-native-compressor: 3f05b3b6153f31ed5c4145ed293396a19f6ff52a
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-keyboard-controller: e3ed05962b5a7e3765815c6fc9158d743ac97f74
-  react-native-pager-view: c15308109d5049082107532738c4da345a69259f
+  react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
   react-native-view-shot: f5507655f122e6b104888a11130f267a427f0d57
@@ -2286,6 +2298,8 @@ SPEC CHECKSUMS:
   SDWebImageAVIFCoder: 8348fef6d0ec69e129c66c9fe4d74fbfbf366112
   SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
   SDWebImageWebPCoder: 295a6573c512f54ad2dd58098e64e17dcf008499
+  snap-kit-react-native: 751006199818fccb38c8a01196495167bc25e9fb
+  SnapSDK: 1e68aad748e080f49e3802559b3b76026666ef62
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   SwiftSoup: e3849c3293b1efee9cf892f91f6ae5c22bfeb5f7
   UMAppLoader: e83f024f75f07802fce99739f04b4537d188caaf

@@ -48,6 +48,16 @@
 				<string>exp+scorecard</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.scorecardgrades.mobile</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>scorecard</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>51</string>
@@ -79,6 +89,14 @@
 	<false/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<false/>
+	<key>SCSDKClientId</key>
+	<string>0651cbef-cea0-47d1-a3a1-7fc0a95475fc</string>
+	<key>SCSDKRedirectUrl</key>
+	<string>scorecard://snapchat/oauth2</string>
+	<key>SCSDKScopes</key>
+	<array>
+        <string>https://auth.snapchat.com/oauth2/api/user.display_name</string>
+    </array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
