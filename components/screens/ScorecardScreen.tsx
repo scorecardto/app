@@ -13,6 +13,7 @@ import { updateStatus } from "../../lib/updateStatus";
 import { setSocialConnected } from "../core/state/social/socialSlice";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import auth from "@react-native-firebase/auth";
+import {refreshImageCache} from "../../lib/refreshImageCache";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -28,6 +29,8 @@ export default function ScorecardScreen(props: {
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+
+    refreshImageCache();
     return subscriber; // unsubscribe on unmount
   }, []);
 

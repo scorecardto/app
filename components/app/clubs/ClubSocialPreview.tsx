@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Image as ReactImage } from "react-native";
 import { Image } from "expo-image";
 import React from "react";
 import { LinearGradient } from "react-native-gradients";
@@ -6,9 +6,11 @@ import useColors from "../../core/theme/useColors";
 import { MaterialIcons } from "@expo/vector-icons";
 import ClubSocialMediaIcon from "./ClubSocialMediaIcon";
 import MediumText from "../../text/MediumText";
+import {Club} from "scorecard-types";
+import ScorecardImage from "../../util/ScorecardImage";
 const snapchatLogo = require("../../../assets/snapchat.svg");
 const instagramLogo = require("../../../assets/instagram.svg");
-export default function ClubSocialPreview() {
+export default function ClubSocialPreview(props: {club: Club}) {
   const PICTURE_SIZE = 108;
 
   const colors = useColors();
@@ -94,7 +96,7 @@ export default function ClubSocialPreview() {
               fontWeight: "600",
             }}
           >
-            My Club at SCHOOL
+            {props.club.name} at SCHOOL
           </Text>
           <Text
             style={{
@@ -105,7 +107,7 @@ export default function ClubSocialPreview() {
               fontFamily: "LeagueSpartan_700Bold",
             }}
           >
-            Join My Club!
+            Join {props.club.name}!
           </Text>
         </View>
 
@@ -128,8 +130,11 @@ export default function ClubSocialPreview() {
               backgroundColor: "silver",
               borderColor: colors.card,
               borderWidth: 4,
+              overflow: "hidden",
             }}
-          ></View>
+          >
+              <ScorecardImage id={props.club.picture!} width={PICTURE_SIZE} height={PICTURE_SIZE} />
+          </View>
         </View>
         <View
           style={{

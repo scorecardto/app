@@ -12,7 +12,7 @@ function useSocial() {
       pathname: "/v1/clubs/list",
     });
 
-    console.log(r);
+    console.log(r.data);
 
     dispatch(setClubs(r.data.clubs));
   };

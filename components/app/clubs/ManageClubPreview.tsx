@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import {View, Text, TouchableOpacity, ActivityIndicator, Image} from "react-native";
 import React, { useCallback, useState } from "react";
 import useColors from "../../core/theme/useColors";
 import LargeText from "../../text/LargeText";
@@ -9,6 +9,7 @@ import useSocial from "../../util/hooks/useSocial";
 import Toast from "react-native-toast-message";
 import useScApi from "../../util/hooks/useScApi";
 import { useNavigation } from "@react-navigation/native";
+import ScorecardImage from "../../util/ScorecardImage";
 
 export default function ManageClubPreview(props: { club: Club }) {
   const colors = useColors();
@@ -48,8 +49,11 @@ export default function ManageClubPreview(props: { club: Club }) {
               width: 44,
               borderRadius: 48,
               backgroundColor: "gray",
+              overflow: "hidden",
             }}
-          ></View>
+          >
+              <ScorecardImage id={props.club.picture!} height={44} width={44} />
+          </View>
           <View
             style={{
               paddingLeft: 12,

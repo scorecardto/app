@@ -16,6 +16,7 @@ import { Club } from "scorecard-types";
 import useScApi from "../../util/hooks/useScApi";
 import { TextInput } from "../../input/TextInput";
 import ClubHomeView from "../../app/clubs/ClubHomeView";
+import useSocial from "../../util/hooks/useSocial";
 
 export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -32,6 +33,7 @@ export default function ClubAdminScreen(props: {
   const [activeClub, setActiveClub] = useState<Club | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const [forceLoading, setForceLoading] = useState(false);
 
   const api = useScApi();
 
@@ -49,6 +51,7 @@ export default function ClubAdminScreen(props: {
       });
   }, [clubCode]);
 
+  const social = useSocial();
   const updateClub = useCallback((c: Club) => {
     api
       .post({
@@ -59,8 +62,10 @@ export default function ClubAdminScreen(props: {
         auth: true,
       })
       .then((result) => {
+        social.refreshClubs();
         fetchClub().then(() => {
           setLoading(false);
+          setForceLoading(false);
         });
       });
   }, []);
@@ -91,6 +96,7 @@ export default function ClubAdminScreen(props: {
       return (
         <ClubCustomizeView
           club={club}
+          startLoading={() => setForceLoading(true)}
           updateClub={(c) => {
             setActiveClub(c);
           }}
@@ -118,7 +124,7 @@ export default function ClubAdminScreen(props: {
           save={tab === "edit"}
           hideRight
           canSave={JSON.stringify(activeClub) !== JSON.stringify(club)}
-          saving={loading}
+          saving={forceLoading || loading}
           onPressRight={() => {}}
         />
         <View
@@ -143,7 +149,7 @@ export default function ClubAdminScreen(props: {
               flex: 1,
             }}
           >
-            {tab === "home" && <ClubHomeView />}
+            {tab === "home" && <ClubHomeView club={club} />}
             {tab === "edit" && clubCustomizeView}
           </View>
         )}
