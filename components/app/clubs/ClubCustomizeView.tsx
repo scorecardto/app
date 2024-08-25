@@ -12,10 +12,12 @@ import { SimpleTextInput } from "../../input/SimpleTextInput";
 
 export default function ClubCustomizeView(props: {
   club: Club;
+  startLoading(): void;
   updateClub(c: Club): void;
 }) {
   const colors = useColors();
 
+  const [picture, setPicture] = useState(props.club.picture);
   const [name, setName] = useState(props.club.name);
   const [color, setColor] = useState(props.club.heroColor);
   const [bio, setBio] = useState(props.club.bio);
@@ -25,20 +27,21 @@ export default function ClubCustomizeView(props: {
   useEffect(() => {
     props.updateClub({
       ...props.club,
+      picture,
       name,
       heroColor: color,
       bio,
       link,
       emoji,
     });
-  }, [name, color, bio, link, emoji]);
+  }, [picture, name, color, bio, link, emoji]);
   return (
     <View
       style={{
         flex: 1,
       }}
     >
-      <ClubPictureChanger />
+      <ClubPictureChanger initialValue={picture} onChange={setPicture} startLoading={props.startLoading} />
 
       <MediumText style={{ marginBottom: 8, color: colors.primary }}>
         Display Name

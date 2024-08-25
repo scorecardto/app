@@ -24,7 +24,10 @@
         "applinks:scorecardgrades.com"
       ],
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["instagram-stories", "snapchat"],
+        "LSApplicationQueriesSchemes": [
+          "instagram-stories",
+          "snapchat"
+        ],
         "UIBackgroundModes": [
           "remote-notification",
           "fetch"
@@ -71,7 +74,10 @@
               "pathPrefix": "/joinclub"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "permissions": [
@@ -97,7 +103,9 @@
             "src": "./widgets/ios",
             "devTeamId": "H29JJ3FSST",
             "mode": "development",
-            "moduleDependencies": ["Storage.swift"],
+            "moduleDependencies": [
+              "Storage.swift"
+            ],
             "useLiveActivities": false,
             "frequentUpdates": false
           }
@@ -130,7 +138,8 @@
             "useFrameworks": "static"
           }
         }
-      ]
+      ],
+      "react-native-compressor"
     ],
     "runtimeVersion": "1.0.0",
     "updates": {

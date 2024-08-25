@@ -40,22 +40,23 @@ export default function ScorecardQRCode(props: { link: string; size: number }) {
   return (
     <View>
       <View
-        ref={qrView}
         style={{
           flexDirection: "row",
           justifyContent: "center",
         }}
       >
-        <QRCode
-          value={link}
-          size={size}
-          logo={require("../../assets/icon.png")}
-          logoSize={logoAreaSize * 0.8}
-          logoBackgroundColor={"#FFF"}
-          logoMargin={logoAreaSize * 0.2}
-          quietZone={size * 0.03125}
-          ecl={"H"}
-        />
+          <View ref={qrView} style={{alignSelf: 'flex-start'}}>
+              <QRCode
+                  value={link}
+                  size={size}
+                  logo={require("../../assets/icon.png")}
+                  logoSize={logoAreaSize * 0.8}
+                  logoBackgroundColor={"#FFF"}
+                  logoMargin={logoAreaSize * 0.2}
+                  quietZone={size * 0.03125}
+                  ecl={"H"}
+              />
+          </View>
       </View>
       <View
         style={{

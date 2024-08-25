@@ -4,8 +4,9 @@ import ClubSocialPreview from "./ClubSocialPreview";
 import ClubQRCodePreview from "./ClubQRCodePreview";
 import MediumText from "../../text/MediumText";
 import useColors from "../../core/theme/useColors";
+import {Club} from "scorecard-types";
 
-export default function ClubHomeView() {
+export default function ClubHomeView(props: {club: Club}) {
   const colors = useColors();
   return (
     <View>
@@ -44,8 +45,8 @@ export default function ClubHomeView() {
           </Text>
         </View>
       </View>
-      <ClubSocialPreview />
-      <ClubQRCodePreview />
+      <ClubSocialPreview club={props.club} />
+      <ClubQRCodePreview club={props.club} />
     </View>
   );
 }

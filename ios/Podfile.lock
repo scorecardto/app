@@ -1634,6 +1634,9 @@ PODS:
   - React-jsinspector (0.72.6)
   - React-logger (0.72.6):
     - glog
+  - react-native-compressor (1.8.25):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
   - react-native-keyboard-controller (1.13.2):
@@ -1894,6 +1897,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
+  - react-native-compressor (from `../node_modules/react-native-compressor`)
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
@@ -2084,6 +2088,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   React-logger:
     :path: "../node_modules/react-native/ReactCommon/logger"
+  react-native-compressor:
+    :path: "../node_modules/react-native-compressor"
   react-native-cookies:
     :path: "../node_modules/@react-native-cookies/cookies"
   react-native-keyboard-controller:
@@ -2241,6 +2247,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 3bf18ff7cb03cd8dfdce08fbbc0d15058c1d71ae
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
+  react-native-compressor: 3f05b3b6153f31ed5c4145ed293396a19f6ff52a
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-keyboard-controller: e3ed05962b5a7e3765815c6fc9158d743ac97f74
   react-native-pager-view: c15308109d5049082107532738c4da345a69259f
