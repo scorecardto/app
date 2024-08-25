@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Keyboard,
   InteractionManager,
+  Alert,
 } from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useColors from "../../core/theme/useColors";
@@ -16,12 +17,22 @@ import {
 import { Octicons } from "@expo/vector-icons";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import LargeText from "../../text/LargeText";
-import { useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ClubPostArrayContainer from "../../app/clubs/ClubPostArrayContainer";
-function ToolbarButton(props: { icon: string; label: string }) {
+import { Club } from "scorecard-types";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { MobileDataContext } from "../../core/context/MobileDataContext";
+import ScorecardImage from "../../util/ScorecardImage";
+
+function ToolbarButton(props: {
+  icon: string;
+  label: string;
+  onPress(): void;
+}) {
   const colors = useColors();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={props.onPress}>
       <View
         style={{
           flexDirection: "row",
@@ -44,7 +55,10 @@ function ToolbarButton(props: { icon: string; label: string }) {
 }
 export default function CreateClubPostScreen(props: {
   navigation: NavigationProp<any, any>;
+  route: any;
 }) {
+  const club: Club | null = props.route.params.club;
+
   const colors = useColors();
   const navigation = useNavigation();
 
@@ -52,6 +66,77 @@ export default function CreateClubPostScreen(props: {
 
   const ref = useRef<TextInput>(null);
 
+  const { user } = useContext(MobileDataContext);
+
+  const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
+  const [image, setImage] = useState("");
+
+  const addImage = useCallback(async () => {
+    let token: string | undefined = undefined;
+
+    user?.getIdToken().then((t) => (token = t));
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+
+    if (!token) {
+      token = await user?.getIdToken();
+    }
+
+    if (!token) {
+      return;
+    }
+
+    const ret = await FileSystem.uploadAsync(
+      "https://api.scorecardgrades.com/v1/images/upload",
+      result.assets[0].uri,
+      {
+        headers: {
+          Authorization: token,
+        },
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: "image",
+      }
+    );
+
+    // @ts-ignore
+    const body = JSON.parse(ret.body);
+
+    if (body.result === "success") {
+      setImage(body.id);
+    }
+
+    if (ret.status !== 200) return;
+  }, []);
+  const addLink = useCallback(() => {
+    Alert.prompt(
+      "Add a Link",
+      undefined,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => {},
+        },
+        {
+          text: "Submit",
+          onPress: (l) => {
+            if (l) {
+              setLink(l);
+            }
+          },
+        },
+      ],
+      "plain-text"
+    );
+  }, []);
   return (
     <View style={{}}>
       <View
@@ -64,7 +149,11 @@ export default function CreateClubPostScreen(props: {
           onPressLeft={() => {
             props.navigation.goBack();
           }}
-          onPressRight={() => {}}
+          onPressRight={() => {
+            props.navigation.navigate("finishClubPost", {
+              club: club,
+            });
+          }}
         />
         <KeyboardAvoidingView
           style={{}}
@@ -104,29 +193,81 @@ export default function CreateClubPostScreen(props: {
                   </LargeText>
                 </View>
               </View>
-              <TextInput
-                defaultValue={""}
-                ref={ref}
-                autoFocus={true}
-                style={{
-                  flexShrink: 1,
-                  fontSize: 20,
-                  paddingHorizontal: 24,
-                  paddingTop: 12,
-                  marginTop: 0,
-                }}
-                placeholder="Start writing here..."
-                placeholderTextColor={colors.text}
-                multiline={true}
-                onChangeText={(v) => {}}
-                returnKeyType={"default"}
-                blurOnSubmit={false}
-                onLayout={() => {
-                  InteractionManager.runAfterInteractions(() => {
-                    ref.current?.focus();
-                  });
-                }}
-              />
+              {link && (
+                <TouchableOpacity
+                  onPress={() => {
+                    addLink();
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: colors.secondaryNeutral,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                      borderRadius: 24,
+                      borderColor: colors.borderNeutral,
+                      borderWidth: 1,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    <Text>{link}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              {image && (
+                <TouchableOpacity
+                  onPress={() => {
+                    addLink();
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: colors.secondaryNeutral,
+                      paddingHorizontal: 12,
+                      paddingVertical: 8,
+                      borderRadius: 24,
+                      borderColor: colors.borderNeutral,
+                      borderWidth: 1,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    <Text>{image}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              <View>
+                <TextInput
+                  defaultValue={""}
+                  ref={ref}
+                  autoFocus={true}
+                  style={{
+                    flexShrink: 1,
+                    fontSize: 20,
+                    paddingHorizontal: 24,
+                    paddingTop: 12,
+                    marginTop: 0,
+                  }}
+                  placeholder="Start writing here..."
+                  placeholderTextColor={colors.text}
+                  multiline={true}
+                  onChangeText={(v) => {
+                    setContent(v);
+                  }}
+                  returnKeyType={"default"}
+                  blurOnSubmit={false}
+                  onLayout={() => {
+                    InteractionManager.runAfterInteractions(() => {
+                      ref.current?.focus();
+                    });
+                  }}
+                />
+                {image && (
+                  <>
+                    <Text>image</Text>
+                    <ScorecardImage height={300} width={300} id={image} />
+                  </>
+                )}
+              </View>
             </View>
             <KeyboardStickyView
               offset={{
@@ -151,9 +292,21 @@ export default function CreateClubPostScreen(props: {
                   width: "100%",
                 }}
               >
-                <ToolbarButton icon="image" label="Image" />
-                <ToolbarButton icon="link" label="Link" />
-                <ToolbarButton icon="clock" label="Event" />
+                <ToolbarButton
+                  icon="image"
+                  label="Image"
+                  onPress={() => {
+                    addImage();
+                  }}
+                />
+                <ToolbarButton
+                  icon="link"
+                  label="Link"
+                  onPress={() => {
+                    addLink();
+                  }}
+                />
+                <ToolbarButton icon="clock" label="Event" onPress={() => {}} />
               </View>
             </KeyboardStickyView>
           </View>

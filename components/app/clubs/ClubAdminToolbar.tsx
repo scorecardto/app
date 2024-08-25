@@ -3,7 +3,8 @@ import useColors from "../../core/theme/useColors";
 import MediumText from "../../text/MediumText";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Club } from "scorecard-types";
 function Button(props: {
   name: string;
   icon: string;
@@ -52,6 +53,7 @@ function Button(props: {
   );
 }
 export default function ClubAdminToolbar(props: {
+  club: Club | null;
   tab: string;
   setTab(c: string): void;
 }) {
@@ -88,7 +90,9 @@ export default function ClubAdminToolbar(props: {
         <Button
           onPress={() => {
             // @ts-ignore
-            navigation.navigate("createClubPost");
+            navigation.navigate("createClubPost", {
+              club: props.club,
+            });
           }}
           name="Post"
           icon="add-box"

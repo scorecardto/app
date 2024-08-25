@@ -92,6 +92,10 @@ export default function ClubAdminScreen(props: {
     }
   }, [club, activeClub]);
 
+  useEffect(() => {
+    console.log(club);
+  }, [club]);
+
   const clubCustomizeView = useMemo(() => {
     if (club) {
       return (
@@ -133,7 +137,7 @@ export default function ClubAdminScreen(props: {
             paddingHorizontal: 16,
           }}
         >
-          <ClubAdminToolbar tab={tab} setTab={setTab} />
+          <ClubAdminToolbar tab={tab} setTab={setTab} club={club} />
         </View>
       </View>
       <View

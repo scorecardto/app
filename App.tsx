@@ -57,6 +57,7 @@ import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
 import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";
 import PickEmojiScreen from "./components/screens/PickEmojiScreen";
 import CreateClubPostScreen from "./components/screens/clubs/CreateClubPostScreen";
+import FinishClubPostScreen from "./components/screens/clubs/FinishClubPostScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -342,6 +343,13 @@ export default function App(props: { resetKey: string }) {
                       component={CreateClubPostScreen}
                       options={{
                         gestureEnabled: false,
+                        headerShown: false,
+                      }}
+                    />
+                    <Stack.Screen
+                      name="finishClubPost"
+                      component={FinishClubPostScreen}
+                      options={{
                         headerShown: false,
                       }}
                     />
