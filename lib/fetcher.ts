@@ -122,7 +122,7 @@ async function parseHome(
   }
 
   const courseElements = homeData.querySelectorAll(
-    ".studentGradingBottomLeft tr:not(:first-child) td:nth-child(4)"
+    ".studentGradingBottomLeft tr"
   );
 
   const rawName =
@@ -161,15 +161,23 @@ async function parseHome(
 
   const courses: Course[] = [];
 
-  courseElements.forEach((courseElement, idx) => {
-    const courseKey: string = courseElement.getAttribute("cellkey")!;
+  for (let idx = 0; idx < courseElements.length; idx++) {
+    const courseElement = courseElements[idx];
 
-    const name = courseElement.textContent;
+    const cell = courseElement.querySelector("td:nth-child(4)");
+    if (cell == null) {
+      if (courseElement.firstChild?.textContent === "Dropped") break;
+
+      continue;
+    }
+
+    const courseKey: string = cell.getAttribute("cellkey")!;
+    const name = cell.textContent;
 
     const grades: Course["grades"] = [];
 
     const gradeElements = homeData.querySelectorAll(
-      `.studentGradingBottomRight tr:nth-child(${idx + 2}) td`
+        `.studentGradingBottomRight tr:nth-child(${idx + 1}) td`
     );
 
     gradeElements.forEach((gradeElement) => {
@@ -178,7 +186,7 @@ async function parseHome(
 
       if (idx === 0) {
         columnNames.push(
-          parsedKey["gradeTypeIndex"]?.toString() ?? "Grading Period"
+            parsedKey["gradeTypeIndex"]?.toString() ?? "Grading Period"
         );
       }
 
@@ -200,7 +208,7 @@ async function parseHome(
       name,
       grades,
     });
-  });
+  }
 
   return { courses, gradeCategoryNames: columnNames };
 }
