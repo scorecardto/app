@@ -45,7 +45,7 @@ export default function ScorecardQRCode(props: { link: string; size: number }) {
           justifyContent: "center",
         }}
       >
-          <View ref={qrView} style={{alignSelf: 'flex-start'}}>
+          <View collapsable={false} ref={qrView} style={{alignSelf: 'flex-start'}}>
               <QRCode
                   value={link}
                   size={size}

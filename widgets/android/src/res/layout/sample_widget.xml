@@ -30,6 +30,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView android:id="@+id/slot1_name"
+                        android:singleLine="true"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
                         android:text="Course slot 1"
@@ -72,6 +73,7 @@
                           android:layout_height="match_parent"
                           android:orientation="vertical">
                 <TextView android:id="@+id/slot2_name"
+                          android:singleLine="true"
                           android:layout_width="match_parent"
                           android:layout_height="20dp"
                           android:text="Course slot 2"
@@ -114,6 +116,7 @@
                           android:layout_height="match_parent"
                           android:orientation="vertical">
                 <TextView android:id="@+id/slot3_name"
+                          android:singleLine="true"
                           android:layout_width="match_parent"
                           android:layout_height="20dp"
                           android:text="Course slot 3"

@@ -7,7 +7,6 @@ import { RootState } from "../core/state/store";
 import ContactListView from "../app/vip/ContactListView";
 import axios from "redaxios";
 import formatPhoneNumber from "phone";
-import Storage from "expo-storage";
 import auth from "@react-native-firebase/auth";
 import {
   addInvitedNumber,
@@ -22,6 +21,7 @@ import BottomSheetContext from "../util/BottomSheet/BottomSheetContext";
 import FeatureExplanationSheet from "../app/vip/FeatureExplanationSheet";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import ScorecardModule from "../../lib/expoModuleBridge";
 
 export default function InviteOthersScreen(props: {
   navigation: NavigationProp<any>;
@@ -60,9 +60,7 @@ export default function InviteOthersScreen(props: {
     (async () => {
       const { status } = await Contacts.requestPermissionsAsync();
       if (status === "granted") {
-        const hasProcessedContacts = await Storage.getItem({
-          key: "hasProcessedContacts",
-        });
+        const hasProcessedContacts = ScorecardModule.getItem("hasProcessedContacts");
 
         if (!hasProcessedContacts) {
           const { data } = await Contacts.getContactsAsync({
@@ -84,10 +82,7 @@ export default function InviteOthersScreen(props: {
           );
 
           if (result.data.success) {
-            Storage.setItem({
-              key: "hasProcessedContacts",
-              value: "true",
-            });
+            ScorecardModule.storeItem( "hasProcessedContacts", "true");
           }
         }
 

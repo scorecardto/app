@@ -7,7 +7,6 @@ import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
 import auth, { firebase } from "@react-native-firebase/auth";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
-import Storage from "expo-storage";
 import { phone } from "phone";
 import Toast from "react-native-toast-message";
 import useKeyboardVisible from "../../util/hooks/useKeyboardVisible";
@@ -17,6 +16,7 @@ import * as nameSlice from "../../core/state/user/nameSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
 import * as Notifications from "expo-notifications";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 export default function AddPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
@@ -49,13 +49,10 @@ export default function AddPhoneNumberScreen(props: {
       else {
         dispatch(nameSlice.setFirstName(firstName));
         dispatch(nameSlice.setLastName(lastName));
-        Storage.setItem({
-          key: "name",
-          value: JSON.stringify({
+        ScorecardModule.storeItem("name", JSON.stringify({
             firstName,
             lastName,
-          }),
-        });
+          }));
 
         const formattedPhoneNumber = phone(phoneNumber);
 

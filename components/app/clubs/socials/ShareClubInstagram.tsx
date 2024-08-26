@@ -35,7 +35,7 @@ export default function ShareClubInstagram(props: {
 
     return <View>
         <LoadingOverlay show={true} />
-        <View ref={viewRef}>
+        <View collapsable={false} ref={viewRef}>
             <LinearGradient angle={-90} colorList={[
                 { offset: "0%", color: "#C0C5FE", opacity: "1" },
                 { offset: "100%", color: "#AACEFF", opacity: "1" }

@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="180dp"
-    android:orientation="vertical"
-    android:background="@drawable/header_gradient">
+              android:layout_width="match_parent"
+              android:layout_height="180dp"
+              android:orientation="vertical"
+              android:background="@drawable/header_gradient">
 
     <ImageView
             android:layout_width="44dp"
@@ -18,24 +18,25 @@
                   android:orientation="vertical"
                   android:background="#EBF5FF">
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="7dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="8dp">
+                      android:layout_width="match_parent"
+                      android:layout_height="30dp"
+                      android:orientation="horizontal"
+                      android:layout_marginTop="7dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginRight="8dp">
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="0dp"
-                android:layout_weight="0.7"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                          android:layout_width="0dp"
+                          android:layout_weight="0.7"
+                          android:layout_height="match_parent"
+                          android:orientation="vertical">
                 <TextView android:id="@+id/slot1_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:text="Course slot 1"
-                        android:gravity="bottom"
-                        android:textSize="13dp"
-                        android:textColor="#c9c9c9"/>
+                          android:singleLine="true"
+                          android:layout_width="match_parent"
+                          android:layout_height="20dp"
+                          android:text="Course slot 1"
+                          android:gravity="bottom"
+                          android:textSize="13dp"
+                          android:textColor="#c9c9c9"/>
                 <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -43,21 +44,21 @@
                         android:background="#c2c2c2"/>
             </LinearLayout>
             <TextView android:id="@+id/slot1_grade"
-                    android:ellipsize="end"
-                    android:backgroundTint="#FE5885"
-                    android:backgroundTintMode="src_over"
-                    android:layout_width="0dp"
-                    android:layout_weight="0.3"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="1.75dp"
-                    android:text=""
-                    android:textSize="13dp"
-                    android:textColor="#FFFFFF"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:background="@drawable/grade_chip"
-                    android:visibility="invisible"
-                    android:layout_marginLeft="10dp"/>
+                      android:ellipsize="end"
+                      android:backgroundTint="#FE5885"
+                      android:backgroundTintMode="src_over"
+                      android:layout_width="0dp"
+                      android:layout_weight="0.3"
+                      android:layout_height="25dp"
+                      android:layout_marginTop="1.75dp"
+                      android:text=""
+                      android:textSize="13dp"
+                      android:textColor="#FFFFFF"
+                      android:gravity="center"
+                      android:textStyle="bold"
+                      android:background="@drawable/grade_chip"
+                      android:visibility="invisible"
+                      android:layout_marginLeft="10dp"/>
         </LinearLayout>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                       android:layout_width="match_parent"
@@ -72,6 +73,7 @@
                           android:layout_height="match_parent"
                           android:orientation="vertical">
                 <TextView android:id="@+id/slot2_name"
+                          android:singleLine="true"
                           android:layout_width="match_parent"
                           android:layout_height="20dp"
                           android:text="Course slot 2"
@@ -114,6 +116,7 @@
                           android:layout_height="match_parent"
                           android:orientation="vertical">
                 <TextView android:id="@+id/slot3_name"
+                          android:singleLine="true"
                           android:layout_width="match_parent"
                           android:layout_height="20dp"
                           android:text="Course slot 3"

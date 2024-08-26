@@ -54,7 +54,7 @@ export default function ShareClubSnapchat(props: {
                 { offset: "100%", color: "#AACEFF", opacity: "1" }
             ]} />
 
-            <View ref={viewRef} style={{
+            <View collapsable={false} ref={viewRef} style={{
                 position: "absolute",
                 width: "100%",
                 height: "100%",

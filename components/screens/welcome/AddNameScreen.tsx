@@ -5,11 +5,11 @@ import WelcomeScreen from "../../app/welcome/WelcomeScreen";
 import { TextInput } from "../../input/TextInput";
 import MediumText from "../../text/MediumText";
 import Button from "../../input/Button";
-import Storage from "expo-storage";
 import { useTheme } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
 import * as nameSlice from "../../core/state/user/nameSlice";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 
 export default function AddNameScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -33,17 +33,13 @@ export default function AddNameScreen(props: {
     dispatch(nameSlice.setFirstName(firstName));
     dispatch(nameSlice.setLastName(lastName));
 
-    Storage.setItem({
-      key: "name",
-      value: JSON.stringify({
+    ScorecardModule.storeItem("name", JSON.stringify({
         firstName,
         lastName,
-      }),
-    }).then(() => {
-      props.navigation.reset({
-        index: 0,
-        routes: [{ name: "scorecard", params: { firstTime: true } }],
-      });
+      }));
+    props.navigation.reset({
+      index: 0,
+      routes: [{ name: "scorecard", params: { firstTime: true } }],
     });
   }
 

@@ -184,7 +184,7 @@ async function parseHome(
       const key = gradeElement.getAttribute("cellkey")!;
       const parsedKey = qs.parse(key, { delimiter: "," });
 
-      if (idx === 0) {
+      if (idx === 1) {
         columnNames.push(
             parsedKey["gradeTypeIndex"]?.toString() ?? "Grading Period"
         );

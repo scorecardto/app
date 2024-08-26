@@ -9,7 +9,6 @@ import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import {
   getCurrentToken,
 } from "../../../lib/backgroundNotifications";
-import Storage from "expo-storage";
 import { getDeviceId } from "../../../lib/deviceInfo";
 
 export default function AccountScreen(props: { route: any; navigation: any }) {
