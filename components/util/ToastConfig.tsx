@@ -21,6 +21,8 @@ function ToastConfigComponent() {
           contentContainerStyle={{
             marginTop: 0,
             top: 0,
+            marginHorizontal: 0,
+            paddingHorizontal: 24,
           }}
           style={{
             backgroundColor: "#27272C" + "FF",
@@ -32,6 +34,7 @@ function ToastConfigComponent() {
             height: "100%",
             width: "100%",
             top: 0,
+            paddingHorizontal: 0,
           }}
           text1NumberOfLines={1}
           text2NumberOfLines={3}
@@ -39,13 +42,13 @@ function ToastConfigComponent() {
             color: "#FFFFFF",
             fontWeight: "bold",
             fontFamily: "DMSans_700Bold",
-            fontSize: 16,
-            marginBottom: 8,
+            fontSize: 14,
+            marginBottom: 0,
           }}
           text2Style={{
             color: colors.text,
             fontFamily: "DMSans_400Regular",
-            fontSize: 16,
+            fontSize: 12,
             lineHeight: 24,
           }}
         />

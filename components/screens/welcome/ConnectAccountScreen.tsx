@@ -11,8 +11,8 @@ import LoadingOverlay from "../loader/LoadingOverlay";
 import fetchAndStore from "../../../lib/fetchAndStore";
 import Toast from "react-native-toast-message";
 import * as loginSlice from "../../core/state/user/loginSlice";
-import {useDispatch, useSelector} from "react-redux";
-import {AppDispatch, RootState} from "../../core/state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../core/state/store";
 import StatusText from "../../text/StatusText";
 import { setOldCourseState } from "../../core/state/grades/oldCourseStatesSlice";
 import ScorecardModule from "../../../lib/expoModuleBridge";
@@ -44,6 +44,8 @@ const ConnectAccountScreen = (props: {
     if (loading) {
       let schoolLabel = "";
       let gradeLabel = "";
+      let realFirstName = "";
+      let realLastName = "";
 
       const timeoutId = setTimeout(() => {
         setLoading(false);
@@ -72,6 +74,8 @@ const ConnectAccountScreen = (props: {
 
           schoolLabel = name.school;
           gradeLabel = name.grade;
+          realFirstName = name.firstName;
+          realLastName = name.lastName;
 
           dispatch(loginSlice.setSchoolName(name.school));
           dispatch(loginSlice.setGradeLabel(name.grade));
@@ -93,16 +97,24 @@ const ConnectAccountScreen = (props: {
             loginSlice.setDistrictVipProgramDate(district.vipProgramDate)
           );
 
-          ScorecardModule.storeItem("login", JSON.stringify({
+          ScorecardModule.storeItem(
+            "login",
+            JSON.stringify({
               host: district.url,
               username,
               password,
               school: schoolLabel,
               grade: gradeLabel,
-          }))
+              realFirstName: realFirstName,
+              realLastName: realLastName,
+            })
+          );
 
           if (district.vipProgramDate) {
-              ScorecardModule.storeItem("vipProgramDate", district.vipProgramDate)
+            ScorecardModule.storeItem(
+              "vipProgramDate",
+              district.vipProgramDate
+            );
           }
 
           const fetchStoreResult = await fetchAndStore(data, dispatch, true);

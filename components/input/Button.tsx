@@ -20,6 +20,7 @@ const Button = forwardRef<
     textStyle?: StyleProp<TextStyle>;
     disabled?: boolean;
     secondary?: boolean;
+    small?: boolean;
   }
 >((props, ref) => {
   const { colors } = useTheme();
@@ -29,16 +30,17 @@ const Button = forwardRef<
       alignSelf: "center",
     },
     button: {
-      paddingHorizontal: 32,
-      paddingVertical: 14,
+      paddingHorizontal: props.small ? 16 : 32,
+      paddingVertical: props.small ? 8 : 14,
       borderRadius: 24,
       alignSelf: "center",
       backgroundColor: props.secondary
         ? colors.backgroundNeutral
         : colors.button,
+      opacity: props.disabled ? 0.5 : 1,
     },
     text: {
-      fontSize: 16,
+      fontSize: props.small ? 14 : 16,
       color: props.secondary ? colors.text : "#FFFFFF",
       fontWeight: "500",
     },

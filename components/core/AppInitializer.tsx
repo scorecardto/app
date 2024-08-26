@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import Toast from "react-native-toast-message";
 
@@ -9,10 +9,13 @@ import {
   DMSans_500Medium,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import { LeagueSpartan_700Bold } from "@expo-google-fonts/league-spartan";
+import { Rubik_500Medium } from "@expo-google-fonts/rubik";
 import { IBMPlexMono_400Regular } from "@expo-google-fonts/ibm-plex-mono";
 import initialize from "../../lib/init";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./state/store";
+import { MobileDataContext } from "./context/MobileDataContext";
 
 export default function AppInitializer(props: {
   setAppReady: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,9 +33,11 @@ export default function AppInitializer(props: {
 
   const [userReady, setUserReady] = useState(false);
 
-  const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+  const { user, setUser } = useContext(MobileDataContext);
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    console.log(user);
+
     setUser(user);
     // user?.getIdToken().then(console.log);
 
@@ -69,6 +74,8 @@ export default function AppInitializer(props: {
         DMSans_500Medium: DMSans_500Medium,
         DMSans_700Bold: DMSans_700Bold,
         IBMPlexMono_400Regular: IBMPlexMono_400Regular,
+        LeagueSpartan_700Bold: LeagueSpartan_700Bold,
+        Rubik_500Medium: Rubik_500Medium,
       });
 
       const nextScreenAsync = initialize(dispatch, user);
@@ -83,7 +90,7 @@ export default function AppInitializer(props: {
     if (userReady) {
       prepare();
     }
-  }, [userReady, props.resetKey]);
+  }, [userReady, props.resetKey, user]);
 
   return <></>;
 }

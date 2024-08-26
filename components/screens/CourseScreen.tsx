@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../core/state/store";
-import { View } from "react-native";
+import { TextInput, View } from "react-native";
 import CourseScreenWrapper from "../app/course/CourseScreenWrapper";
 import useColors from "../core/theme/useColors";
 import CourseCornerButtonContainer from "../app/course/CourseCornerButtonContainer";
@@ -18,6 +18,7 @@ import {
 } from "../core/state/grades/refreshStatusSlice";
 import { fetchAllContent } from "../../lib/fetcher";
 import OldGradingPeriodDisplay from "../app/course/OldGradingPeriodDisplay";
+
 export default function CourseScreen(props: {
   route: any;
   navigation: NavigationProp<any>;
@@ -162,6 +163,7 @@ export default function CourseScreen(props: {
   }, [courseInitial]);
 
   const dispatch = useDispatch<AppDispatch>();
+
   return (
     <CourseScreenWrapper courseKey={key}>
       <View
@@ -221,14 +223,16 @@ export default function CourseScreen(props: {
                 modifiedAverage={modifiedAvg ?? undefined}
               />
             </View>
-            {recordCategory != gradeCategory && (recordCategory == undefined || gradeCategory < recordCategory) && (
-              <View>
-                <OldGradingPeriodDisplay
-                  lastUpdatedOldGradingPeriod={lastUpdatedOldGradingPeriod}
-                  refreshGradingPeriod={refreshGradingPeriod}
-                />
-              </View>
-            )}
+            {recordCategory != gradeCategory &&
+              (recordCategory == undefined ||
+                gradeCategory < recordCategory) && (
+                <View>
+                  <OldGradingPeriodDisplay
+                    lastUpdatedOldGradingPeriod={lastUpdatedOldGradingPeriod}
+                    refreshGradingPeriod={refreshGradingPeriod}
+                  />
+                </View>
+              )}
           </View>
         </View>
         <View

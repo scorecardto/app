@@ -12,7 +12,8 @@ import courseSettingsReducer from "./grades/courseSettingsSlice";
 import gradeCategoryReducer from "./grades/gradeCategorySlice";
 import virtualSheetsReducer from "./view/virtualSheetsSlice";
 import widgetReducer from "./widget/widgetSlice";
-import changeTablesReducer from "./grades/changeTablesSlice"
+import changeTablesReducer from "./grades/changeTablesSlice";
+import socialReducer from "./social/socialSlice";
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +30,8 @@ export const store = configureStore({
     gradeCategory: gradeCategoryReducer,
     virtualSheets: virtualSheetsReducer,
     widgetData: widgetReducer,
-    changeTables: changeTablesReducer
+    changeTables: changeTablesReducer,
+    social: socialReducer,
   },
 });
 

@@ -22,7 +22,10 @@ import {
 } from "../components/core/state/user/invitedNumbersSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
-import {setGradeRecord, setPreviousGradeRecord} from "../components/core/state/grades/gradeDataSlice";
+import {
+  setGradeRecord,
+  setPreviousGradeRecord,
+} from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import {setCourseOrder} from "../components/core/state/grades/courseOrderSlice";
 import parseCourseKey from "./parseCourseKey";
@@ -44,16 +47,29 @@ export default async function initialize(
 ): Promise<NextScreen> {
   // LEGACY SUPPORT
   {
-    const legacyKeys = ["courseOrder", "invitedNumbers", "openInviteSheetDate", "courseSettings", "oldCourseStates", "oldGradebooks", "login", "vipProgramDate", "name", "deviceId", "records", "hasProcessedContacts"]
+    const legacyKeys = [
+      "courseOrder",
+      "invitedNumbers",
+      "openInviteSheetDate",
+      "courseSettings",
+      "oldCourseStates",
+      "oldGradebooks",
+      "login",
+      "vipProgramDate",
+      "name",
+      "deviceId",
+      "records",
+      "hasProcessedContacts",
+    ];
     for (const key of legacyKeys) {
-      const value = await Storage.getItem({key});
+      const value = await Storage.getItem({ key });
 
       if (value) {
         ScorecardModule.storeItem(key, value);
-        await Storage.removeItem({key});
+        await Storage.removeItem({ key });
       }
     }
-    const legacyLogin = SecureStorage.getItem("login")
+    const legacyLogin = SecureStorage.getItem("login");
     if (legacyLogin) {
       ScorecardModule.storeItem("login", legacyLogin);
       await SecureStorage.deleteItemAsync("login");
@@ -73,7 +89,9 @@ export default async function initialize(
 
   Contacts.getPermissionsAsync().then(async (permissions) => {
     if (permissions.status === "granted") {
-      const hasProcessedContacts = ScorecardModule.getItem("hasProcessedContacts");
+      const hasProcessedContacts = ScorecardModule.getItem(
+        "hasProcessedContacts"
+      );
 
       if (!hasProcessedContacts) {
         const { data } = await Contacts.getContactsAsync({
@@ -125,28 +143,44 @@ export default async function initialize(
 
     const data = recordData[0];
     dispatch(setGradeRecord(data));
-    dispatch(setPreviousGradeRecord(recordData[1]))
+    dispatch(setPreviousGradeRecord(recordData[1]));
     dispatch(setGradeCategory(data.gradeCategory));
-    dispatch(setCourseOrder(courseOrder ? JSON.parse(courseOrder) : data.courses.map(c=>c.key).sort((a, b) => {
-      const aPrd = parseCourseKey(a)?.dayCodeIndex;
-      const bPrd = parseCourseKey(b)?.dayCodeIndex;
+    dispatch(
+      setCourseOrder(
+        courseOrder
+          ? JSON.parse(courseOrder)
+          : data.courses
+              .map((c) => c.key)
+              .sort((a, b) => {
+                const aPrd = parseCourseKey(a)?.dayCodeIndex;
+                const bPrd = parseCourseKey(b)?.dayCodeIndex;
 
-      if (aPrd && bPrd) {
-        if (aPrd > bPrd) return 1;
-        if (aPrd < bPrd) return -1;
-      } else if (aPrd) {
-        return -1;
-      } else if (bPrd) {
-        return 1;
-      } else {
-        return a.localeCompare(b);
-      }
+                if (aPrd && bPrd) {
+                  if (aPrd > bPrd) return 1;
+                  if (aPrd < bPrd) return -1;
+                } else if (aPrd) {
+                  return -1;
+                } else if (bPrd) {
+                  return 1;
+                } else {
+                  return a.localeCompare(b);
+                }
 
-      return 0;
-    })));
+                return 0;
+              })
+      )
+    );
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
-    const { username, password, host, school, grade } = JSON.parse(login);
+    const {
+      username,
+      password,
+      host,
+      school,
+      grade,
+      realFirstName,
+      realLastName,
+    } = JSON.parse(login);
 
     dispatch(setDistrict(host));
     dispatch(setUsername(username));

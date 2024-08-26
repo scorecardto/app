@@ -14,8 +14,21 @@
       <category android:name="android.intent.category.BROWSABLE"/>
       <data android:scheme="https"/>
     </intent>
+    <package android:name="com.snapchat.android" />
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:allowBackup="true" android:theme="@style/AppTheme">
+    <meta-data
+          android:name="com.snapchat.kit.sdk.clientId" android:value="0651cbef-cea0-47d1-a3a1-7fc0a95475fc" />
+    <provider
+          android:authorities="com.scorecardgrades.mobile.fileprovider"
+          android:name="android.support.v4.content.FileProvider"
+          android:exported="false"
+          android:grantUriPermissions="true">
+      <meta-data
+              android:name="android.support.FILE_PROVIDER_PATHS"
+              android:resource="@xml/file_paths"
+      />
+    </provider>
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
     <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>

@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MobileDataContext, MobileData } from "./MobileDataContext";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+
 export default function MobileDataProvider(props: {
   children: React.ReactNode;
 }) {
@@ -12,12 +14,17 @@ export default function MobileDataProvider(props: {
       };
     }
   );
+
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+
   const mobileData = useMemo<MobileData>(
     () => ({
       confirmPhoneNumberCallback,
       setConfirmPhoneNumberCallback,
+      user,
+      setUser,
     }),
-    [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback]
+    [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback, user, setUser]
   );
 
   return (

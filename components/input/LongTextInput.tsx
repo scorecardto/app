@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { Text, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import ReactNative from "react-native";
 import { StyleSheet } from "react-native";
@@ -10,6 +10,8 @@ export const LongTextInput = forwardRef<
     value: string;
     setValue: (text: string) => void;
     disabled?: boolean;
+    allowLineBreak?: boolean;
+    disableMarginBottom?: boolean;
   }
 >((props, ref) => {
   const { colors } = useTheme();
@@ -23,16 +25,13 @@ export const LongTextInput = forwardRef<
     },
     input: {
       paddingHorizontal: 16,
-      paddingTop: 10,
-      paddingBottom: 40,
-      backgroundColor: colors.backgroundNeutral,
+      paddingTop: props.disableMarginBottom ? 0 : 10,
+      paddingBottom: props.allowLineBreak ? 10 : 40,
+      backgroundColor: colors.textInput,
       borderRadius: 4,
       marginBottom: 10,
       fontSize: 16,
       lineHeight: 24,
-      borderColor: colors.borderNeutral,
-      borderWidth: 1,
-      borderBottomWidth: 2,
       color: colors.primary,
     },
   });
@@ -42,6 +41,7 @@ export const LongTextInput = forwardRef<
       {/* <Text style={styles.header}>{props.label}</Text> */}
       <ReactNative.TextInput
         ref={ref}
+        defaultValue={props.value}
         style={styles.input}
         multiline={true}
         placeholder={props.label}
@@ -50,9 +50,9 @@ export const LongTextInput = forwardRef<
           if (!props.disabled) props.setValue(v);
         }}
         editable={!props.disabled}
-        returnKeyType={"done"}
+        returnKeyType={props.allowLineBreak ? "default" : "done"}
         // press button to submit, not to make a new line
-        blurOnSubmit={true}
+        blurOnSubmit={!props.allowLineBreak}
       />
     </View>
   );

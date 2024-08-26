@@ -86,8 +86,6 @@ export default function TabBarItem({
       >
         <Animated.Text
           onLayout={(l) => {
-            console.log(l.nativeEvent.layout.width, itemWidth);
-
             setTextWidth(l.nativeEvent.layout.width);
           }}
           style={{

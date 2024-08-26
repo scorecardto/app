@@ -4,7 +4,7 @@ import {
 } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
-import auth from "@react-native-firebase/auth";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
@@ -34,7 +34,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import HelpScreen from "./components/screens/HelpScreen";
 import RefreshIndicator from "./components/app/dashboard/RefreshIndicator";
 import AppInitializer from "./components/core/AppInitializer";
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { RootState, store } from "./components/core/state/store";
 import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
 import { useFeatureFlag } from "./lib/featureFlag";
@@ -52,6 +52,15 @@ import Button from "./components/input/Button";
 import CourseEditScreen from "./components/screens/CourseEditScreen";
 import AppStateListener from "./components/util/AppStateListener";
 import AlertFetcher from "./components/core/AlertFetcher";
+import ManageClubsScreen from "./components/screens/clubs/ManageClubsScreen";
+import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
+import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";
+import PickEmojiScreen from "./components/screens/PickEmojiScreen";
+import CreateClubPostScreen from "./components/screens/clubs/CreateClubPostScreen";
+import ShareClubSnapchat from "./components/app/clubs/socials/ShareClubSnapchat";
+import ShareClubInstagram from "./components/app/clubs/socials/ShareClubInstagram";
+import FinishClubPostScreen from "./components/screens/clubs/FinishClubPostScreen";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import ScorecardModule from "./lib/expoModuleBridge";
 
 SplashScreen.preventAutoHideAsync();
@@ -117,200 +126,260 @@ export default function App(props: { resetKey: string }) {
         <></>
       ) : (
         <AnimatedAppLoader image={require("./assets/splash.png")}>
-          <SafeAreaProvider>
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <BottomSheetProvider>
-                <NavigationContainer
-                  ref={navigationRef}
-                  onStateChange={async () => {
-                    const previousRouteName = routeNameRef.current;
-                    const currentRouteName =
-                      navigationRef.current?.getCurrentRoute()?.name;
+          <ActionSheetProvider>
+            <SafeAreaProvider>
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <BottomSheetProvider>
+                  <NavigationContainer
+                    ref={navigationRef}
+                    onStateChange={async () => {
+                      const previousRouteName = routeNameRef.current;
+                      const currentRouteName =
+                        navigationRef.current?.getCurrentRoute()?.name;
 
-                    if (currentRouteName == null) return;
+                      if (currentRouteName == null) return;
 
-                    if (previousRouteName !== currentRouteName) {
-                      // analytics().setd
-                      await analytics().logScreenView({
-                        screen_name: currentRouteName,
-                        screen_class: currentRouteName,
-                      });
-                    }
+                      if (previousRouteName !== currentRouteName) {
+                        // analytics().setd
+                        await analytics().logScreenView({
+                          screen_name: currentRouteName,
+                          screen_class: currentRouteName,
+                        });
+                      }
 
-                    routeNameRef.current = currentRouteName;
-                  }}
-                  theme={{
-                    ...(appearance === "dark" && allowDarkMode
-                      ? Color.DarkTheme
-                      : Color.LightTheme),
-                    dark: appearance === "dark" && allowDarkMode,
-                    // @ts-ignore
-                    accents:
-                      Color.AccentsMatrix[Color.defaultAccentLabel][
-                        appearance === "dark" && allowDarkMode
-                          ? "dark"
-                          : "default"
-                      ],
-                    accentLabel: "red",
-                  }}
-                >
-                  <AppStateListener />
-                  <RefreshIndicator />
-                  <BottomSheetDisplay />
-
-                  <Stack.Navigator
-                    initialRouteName={nextScreen}
-                    screenOptions={{
-                      animation: "simple_push",
-                      animationDuration: 250,
+                      routeNameRef.current = currentRouteName;
+                    }}
+                    theme={{
+                      ...(appearance === "dark" && allowDarkMode
+                        ? Color.DarkTheme
+                        : Color.LightTheme),
+                      dark: appearance === "dark" && allowDarkMode,
+                      // @ts-ignore
+                      accents:
+                        Color.AccentsMatrix[Color.defaultAccentLabel][
+                          appearance === "dark" && allowDarkMode
+                            ? "dark"
+                            : "default"
+                        ],
+                      accentLabel: "red",
                     }}
                   >
-                    <Stack.Screen
-                      name="start"
-                      component={StartScreen}
-                      options={{
-                        headerShown: false,
+                    <AppStateListener />
+                    <RefreshIndicator />
+                    <BottomSheetDisplay />
+
+                    <Stack.Navigator
+                      initialRouteName={nextScreen}
+                      screenOptions={{
+                        animation: "simple_push",
+                        animationDuration: 250,
                       }}
-                    />
-                    <Stack.Screen
-                      name="notifications"
-                      component={NotificationsScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="selectDistrict"
-                      component={SelectDistrictScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="privacyPolicy"
-                      component={PrivacyScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="connectAccount"
-                      component={ConnectAccountScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="addPhoneNumber"
-                      component={AddPhoneNumberScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="reAddPhoneNumber"
-                      component={ReAddPhoneNumberScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="addName"
-                      component={AddNameScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="verifyPhoneNumber"
-                      component={VerifyPhoneNumberScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="generalSettings"
-                      component={GeneralSettingsScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "All Settings",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="gradebookSettings"
-                      component={GradebookSettingsScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "All Settings",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="editDistrict"
-                      component={EditDistrictScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "Back",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="editConnectAccount"
-                      component={EditConnectAccountScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "Back",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="scorecard"
-                      component={ScorecardScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="course"
-                      component={CourseScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="editCourse"
-                      component={CourseEditScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="inviteOthers"
-                      component={InviteOthersScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                    <Stack.Screen
-                      name="help"
-                      component={HelpScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "Back",
-                      }}
-                    />
-                    <Stack.Screen
-                      name="helpOnboarding"
-                      component={HelpOnboardingScreen}
-                      options={{
-                        ...headerOptions,
-                        headerBackTitle: "Back",
-                      }}
-                    />
-                  </Stack.Navigator>
-                  <ToastConfig />
-                  <AlertFetcher />
-                </NavigationContainer>
-              </BottomSheetProvider>
-            </GestureHandlerRootView>
-          </SafeAreaProvider>
+                    >
+                      <Stack.Screen
+                        name="start"
+                        component={StartScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="notifications"
+                        component={NotificationsScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="selectDistrict"
+                        component={SelectDistrictScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="privacyPolicy"
+                        component={PrivacyScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="connectAccount"
+                        component={ConnectAccountScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="addPhoneNumber"
+                        component={AddPhoneNumberScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="reAddPhoneNumber"
+                        component={ReAddPhoneNumberScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="addName"
+                        component={AddNameScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="verifyPhoneNumber"
+                        component={VerifyPhoneNumberScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="generalSettings"
+                        component={GeneralSettingsScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "All Settings",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="gradebookSettings"
+                        component={GradebookSettingsScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "All Settings",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="editDistrict"
+                        component={EditDistrictScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "Back",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="editConnectAccount"
+                        component={EditConnectAccountScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "Back",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="scorecard"
+                        component={ScorecardScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="course"
+                        component={CourseScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="editCourse"
+                        component={CourseEditScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="inviteOthers"
+                        component={InviteOthersScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="help"
+                        component={HelpScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "Back",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="helpOnboarding"
+                        component={HelpOnboardingScreen}
+                        options={{
+                          ...headerOptions,
+                          headerBackTitle: "Back",
+                        }}
+                      />
+                      <Stack.Screen
+                        name="manageClubs"
+                        component={ManageClubsScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="createClub"
+                        component={CreateClubScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="clubAdmin"
+                        component={ClubAdminScreen}
+                        options={{
+                          gestureEnabled: false,
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="pickEmoji"
+                        component={PickEmojiScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="createClubPost"
+                        component={CreateClubPostScreen}
+                        options={{
+                          gestureEnabled: false,
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="finishClubPost"
+                        component={FinishClubPostScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="shareClubInstagram"
+                        component={ShareClubInstagram}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="shareClubSnapchat"
+                        component={ShareClubSnapchat}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                    </Stack.Navigator>
+                    <ToastConfig />
+                    <AlertFetcher />
+                  </NavigationContainer>
+                </BottomSheetProvider>
+              </GestureHandlerRootView>
+            </SafeAreaProvider>
+          </ActionSheetProvider>
         </AnimatedAppLoader>
       )}
     </MobileDataProvider>

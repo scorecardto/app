@@ -2,6 +2,7 @@
   "expo": {
     "name": "Scorecard",
     "slug": "scorecard",
+    "scheme": "scorecard",
     "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +21,14 @@
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
       "buildNumber": "51",
+      "associatedDomains": [
+        "applinks:scorecardgrades.com"
+      ],
       "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "instagram-stories",
+          "snapchat"
+        ],
         "UIBackgroundModes": [
           "fetch"
         ],
@@ -52,6 +60,23 @@
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
       "versionCode": 2,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "scorecardgrades.com",
+              "pathPrefix": "/joinclub"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ],
       "permissions": [
         "android.permission.READ_CONTACTS",
         "android.permission.WRITE_CONTACTS"
@@ -75,7 +100,9 @@
             "src": "./widgets/ios",
             "devTeamId": "H29JJ3FSST",
             "mode": "development",
-            "moduleDependencies": ["Storage.swift"],
+            "moduleDependencies": [
+              "Storage.swift"
+            ],
             "useLiveActivities": false,
             "frequentUpdates": false
           },
@@ -101,13 +128,20 @@
         }
       ],
       [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Save club invite QR code to your library"
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "ios": {
             "useFrameworks": "static"
           }
         }
-      ]
+      ],
+      "react-native-compressor"
     ],
     "runtimeVersion": "1.0.0",
     "updates": {
