@@ -8,6 +8,7 @@ import { Club } from "scorecard-types";
 import useSocial from "../../util/hooks/useSocial";
 import Toast from "react-native-toast-message";
 import useScApi from "../../util/hooks/useScApi";
+import ScorecardImage from "../../util/ScorecardImage";
 
 export default function ClubPreview(props: { club: Club }) {
   const colors = useColors();
@@ -77,7 +78,9 @@ export default function ClubPreview(props: { club: Club }) {
             borderRadius: 48,
             backgroundColor: "gray",
           }}
-        ></View>
+        >
+            <ScorecardImage id={props.club.picture!} height={44} width={44} />
+        </View>
         <View
           style={{
             paddingLeft: 12,
