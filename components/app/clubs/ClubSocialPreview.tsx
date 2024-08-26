@@ -8,12 +8,15 @@ import ClubSocialMediaIcon from "./ClubSocialMediaIcon";
 import MediumText from "../../text/MediumText";
 import { Club } from "scorecard-types";
 import ScorecardImage from "../../util/ScorecardImage";
+import {useNavigation} from "@react-navigation/native";
 const snapchatLogo = require("../../../assets/snapchat.svg");
 const instagramLogo = require("../../../assets/instagram.svg");
 export default function ClubSocialPreview(props: { club: Club }) {
   const PICTURE_SIZE = 108;
 
   const colors = useColors();
+  const navigation = useNavigation();
+
   return (
     <View
       style={{
@@ -179,7 +182,8 @@ export default function ClubSocialPreview(props: { club: Club }) {
           justifyContent: "center",
         }}
       >
-        <ClubSocialMediaIcon label="Stories">
+        <ClubSocialMediaIcon label="Stories"
+                             onPress={() => navigation.navigate("shareClubInstagram", { club: props.club })}>
           <Image
             source={instagramLogo}
             style={{
@@ -188,7 +192,9 @@ export default function ClubSocialPreview(props: { club: Club }) {
             }}
           />
         </ClubSocialMediaIcon>
-        <ClubSocialMediaIcon label="Best Results" background="#fffc00">
+        <ClubSocialMediaIcon label="Best Results"
+                             background="#FFFC00"
+                             onPress={() => navigation.navigate("shareClubSnapchat", { club: props.club })}>
           <Image
             source={snapchatLogo}
             style={{
