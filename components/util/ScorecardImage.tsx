@@ -7,7 +7,8 @@ export default function ScorecardImage(props: {
   width: number;
   height: number;
 }) {
-  const file = FileSystem.cacheDirectory + `images/${props.id}`;
+  const dir = FileSystem.cacheDirectory + "images/";
+  const file = dir + props.id;
 
   const [refresh, setRefresh] = useState(false);
 
@@ -15,9 +16,7 @@ export default function ScorecardImage(props: {
     (async () => {
       const info = await FileSystem.getInfoAsync(file);
       if (!info.exists) {
-        await FileSystem.makeDirectoryAsync(
-          FileSystem.cacheDirectory + "images/"
-        );
+        await FileSystem.makeDirectoryAsync(dir, { intermediates: true });
         await FileSystem.downloadAsync(
           `https://api.scorecardgrades.com/v1/images/get/${props.id}`,
           file
