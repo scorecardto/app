@@ -6,11 +6,11 @@ import useColors from "../../core/theme/useColors";
 import { MaterialIcons } from "@expo/vector-icons";
 import ClubSocialMediaIcon from "./ClubSocialMediaIcon";
 import MediumText from "../../text/MediumText";
-import {Club} from "scorecard-types";
+import { Club } from "scorecard-types";
 import ScorecardImage from "../../util/ScorecardImage";
 const snapchatLogo = require("../../../assets/snapchat.svg");
 const instagramLogo = require("../../../assets/instagram.svg");
-export default function ClubSocialPreview(props: {club: Club}) {
+export default function ClubSocialPreview(props: { club: Club }) {
   const PICTURE_SIZE = 108;
 
   const colors = useColors();
@@ -96,7 +96,7 @@ export default function ClubSocialPreview(props: {club: Club}) {
               fontWeight: "600",
             }}
           >
-            {props.club.name} at SCHOOL
+            {props.club.name}
           </Text>
           <Text
             style={{
@@ -107,7 +107,7 @@ export default function ClubSocialPreview(props: {club: Club}) {
               fontFamily: "LeagueSpartan_700Bold",
             }}
           >
-            Join {props.club.name}!
+            Join My Club!
           </Text>
         </View>
 
@@ -133,7 +133,11 @@ export default function ClubSocialPreview(props: {club: Club}) {
               overflow: "hidden",
             }}
           >
-              <ScorecardImage id={props.club.picture!} width={PICTURE_SIZE} height={PICTURE_SIZE} />
+            <ScorecardImage
+              id={props.club.picture!}
+              width={PICTURE_SIZE}
+              height={PICTURE_SIZE}
+            />
           </View>
         </View>
         <View

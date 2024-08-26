@@ -24,6 +24,9 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
 import ScorecardImage from "../../util/ScorecardImage";
+import Toast from "react-native-toast-message";
+import DatePicker from "react-native-date-picker";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 
 function ToolbarButton(props: {
   icon: string;
@@ -94,6 +97,10 @@ export default function CreateClubPostScreen(props: {
       return;
     }
 
+    Toast.show({
+      type: "info",
+      text1: "Uploading Image...",
+    });
     const ret = await FileSystem.uploadAsync(
       "https://api.scorecardgrades.com/v1/images/upload",
       result.assets[0].uri,
@@ -137,6 +144,12 @@ export default function CreateClubPostScreen(props: {
       "plain-text"
     );
   }, []);
+
+  const { showActionSheetWithOptions } = useActionSheet();
+
+  const [dateEdit, setDateEdit] = useState<Date>(new Date());
+  const [date, setDate] = useState<Date | null>(null);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   return (
     <View style={{}}>
       <View
@@ -153,6 +166,18 @@ export default function CreateClubPostScreen(props: {
             props.navigation.navigate("finishClubPost", {
               club: club,
             });
+          }}
+        />
+        <DatePicker
+          modal
+          open={datePickerOpen}
+          date={dateEdit}
+          onConfirm={(date) => {
+            setDatePickerOpen(false);
+            setDate(date);
+          }}
+          onCancel={() => {
+            setDatePickerOpen(false);
           }}
         />
         <KeyboardAvoidingView
@@ -193,48 +218,70 @@ export default function CreateClubPostScreen(props: {
                   </LargeText>
                 </View>
               </View>
-              {link && (
-                <TouchableOpacity
-                  onPress={() => {
-                    addLink();
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: colors.secondaryNeutral,
-                      paddingHorizontal: 12,
-                      paddingVertical: 8,
-                      borderRadius: 24,
-                      borderColor: colors.borderNeutral,
-                      borderWidth: 1,
-                      alignSelf: "flex-start",
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginHorizontal: 24,
+                  marginTop: 8,
+                  marginBottom: 12,
+                }}
+              >
+                {link && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      addLink();
                     }}
                   >
-                    <Text>{link}</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-              {image && (
-                <TouchableOpacity
-                  onPress={() => {
-                    addLink();
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: colors.secondaryNeutral,
-                      paddingHorizontal: 12,
-                      paddingVertical: 8,
-                      borderRadius: 24,
-                      borderColor: colors.borderNeutral,
-                      borderWidth: 1,
-                      alignSelf: "flex-start",
+                    <View
+                      style={{
+                        backgroundColor: colors.secondaryNeutral,
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        borderRadius: 24,
+                        marginRight: 8,
+                        borderColor: colors.borderNeutral,
+                        borderWidth: 1,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                        }}
+                      >
+                        {link}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                {image && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      addImage();
                     }}
                   >
-                    <Text>{image}</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+                    <View
+                      style={{
+                        backgroundColor: colors.secondaryNeutral,
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        borderRadius: 24,
+                        borderColor: colors.borderNeutral,
+                        borderWidth: 1,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                        }}
+                      >
+                        Image
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
               <View>
                 <TextInput
                   defaultValue={""}
@@ -263,8 +310,14 @@ export default function CreateClubPostScreen(props: {
                 />
                 {image && (
                   <>
-                    <Text>image</Text>
-                    <ScorecardImage height={300} width={300} id={image} />
+                    <View
+                      style={{
+                        marginHorizontal: 24,
+                        marginTop: 24,
+                      }}
+                    >
+                      <ScorecardImage height={150} width={150} id={image} />
+                    </View>
                   </>
                 )}
               </View>
@@ -306,7 +359,26 @@ export default function CreateClubPostScreen(props: {
                     addLink();
                   }}
                 />
-                <ToolbarButton icon="clock" label="Event" onPress={() => {}} />
+                <ToolbarButton
+                  icon="clock"
+                  label="Event"
+                  onPress={() => {
+                    showActionSheetWithOptions(
+                      {
+                        options: ["Edit Event Time", "Remove Event", "Cancel"],
+                        destructiveButtonIndex: 1,
+                        cancelButtonIndex: 2,
+                      },
+                      (i) => {
+                        if (i === 0) {
+                          setDatePickerOpen(true);
+                        } else if (i === 1) {
+                          setDate(null);
+                        }
+                      }
+                    );
+                  }}
+                />
               </View>
             </KeyboardStickyView>
           </View>
