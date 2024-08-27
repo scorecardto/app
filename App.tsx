@@ -62,6 +62,7 @@ import ShareClubInstagram from "./components/app/clubs/socials/ShareClubInstagra
 import FinishClubPostScreen from "./components/screens/clubs/FinishClubPostScreen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import ScorecardModule from "./lib/expoModuleBridge";
+import ClubJoinScreen from "./components/app/clubs/ClubJoinScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -357,6 +358,14 @@ export default function App(props: { resetKey: string }) {
                         options={{
                           headerShown: false,
                         }}
+                      />
+                      <Stack.Screen
+                          name={"joinClub"}
+                          component={ClubJoinScreen}
+                          options={{
+                            headerShown: false,
+                            gestureEnabled: false,
+                          }}
                       />
                       <Stack.Screen
                         name="shareClubInstagram"

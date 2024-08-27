@@ -28,20 +28,6 @@ import {firebase} from "@react-native-firebase/auth";
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
 }) {
-  useEffect(() => {
-    return firebase.auth().onAuthStateChanged(function (user) {
-      if (user) {
-        requestPermissions().then(async () =>
-            axios.post("https://api.scorecardgrades.com/v1/register_token", {
-              pushToken: getCurrentToken()
-            }, {
-              headers: { Authorization: await user.getIdToken() }
-            })
-        );
-      }
-    });
-  }, []);
-
   const dispatch = useDispatch();
 
   const courses = useSelector(
@@ -90,7 +76,6 @@ export default function CurrentGradesScreen(props: {
       setTime(Date.now());
     }, 1000);
 
-    dispatch(unpinUnknownCourses(courses.map((c) => c.key)));
     return () => {
       clearInterval(i);
     };
