@@ -90,7 +90,7 @@
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
 	<false/>
 	<key>SCSDKClientId</key>
-	<string>0651cbef-cea0-47d1-a3a1-7fc0a95475fc</string>
+	<string>8bfb7620-3526-4ab7-ab56-56c807606a73</string>
 	<key>SCSDKRedirectUrl</key>
 	<string>scorecard://snapchat/oauth2</string>
 	<key>SCSDKScopes</key>

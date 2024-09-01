@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import {AppState, Linking, View} from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import CurrentGradesScreen from "./CurrentGradesScreen";
 import ArchiveScreen from "./ArchiveScreen";
@@ -14,6 +14,9 @@ import { setSocialConnected } from "../core/state/social/socialSlice";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import auth from "@react-native-firebase/auth";
 import {refreshImageCache} from "../../lib/refreshImageCache";
+import {getCurrentToken, requestPermissions} from "../../lib/backgroundNotifications";
+import axios from "redaxios";
+import {unpinUnknownCourses} from "../core/state/widget/widgetSlice";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -25,13 +28,40 @@ export default function ScorecardScreen(props: {
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setUser(user);
+    if (user) {
+      requestPermissions().then(async () =>
+          axios.post("https://api.scorecardgrades.com/v1/register_token", {
+            pushToken: getCurrentToken()
+          }, {
+            headers: { Authorization: await user.getIdToken() }
+          })
+      );
+    }
   }
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const checkURL = (url: string | null) => {
+      const joinPrefix = "https://scorecardgrades.com/joinclub/";
+
+      if (url?.startsWith(joinPrefix)) {
+        props.navigation.navigate("joinClub", { clubCode: url.slice(joinPrefix.length) });
+      }
+    };
+    Linking.getInitialURL().then(checkURL);
+
+    const urlListener = Linking.addEventListener('url',({url})=>{
+      checkURL(url);
+    });
+
+    const authListener = auth().onAuthStateChanged(onAuthStateChanged);
 
     refreshImageCache();
-    return subscriber; // unsubscribe on unmount
+    dispatch(unpinUnknownCourses(courses.map((c) => c.key)));
+
+    return () => {
+      authListener();
+      urlListener.remove();
+    } // unsubscribe on unmount
   }, []);
 
   const dispatch = useDispatch();

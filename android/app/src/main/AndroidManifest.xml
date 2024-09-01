@@ -20,7 +20,7 @@
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:allowBackup="true" android:theme="@style/AppTheme" android:requestLegacyExternalStorage="true">
     <meta-data
             android:name="com.snapchat.kit.sdk.clientId"
-            android:value="0651cbef-cea0-47d1-a3a1-7fc0a95475fc" />
+            android:value="8bfb7620-3526-4ab7-ab56-56c807606a73" />
     <provider
             android:authorities="${applicationId}.fileprovider"
             android:name="androidx.core.content.FileProvider"
