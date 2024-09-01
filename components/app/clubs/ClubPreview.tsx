@@ -27,7 +27,7 @@ export default function ClubPreview(props: { club: Club }) {
         pathname: "/v1/clubs/join",
         auth: true,
         body: {
-          ticker: props.club.code,
+          internalCode: props.club.internalCode,
         },
       })
       .then(() => {
@@ -76,10 +76,11 @@ export default function ClubPreview(props: { club: Club }) {
             height: 44,
             width: 44,
             borderRadius: 48,
+            overflow: "hidden",
             backgroundColor: "gray",
           }}
         >
-            <ScorecardImage id={props.club.picture!} height={44} width={44} />
+          <ScorecardImage id={props.club.picture!} height={44} width={44} />
         </View>
         <View
           style={{
@@ -105,7 +106,7 @@ export default function ClubPreview(props: { club: Club }) {
               color: colors.text,
             }}
           >
-            {props.club.code} - {props.club.memberCount} member
+            {props.club.clubCode} - {props.club.memberCount} member
             {props.club.memberCount === 1 ? "" : "s"}
           </Text>
         </View>

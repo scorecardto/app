@@ -23,7 +23,7 @@ export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
 }) {
-  const { clubCode } = props.route.params;
+  const { internalCode } = props.route.params;
 
   const colors = useColors();
   const navigation = useNavigation();
@@ -43,14 +43,14 @@ export default function ClubAdminScreen(props: {
       .get({
         pathname: "/v1/clubs/get",
         params: {
-          clubCode,
+          internalCode,
         },
         auth: true,
       })
       .then((result) => {
         setClub(result.data.club);
       });
-  }, [clubCode]);
+  }, [internalCode]);
 
   const social = useSocial();
   const updateClub = useCallback((c: Club) => {
