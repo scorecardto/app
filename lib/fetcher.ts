@@ -215,21 +215,21 @@ async function parseHome(
 
 async function parseCourse(host: string, cookies: string, courseKey: string) {
   const assignments = parse(
-    (
-      await axios({
-        url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
-        method: "POST",
-        data: qs.stringify({
-          gradeBookKey: courseKey,
-        }),
-        headers: {
-          Cookie: cookies,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        responseType: "text",
-        fetch: customFetch,
-      })
-    ).data as string
+      (
+          await axios({
+            url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
+            method: "POST",
+            data: qs.stringify({
+              gradeBookKey: courseKey,
+            }),
+            headers: {
+              // Cookie: cookies,
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            responseType: "text",
+            fetch: customFetch,
+          })
+      ).data as string
   );
 
   const categoryElements = assignments.querySelectorAll(".tablePanelContainer");
@@ -400,6 +400,13 @@ async function fetchAllContent(
 
   let gradeCategoryNames: string[] = [];
 
+  let gottenInfo = false;
+  const infoWrapper = (info: any) => {
+    if (!gottenInfo && infoCallback) {
+      gottenInfo = true;
+      infoCallback(info);
+    }
+  }
   const runCourse = (i: number) => {
     fetchCourse(
       host,
@@ -416,7 +423,7 @@ async function fetchAllContent(
         numCourses = realNum;
         gradeCategoryNames = names;
       },
-      infoCallback,
+      infoWrapper,
       gradeCategory
     )
       .then((course) => {
