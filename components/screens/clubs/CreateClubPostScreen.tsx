@@ -7,6 +7,7 @@ import {
   Keyboard,
   InteractionManager,
   Alert,
+  ScrollView,
 } from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useColors from "../../core/theme/useColors";
@@ -17,7 +18,14 @@ import {
 import { Octicons } from "@expo/vector-icons";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import LargeText from "../../text/LargeText";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import ClubPostArrayContainer from "../../app/clubs/ClubPostArrayContainer";
 import { Club } from "scorecard-types";
 import * as ImagePicker from "expo-image-picker";
@@ -72,10 +80,10 @@ export default function CreateClubPostScreen(props: {
   const { user } = useContext(MobileDataContext);
 
   const [content, setContent] = useState("");
-  const [link, setLink] = useState("");
-  const [image, setImage] = useState("");
+  const [link, setLink] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);
 
-  const addImage = useCallback(async () => {
+  const addImageBase = useCallback(async () => {
     let token: string | undefined = undefined;
 
     user?.getIdToken().then((t) => (token = t));
@@ -122,7 +130,29 @@ export default function CreateClubPostScreen(props: {
 
     if (ret.status !== 200) return;
   }, []);
-  const addLink = useCallback(() => {
+
+  const addImage = useCallback(async () => {
+    if (image) {
+      showActionSheetWithOptions(
+        {
+          options: ["Replace Image", "Remove Image", "Cancel"],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 2,
+        },
+        (i) => {
+          if (i === 0) {
+            addImageBase();
+          } else if (i === 1) {
+            setImage(null);
+          }
+        }
+      );
+    } else {
+      addImageBase();
+    }
+  }, [image]);
+
+  const addLinkBase = useCallback(() => {
     Alert.prompt(
       "Add a Link",
       undefined,
@@ -145,11 +175,76 @@ export default function CreateClubPostScreen(props: {
     );
   }, []);
 
+  const addLink = useCallback(() => {
+    if (link) {
+      showActionSheetWithOptions(
+        {
+          options: ["Replace Link", "Remove Link", "Cancel"],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 2,
+        },
+        (i) => {
+          if (i === 0) {
+            addLinkBase();
+          } else if (i === 1) {
+            setLink(null);
+          }
+        }
+      );
+    } else {
+      addLinkBase();
+    }
+  }, [link]);
+
   const { showActionSheetWithOptions } = useActionSheet();
 
   const [dateEdit, setDateEdit] = useState<Date>(new Date());
   const [date, setDate] = useState<Date | null>(null);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+
+  const addDate = useCallback(() => {
+    if (date) {
+      showActionSheetWithOptions(
+        {
+          options: ["Edit Event Time", "Remove Event", "Cancel"],
+          destructiveButtonIndex: 1,
+          cancelButtonIndex: 2,
+        },
+        (i) => {
+          if (i === 0) {
+            setDatePickerOpen(true);
+          } else if (i === 1) {
+            setDate(null);
+          }
+        }
+      );
+    } else {
+      Alert.alert(
+        "Add an Event Reminder",
+        "If your post is associated with an event, you can add a date to remind people of the event. Regardless of the event date, your post will go out as soon as you send it."
+      );
+      setDatePickerOpen(true);
+    }
+  }, [date]);
+
+  const dateChipText = useMemo(() => {
+    if (date) {
+      const dateFormatted = date.toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        hour12: true,
+      });
+
+      const time = date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        hour12: true,
+      });
+
+      return `${dateFormatted.split(", ")[0]}`;
+    }
+  }, [date]);
+
   return (
     <View style={{}}>
       <View
@@ -175,6 +270,7 @@ export default function CreateClubPostScreen(props: {
           onConfirm={(date) => {
             setDatePickerOpen(false);
             setDate(date);
+            setDateEdit(date);
           }}
           onCancel={() => {
             setDatePickerOpen(false);
@@ -218,70 +314,104 @@ export default function CreateClubPostScreen(props: {
                   </LargeText>
                 </View>
               </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginHorizontal: 24,
-                  marginTop: 8,
-                  marginBottom: 12,
-                }}
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
               >
-                {link && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      addLink();
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: colors.secondaryNeutral,
-                        paddingHorizontal: 12,
-                        paddingVertical: 8,
-                        borderRadius: 24,
-                        marginRight: 8,
-                        borderColor: colors.borderNeutral,
-                        borderWidth: 1,
-                        alignSelf: "flex-start",
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginHorizontal: 24,
+                    marginTop: date || link || image ? 10 : 0,
+                    marginBottom: date || link || image ? 4 : 0,
+                  }}
+                >
+                  {date && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        addDate();
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: 12,
+                          backgroundColor: colors.secondaryNeutral,
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 24,
+                          marginRight: 8,
+                          borderColor: colors.borderNeutral,
+                          borderWidth: 1,
+                          alignSelf: "flex-start",
                         }}
                       >
-                        {link}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-                {image && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      addImage();
-                    }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: colors.secondaryNeutral,
-                        paddingHorizontal: 12,
-                        paddingVertical: 8,
-                        borderRadius: 24,
-                        borderColor: colors.borderNeutral,
-                        borderWidth: 1,
-                        alignSelf: "flex-start",
+                        <Text
+                          style={{
+                            fontSize: 12,
+                          }}
+                        >
+                          {dateChipText}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {link && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        addLink();
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: 12,
+                          backgroundColor: colors.secondaryNeutral,
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 24,
+                          marginRight: 8,
+                          borderColor: colors.borderNeutral,
+                          borderWidth: 1,
+                          alignSelf: "flex-start",
                         }}
                       >
-                        Image
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              </View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                          }}
+                        >
+                          {link}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  {image && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        addImage();
+                      }}
+                    >
+                      <View
+                        style={{
+                          backgroundColor: colors.secondaryNeutral,
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 24,
+                          marginRight: 8,
+                          borderColor: colors.borderNeutral,
+                          borderWidth: 1,
+                          alignSelf: "flex-start",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 12,
+                          }}
+                        >
+                          Image
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </ScrollView>
               <View>
                 <TextInput
                   defaultValue={""}
@@ -363,20 +493,7 @@ export default function CreateClubPostScreen(props: {
                   icon="clock"
                   label="Event"
                   onPress={() => {
-                    showActionSheetWithOptions(
-                      {
-                        options: ["Edit Event Time", "Remove Event", "Cancel"],
-                        destructiveButtonIndex: 1,
-                        cancelButtonIndex: 2,
-                      },
-                      (i) => {
-                        if (i === 0) {
-                          setDatePickerOpen(true);
-                        } else if (i === 1) {
-                          setDate(null);
-                        }
-                      }
-                    );
+                    addDate();
                   }}
                 />
               </View>

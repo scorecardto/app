@@ -51,6 +51,7 @@ export default function ClubsScreen(props: {
           }}
         >
           <ClubsToolbar />
+          <AllClubsList clubs={clubs} />
         </ScrollView>
       </Background>
     </PageThemeProvider>

@@ -1,13 +1,8 @@
-import {View, Text, TouchableOpacity, ActivityIndicator, Image} from "react-native";
-import React, { useCallback, useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import useColors from "../../core/theme/useColors";
-import LargeText from "../../text/LargeText";
 import MediumText from "../../text/MediumText";
 import { Club } from "scorecard-types";
 
-import useSocial from "../../util/hooks/useSocial";
-import Toast from "react-native-toast-message";
-import useScApi from "../../util/hooks/useScApi";
 import { useNavigation } from "@react-navigation/native";
 import ScorecardImage from "../../util/ScorecardImage";
 
@@ -20,7 +15,7 @@ export default function ManageClubPreview(props: { club: Club }) {
       onPress={() => {
         // @ts-ignore
         navigation.navigate("clubAdmin", {
-          clubCode: props.club.code,
+          internalCode: props.club.internalCode,
         });
       }}
     >
@@ -52,7 +47,7 @@ export default function ManageClubPreview(props: { club: Club }) {
               overflow: "hidden",
             }}
           >
-              <ScorecardImage id={props.club.picture!} height={44} width={44} />
+            <ScorecardImage id={props.club.picture!} height={44} width={44} />
           </View>
           <View
             style={{
@@ -78,7 +73,7 @@ export default function ManageClubPreview(props: { club: Club }) {
                 color: colors.text,
               }}
             >
-              {props.club.code} - {props.club.memberCount} member
+              {props.club.clubCode} - {props.club.memberCount} member
               {props.club.memberCount === 1 ? "" : "s"}
             </Text>
           </View>

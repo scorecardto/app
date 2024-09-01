@@ -8,8 +8,6 @@ import { TextInput } from "../../input/TextInput";
 import StatusText from "../../text/StatusText";
 import Button from "../../input/Button";
 import MediumText from "../../text/MediumText";
-import axios from "redaxios";
-import API_HOST from "../../../lib/API_HOST";
 import Toast from "react-native-toast-message";
 import useScApi from "../../util/hooks/useScApi";
 
@@ -38,10 +36,10 @@ export default function CreateClubScreen(props: {
     } else {
       api
         .post({
-          pathname: "/v1/clubs/checkTicker",
+          pathname: "/v1/clubs/checkClubCode",
           auth: true,
           body: {
-            ticker: ticker.toUpperCase(),
+            clubCode: ticker.toUpperCase(),
           },
         })
         .then((r) => {
@@ -67,7 +65,7 @@ export default function CreateClubScreen(props: {
             auth: true,
             body: {
               name,
-              ticker: ticker.toUpperCase(),
+              clubCode: ticker.toUpperCase(),
             },
           })
           .then((r) => {
