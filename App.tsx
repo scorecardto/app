@@ -4,9 +4,9 @@ import {
 } from "@react-navigation/native";
 import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import auth from "@react-native-firebase/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
 import { useEffect, useRef, useState } from "react";
 import Color from "./lib/Color";
@@ -34,21 +34,17 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import HelpScreen from "./components/screens/HelpScreen";
 import RefreshIndicator from "./components/app/dashboard/RefreshIndicator";
 import AppInitializer from "./components/core/AppInitializer";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { RootState, store } from "./components/core/state/store";
-import FinalWelcomeScreen from "./components/screens/welcome/FinalWelcomeScreen";
+import { useSelector } from "react-redux";
+import { RootState } from "./components/core/state/store";
 import { useFeatureFlag } from "./lib/featureFlag";
 import HelpOnboardingScreen from "./components/screens/HelpOnboardingScreen";
 import {
   setupForegroundNotifications,
   setupBackgroundNotifications,
-  requestPermissions,
 } from "./lib/backgroundNotifications";
 import StartScreen from "./components/screens/welcome/StartScreen";
 import NotificationsScreen from "./components/screens/welcome/NotificationsScreen";
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
-import * as Notifications from "expo-notifications";
-import Button from "./components/input/Button";
 import CourseEditScreen from "./components/screens/CourseEditScreen";
 import AppStateListener from "./components/util/AppStateListener";
 import AlertFetcher from "./components/core/AlertFetcher";
@@ -61,8 +57,8 @@ import ShareClubSnapchat from "./components/app/clubs/socials/ShareClubSnapchat"
 import ShareClubInstagram from "./components/app/clubs/socials/ShareClubInstagram";
 import FinishClubPostScreen from "./components/screens/clubs/FinishClubPostScreen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
-import ScorecardModule from "./lib/expoModuleBridge";
 import ClubJoinScreen from "./components/app/clubs/ClubJoinScreen";
+import ViewClubScreen from "./components/screens/clubs/ViewClubScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -360,12 +356,12 @@ export default function App(props: { resetKey: string }) {
                         }}
                       />
                       <Stack.Screen
-                          name={"joinClub"}
-                          component={ClubJoinScreen}
-                          options={{
-                            headerShown: false,
-                            gestureEnabled: false,
-                          }}
+                        name={"joinClub"}
+                        component={ClubJoinScreen}
+                        options={{
+                          headerShown: false,
+                          gestureEnabled: false,
+                        }}
                       />
                       <Stack.Screen
                         name="shareClubInstagram"
@@ -377,6 +373,13 @@ export default function App(props: { resetKey: string }) {
                       <Stack.Screen
                         name="shareClubSnapchat"
                         component={ShareClubSnapchat}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="viewClub"
+                        component={ViewClubScreen}
                         options={{
                           headerShown: false,
                         }}

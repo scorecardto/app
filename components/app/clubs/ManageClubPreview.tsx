@@ -4,7 +4,7 @@ import MediumText from "../../text/MediumText";
 import { Club } from "scorecard-types";
 
 import { useNavigation } from "@react-navigation/native";
-import ScorecardImage from "../../util/ScorecardImage";
+import ScorecardClubImage from "../../util/ScorecardClubImage";
 
 export default function ManageClubPreview(props: { club: Club }) {
   const colors = useColors();
@@ -47,7 +47,7 @@ export default function ManageClubPreview(props: { club: Club }) {
               overflow: "hidden",
             }}
           >
-            <ScorecardImage id={props.club.picture!} height={44} width={44} />
+            <ScorecardClubImage club={props.club} height={44} width={44} />
           </View>
           <View
             style={{

@@ -43,7 +43,7 @@ export default function DashboardToolbar() {
             <MediumText
               style={{
                 color: "#FFFFFF",
-                fontSize: 14,
+                fontSize: 16,
               }}
             >
               {currentGradingPeriod ?? "No Grades"}

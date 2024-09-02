@@ -51,6 +51,7 @@ export default function CourseCard(props: {
       paddingLeft: 24,
       color: colors.primary,
       flex: 1,
+      fontSize: 18,
     },
     grade: {
       marginRight: 24,

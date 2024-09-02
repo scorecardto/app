@@ -1,5 +1,12 @@
-import { Linking, ScrollView, TouchableOpacity, View } from "react-native";
-import { useEffect, useRef } from "react";
+import {
+  Linking,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
@@ -33,6 +40,8 @@ export default function ClubsScreen(props: {
     }
   }, [connected]);
 
+  const [loading, setLoading] = useState(false);
+
   const svg = useRef<any>();
   return (
     <PageThemeProvider
@@ -49,7 +58,24 @@ export default function ClubsScreen(props: {
           style={{
             height: "100%",
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={() => {
+                setLoading(true);
+
+                if (connected) {
+                  social.refreshClubs().finally(() => {
+                    setLoading(false);
+                  });
+                } else {
+                  setLoading(true);
+                }
+              }}
+            />
+          }
         >
+          {/* <Text>{connected ? "C" : "N"}</Text> */}
           <ClubsToolbar />
           <AllClubsList clubs={clubs} />
         </ScrollView>

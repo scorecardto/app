@@ -36,7 +36,7 @@ export default function ClubsToolbar() {
             <MediumText
               style={{
                 color: "#FFFFFF",
-                fontSize: 14,
+                fontSize: 16,
               }}
             >
               Manage

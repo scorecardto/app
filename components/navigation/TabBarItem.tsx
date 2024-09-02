@@ -91,7 +91,7 @@ export default function TabBarItem({
           style={{
             alignSelf: "flex-end",
             fontWeight: "600",
-            fontSize: 16,
+            fontSize: 18,
             color: "white",
             transform: [
               {

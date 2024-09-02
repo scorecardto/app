@@ -24,6 +24,7 @@ export default function ClubColorChanger(props: {
   }, [value]);
 
   const colorOptions = [
+    "#4A93FF",
     "#892436",
     "#B63434",
     "#FF426F",
@@ -38,7 +39,6 @@ export default function ClubColorChanger(props: {
     "#14A155",
     "#1CE082",
     "#3ce2c4",
-    "#4A93FF",
     "#5877e7",
     "#3950C4",
     "#6639C4",
