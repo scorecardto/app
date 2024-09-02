@@ -109,21 +109,21 @@ export default function ClubAdminScreen(props: {
         flex: 1,
       }}
     >
+      <CourseSaveArrayContainer
+        onPressLeft={() => {
+          props.navigation.goBack();
+        }}
+        save={tab === "edit"}
+        hideRight
+        canSave={JSON.stringify(activeClub) !== JSON.stringify(club)}
+        saving={forceLoading || loading}
+        onPressRight={() => {}}
+      />
       <View
         style={{
           flexShrink: 0,
         }}
       >
-        <CourseSaveArrayContainer
-          onPressLeft={() => {
-            props.navigation.goBack();
-          }}
-          save={tab === "edit"}
-          hideRight
-          canSave={JSON.stringify(activeClub) !== JSON.stringify(club)}
-          saving={forceLoading || loading}
-          onPressRight={() => {}}
-        />
         <View
           style={{
             paddingHorizontal: 16,
