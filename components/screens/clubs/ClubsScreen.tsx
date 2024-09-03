@@ -20,6 +20,9 @@ import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
 import MediumText from "../../text/MediumText";
 import ScorecardQRCode from "../../util/ScorecardQRCode";
+import ClubRecentPostsList from "../../app/clubs/ClubRecentPostsList";
+import LargeText from "../../text/LargeText";
+import useColors from "../../core/theme/useColors";
 
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -30,6 +33,10 @@ export default function ClubsScreen(props: {
 
   const clubs = useSelector((r: RootState) => {
     return r.social.clubs;
+  });
+
+  const recentPosts = useSelector((r: RootState) => {
+    return r.social.recentPosts;
   });
 
   const social = useSocial();
@@ -43,6 +50,8 @@ export default function ClubsScreen(props: {
   const [loading, setLoading] = useState(false);
 
   const svg = useRef<any>();
+
+  const colors = useColors();
   return (
     <PageThemeProvider
       theme={{
@@ -77,6 +86,17 @@ export default function ClubsScreen(props: {
         >
           {/* <Text>{connected ? "C" : "N"}</Text> */}
           <ClubsToolbar />
+          <ClubRecentPostsList recentPosts={recentPosts} />
+          <LargeText
+            style={{
+              fontSize: 18,
+              marginHorizontal: 12,
+              marginTop: 16,
+              marginBottom: 8,
+            }}
+          >
+            All Clubs
+          </LargeText>
           <AllClubsList clubs={clubs} />
         </ScrollView>
       </Background>

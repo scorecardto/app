@@ -8,6 +8,7 @@ import MediumText from "../../text/MediumText";
 export default function ClubViewArrayContainer(props: {
   onPressLeft: () => void;
   onPressRight: () => void;
+  code?: string;
 }) {
   const insets = useSafeAreaInsets();
   const accents = useAccents();
@@ -17,8 +18,10 @@ export default function ClubViewArrayContainer(props: {
       style={{
         paddingHorizontal: 16,
         paddingTop: 24,
-        borderBottomColor: "black",
-        backgroundColor: colors.background,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 10,
       }}
     >
       <View
@@ -48,21 +51,21 @@ export default function ClubViewArrayContainer(props: {
             onPress={() => props.onPressLeft()}
           />
         </View>
-        <View style={{}}>
+        {/* <View style={{}}>
           <MediumText
             style={{
               fontSize: 16,
               color: colors.primary,
             }}
           >
-            CODE
+            {props.code || "Loading..."}
           </MediumText>
         </View>
         <View
           style={{
             width: 44,
           }}
-        ></View>
+        ></View> */}
       </View>
     </View>
   );

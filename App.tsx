@@ -353,6 +353,7 @@ export default function App(props: { resetKey: string }) {
                         component={FinishClubPostScreen}
                         options={{
                           headerShown: false,
+                          gestureEnabled: false,
                         }}
                       />
                       <Stack.Screen

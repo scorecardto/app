@@ -14,11 +14,8 @@ export default function ClubScreenGradient(props: { color: string }) {
   return (
     <View
       style={{
-        position: "absolute",
-        bottom: 0,
-        right: 0,
         width: "100%",
-        height: "100%",
+        height: 150,
       }}
     >
       <View style={{ height: "100%" }}>

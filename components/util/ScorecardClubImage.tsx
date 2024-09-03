@@ -1,11 +1,11 @@
 import { Image, Text, View } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { useEffect, useState } from "react";
-import { Club } from "scorecard-types";
+import { Club, ClubBase } from "scorecard-types";
 import ScorecardImage from "./ScorecardImage";
 
 export default function ScorecardClubImage(props: {
-  club: Club;
+  club: ClubBase;
   width: number;
   height: number;
 }) {

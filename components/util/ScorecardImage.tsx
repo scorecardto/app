@@ -2,11 +2,19 @@ import { Image } from "react-native";
 import * as FileSystem from "expo-file-system";
 import { useEffect, useState } from "react";
 
-export default function ScorecardImage(props: {
-  id: string;
-  width: number;
-  height: number;
-}) {
+export default function ScorecardImage(
+  props:
+    | {
+        id: string;
+        width: number;
+        height: number;
+        contain?: false;
+      }
+    | {
+        id: string;
+        contain: true;
+      }
+) {
   const dir = FileSystem.cacheDirectory + "images/";
   const file = dir + props.id;
 
@@ -27,12 +35,27 @@ export default function ScorecardImage(props: {
     })();
   }, [file]);
 
-  return (
-    <Image
-      source={{ uri: file, cache: "reload" }}
-      key={"" + refresh}
-      width={props.width}
-      height={props.height}
-    />
-  );
+  if (props.contain) {
+    return (
+      <Image
+        source={{ uri: file, cache: "reload" }}
+        key={"" + refresh}
+        style={{
+          flex: 1,
+          width: null,
+          height: null,
+          resizeMode: "contain",
+        }}
+      />
+    );
+  } else {
+    return (
+      <Image
+        source={{ uri: file, cache: "reload" }}
+        key={"" + refresh}
+        width={props.width}
+        height={props.height}
+      />
+    );
+  }
 }

@@ -1,28 +1,19 @@
-import {
-  View,
-  Text,
-  TextInput,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  Keyboard,
-  InteractionManager,
-} from "react-native";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { NavigationProp } from "@react-navigation/native";
 import useColors from "../../core/theme/useColors";
-import {
-  KeyboardStickyView,
-  KeyboardToolbar,
-} from "react-native-keyboard-controller";
-import { Octicons } from "@expo/vector-icons";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import LargeText from "../../text/LargeText";
-import { useEffect, useRef, useState } from "react";
-import ClubPostArrayContainer from "../../app/clubs/ClubPostArrayContainer";
+import { useCallback, useRef, useState } from "react";
 import MediumText from "../../text/MediumText";
 import { MaterialIcons } from "@expo/vector-icons";
 import Button from "../../input/Button";
-import { Club } from "scorecard-types";
-function PromotionOption(props: {
+import { ClubPost, ClubPostInternal, PromotionOption } from "scorecard-types";
+import LoadingOverlay from "../loader/LoadingOverlay";
+import axios from "redaxios";
+import useScApi from "../../util/hooks/useScApi";
+import Toast from "react-native-toast-message";
+
+function PromotionOptionCard(props: {
   name: string;
   description: string;
   price: string;
@@ -118,16 +109,68 @@ export default function FinishClubPostScreen(props: {
   route: any;
 }) {
   const colors = useColors();
-  const navigation = useNavigation();
 
   const ref = useRef<TextInput>(null);
 
   const [promotionTier, setPromotionTier] = useState(0);
 
-  const club: Club | null = props.route.params.club;
+  const post: ClubPost | null = props.route.params.post;
+
+  if (!post) {
+    return (
+      <View>
+        <Text>Something went wrong.</Text>
+      </View>
+    );
+  }
+
+  const club = post.club;
+
+  const scApi = useScApi();
+  const [publishing, setPublishing] = useState(false);
+  const publish = useCallback(() => {
+    let promotionOptionCode: PromotionOption = "BASIC";
+
+    if (promotionTier === 1) {
+      promotionOptionCode = "PROMOTE";
+    }
+    const postInternal: ClubPostInternal = {
+      ...post,
+      promotionOption: promotionOptionCode,
+    };
+
+    setPublishing(true);
+    scApi
+      .post({
+        auth: true,
+        pathname: "/v1/clubs/post",
+        body: {
+          post: postInternal,
+        },
+      })
+      .then(() => {
+        Toast.show({
+          type: "info",
+          text1: "Done!",
+          text2: "We're pushing this to your club members right now.",
+        });
+      })
+      .catch((e) => {
+        Toast.show({
+          type: "info",
+          text1: "Something went wrong",
+          text2: e,
+        });
+      })
+      .finally(() => {
+        setPublishing(false);
+        props.navigation.navigate("Clubs");
+      });
+  }, [promotionTier, post]);
 
   return (
     <View style={{}}>
+      <LoadingOverlay show={publishing} />
       <View
         style={{
           height: "100%",
@@ -160,7 +203,7 @@ export default function FinishClubPostScreen(props: {
           </LargeText>
         </View>
         <View>
-          <PromotionOption
+          <PromotionOptionCard
             name="Basic"
             description="Your members with Scorecard installed will see this post in their feed, but won't receive a notification for it."
             price={"$0"}
@@ -169,7 +212,7 @@ export default function FinishClubPostScreen(props: {
             }}
             selected={promotionTier === 0}
           />
-          <PromotionOption
+          <PromotionOptionCard
             name="Promote"
             description="All members will recieve a notification about this post."
             price={"$0"}
@@ -194,9 +237,11 @@ export default function FinishClubPostScreen(props: {
             marginTop: 24,
           }}
         >
-          <Button onPress={() => {}}>{`Post in ${
-            club?.name ?? "UKNOWN"
-          }`}</Button>
+          <Button
+            onPress={() => {
+              publish();
+            }}
+          >{`Post in ${club?.name ?? "UKNOWN"}`}</Button>
         </View>
       </View>
     </View>

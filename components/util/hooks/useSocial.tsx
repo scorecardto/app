@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { setClubs } from "../../core/state/social/socialSlice";
+import { setClubs, setRecentPosts } from "../../core/state/social/socialSlice";
 import useScApi from "./useScApi";
 
 function useSocial() {
@@ -12,9 +12,8 @@ function useSocial() {
       pathname: "/v1/clubs/list",
     });
 
-    console.log(r.data);
-
     dispatch(setClubs(r.data.clubs));
+    dispatch(setRecentPosts(r.data.recentPosts));
   };
   return {
     refreshClubs,
