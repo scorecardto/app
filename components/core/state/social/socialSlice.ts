@@ -5,12 +5,14 @@ interface SocialSlice {
   connected: boolean;
   clubs: Club[];
   recentPosts: ClubPost[];
+  preferredEmail: string | undefined;
 }
 
 const initialState: SocialSlice = {
   connected: false,
   clubs: [],
   recentPosts: [],
+  preferredEmail: undefined,
 };
 
 const socialSlice = createSlice({
@@ -26,10 +28,17 @@ const socialSlice = createSlice({
     setRecentPosts: (state, action: PayloadAction<ClubPost[]>) => {
       state.recentPosts = action.payload;
     },
+    setPreferredEmail: (state, action: PayloadAction<string | undefined>) => {
+      state.preferredEmail = action.payload;
+    },
   },
 });
 
-export const { setSocialConnected, setClubs, setRecentPosts } =
-  socialSlice.actions;
+export const {
+  setSocialConnected,
+  setClubs,
+  setRecentPosts,
+  setPreferredEmail,
+} = socialSlice.actions;
 
 export default socialSlice.reducer;

@@ -42,17 +42,17 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
 
     if (timeDifferenceInSeconds < 0 && timeDifferenceInMinutes > -60) {
       return "Happening Now";
-    } else if (timeDifferenceInSeconds >= 0 && timeDifferenceInMinutes < 60) {
+    } else if (timeDifferenceInSeconds >= 0 && timeDifferenceInMinutes < 120) {
       const minutes = Math.abs(timeDifferenceInMinutes);
       const seconds = Math.abs(timeDifferenceInSeconds % 60);
-      return `in ${minutes} min${minutes === 1 ? "" : "s"}`;
-    } else if (timeDifferenceInHours < 36 && timeDifferenceInHours >= 1) {
+      return `in ${minutes}m`;
+    } else if (timeDifferenceInHours < 36) {
       const hours = Math.abs(timeDifferenceInHours);
       const minutes = Math.abs(timeDifferenceInMinutes % 60);
-      return `in ${hours}h ${minutes}m`;
+      return `in ${hours}h`;
     } else if (timeDifferenceInHours >= 36 && timeDifferenceInDays < 7) {
       const days = Math.abs(timeDifferenceInDays);
-      return `in ${days} days`;
+      return `in ${days} day${days === 1 ? "" : "s"}`;
     } else if (timeDifferenceInDays >= 7) {
       return `on ${date.toLocaleDateString("en-US", {
         month: "short",
@@ -197,13 +197,23 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
         >
           <View
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: 12,
-              overflow: "hidden",
+              marginRight: 12,
             }}
           >
-            <ScorecardClubImage height={64} width={64} club={props.post.club} />
+            <View
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 12,
+                overflow: "hidden",
+              }}
+            >
+              <ScorecardClubImage
+                height={64}
+                width={64}
+                club={props.post.club}
+              />
+            </View>
           </View>
           {eventLabel && (
             <View
@@ -213,7 +223,7 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
                   .hex(),
                 paddingHorizontal: 8,
                 paddingVertical: 2,
-                alignSelf: "center",
+                alignSelf: "flex-start",
                 borderRadius: 4,
                 marginTop: 8,
               }}
@@ -233,7 +243,6 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
           style={{
             paddingHorizontal: 4,
             flexShrink: 1,
-            marginLeft: 12,
           }}
         >
           <View

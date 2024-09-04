@@ -6,7 +6,7 @@ import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
 import auth from "@react-native-firebase/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useColorScheme } from "react-native";
+import { Alert, useColorScheme } from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
 import { useEffect, useRef, useState } from "react";
 import Color from "./lib/Color";
@@ -59,6 +59,7 @@ import FinishClubPostScreen from "./components/screens/clubs/FinishClubPostScree
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import ClubJoinScreen from "./components/app/clubs/ClubJoinScreen";
 import ViewClubScreen from "./components/screens/clubs/ViewClubScreen";
+import ScorecardModule from "./lib/expoModuleBridge";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -66,6 +67,13 @@ setupBackgroundNotifications();
 const Stack = createNativeStackNavigator();
 
 export default function App(props: { resetKey: string }) {
+  const RESET_KEY = false;
+  useEffect(() => {
+    if (RESET_KEY) {
+      ScorecardModule.clearStorage();
+      Alert.alert("cleared the storage");
+    }
+  }, []);
   const [appReady, setAppReady] = useState(false);
 
   const [nextScreen, setNextScreen] = useState("");
@@ -205,6 +213,7 @@ export default function App(props: { resetKey: string }) {
                         component={ConnectAccountScreen}
                         options={{
                           headerShown: false,
+                          gestureEnabled: false,
                         }}
                       />
                       <Stack.Screen

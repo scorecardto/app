@@ -260,7 +260,7 @@ const MyDarkTheme = {
     background: "#1a1b24",
     backgroundNeutral: "#1d1f28",
     textInput: "#282a39",
-    borderNeutral: "#0d0e13",
+    borderNeutral: "#292d3b",
     border: "#151727",
     secondary: "#2F3E65",
     secondaryNeutral: "#272938",

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useColors from "../../core/theme/useColors";
 import LargeText from "../../text/LargeText";
 import MediumText from "../../text/MediumText";
@@ -10,6 +10,10 @@ import Toast from "react-native-toast-message";
 import useScApi from "../../util/hooks/useScApi";
 import { useNavigation } from "@react-navigation/native";
 import ScorecardClubImage from "../../util/ScorecardClubImage";
+import useGetEmail from "../../util/hooks/useGetEmail";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 
 export default function ClubPreview(props: { club: Club }) {
   const colors = useColors();
@@ -20,38 +24,45 @@ export default function ClubPreview(props: { club: Club }) {
 
   const navigation = useNavigation();
 
+  const getEmail = useGetEmail();
+
+  const email = useSelector((r: RootState) => r.social.preferredEmail);
+
   const api = useScApi();
   const join = useCallback(async () => {
-    if (props.club.isMember) return;
+    getEmail().then((email: string) => {
+      if (props.club.isMember) return;
 
-    setLoading(true);
-    api
-      .post({
-        pathname: "/v1/clubs/join",
-        auth: true,
-        body: {
-          internalCode: props.club.internalCode,
-        },
-      })
-      .then(() => {
-        Toast.show({
-          type: "info",
-          text1: `Welcome to ${props.club.name}!`,
-          text2: `You are now a member of this club.`,
+      setLoading(true);
+      api
+        .post({
+          pathname: "/v1/clubs/join",
+          auth: true,
+          body: {
+            email,
+            internalCode: props.club.internalCode,
+          },
+        })
+        .then(() => {
+          Toast.show({
+            type: "info",
+            text1: `Welcome to ${props.club.name}!`,
+            text2: `You are now a member of this club.`,
+          });
+        })
+        .catch(() => {
+          Toast.show({
+            type: "info",
+            text1: `Error Occured`,
+            text2: `Something went wrong trying to join this club.`,
+          });
+        })
+        .finally(() => {
+          social.refreshClubs().then(() => {
+            setLoading(false);
+          });
         });
-      })
-      .catch(() => {
-        Toast.show({
-          type: "info",
-          text1: `Error Occured`,
-          text2: `Something went wrong trying to join this club.`,
-        });
-      })
-      .finally(() => {
-        social.refreshClubs().then(() => {
-          setLoading(false);
-        });
-      });
+    });
   }, []);
 
   const base = (

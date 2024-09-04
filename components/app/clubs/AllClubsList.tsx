@@ -12,6 +12,7 @@ export default function AllClubsList(props: { clubs: Club[] }) {
         backgroundColor: colors.card,
         marginHorizontal: 12,
         borderRadius: 12,
+        marginBottom: 32,
         overflow: "hidden",
       }}
     >

@@ -113,22 +113,34 @@ export default function ViewClubScreen(props: {
         >
           <View
             style={{
-              borderRadius: 16,
-              overflow: "hidden",
-              width: 116,
-              marginHorizontal: 16,
-              borderWidth: 4,
-              borderColor: "white",
               position: "absolute",
               top: -58,
+              shadowColor: "#000000",
+              shadowRadius: 16,
+              shadowOffset: {
+                width: 0,
+                height: 0,
+              },
+              shadowOpacity: 0.1,
             }}
           >
-            <ScorecardClubImage club={club} width={116} height={116} />
+            <View
+              style={{
+                borderRadius: 16,
+                overflow: "hidden",
+                width: 116,
+                marginHorizontal: 16,
+                borderWidth: 4,
+                borderColor: "white",
+              }}
+            >
+              <ScorecardClubImage club={club} width={116} height={116} />
+            </View>
           </View>
           <View
             style={{
               flexShrink: 1,
-              marginTop: 4,
+              marginTop: 12,
               marginBottom: 16,
             }}
           >
