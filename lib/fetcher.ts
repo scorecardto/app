@@ -72,37 +72,82 @@ async function login(
   }
 }
 
+async function parseHomeInfo(host: string, cookies: string) {
+  const scheduleData = parse(
+      (
+          await axios({
+            url: `https://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
+            method: "POST",
+            headers: { Cookie: cookies },
+            fetch: customFetch,
+            data: qs.stringify({
+              selectedIndexId: "undefined",
+              selectedTable: "table",
+              smartFormName: "SmartForm",
+              focusElement: "",
+              gradeBookKey: "",
+              replaceObjectParam1: "",
+              selectedCell: "",
+              selectedTdId: "",
+            }),
+          })
+      ).data as string
+  );
+
+  const homeData = parse(
+      (
+          await axios({
+            url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+            method: "POST",
+            headers: { Cookie: cookies },
+            fetch: customFetch,
+          })
+      ).data as string
+  );
+
+  if (
+      homeData.querySelector("#pageMessageDiv .message .info")?.innerText ===
+      "Your session has expired.  Please use the Close button and log in again."
+  ) {
+    throw new Error(`SESSION_EXPIRED`);
+  }
+
+  const rawName =
+      homeData.querySelector("#defaultInfoHeader tr:nth-child(1) td:nth-child(2)")
+          ?.innerText || "";
+
+  const lastName = rawName?.split(",")?.[0];
+
+  const legalFirstName = rawName?.split(", ")?.[1]?.split(" ")?.[0];
+
+  const regex = /\(.*\)/g;
+
+  const prefferedFirstName = regex.exec(rawName)?.[0];
+
+  const firstName = prefferedFirstName
+      ? prefferedFirstName.replace(/[()]/g, "")
+      : legalFirstName;
+
+  const schoolName =
+      homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(1)")
+          ?.innerText || "";
+
+  const gradeLabel =
+      homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(2)")
+          ?.innerText || "";
+
+  return {
+    firstName,
+    lastName,
+    grade: gradeLabel,
+    school: schoolName,
+  }
+}
+
 async function parseHome(
   host: string,
   cookies: string,
-  infoCallback?: (info: {
-    firstName: string;
-    lastName: string;
-    school: string;
-    grade: string;
-  }) => void
 ) {
-  const scheduleData = parse(
-    (
-      await axios({
-        url: `https://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
-        method: "POST",
-        headers: { Cookie: cookies },
-        fetch: customFetch,
-        data: qs.stringify({
-          selectedIndexId: "undefined",
-          selectedTable: "table",
-          smartFormName: "SmartForm",
-          focusElement: "",
-          gradeBookKey: "",
-          replaceObjectParam1: "",
-          selectedCell: "",
-          selectedTdId: "",
-        }),
-      })
-    ).data as string
-  );
-
   const homeData = parse(
     (
       await axios({
@@ -124,38 +169,6 @@ async function parseHome(
   const courseElements = homeData.querySelectorAll(
     ".studentGradingBottomLeft tr"
   );
-
-  const rawName =
-    homeData.querySelector("#defaultInfoHeader tr:nth-child(1) td:nth-child(2)")
-      ?.innerText || "";
-
-  const lastName = rawName?.split(",")?.[0];
-
-  const legalFirstName = rawName?.split(", ")?.[1]?.split(" ")?.[0];
-
-  const regex = /\(.*\)/g;
-
-  const prefferedFirstName = regex.exec(rawName)?.[0];
-
-  const firstName = prefferedFirstName
-    ? prefferedFirstName.replace(/[()]/g, "")
-    : legalFirstName;
-
-  const schoolName =
-    homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(1)")
-      ?.innerText || "";
-
-  const gradeLabel =
-    homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(2)")
-      ?.innerText || "";
-  if (infoCallback) {
-    infoCallback({
-      firstName: firstName,
-      lastName: lastName,
-      grade: gradeLabel,
-      school: schoolName,
-    });
-  }
 
   const columnNames: string[] = [];
 
@@ -340,12 +353,6 @@ async function fetchCourse(
   password: string,
   courseKeyOrIdx: string | number,
   courseInfoCallback?: (num: number, names: string[]) => void,
-  infoCallback?: (info: {
-    firstName: string;
-    lastName: string;
-    school: string;
-    grade: string;
-  }) => void,
   gradeCategory?: number
 ): Promise<Course | undefined> {
   const cookies = await entryPoint(host);
@@ -354,7 +361,6 @@ async function fetchCourse(
   const { courses, gradeCategoryNames } = await parseHome(
     host,
     cookies,
-    infoCallback
   );
   courseInfoCallback && courseInfoCallback(courses.length, gradeCategoryNames);
 
@@ -371,6 +377,12 @@ async function fetchCourse(
     ...course,
     gradeCategories: await parseCourse(host, cookies, key),
   };
+}
+
+async function fetchHomeInfo(host: string, username: string, password: string) {
+  const cookies = await entryPoint(host);
+  await login(host, cookies, username, password);
+  return await parseHomeInfo(host, cookies);
 }
 
 interface AllContent {
@@ -400,13 +412,8 @@ async function fetchAllContent(
 
   let gradeCategoryNames: string[] = [];
 
-  let gottenInfo = false;
-  const infoWrapper = (info: any) => {
-    if (!gottenInfo && infoCallback) {
-      gottenInfo = true;
-      infoCallback(info);
-    }
-  }
+  infoCallback && fetchHomeInfo(host, username, password).then(infoCallback);
+
   const runCourse = (i: number) => {
     fetchCourse(
       host,
@@ -423,7 +430,6 @@ async function fetchAllContent(
         numCourses = realNum;
         gradeCategoryNames = names;
       },
-      infoWrapper,
       gradeCategory
     )
       .then((course) => {

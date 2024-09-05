@@ -41,7 +41,6 @@ function useScApi() {
   };
   const post = useCallback(
     async (p: ScApiPostParams): Promise<Response<any>> => {
-      console.log(user);
       let token: string | undefined = undefined;
       if (p.auth) {
         token = await user?.getIdToken();

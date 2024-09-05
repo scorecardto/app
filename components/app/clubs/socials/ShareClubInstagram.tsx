@@ -30,7 +30,7 @@ export default function ShareClubInstagram(props: {
             quality: 1,
             result: "base64",
           }).then((b64) => {
-            shareToInsta(`data:image/png;base64,${b64}`).then(
+            shareToInsta(`data:image/png;base64,${b64}`, `https://${club.clubCode.toLowerCase()}.mylasa.club`).then(
               props.navigation.goBack
             );
           }),
@@ -165,7 +165,14 @@ export default function ShareClubInstagram(props: {
                   alignItems: "center",
                 }}
               >
-                <Text
+                  <Text style={{
+                      fontSize: 9,
+                      fontFamily: "Arial",
+                      fontWeight: "bold",
+                      color: "red",
+                      marginBottom: 3,
+                  }}>Paste A Link Sticker Here, So It's Clickable</Text>
+                  <Text
                   style={{
                     fontSize: 16,
                     fontWeight: "bold",

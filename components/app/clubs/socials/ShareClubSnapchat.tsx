@@ -39,8 +39,7 @@ export default function ShareClubSnapchat(props: {
                         rotationDegreesInClockwise: 0,
                         isAnimated: false,
                     },
-                    // TODO: just... doesn't work
-                    attachmentUrl: "https://scorecardgrades.com", // ${club.code}.mylasa.club
+                    attachmentUrl: `https://mylasa.club`,
                 }).then(props.navigation.goBack);
             }), 800);
         }

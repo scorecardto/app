@@ -13,6 +13,7 @@ export default function ScorecardImage(props: {
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
+    if (!props.id) return;
     (async () => {
       const info = await FileSystem.getInfoAsync(file);
       if (!info.exists) {
@@ -26,6 +27,8 @@ export default function ScorecardImage(props: {
       }
     })();
   }, [file]);
+
+  if (!props.id) return null;
 
   return (
     <Image
