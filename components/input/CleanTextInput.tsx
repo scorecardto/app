@@ -13,8 +13,10 @@ export default function CleanTextInput(props: {
     | "firstName"
     | "lastName"
     | "phoneNumber"
-    | "confirmationCode";
+    | "confirmationCode"
+    | "email";
   autoFocus?: boolean;
+  error?: boolean;
 }) {
   const colors = useColors();
   const [focus, setFocus] = useState(false);
@@ -31,7 +33,7 @@ export default function CleanTextInput(props: {
         style={{
           letterSpacing: 1,
           fontSize: 14,
-          color: focus ? "#509EE7" : colors.text,
+          color: props.error ? "#F5515B" : focus ? "#509EE7" : colors.text,
           textTransform: "uppercase",
           marginBottom: 8,
         }}
@@ -55,7 +57,7 @@ export default function CleanTextInput(props: {
           paddingHorizontal: 4,
           paddingBottom: 8,
           borderBottomWidth: 2,
-          borderBottomColor: colors.borderNeutral,
+          borderBottomColor: props.error ? "#F5515B" : colors.borderNeutral,
         }}
         {...(disableCorrections && {
           autoCapitalize: "none",
@@ -74,6 +76,8 @@ export default function CleanTextInput(props: {
             ? "phone-pad"
             : props.type === "confirmationCode"
             ? "number-pad"
+            : props.type === "email"
+            ? "email-address"
             : "default"
         }
         autoComplete={
@@ -87,6 +91,8 @@ export default function CleanTextInput(props: {
             ? "family-name"
             : props.type === "password"
             ? "password"
+            : props.type === "email"
+            ? "email"
             : "username"
         }
         textContentType={
@@ -102,6 +108,8 @@ export default function CleanTextInput(props: {
             ? "oneTimeCode"
             : props.type === "phoneNumber"
             ? "telephoneNumber"
+            : props.type === "email"
+            ? "emailAddress"
             : "none"
         }
         autoFocus={props.autoFocus}

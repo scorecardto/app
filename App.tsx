@@ -60,6 +60,7 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import ClubJoinScreen from "./components/app/clubs/ClubJoinScreen";
 import ViewClubScreen from "./components/screens/clubs/ViewClubScreen";
 import ScorecardModule from "./lib/expoModuleBridge";
+import AddEmailScreen from "./components/screens/welcome/AddEmailScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -234,6 +235,14 @@ export default function App(props: { resetKey: string }) {
                         name="addName"
                         component={AddNameScreen}
                         options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <Stack.Screen
+                        name="addEmail"
+                        component={AddEmailScreen}
+                        options={{
+                          gestureEnabled: false,
                           headerShown: false,
                         }}
                       />

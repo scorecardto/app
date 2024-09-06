@@ -1,4 +1,4 @@
-import { AppState, Linking, View } from "react-native";
+import { AppState, Linking, Text, View } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import CurrentGradesScreen from "./CurrentGradesScreen";
 import ArchiveScreen from "./ArchiveScreen";
@@ -14,12 +14,15 @@ import { setSocialConnected } from "../core/state/social/socialSlice";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import auth from "@react-native-firebase/auth";
 import { refreshImageCache } from "../../lib/refreshImageCache";
+import { BlurView } from "@react-native-community/blur";
+
 import {
   getCurrentToken,
   requestPermissions,
 } from "../../lib/backgroundNotifications";
 import axios from "redaxios";
 import { unpinUnknownCourses } from "../core/state/widget/widgetSlice";
+import LargeText from "../text/LargeText";
 
 const Tab = createMaterialTopTabNavigator();
 

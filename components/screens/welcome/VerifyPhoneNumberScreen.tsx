@@ -51,23 +51,13 @@ export default function VerifyPhoneNumberScreen(props: {
 
     confirmPhoneNumberCallback(code)
       .then(() => {
-        const currentPage = props.navigation.getState().routes.slice(-1)[0];
-
-        if (currentPage?.name === "verifyPhoneNumber") {
-          Notifications.getPermissionsAsync().then((permissions) => {
-            if (permissions.canAskAgain || permissions.ios?.status === 0) {
-              props.navigation.reset({
-                index: 0,
-                routes: [{ name: "notifications" }],
-              });
-            } else {
-              props.navigation.reset({
-                index: 0,
-                routes: [{ name: "scorecard", params: { firstTime: true } }],
-              });
-            }
-          });
-        }
+        // const currentPage = props.navigation.getState().routes.slice(-1)[0];
+        // if (currentPage?.name === "verifyPhoneNumber") {
+        //   props.navigation.reset({
+        //     index: 0,
+        //     routes: [{ name: "addEmail" }],
+        //   });
+        // }
       })
       .catch((err) => {
         if (err.code === "auth/invalid-verification-code") {
@@ -99,19 +89,9 @@ export default function VerifyPhoneNumberScreen(props: {
   useEffect(() => {
     return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setLoading(false);
-        Notifications.getPermissionsAsync().then((permissions) => {
-          if (permissions.canAskAgain || permissions.ios?.status === 0) {
-            props.navigation.reset({
-              index: 0,
-              routes: [{ name: "notifications" }],
-            });
-          } else {
-            props.navigation.reset({
-              index: 0,
-              routes: [{ name: "scorecard", params: { firstTime: true } }],
-            });
-          }
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "addEmail" }],
         });
       }
     });
