@@ -30,7 +30,7 @@ export default function ScorecardScreen(props: {
     setUser(user);
     if (user) {
       requestPermissions().then(async () =>
-          axios.post("https://api.scorecardgrades.com/v1/register_token", {
+          getCurrentToken() && axios.post("https://api.scorecardgrades.com/v1/register_token", {
             pushToken: getCurrentToken()
           }, {
             headers: { Authorization: await user.getIdToken() }

@@ -227,23 +227,22 @@ async function parseHome(
 }
 
 async function parseCourse(host: string, cookies: string, courseKey: string) {
-  const assignments = parse(
-      (
-          await axios({
-            url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
-            method: "POST",
-            data: qs.stringify({
-              gradeBookKey: courseKey,
-            }),
-            headers: {
-              // Cookie: cookies,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-            responseType: "text",
-            fetch: customFetch,
-          })
-      ).data as string
-  );
+  let response = await axios({
+    url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
+    method: "POST",
+    data: qs.stringify({
+      gradeBookKey: courseKey,
+    }),
+    headers: {
+      Cookie: cookies,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    responseType: "text",
+    fetch: customFetch,
+  });
+
+  if (!response.data) return [];
+  const assignments = parse(response.data as string);
 
   const categoryElements = assignments.querySelectorAll(".tablePanelContainer");
 

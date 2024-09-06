@@ -1,4 +1,5 @@
 import { NavigationProp } from "@react-navigation/native";
+import Form from "form-data";
 
 import { Animated, RefreshControl, ScrollView, View } from "react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -16,7 +17,7 @@ import {
   unpinUnknownCourses,
   updateCourseOrder,
 } from "../core/state/widget/widgetSlice";
-import { fetchAllContent } from "../../lib/fetcher";
+import {fetchAllContent, fetchCourse} from "../../lib/fetcher";
 import RefreshStatus from "../../lib/types/RefreshStatus";
 import useColors from "../core/theme/useColors";
 import StatusText from "../text/StatusText";
@@ -25,6 +26,8 @@ import fetchAndStore from "../../lib/fetchAndStore";
 import {getCurrentToken, requestPermissions} from "../../lib/backgroundNotifications";
 import axios from "redaxios";
 import {firebase} from "@react-native-firebase/auth";
+import Button from "../input/Button";
+import parse from "node-html-parser";
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
 }) {
