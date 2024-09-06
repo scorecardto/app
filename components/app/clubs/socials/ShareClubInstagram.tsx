@@ -2,14 +2,12 @@ import { Club } from "scorecard-types";
 import { Dimensions, Text, View } from "react-native";
 import { LinearGradient } from "react-native-gradients";
 import { NavigationProp } from "@react-navigation/native";
-import ScorecardImage from "../../../util/ScorecardImage";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Image } from "expo-image";
 import { captureRef } from "react-native-view-shot";
 import { shareToInsta } from "../../../../lib/shareToInsta";
-import { Social } from "react-native-share";
-import * as Clipboard from "expo-clipboard";
 import LoadingOverlay from "../../../screens/loader/LoadingOverlay";
+import ScorecardClubImage from "../../../util/ScorecardClubImage";
 
 export default function ShareClubInstagram(props: {
   navigation: NavigationProp<any, any>;
@@ -89,8 +87,8 @@ export default function ShareClubInstagram(props: {
                   overflow: "hidden",
                 }}
               >
-                <ScorecardImage
-                  id={club.picture!}
+                <ScorecardClubImage
+                  club={club}
                   width={IMAGE_SIZE}
                   height={IMAGE_SIZE}
                 />
@@ -210,7 +208,7 @@ export default function ShareClubInstagram(props: {
               marginTop: 20,
             }}
           >
-            Adrian C, Julia B, and 1000 Others Are Using Scorecard To Join Clubs
+            Your friends are using Scorecard to manage classes and join clubs!
           </Text>
         </View>
       </View>

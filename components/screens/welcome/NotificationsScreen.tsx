@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Image } from "expo-image";
 import ActionButton from "../../input/ActionButton";
@@ -12,6 +12,7 @@ export default function NotificationsScreen(props: {
   navigation: NavigationProp<any, any>;
 }) {
   const insets = useSafeAreaInsets();
+
   return (
     <View
       style={{
@@ -22,7 +23,6 @@ export default function NotificationsScreen(props: {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        paddingTop: 80,
         paddingBottom: insets.top / 2,
       }}
     >
@@ -38,21 +38,38 @@ export default function NotificationsScreen(props: {
             aspectRatio: 1,
           }}
         />
-        <Text
+        <View
           style={{
-            color: "white",
-            fontSize: 20,
-            lineHeight: 32,
-            marginTop: 50,
-            marginBottom: 50,
-            paddingHorizontal: 48,
-            textAlign: "center",
+            marginTop: 32,
+            alignItems: "center",
           }}
         >
-          Allow notifications on the next screen, to see new grades faster.
-        </Text>
-        <ActionButton
-          type="WHITE"
+          <Text
+            style={{
+              color: "white",
+              fontSize: 24,
+              lineHeight: 32,
+              marginTop: 12,
+              marginBottom: 50,
+              paddingHorizontal: 48,
+              textAlign: "center",
+            }}
+          >
+            Allow notifications on the next screen to see club and class
+            updates.
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          paddingTop: 64,
+          paddingHorizontal: 32,
+          flexDirection: "column",
+          alignItems: "stretch",
+          width: "100%",
+        }}
+      >
+        <TouchableOpacity
           onPress={() => {
             Notifications.requestPermissionsAsync().then((result) => {
               props.navigation.reset({
@@ -70,22 +87,29 @@ export default function NotificationsScreen(props: {
             });
           }}
         >
-          Continue
-        </ActionButton>
-        <Text
-          style={{
-            color: "white",
-            fontSize: 16,
-            lineHeight: 24,
-            marginTop: 50,
-            marginBottom: 50,
-            paddingHorizontal: 48,
-            textAlign: "center",
-          }}
-        >
-          You can customize notifications for each class, and always disable
-          them later.{" "}
-        </Text>
+          <View
+            style={{
+              marginTop: 8,
+              backgroundColor: "#FFFFFF",
+              paddingVertical: 12,
+              borderRadius: 100,
+              width: "100%",
+              alignSelf: "flex-end",
+              overflow: "hidden",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                fontWeight: "500",
+                color: "#000000",
+              }}
+            >
+              Continue
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

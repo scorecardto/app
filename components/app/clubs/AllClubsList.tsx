@@ -10,8 +10,9 @@ export default function AllClubsList(props: { clubs: Club[] }) {
     <View
       style={{
         backgroundColor: colors.card,
-        margin: 12,
+        marginHorizontal: 12,
         borderRadius: 12,
+        marginBottom: 32,
         overflow: "hidden",
       }}
     >

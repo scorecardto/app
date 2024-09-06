@@ -1,14 +1,19 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useColors from "../../core/theme/useColors";
 import LargeText from "../../text/LargeText";
 import MediumText from "../../text/MediumText";
 import { Club } from "scorecard-types";
-
+import { MaterialIcons } from "@expo/vector-icons";
 import useSocial from "../../util/hooks/useSocial";
 import Toast from "react-native-toast-message";
 import useScApi from "../../util/hooks/useScApi";
-import ScorecardImage from "../../util/ScorecardImage";
+import { useNavigation } from "@react-navigation/native";
+import ScorecardClubImage from "../../util/ScorecardClubImage";
+import useGetEmail from "../../util/hooks/useGetEmail";
+import { useSelector } from "react-redux";
+import { RootState } from "../../core/state/store";
+import ScorecardModule from "../../../lib/expoModuleBridge";
 
 export default function ClubPreview(props: { club: Club }) {
   const colors = useColors();
@@ -17,46 +22,57 @@ export default function ClubPreview(props: { club: Club }) {
 
   const [loading, setLoading] = useState(false);
 
+  const navigation = useNavigation();
+
+  const getEmail = useGetEmail();
+
+  const email = useSelector((r: RootState) => r.social.preferredEmail);
+
   const api = useScApi();
   const join = useCallback(async () => {
-    if (props.club.isMember) return;
+    getEmail().then((email: string) => {
+      console.log(email);
 
-    setLoading(true);
-    api
-      .post({
-        pathname: "/v1/clubs/join",
-        auth: true,
-        body: {
-          internalCode: props.club.internalCode,
-        },
-      })
-      .then(() => {
-        Toast.show({
-          type: "info",
-          text1: `Welcome to ${props.club.name}!`,
-          text2: `You are now a member of this club.`,
+      if (props.club.isMember) return;
+
+      setLoading(true);
+      api
+        .post({
+          pathname: "/v1/clubs/join",
+          auth: true,
+          body: {
+            email,
+            internalCode: props.club.internalCode,
+          },
+        })
+        .then(() => {
+          Toast.show({
+            type: "info",
+            text1: `Welcome to ${props.club.name}!`,
+            text2: `You are now a member of this club.`,
+          });
+        })
+        .catch(() => {
+          Toast.show({
+            type: "info",
+            text1: `Error Occured`,
+            text2: `Something went wrong trying to join this club.`,
+          });
+        })
+        .finally(() => {
+          social.refreshClubs().then(() => {
+            setLoading(false);
+          });
         });
-      })
-      .catch(() => {
-        Toast.show({
-          type: "info",
-          text1: `Error Occured`,
-          text2: `Something went wrong trying to join this club.`,
-        });
-      })
-      .finally(() => {
-        social.refreshClubs().then(() => {
-          setLoading(false);
-        });
-      });
+    });
   }, []);
 
-  return (
+  const base = (
     <View
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center",
+        alignItems: "flex-start",
         paddingHorizontal: 12,
         paddingVertical: 12,
         borderBottomColor: colors.background,
@@ -66,35 +82,34 @@ export default function ClubPreview(props: { club: Club }) {
       <View
         style={{
           flexDirection: "row",
-          alignItems: "center",
+          alignItems: "flex-start",
           flexShrink: 1,
           flexGrow: 0,
         }}
       >
         <View
           style={{
-            height: 44,
-            width: 44,
-            borderRadius: 48,
+            height: 60,
+            width: 60,
+            borderRadius: 8,
             overflow: "hidden",
             backgroundColor: "gray",
           }}
         >
-          <ScorecardImage id={props.club.picture!} height={44} width={44} />
+          <ScorecardClubImage club={props.club} height={60} width={60} />
         </View>
         <View
           style={{
-            paddingLeft: 12,
+            paddingLeft: 16,
             paddingRight: 56,
           }}
         >
           <MediumText
             style={{
-              fontSize: 14,
+              fontSize: 18,
               color: colors.primary,
               marginBottom: 4,
               overflow: "hidden",
-              flex: 1,
             }}
             numberOfLines={1}
           >
@@ -102,7 +117,7 @@ export default function ClubPreview(props: { club: Club }) {
           </MediumText>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 14,
               color: colors.text,
             }}
           >
@@ -115,9 +130,10 @@ export default function ClubPreview(props: { club: Club }) {
         style={{
           flexShrink: 0,
           flexGrow: 0,
+          marginLeft: 16,
         }}
       >
-        {!props.club.isMember && (
+        {!props.club.isMember ? (
           <View>
             {loading ? (
               <View
@@ -131,28 +147,56 @@ export default function ClubPreview(props: { club: Club }) {
               <TouchableOpacity onPress={join}>
                 <View
                   style={{
-                    paddingHorizontal: 14,
-                    paddingVertical: 2,
-                    borderRadius: 12,
-                    backgroundColor: "red",
+                    paddingHorizontal: 12,
+                    paddingVertical: 4,
+                    borderRadius: 16,
+                    backgroundColor: colors.button,
                     alignSelf: "flex-end",
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  <Text
+                  <MaterialIcons
+                    name="person-add"
+                    size={16}
                     style={{
-                      fontSize: 14,
-                      fontWeight: "bold",
+                      color: "white",
+                      marginRight: 8,
+                    }}
+                  />
+                  <LargeText
+                    style={{
+                      fontSize: 18,
                       color: "white",
                     }}
                   >
-                    JOIN
-                  </Text>
+                    Join
+                  </LargeText>
                 </View>
               </TouchableOpacity>
             )}
           </View>
+        ) : (
+          <MaterialIcons name="chevron-right" color={colors.text} size={24} />
         )}
       </View>
     </View>
   );
+
+  if (props.club.isMember) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          // @ts-ignore
+          navigation.navigate("viewClub", {
+            internalCode: props.club.internalCode,
+          });
+        }}
+      >
+        {base}
+      </TouchableOpacity>
+    );
+  } else {
+    return base;
+  }
 }

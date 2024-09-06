@@ -10,6 +10,7 @@ import Button from "../../input/Button";
 import MediumText from "../../text/MediumText";
 import Toast from "react-native-toast-message";
 import useScApi from "../../util/hooks/useScApi";
+import useGetEmail from "../../util/hooks/useGetEmail";
 
 export default function CreateClubScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -55,36 +56,40 @@ export default function CreateClubScreen(props: {
 
   const [loading, setLoading] = useState(false);
 
+  const getEmail = useGetEmail();
   const create = useCallback(() => {
-    setLoading((l) => {
-      if (l) return true;
-      else {
-        api
-          .post({
-            pathname: "/v1/clubs/create",
-            auth: true,
-            body: {
-              name,
-              clubCode: ticker.toUpperCase(),
-            },
-          })
-          .then((r) => {
-            Toast.show({
-              type: "info",
-              text1: "Success",
+    getEmail().then((email: string) => {
+      setLoading((l) => {
+        if (l) return true;
+        else {
+          api
+            .post({
+              pathname: "/v1/clubs/create",
+              auth: true,
+              body: {
+                name,
+                email,
+                clubCode: ticker.toUpperCase(),
+              },
+            })
+            .then((r) => {
+              Toast.show({
+                type: "info",
+                text1: "Success",
+              });
+            })
+            .catch((r) => {
+              Toast.show({
+                type: "info",
+                text1: "Something went wrong",
+              });
+            })
+            .finally(() => {
+              setLoading(false);
             });
-          })
-          .catch((r) => {
-            Toast.show({
-              type: "info",
-              text1: "Something went wrong",
-            });
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-        return true;
-      }
+          return true;
+        }
+      });
     });
   }, [ticker]);
 

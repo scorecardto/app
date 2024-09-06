@@ -62,8 +62,10 @@ export default function AppInitializer(props: {
     }
   }, [currentGradeCategory, recordGradeCategory]);
 
+  const [appReadyLocal, setAppReadyLocal] = useState(false);
   useEffect(() => {
     async function prepare() {
+      setAppReadyLocal(false);
       props.setAppReady(false);
 
       console.log("Preparing app data...");
@@ -85,12 +87,13 @@ export default function AppInitializer(props: {
       props.setNextScreen(nextScreen);
 
       props.setAppReady(true);
+      setAppReadyLocal(true);
     }
 
-    if (userReady) {
+    if (!appReadyLocal && userReady) {
       prepare();
     }
-  }, [userReady, props.resetKey, user]);
+  }, [appReadyLocal, userReady, props.resetKey, user]);
 
   return <></>;
 }

@@ -1,4 +1,11 @@
-import ReactNative, { Keyboard, View } from "react-native";
+import ReactNative, {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import WelcomeScreen from "../../app/welcome/WelcomeScreen";
@@ -13,13 +20,17 @@ import Toast from "react-native-toast-message";
 import LoadingOverlay from "../loader/LoadingOverlay";
 import { firebase } from "@react-native-firebase/auth";
 import * as Notifications from "expo-notifications";
+import CleanTextInput from "../../input/CleanTextInput";
+import LargeText from "../../text/LargeText";
+import OnboardingButtonContainer from "../../app/welcome/OnboardingButtonContainer";
+import { Image } from "expo-image";
+
+const icon = require("../../../assets/icon.svg");
+
 export default function VerifyPhoneNumberScreen(props: {
   navigation: NavigationProp<any, any>;
   route: any;
 }) {
-  const HEADER = "Verify Your Number";
-  const FOOTER = "We will never send you spam texts or give out your number.";
-
   const phoneNumber = props.route?.params?.phoneNumber;
 
   const [code, setCode] = useState("");
@@ -40,23 +51,13 @@ export default function VerifyPhoneNumberScreen(props: {
 
     confirmPhoneNumberCallback(code)
       .then(() => {
-        const currentPage = props.navigation.getState().routes.slice(-1)[0];
-
-        if (currentPage?.name === "verifyPhoneNumber") {
-          Notifications.getPermissionsAsync().then((permissions) => {
-            if (permissions.canAskAgain || permissions.ios?.status === 0) {
-              props.navigation.reset({
-                index: 0,
-                routes: [{ name: "notifications" }],
-              });
-            } else {
-              props.navigation.reset({
-                index: 0,
-                routes: [{ name: "scorecard", params: { firstTime: true } }],
-              });
-            }
-          });
-        }
+        // const currentPage = props.navigation.getState().routes.slice(-1)[0];
+        // if (currentPage?.name === "verifyPhoneNumber") {
+        //   props.navigation.reset({
+        //     index: 0,
+        //     routes: [{ name: "addEmail" }],
+        //   });
+        // }
       })
       .catch((err) => {
         if (err.code === "auth/invalid-verification-code") {
@@ -88,19 +89,9 @@ export default function VerifyPhoneNumberScreen(props: {
   useEffect(() => {
     return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        setLoading(false);
-        Notifications.getPermissionsAsync().then((permissions) => {
-          if (permissions.canAskAgain || permissions.ios?.status === 0) {
-            props.navigation.reset({
-              index: 0,
-              routes: [{ name: "notifications" }],
-            });
-          } else {
-            props.navigation.reset({
-              index: 0,
-              routes: [{ name: "scorecard", params: { firstTime: true } }],
-            });
-          }
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "addEmail" }],
         });
       }
     });
@@ -112,54 +103,141 @@ export default function VerifyPhoneNumberScreen(props: {
     }
   }, [code]);
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{
-        height: "100%",
-        width: "100%",
+        flex: 1,
       }}
     >
       <LoadingOverlay show={loading} />
-      <WelcomeScreen
-        header={HEADER}
-        footerText={FOOTER}
-        showBanner={!isKeyboardVisible}
-        monoLabel="Step 3.5 of 3"
+      <SafeAreaView
+        style={{
+          width: "100%",
+          height: "100%",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          position: "relative",
+        }}
       >
-        <MediumText style={{ marginBottom: 16, color: colors.primary }}>
-          We sent a verification code to:
-        </MediumText>
-        <SmallText
-          style={{ marginBottom: 32, fontSize: 16, color: colors.text }}
+        <View style={{ marginHorizontal: 20 }}>
+          <View style={{ marginBottom: 48, marginTop: 24 }}>
+            <View
+              style={{
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={icon}
+                style={{
+                  height: 80,
+                  aspectRatio: 1,
+                }}
+              />
+              <MediumText
+                style={{
+                  color: colors.primary,
+                  textAlign: "center",
+                  fontSize: 28,
+                  marginTop: 24,
+                  marginHorizontal: 48,
+                }}
+              >
+                Enter Confirmation Code
+              </MediumText>
+            </View>
+          </View>
+        </View>
+        <View
+          style={{
+            marginHorizontal: 24,
+            marginBottom: 24,
+          }}
         >
-          {phoneNumber}
-        </SmallText>
-
-        <View style={{}}>
-          <TextInput
-            ref={textInputRef}
-            label="Verification Code"
-            setValue={setCode}
+          <CleanTextInput
             value={code}
-            type="verification-code"
+            setValue={setCode}
+            label="Code"
+            type="confirmationCode"
+            autoFocus={true}
           />
-          {/* <Button
-            onPress={() => {
-              confirm();
-            }}
-          >
-            Finish
-          </Button> */}
-          <Button
-            secondary
-            disabled={loading}
+          <TouchableOpacity
             onPress={() => {
               props.navigation.goBack();
             }}
           >
-            Edit Number
-          </Button>
+            <View
+              style={{
+                paddingVertical: 12,
+                paddingHorizontal: 48,
+                marginTop: 8,
+                alignSelf: "center",
+              }}
+            >
+              <MediumText
+                style={{
+                  color: "#509EE7",
+                  fontSize: 18,
+                  textAlign: "center",
+                }}
+              >
+                Change Phone Number
+              </MediumText>
+            </View>
+          </TouchableOpacity>
         </View>
-      </WelcomeScreen>
-    </View>
+        <OnboardingButtonContainer />
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
+  // return (
+  //   <View
+  //     style={{
+  //       height: "100%",
+  //       width: "100%",
+  //     }}
+  //   >
+  //     <LoadingOverlay show={loading} />
+  //     <WelcomeScreen
+  //       header={HEADER}
+  //       footerText={FOOTER}
+  //       showBanner={!isKeyboardVisible}
+  //       monoLabel="Step 3.5 of 3"
+  //     >
+  //       <MediumText style={{ marginBottom: 16, color: colors.primary }}>
+  //         We sent a verification code to:
+  //       </MediumText>
+  //       <SmallText
+  //         style={{ marginBottom: 32, fontSize: 16, color: colors.text }}
+  //       >
+  //         {phoneNumber}
+  //       </SmallText>
+
+  //       <View style={{}}>
+  //         <TextInput
+  //           ref={textInputRef}
+  //           label="Verification Code"
+  //           setValue={setCode}
+  //           value={code}
+  //           type="verification-code"
+  //         />
+  //         {/* <Button
+  //           onPress={() => {
+  //             confirm();
+  //           }}
+  //         >
+  //           Finish
+  //         </Button> */}
+  //         <Button
+  //           secondary
+  //           disabled={loading}
+  //           onPress={() => {
+  //             props.navigation.goBack();
+  //           }}
+  //         >
+  //           Edit Number
+  //         </Button>
+  //       </View>
+  //     </WelcomeScreen>
+  //   </View>
+  // );
 }

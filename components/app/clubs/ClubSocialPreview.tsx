@@ -1,14 +1,13 @@
-import { View, Text, Image as ReactImage } from "react-native";
+import { View, Text } from "react-native";
 import { Image } from "expo-image";
-import React from "react";
 import { LinearGradient } from "react-native-gradients";
 import useColors from "../../core/theme/useColors";
 import { MaterialIcons } from "@expo/vector-icons";
 import ClubSocialMediaIcon from "./ClubSocialMediaIcon";
 import MediumText from "../../text/MediumText";
 import { Club } from "scorecard-types";
-import ScorecardImage from "../../util/ScorecardImage";
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import ScorecardClubImage from "../../util/ScorecardClubImage";
 const snapchatLogo = require("../../../assets/snapchat.svg");
 const instagramLogo = require("../../../assets/instagram.svg");
 export default function ClubSocialPreview(props: { club: Club }) {
@@ -136,10 +135,10 @@ export default function ClubSocialPreview(props: { club: Club }) {
               overflow: "hidden",
             }}
           >
-            <ScorecardImage
-              id={props.club.picture!}
-              width={PICTURE_SIZE}
-              height={PICTURE_SIZE}
+            <ScorecardClubImage
+              club={props.club}
+              width={PICTURE_SIZE - 8}
+              height={PICTURE_SIZE - 8}
             />
           </View>
         </View>
@@ -182,8 +181,13 @@ export default function ClubSocialPreview(props: { club: Club }) {
           justifyContent: "center",
         }}
       >
-        <ClubSocialMediaIcon label="Stories"
-                             onPress={() => navigation.navigate("shareClubInstagram", { club: props.club })}>
+        <ClubSocialMediaIcon
+          label="Stories"
+          onPress={() =>
+            // @ts-ignore
+            navigation.navigate("shareClubInstagram", { club: props.club })
+          }
+        >
           <Image
             source={instagramLogo}
             style={{
@@ -192,9 +196,14 @@ export default function ClubSocialPreview(props: { club: Club }) {
             }}
           />
         </ClubSocialMediaIcon>
-        <ClubSocialMediaIcon label="Best Results"
-                             background="#FFFC00"
-                             onPress={() => navigation.navigate("shareClubSnapchat", { club: props.club })}>
+        <ClubSocialMediaIcon
+          label="Best Results"
+          background="#FFFC00"
+          onPress={() =>
+            // @ts-ignore
+            navigation.navigate("shareClubSnapchat", { club: props.club })
+          }
+        >
           <Image
             source={snapchatLogo}
             style={{

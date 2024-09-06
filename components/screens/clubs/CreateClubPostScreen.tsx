@@ -27,7 +27,7 @@ import {
   useState,
 } from "react";
 import ClubPostArrayContainer from "../../app/clubs/ClubPostArrayContainer";
-import { Club } from "scorecard-types";
+import { Club, ClubPost } from "scorecard-types";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { MobileDataContext } from "../../core/context/MobileDataContext";
@@ -35,6 +35,7 @@ import ScorecardImage from "../../util/ScorecardImage";
 import Toast from "react-native-toast-message";
 import DatePicker from "react-native-date-picker";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import API_HOST from "../../../lib/API_HOST";
 
 function ToolbarButton(props: {
   icon: string;
@@ -110,7 +111,7 @@ export default function CreateClubPostScreen(props: {
       text1: "Uploading Image...",
     });
     const ret = await FileSystem.uploadAsync(
-      "https://api.scorecardgrades.com/v1/images/upload",
+      API_HOST + "/v1/images/upload",
       result.assets[0].uri,
       {
         headers: {
@@ -121,6 +122,7 @@ export default function CreateClubPostScreen(props: {
       }
     );
 
+    console.log(ret.body);
     // @ts-ignore
     const body = JSON.parse(ret.body);
 
@@ -245,6 +247,22 @@ export default function CreateClubPostScreen(props: {
     }
   }, [date]);
 
+  const continueToFinishScreen = useCallback(() => {
+    if (club) {
+      const post: ClubPost = {
+        club: club,
+        content,
+        eventDate: date?.getTime() ?? undefined,
+        link: link ?? undefined,
+        postDate: 0,
+        picture: image ?? undefined,
+      };
+      props.navigation.navigate("finishClubPost", {
+        post: post,
+      });
+    }
+  }, [club, date, link, image, content]);
+
   return (
     <View style={{}}>
       <View
@@ -258,9 +276,7 @@ export default function CreateClubPostScreen(props: {
             props.navigation.goBack();
           }}
           onPressRight={() => {
-            props.navigation.navigate("finishClubPost", {
-              club: club,
-            });
+            continueToFinishScreen();
           }}
         />
         <DatePicker

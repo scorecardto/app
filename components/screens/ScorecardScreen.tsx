@@ -1,4 +1,4 @@
-import {AppState, Linking, View} from "react-native";
+import { AppState, Linking, Text, View } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import CurrentGradesScreen from "./CurrentGradesScreen";
 import ArchiveScreen from "./ArchiveScreen";
@@ -13,10 +13,16 @@ import { updateStatus } from "../../lib/updateStatus";
 import { setSocialConnected } from "../core/state/social/socialSlice";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import auth from "@react-native-firebase/auth";
-import {refreshImageCache} from "../../lib/refreshImageCache";
-import {getCurrentToken, requestPermissions} from "../../lib/backgroundNotifications";
+import { refreshImageCache } from "../../lib/refreshImageCache";
+import { BlurView } from "@react-native-community/blur";
+
+import {
+  getCurrentToken,
+  requestPermissions,
+} from "../../lib/backgroundNotifications";
 import axios from "redaxios";
-import {unpinUnknownCourses} from "../core/state/widget/widgetSlice";
+import { unpinUnknownCourses } from "../core/state/widget/widgetSlice";
+import LargeText from "../text/LargeText";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -44,12 +50,14 @@ export default function ScorecardScreen(props: {
       const joinPrefix = "https://scorecardgrades.com/joinclub/";
 
       if (url?.startsWith(joinPrefix)) {
-        props.navigation.navigate("joinClub", { clubCode: url.slice(joinPrefix.length) });
+        props.navigation.navigate("joinClub", {
+          clubCode: url.slice(joinPrefix.length),
+        });
       }
     };
     Linking.getInitialURL().then(checkURL);
 
-    const urlListener = Linking.addEventListener('url',({url})=>{
+    const urlListener = Linking.addEventListener("url", ({ url }) => {
       checkURL(url);
     });
 
@@ -61,7 +69,7 @@ export default function ScorecardScreen(props: {
     return () => {
       authListener();
       urlListener.remove();
-    } // unsubscribe on unmount
+    }; // unsubscribe on unmount
   }, []);
 
   const dispatch = useDispatch();

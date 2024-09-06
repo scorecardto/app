@@ -27,7 +27,7 @@ import {
   setPreviousGradeRecord,
 } from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
-import {setCourseOrder} from "../components/core/state/grades/courseOrderSlice";
+import { setCourseOrder } from "../components/core/state/grades/courseOrderSlice";
 import parseCourseKey from "./parseCourseKey";
 import ScorecardModule from "./expoModuleBridge";
 type NextScreen =
@@ -41,10 +41,13 @@ type NextScreen =
 
 import * as SecureStorage from "expo-secure-store";
 import Storage from "expo-storage";
+import { setPreferredEmail } from "../components/core/state/social/socialSlice";
 export default async function initialize(
   dispatch: AppDispatch,
   user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
+  console.log("test");
+
   // LEGACY SUPPORT
   {
     const legacyKeys = [
@@ -76,8 +79,11 @@ export default async function initialize(
     }
   }
 
+  console.log("test");
+
   const login = ScorecardModule.getItem("login");
   const name = ScorecardModule.getItem("name");
+  const preferredEmail = ScorecardModule.getItem("preferredEmail");
   const records = ScorecardModule.getItem("records");
   const oldCourseStates = ScorecardModule.getItem("oldCourseStates");
   const courseSettings = ScorecardModule.getItem("courseSettings");
@@ -136,6 +142,9 @@ export default async function initialize(
 
   dispatch(setAllSettings(JSON.parse(appSettings || "{}")));
 
+  if (preferredEmail) {
+    dispatch(setPreferredEmail(preferredEmail));
+  }
   if (login && !!JSON.parse(records ?? "[]")[0]) {
     dispatch(setAllCourseSettings(JSON.parse(courseSettings ?? "{}")));
 
@@ -211,6 +220,8 @@ export default async function initialize(
     // if (1 + 1 === 2) {
     //   return "scorecard";
     // }
+    console.log("going to start");
+
     return "start";
   }
 }

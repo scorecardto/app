@@ -1,5 +1,5 @@
-import { Linking, ScrollView, TouchableOpacity, View } from "react-native";
-import { useEffect, useRef } from "react";
+import { RefreshControl, ScrollView } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
@@ -8,11 +8,9 @@ import Background from "../../util/Background";
 import ClubsToolbar from "../../app/clubs/ClubsToolbar";
 import AllClubsList from "../../app/clubs/AllClubsList";
 import useSocial from "../../util/hooks/useSocial";
-import QRCode from "react-native-qrcode-svg";
-import * as MediaLibrary from "expo-media-library";
-import * as FileSystem from "expo-file-system";
-import MediumText from "../../text/MediumText";
-import ScorecardQRCode from "../../util/ScorecardQRCode";
+import ClubRecentPostsList from "../../app/clubs/ClubRecentPostsList";
+import LargeText from "../../text/LargeText";
+import useColors from "../../core/theme/useColors";
 
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -25,7 +23,13 @@ export default function ClubsScreen(props: {
     return r.social.clubs;
   });
 
+  const recentPosts = useSelector((r: RootState) => {
+    return r.social.recentPosts;
+  });
+
   const social = useSocial();
+
+  const email = useSelector((r: RootState) => r.social.preferredEmail);
 
   useEffect(() => {
     if (connected) {
@@ -33,7 +37,11 @@ export default function ClubsScreen(props: {
     }
   }, [connected]);
 
+  const [loading, setLoading] = useState(false);
+
   const svg = useRef<any>();
+
+  const colors = useColors();
   return (
     <PageThemeProvider
       theme={{
@@ -49,8 +57,38 @@ export default function ClubsScreen(props: {
           style={{
             height: "100%",
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={() => {
+                setLoading(true);
+
+                if (connected) {
+                  social.refreshClubs().finally(() => {
+                    setLoading(false);
+                  });
+                } else {
+                  setLoading(true);
+                }
+              }}
+            />
+          }
         >
+          {/* <Text>{connected ? "C" : "N"}</Text> */}
           <ClubsToolbar />
+
+          <ClubRecentPostsList recentPosts={recentPosts} />
+          <LargeText
+            style={{
+              fontSize: 18,
+              marginHorizontal: 12,
+              marginTop: 16,
+              marginBottom: 8,
+              color: colors.primary,
+            }}
+          >
+            All Clubs
+          </LargeText>
           <AllClubsList clubs={clubs} />
         </ScrollView>
       </Background>
