@@ -40,6 +40,10 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
     const timeDifferenceInSeconds = differenceInSeconds(date, now);
     const timeDifferenceInDays = differenceInDays(date, now);
 
+    if (date < now) {
+      return undefined;
+    }
+
     if (timeDifferenceInSeconds < 0 && timeDifferenceInMinutes > -60) {
       return "Happening Now";
     } else if (timeDifferenceInSeconds >= 0 && timeDifferenceInMinutes < 120) {
@@ -58,8 +62,6 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
         month: "short",
         day: "numeric",
       })}`;
-    } else if (date > now) {
-      return undefined;
     }
   }, [props.post.eventDate, time]);
 

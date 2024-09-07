@@ -28,11 +28,12 @@ export default function ShareClubInstagram(props: {
             quality: 1,
             result: "base64",
           }).then((b64) => {
-            shareToInsta(`data:image/png;base64,${b64}`, `https://${club.clubCode.toLowerCase()}.mylasa.club`).then(
-              props.navigation.goBack
-            );
+            shareToInsta(
+              `data:image/png;base64,${b64}`,
+              `https://${club.clubCode.toLowerCase()}.mylasa.club`
+            ).then(props.navigation.goBack);
           }),
-        800
+        800000
       );
     }
   }, [viewRef]);
@@ -61,8 +62,8 @@ export default function ShareClubInstagram(props: {
           <View
             style={{
               position: "absolute",
-              width: "80%",
-              height: "40%",
+              width: "85%",
+              height: "30%",
               top: "25%",
               zIndex: 10,
             }}
@@ -98,7 +99,7 @@ export default function ShareClubInstagram(props: {
               style={{
                 width: "100%",
                 height: "100%",
-                borderRadius: 20,
+                borderRadius: 32,
                 overflow: "hidden",
                 alignItems: "center",
               }}
@@ -113,14 +114,15 @@ export default function ShareClubInstagram(props: {
               <View
                 style={{
                   position: "absolute",
-                  top: "29%",
+                  top: "35%",
                   alignItems: "center",
                 }}
               >
                 <Text
                   style={{
                     color: "white",
-                    fontSize: 16,
+                    fontWeight: "600",
+                    fontSize: 18,
                   }}
                 >
                   {club.name}
@@ -128,9 +130,10 @@ export default function ShareClubInstagram(props: {
                 <Text
                   style={{
                     color: "white",
-                    fontSize: 28,
+                    fontSize: 44,
                     fontWeight: "bold",
-                    marginTop: 9,
+                    fontFamily: "LeagueSpartan_700Bold",
+                    marginTop: 16,
                   }}
                 >
                   Join My Club!
@@ -140,47 +143,55 @@ export default function ShareClubInstagram(props: {
                 style={{
                   position: "absolute",
                   alignItems: "center",
-                  bottom: "27%",
+                  bottom: "10%",
                 }}
               >
                 <Text
                   style={{
                     color: "white",
-                    fontSize: 12,
+                    fontSize: 16,
+                    fontWeight: "600",
                   }}
                 >
                   👇 USE THIS LINK 💯
                 </Text>
               </View>
-              <View
-                style={{
-                  width: "100%",
-                  height: "20%",
-                  backgroundColor: "white",
-                  position: "absolute",
-                  bottom: 0,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                  <Text style={{
-                      fontSize: 9,
-                      fontFamily: "Arial",
-                      fontWeight: "bold",
-                      color: "red",
-                      marginBottom: 3,
-                  }}>Paste A Link Sticker Here, So It's Clickable</Text>
-                  <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: "bold",
-                  }}
-                >
-                  {club.clubCode.toUpperCase()}.MYLASA.CLUB
-                </Text>
-              </View>
             </View>
           </View>
+        </View>
+
+        <View
+          style={{
+            height: "8%",
+            top: "55%",
+            backgroundColor: "#253A63",
+            position: "absolute",
+            bottom: 0,
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 12,
+              fontFamily: "Arial",
+              fontWeight: "bold",
+              color: "red",
+              marginBottom: 3,
+            }}
+          >
+            Paste A Link Sticker Here, So It's Clickable
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+              fontFamily: "Arial",
+            }}
+          >
+            {club.clubCode.toUpperCase()}.MYLASA.CLUB
+          </Text>
         </View>
 
         <View

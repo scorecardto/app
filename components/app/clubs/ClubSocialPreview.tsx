@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Share } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "react-native-gradients";
 import useColors from "../../core/theme/useColors";
@@ -215,6 +215,11 @@ export default function ClubSocialPreview(props: { club: Club }) {
         <ClubSocialMediaIcon
           label="Share via..."
           background={colors.borderNeutral}
+          onPress={() => {
+            Share.share({
+              message: `https://scorecardgrades.com/joinclub/${props.club.clubCode}?preferInternalCode=${props.club.internalCode}`,
+            });
+          }}
         >
           <MaterialIcons
             name="ios-share"

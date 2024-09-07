@@ -132,6 +132,7 @@ export default function ClubPostReader(props: { post: ClubPost }) {
         <Text
           style={{
             fontSize: 18,
+            color: colors.primary,
           }}
         >
           {props.post.content}

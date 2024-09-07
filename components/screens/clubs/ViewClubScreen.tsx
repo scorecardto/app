@@ -4,9 +4,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   ScrollView,
+  Share,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
+import * as Sharing from "expo-sharing";
 import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
 import ClubViewArrayContainer from "../../app/clubs/ClubViewArrayContainer";
 import ScorecardClubImage from "../../util/ScorecardClubImage";
@@ -20,6 +22,10 @@ import ClubScreenGradient from "../../app/clubs/ClubScreenGradient";
 import LargeText from "../../text/LargeText";
 import { MaterialIcons } from "@expo/vector-icons";
 import ClubPostReader from "../../app/clubs/ClubPostReader";
+import ViewClubMenuSheet from "../../app/clubs/ViewClubMenuSheet";
+import { ActionSheetRef } from "react-native-actions-sheet";
+import Toast from "react-native-toast-message";
+import useSocial from "../../util/hooks/useSocial";
 export default function ViewClubScreen(props: {
   route: any;
   navigation: NavigationProp<any>;
@@ -73,6 +79,38 @@ export default function ViewClubScreen(props: {
     return color.hex(); // Return the final color in hex format
   }
 
+  const sheetRef = useRef<ActionSheetRef>(null);
+
+  const social = useSocial();
+  const scApi = useScApi();
+
+  const leave = useCallback(() => {
+    scApi
+      .post({
+        auth: true,
+        pathname: "/v1/clubs/leave",
+        body: {
+          internal_code: internalCode,
+        },
+      })
+      .then(() => {
+        Toast.show({
+          type: "info",
+          text1: "You left " + club?.name + ".",
+        });
+        props.navigation.goBack();
+      })
+      .catch(() => {
+        Toast.show({
+          type: "info",
+          text1: "Something went wrong.",
+        });
+      })
+      .finally(() => {
+        social.refreshClubs();
+      });
+  }, [club]);
+
   if (!club) {
     return <ActivityIndicator />;
   }
@@ -89,6 +127,15 @@ export default function ViewClubScreen(props: {
         justifyContent: "flex-start",
       }}
     >
+      <ViewClubMenuSheet
+        ref={sheetRef}
+        club={club}
+        leave={() => {
+          leave();
+          ``;
+          sheetRef.current?.hide?.();
+        }}
+      />
       <ClubViewArrayContainer
         onPressLeft={() => {
           props.navigation.goBack();
@@ -175,9 +222,15 @@ export default function ViewClubScreen(props: {
                 marginRight: 8,
               }}
               onPress={() => {
-                props.navigation.navigate("clubAdmin", {
-                  internalCode,
-                });
+                if (club.isOwner) {
+                  props.navigation.navigate("clubAdmin", {
+                    internalCode,
+                  });
+                } else {
+                  Share.share({
+                    message: `https://scorecardgrades.com/joinclub/${club.clubCode}?preferInternalCode=${club.internalCode}`,
+                  });
+                }
               }}
             >
               <View
@@ -197,26 +250,32 @@ export default function ViewClubScreen(props: {
                     textAlign: "center",
                   }}
                 >
-                  Manage
+                  {club.isOwner ? "Manage" : "Share"}
                 </MediumText>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  backgroundColor: "white",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  borderRadius: 40,
-                  overflow: "hidden",
+            {!club.isOwner && (
+              <TouchableOpacity
+                onPress={() => {
+                  sheetRef.current?.show?.();
                 }}
               >
-                <MaterialIcons name="more-horiz" color={"black"} size={24} />
-              </View>
-            </TouchableOpacity>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "white",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "row",
+                    borderRadius: 40,
+                    overflow: "hidden",
+                  }}
+                >
+                  <MaterialIcons name="more-horiz" color={"black"} size={24} />
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
           <View
             style={{
@@ -255,174 +314,4 @@ export default function ViewClubScreen(props: {
       </View>
     </ScrollView>
   );
-  // return (
-  //   <View
-  //     style={{
-  //       position: "relative",
-  //       height: "100%",
-  //       width: "100%",
-  //     }}
-  //   >
-  //     <ScrollView
-  //       style={{
-  //         zIndex: 10,
-  //         height: "100%",
-  //       }}
-  //     >
-  //       <ClubScreenGradient color={heroColor}></ClubScreenGradient>
-  //       <View
-  //         style={{
-  //           flexShrink: 0,
-  //         }}
-  //       >
-  //         <ClubViewArrayContainer
-  //           onPressLeft={() => {
-  //             props.navigation.goBack();
-  //           }}
-  //           code={club?.clubCode}
-  //           onPressRight={() => {}}
-  //         />
-  //       </View>
-  //       <View style={{ height: "100%" }}>
-  //         {club ? (
-  //           <View>
-  //             <View
-  //               style={{
-  //                 paddingHorizontal: 16,
-  //                 paddingTop: 20,
-  //               }}
-  //             >
-  //               <View
-  //                 style={{
-  //                   borderRadius: 16,
-  //                   overflow: "hidden",
-  //                   width: 116,
-  //                   marginRight: 16,
-  //                   borderWidth: 4,
-  //                   borderColor: "white",
-  //                 }}
-  //               >
-  //                 <ScorecardClubImage club={club} width={116} height={116} />
-  //               </View>
-  //               <View
-  //                 style={{
-  //                   flexShrink: 1,
-  //                   marginTop: 4,
-  //                   marginBottom: 16,
-  //                 }}
-  //               >
-  //                 <LargeText
-  //                   style={{
-  //                     fontSize: 20,
-  //                     marginTop: 8,
-  //                     color: colors.primary,
-  //                   }}
-  //                 >
-  //                   {club.name}
-  //                 </LargeText>
-  //                 <Text
-  //                   style={{
-  //                     color: colors.text,
-  //                     fontSize: 14,
-  //                   }}
-  //                 >
-  //                   {club.clubCode} - {club.memberCount} member
-  //                   {club.memberCount === 1 ? "" : "s"}
-  //                 </Text>
-  //               </View>
-  //               <View
-  //                 style={{
-  //                   flexDirection: "row",
-  //                   justifyContent: "space-between",
-  //                   alignItems: "stretch",
-  //                 }}
-  //               >
-  //                 <TouchableOpacity
-  //                   style={{
-  //                     marginRight: 8,
-  //                   }}
-  //                   onPress={() => {
-  //                     props.navigation.navigate("clubAdmin", {
-  //                       internalCode,
-  //                     });
-  //                   }}
-  //                 >
-  //                   <View
-  //                     style={{
-  //                       backgroundColor: darkenUntilContrast(heroColor),
-  //                       paddingVertical: 8,
-  //                       paddingHorizontal: 20,
-  //                       borderRadius: 24,
-  //                       alignSelf: "flex-start",
-  //                     }}
-  //                   >
-  //                     <MediumText
-  //                       style={{
-  //                         fontSize: 16,
-  //                         color: "white",
-  //                         paddingVertical: 2,
-  //                         textAlign: "center",
-  //                       }}
-  //                     >
-  //                       Manage
-  //                     </MediumText>
-  //                   </View>
-  //                 </TouchableOpacity>
-  //                 <TouchableOpacity>
-  //                   <View
-  //                     style={{
-  //                       width: 40,
-  //                       height: 40,
-  //                       backgroundColor: "white",
-  //                       justifyContent: "center",
-  //                       alignItems: "center",
-  //                       flexDirection: "row",
-  //                       borderRadius: 40,
-  //                       overflow: "hidden",
-  //                     }}
-  //                   >
-  //                     <MaterialIcons
-  //                       name="more-horiz"
-  //                       color={"black"}
-  //                       size={24}
-  //                     />
-  //                   </View>
-  //                 </TouchableOpacity>
-  //               </View>
-  //               <View
-  //                 style={{
-  //                   marginTop: 16,
-  //                 }}
-  //               >
-  //                 <Text
-  //                   style={{
-  //                     color: colors.primary,
-  //                     fontSize: 14,
-  //                   }}
-  //                 >
-  //                   {club.bio}
-  //                 </Text>
-  //               </View>
-  //             </View>
-  //             <View
-  //               style={{
-  //                 flexGrow: 1,
-  //                 padding: 16,
-  //                 backgroundColor: colors.backgroundNeutral,
-  //                 flex: 1,
-  //                 height: "100%",
-  //               }}
-  //             >
-  //               <Text>{club?.posts.length}</Text>
-  //             </View>
-  //           </View>
-  //         ) : (
-  //           <>
-  //             <ActivityIndicator />
-  //           </>
-  //         )}
-  //       </View>
-  //     </ScrollView>
-  //   </View>
-  // );
 }

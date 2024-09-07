@@ -3,8 +3,8 @@ import React from "react";
 import useColors from "../../core/theme/useColors";
 import MediumText from "../../text/MediumText";
 import ScorecardQRCode from "../../util/ScorecardQRCode";
-import {Club} from "scorecard-types";
-export default function ClubQRCodePreview(props: { club: Club}) {
+import { Club } from "scorecard-types";
+export default function ClubQRCodePreview(props: { club: Club }) {
   const colors = useColors();
 
   return (
@@ -53,7 +53,7 @@ export default function ClubQRCodePreview(props: { club: Club}) {
         }}
       >
         <ScorecardQRCode
-          link={`https://scorecardgrades.com/joinclub/${props.club.code}`}
+          link={`https://scorecardgrades.com/joinclub/${props.club.clubCode}`}
           size={256}
         />
       </View>
