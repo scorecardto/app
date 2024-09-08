@@ -36,6 +36,12 @@ export default function ClubPreview(props: { club: Club }) {
       if (props.club.isMember) return;
 
       setLoading(true);
+
+      console.log({
+        email,
+        internalCode: props.club.internalCode,
+      });
+
       api
         .post({
           pathname: "/v1/clubs/join",
@@ -51,8 +57,14 @@ export default function ClubPreview(props: { club: Club }) {
             text1: `Welcome to ${props.club.name}!`,
             text2: `You are now a member of this club.`,
           });
+          // @ts-ignore
+          navigation.navigate("viewClub", {
+            internalCode: props.club.internalCode,
+          });
         })
-        .catch(() => {
+        .catch((e) => {
+          console.error(e);
+
           Toast.show({
             type: "info",
             text1: `Error Occured`,
