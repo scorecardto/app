@@ -5,6 +5,7 @@ import { Assignment, Course, GradeCategory } from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import "qs";
 import Toast from "react-native-toast-message";
+import {fetchGradeCategoriesForCourse, fetchReportCard} from "./oldFetcher";
 
 const customFetch = (url: RequestInfo | URL, init?: RequestInit) => {
   return fetch(url, {
@@ -237,11 +238,12 @@ async function parseCourse(host: string, cookies: string, courseKey: string) {
       Cookie: cookies,
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    responseType: "text",
+    // responseType: "text",
     fetch: customFetch,
   });
 
-  if (!response.data) return [];
+  if (!response.data) return null;
+
   const assignments = parse(response.data as string);
 
   const categoryElements = assignments.querySelectorAll(".tablePanelContainer");
@@ -372,9 +374,17 @@ async function fetchCourse(
   const key = gradeCategory ? course.grades[gradeCategory]?.key : course.key;
   if (!key) return;
 
+  let gradeCategories = await parseCourse(host, cookies, key);
+
+  if (gradeCategories == null) {
+    const reportCard = await fetchReportCard(host, username, password);
+    gradeCategories = (await fetchGradeCategoriesForCourse(host, reportCard.sessionId,
+        reportCard.referer, reportCard.courses.find(c => c.key === key)!)).gradeCategories;
+  }
+
   return {
     ...course,
-    gradeCategories: await parseCourse(host, cookies, key),
+    gradeCategories,
   };
 }
 
