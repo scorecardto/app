@@ -7,12 +7,14 @@ import ScorecardImage from "./ScorecardImage";
 export default function ScorecardClubImage(props: {
   club: ClubBase;
   width: number;
+  noAsync?: boolean;
   height: number;
 }) {
   return (
     <>
       {props.club.picture ? (
         <ScorecardImage
+          noAsync={props.noAsync}
           width={props.width}
           height={props.height}
           id={props.club.picture}

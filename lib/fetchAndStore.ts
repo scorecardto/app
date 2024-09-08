@@ -1,19 +1,19 @@
-import {Assignment, GradebookRecord,} from "scorecard-types";
+import { Assignment, GradebookRecord } from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
-import {AppDispatch} from "../components/core/state/store";
-import {setGradeRecord} from "../components/core/state/grades/gradeDataSlice";
-import {setOldCourseStates} from "../components/core/state/grades/oldCourseStatesSlice";
-import {setGradeCategory} from "../components/core/state/grades/gradeCategorySlice";
-import {updateCourseIfPinned} from "../components/core/state/widget/widgetSlice";
-import {AllContent} from "./fetcher";
+import { AppDispatch } from "../components/core/state/store";
+import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
+import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
+import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
+import { updateCourseIfPinned } from "../components/core/state/widget/widgetSlice";
+import { AllContent } from "./fetcher";
 import ScorecardModule from "./expoModuleBridge";
 
 export default async function fetchAndStore(
   data: AllContent,
   dispatch: AppDispatch,
   updateCourseStates: boolean,
-  updateWidget = true,
+  updateWidget = true
 ) {
   const gradeCategory =
     Math.max(
@@ -24,10 +24,12 @@ export default async function fetchAndStore(
 
   if (updateWidget) {
     for (const course of data.courses) {
-      dispatch(updateCourseIfPinned({
-        key: course.key,
-        grade: course.grades[gradeCategory]?.value ?? "NG",
-      }));
+      dispatch(
+        updateCourseIfPinned({
+          key: course.key,
+          grade: course.grades[gradeCategory]?.value ?? "NG",
+        })
+      );
     }
   }
 
@@ -67,7 +69,10 @@ export default async function fetchAndStore(
 
     dispatch(setOldCourseStates(oldCourseStates));
 
-    ScorecardModule.storeItem("oldCourseStates", JSON.stringify(oldCourseStates))
+    ScorecardModule.storeItem(
+      "oldCourseStates",
+      JSON.stringify(oldCourseStates)
+    );
   }
 
   const assignmentHasGrade = (a: Assignment | undefined) =>
@@ -114,7 +119,7 @@ export default async function fetchAndStore(
     }
   }
 
-  ScorecardModule.storeItem("records", JSON.stringify([newData, ...oldData]))
+  ScorecardModule.storeItem("records", JSON.stringify([newData, ...oldData]));
 
   return Array.from(hasNewData);
 }

@@ -3,7 +3,7 @@
     "name": "Scorecard",
     "slug": "scorecard",
     "scheme": "scorecard",
-    "version": "1.2.1",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -20,7 +20,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "51",
+      "buildNumber": "55",
       "associatedDomains": [
         "applinks:scorecardgrades.com"
       ],
@@ -108,8 +108,15 @@
           },
           "android": {
             "src": "./widgets/android",
-            "moduleDependencies": ["Storage.kt"],
-            "widgets": [ { "name": "ScorecardWidget", "resourceName": "@xml/sample_widget_info" } ]
+            "moduleDependencies": [
+              "Storage.kt"
+            ],
+            "widgets": [
+              {
+                "name": "ScorecardWidget",
+                "resourceName": "@xml/sample_widget_info"
+              }
+            ]
           }
         }
       ],

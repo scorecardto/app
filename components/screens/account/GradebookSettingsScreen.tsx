@@ -4,7 +4,7 @@ import MediumText from "../../text/MediumText";
 import { useTheme } from "@react-navigation/native";
 import LoginInputCard from "../../input/LoginInputCard";
 import { useSelector } from "react-redux";
-import { RootState } from "../../core/state/store";
+import { RootState, store } from "../../core/state/store";
 
 export default function GradebookSettingsScreen(props: {
   route: any;
@@ -14,6 +14,8 @@ export default function GradebookSettingsScreen(props: {
 
   const district = useSelector((state: RootState) => state.login.district);
   const username = useSelector((state: RootState) => state.login.username);
+
+  console.log(store.getState());
 
   return (
     <AccountSubpageScreen

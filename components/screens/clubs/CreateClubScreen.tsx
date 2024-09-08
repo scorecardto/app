@@ -75,7 +75,28 @@ export default function CreateClubScreen(props: {
             .then((r) => {
               Toast.show({
                 type: "info",
-                text1: "Success",
+                text1: `Welcome to ${name}`,
+                text2:
+                  "Now, you can press Manage to customize the appearance of your club.",
+              });
+
+              // @ts-ignore
+              props.navigation.reset({
+                index: 1,
+                routes: [
+                  {
+                    name: "scorecard",
+                    params: {
+                      initialRouteName: "Clubs",
+                    },
+                  },
+                  {
+                    name: "viewClub",
+                    params: {
+                      internalCode: r.data.club.internal_code,
+                    },
+                  },
+                ],
               });
             })
             .catch((r) => {

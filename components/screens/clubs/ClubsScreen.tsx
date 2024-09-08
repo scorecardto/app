@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView } from "react-native";
+import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { useSelector } from "react-redux";
@@ -11,12 +11,19 @@ import useSocial from "../../util/hooks/useSocial";
 import ClubRecentPostsList from "../../app/clubs/ClubRecentPostsList";
 import LargeText from "../../text/LargeText";
 import useColors from "../../core/theme/useColors";
+import MediumText from "../../text/MediumText";
 
 export default function ClubsScreen(props: {
   navigation: NavigationProp<any, any>;
 }) {
   const connected = useSelector((r: RootState) => {
     return r.social.connected;
+  });
+
+  const school = useSelector((r: RootState) => {
+    console.log("school: ", r.social.school);
+
+    return r.social.school;
   });
 
   const clubs = useSelector((r: RootState) => {
@@ -42,6 +49,66 @@ export default function ClubsScreen(props: {
   const svg = useRef<any>();
 
   const colors = useColors();
+
+  if (!school?.verified) {
+    return (
+      <PageThemeProvider
+        theme={{
+          default: {
+            background: "#EDF6FF",
+            border: "#FFF2F8",
+          },
+        }}
+      >
+        <Background>
+          <View
+            style={{
+              height: "100%",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: colors.card,
+                borderRadius: 16,
+                margin: 16,
+                shadowColor: "#000000",
+                paddingHorizontal: 24,
+                paddingVertical: 16,
+                shadowRadius: 8,
+                shadowOpacity: 0.1,
+                shadowOffset: {
+                  height: 0,
+                  width: 0,
+                },
+              }}
+            >
+              <Text>{connected ? "C" : "N"}</Text>
+              <MediumText
+                style={{
+                  fontSize: 20,
+                  textAlign: "center",
+                  color: colors.primary,
+                }}
+              >
+                Clubs Not Available
+              </MediumText>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 16,
+                  marginBottom: 4,
+                  color: colors.text,
+                }}
+              >
+                Your school, {school?.displayName || school?.name}, is not
+                verified to host clubs yet.
+              </Text>
+            </View>
+          </View>
+        </Background>
+      </PageThemeProvider>
+    );
+  }
   return (
     <PageThemeProvider
       theme={{
@@ -74,7 +141,6 @@ export default function ClubsScreen(props: {
             />
           }
         >
-          {/* <Text>{connected ? "C" : "N"}</Text> */}
           <ClubsToolbar />
 
           <ClubRecentPostsList recentPosts={recentPosts} />

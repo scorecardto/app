@@ -1,8 +1,9 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Club, ClubPost } from "scorecard-types";
+import { Club, ClubPost, School } from "scorecard-types";
 
 interface SocialSlice {
   connected: boolean;
+  school?: School;
   clubs: Club[];
   recentPosts: ClubPost[];
   preferredEmail: string | undefined;
@@ -10,6 +11,7 @@ interface SocialSlice {
 
 const initialState: SocialSlice = {
   connected: false,
+  school: undefined,
   clubs: [],
   recentPosts: [],
   preferredEmail: undefined,
@@ -31,6 +33,9 @@ const socialSlice = createSlice({
     setPreferredEmail: (state, action: PayloadAction<string | undefined>) => {
       state.preferredEmail = action.payload;
     },
+    setSchool: (state, action: PayloadAction<School>) => {
+      state.school = action.payload;
+    },
   },
 });
 
@@ -39,6 +44,7 @@ export const {
   setClubs,
   setRecentPosts,
   setPreferredEmail,
+  setSchool,
 } = socialSlice.actions;
 
 export default socialSlice.reducer;

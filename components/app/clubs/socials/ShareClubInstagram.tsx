@@ -1,13 +1,17 @@
 import { Club } from "scorecard-types";
-import { Dimensions, Text, View } from "react-native";
+import ReactNative, { Dimensions, Text, View } from "react-native";
 import { LinearGradient } from "react-native-gradients";
 import { NavigationProp } from "@react-navigation/native";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Image } from "expo-image";
 import { captureRef } from "react-native-view-shot";
 import { shareToInsta } from "../../../../lib/shareToInsta";
 import LoadingOverlay from "../../../screens/loader/LoadingOverlay";
 import ScorecardClubImage from "../../../util/ScorecardClubImage";
+import MediumText from "../../../text/MediumText";
+import color from "../../../../lib/Color";
+import Button from "../../../input/Button";
+import ActionButton from "../../../input/ActionButton";
 
 export default function ShareClubInstagram(props: {
   navigation: NavigationProp<any, any>;
@@ -19,6 +23,8 @@ export default function ShareClubInstagram(props: {
 
   const viewRef = useRef<View>(null);
 
+  const [image, setImage] = useState("");
+
   useEffect(() => {
     if (viewRef) {
       setTimeout(
@@ -28,25 +34,102 @@ export default function ShareClubInstagram(props: {
             quality: 1,
             result: "base64",
           }).then((b64) => {
-            shareToInsta(
-              `data:image/png;base64,${b64}`,
-              `https://${club.clubCode.toLowerCase()}.mylasa.club`
-            ).then(props.navigation.goBack);
+            setImage(`data:image/png;base64,${b64}`);
           }),
-        800000
+        100
       );
     }
   }, [viewRef]);
 
+  const push = useCallback(() => {
+    shareToInsta(
+      image,
+      `https://${club.clubCode.toLowerCase()}.mylasa.club`
+    ).then(props.navigation.goBack);
+  }, [image]);
+
   return (
     <View>
-      <LoadingOverlay show={true} />
+      <View
+        style={{
+          width: "100%",
+          opacity: 1,
+          top: 0,
+          marginTop: 64,
+          position: "absolute",
+          zIndex: 100,
+          paddingHorizontal: 16,
+          paddingBottom: 48,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: color.DarkTheme.colors.card,
+            paddingVertical: 16,
+            paddingHorizontal: 24,
+            borderRadius: 16,
+          }}
+        >
+          <MediumText
+            style={{
+              fontSize: 24,
+              color: color.DarkTheme.colors.primary,
+              marginBottom: 8,
+            }}
+          >
+            Use the Sticker Button
+          </MediumText>
+          <Text
+            style={{
+              fontSize: 20,
+              color: color.DarkTheme.colors.text,
+              marginBottom: 32,
+            }}
+          >
+            To let people join your club, add a link sticker and paste the URL
+            on your clipboard.
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              color: color.DarkTheme.colors.text,
+              marginBottom: 32,
+            }}
+          >
+            If you don't see a story, just come back and try again.
+          </Text>
+          <View
+            style={{
+              alignSelf: "center",
+            }}
+          >
+            <ActionButton
+              type="WHITE"
+              onPress={() => {
+                push();
+              }}
+            >
+              Got It
+            </ActionButton>
+          </View>
+        </View>
+      </View>
+      <View
+        style={{
+          backgroundColor: "#000000",
+          width: "100%",
+          height: "100%",
+          opacity: 0.8,
+          position: "absolute",
+          zIndex: 50,
+        }}
+      ></View>
       <View collapsable={false} ref={viewRef}>
         <LinearGradient
           angle={-90}
           colorList={[
-            { offset: "0%", color: "#C0C5FE", opacity: "1" },
-            { offset: "100%", color: "#AACEFF", opacity: "1" },
+            { offset: "0%", color: "#191A4B", opacity: "1" },
+            { offset: "100%", color: "#1E395C", opacity: "1" },
           ]}
         />
 
@@ -63,8 +146,8 @@ export default function ShareClubInstagram(props: {
             style={{
               position: "absolute",
               width: "85%",
-              height: "30%",
-              top: "25%",
+              height: "25%",
+              top: "30%",
               zIndex: 10,
             }}
           >
@@ -89,6 +172,7 @@ export default function ShareClubInstagram(props: {
                 }}
               >
                 <ScorecardClubImage
+                  noAsync={true}
                   club={club}
                   width={IMAGE_SIZE}
                   height={IMAGE_SIZE}
@@ -166,6 +250,12 @@ export default function ShareClubInstagram(props: {
             top: "55%",
             backgroundColor: "#253A63",
             position: "absolute",
+            borderColor: "#3982DC",
+            borderWidth: 3,
+            borderRadius: 16,
+            marginTop: 12,
+            paddingHorizontal: 12,
+            borderStyle: "dashed",
             bottom: 0,
             justifyContent: "center",
             alignItems: "center",
@@ -177,7 +267,7 @@ export default function ShareClubInstagram(props: {
               fontSize: 12,
               fontFamily: "Arial",
               fontWeight: "bold",
-              color: "red",
+              color: "#3982DC",
               marginBottom: 3,
             }}
           >
@@ -188,38 +278,10 @@ export default function ShareClubInstagram(props: {
               fontSize: 16,
               fontWeight: "bold",
               fontFamily: "Arial",
+              color: "#3982DC",
             }}
           >
             {club.clubCode.toUpperCase()}.MYLASA.CLUB
-          </Text>
-        </View>
-
-        <View
-          style={{
-            position: "absolute",
-            bottom: "10%",
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={require("../../../../assets/icon.svg")}
-            style={{
-              height: 50,
-              aspectRatio: 1,
-            }}
-          />
-          <Text
-            style={{
-              color: "#2683BF",
-              fontSize: 14,
-              fontWeight: "bold",
-              width: "60%",
-              textAlign: "center",
-              marginTop: 20,
-            }}
-          >
-            Your friends are using Scorecard to manage classes and join clubs!
           </Text>
         </View>
       </View>

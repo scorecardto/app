@@ -1,24 +1,25 @@
-import {NavigationProp} from "@react-navigation/native";
+import { NavigationProp } from "@react-navigation/native";
 
-import {Animated, RefreshControl, ScrollView, View} from "react-native";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../core/state/store";
-import {FlatList} from "react-native-gesture-handler";
+import { Animated, RefreshControl, ScrollView, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../core/state/store";
+import { FlatList } from "react-native-gesture-handler";
 import CourseCard from "../app/dashboard/CourseCard";
-import {Course} from "scorecard-types";
+import { Course } from "scorecard-types";
 import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
 import DashboardToolbar from "../app/dashboard/DashboardToolbar";
 import DraggableComponent from "../util/DraggableComponent";
-import {setCourseOrder} from "../core/state/grades/courseOrderSlice";
-import {updateCourseOrder,} from "../core/state/widget/widgetSlice";
-import {fetchAllContent} from "../../lib/fetcher";
+import { setCourseOrder } from "../core/state/grades/courseOrderSlice";
+import { updateCourseOrder } from "../core/state/widget/widgetSlice";
+import { fetchAllContent } from "../../lib/fetcher";
 import RefreshStatus from "../../lib/types/RefreshStatus";
 import useColors from "../core/theme/useColors";
 import StatusText from "../text/StatusText";
-import {setRefreshStatus} from "../core/state/grades/refreshStatusSlice";
+import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import fetchAndStore from "../../lib/fetchAndStore";
+import { setSchoolName } from "../core/state/user/loginSlice";
 
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
@@ -89,7 +90,9 @@ export default function CurrentGradesScreen(props: {
       courses.length,
       username,
       password,
-      undefined,
+      (info) => {
+        dispatch(setSchoolName(info.school));
+      },
       (s: RefreshStatus) => {
         dispatch(setRefreshStatus(s));
       }

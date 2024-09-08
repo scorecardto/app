@@ -97,14 +97,14 @@ export default function ClubAdminToolbar(props: {
           name="Post"
           icon="add-box"
         ></Button>
-        <Button
+        {/* <Button
           onPress={() => {
             props.setTab("members");
           }}
           name="Members"
           icon="people"
           active={props.tab === "members"}
-        ></Button>
+        ></Button> */}
       </View>
     </>
   );

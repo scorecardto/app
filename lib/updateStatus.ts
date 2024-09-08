@@ -1,4 +1,4 @@
-import { Course } from "scorecard-types";
+import { Course, School } from "scorecard-types";
 import ScorecardModule from "./expoModuleBridge";
 import parseCourseKey from "./parseCourseKey";
 import axios from "redaxios";
@@ -7,12 +7,17 @@ import API_HOST from "./API_HOST";
 export async function updateStatus(
   courses: Course[],
   token: string
-): Promise<boolean> {
+): Promise<{
+  success: boolean;
+  school: School;
+}> {
   const login = ScorecardModule.getItem("login");
   const name = ScorecardModule.getItem("name");
+  const school = ScorecardModule.getItem("school");
 
-  const { host, school, grade, realFirstName, realLastName } =
-    JSON.parse(login);
+  console.log("school in storage", school);
+
+  const { host, grade, realFirstName, realLastName } = JSON.parse(login);
 
   const { firstName, lastName } = JSON.parse(name);
 
@@ -54,5 +59,10 @@ export async function updateStatus(
     }
   );
 
-  return result.data.result === "success";
+  console.log(result);
+
+  return {
+    success: result.data.result === "success",
+    school: result.data.status.school,
+  };
 }

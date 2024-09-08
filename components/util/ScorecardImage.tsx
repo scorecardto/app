@@ -2,6 +2,7 @@
 import AsyncImage from "react-native-async-image-animated";
 import * as FileSystem from "expo-file-system";
 import { useEffect, useState } from "react";
+import { Image } from "react-native";
 
 export default function ScorecardImage(
   props:
@@ -10,9 +11,11 @@ export default function ScorecardImage(
         width: number;
         height: number;
         contain?: false;
+        noAsync?: boolean;
       }
     | {
         id: string;
+        noAsync?: boolean;
         contain: true;
       }
 ) {
@@ -39,6 +42,20 @@ export default function ScorecardImage(
 
   if (!props.id) return null;
 
+  if (props.noAsync && !props.contain) {
+    return (
+      <Image
+        source={{ uri: file, cache: "reload" }}
+        key={"" + refresh}
+        style={{
+          width: props.width,
+          height: props.height,
+        }}
+        width={props.width}
+        height={props.height}
+      />
+    );
+  }
   if (props.contain) {
     return (
       <AsyncImage

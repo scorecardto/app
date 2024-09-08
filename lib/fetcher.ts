@@ -5,7 +5,8 @@ import { Assignment, Course, GradeCategory } from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import "qs";
 import Toast from "react-native-toast-message";
-import {fetchGradeCategoriesForCourse, fetchReportCard} from "./oldFetcher";
+import { fetchGradeCategoriesForCourse, fetchReportCard } from "./oldFetcher";
+import ScorecardModule from "./expoModuleBridge";
 
 const customFetch = (url: RequestInfo | URL, init?: RequestInit) => {
   return fetch(url, {
@@ -75,47 +76,47 @@ async function login(
 
 async function parseHomeInfo(host: string, cookies: string) {
   const scheduleData = parse(
-      (
-          await axios({
-            url: `https://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
-            method: "POST",
-            headers: { Cookie: cookies },
-            fetch: customFetch,
-            data: qs.stringify({
-              selectedIndexId: "undefined",
-              selectedTable: "table",
-              smartFormName: "SmartForm",
-              focusElement: "",
-              gradeBookKey: "",
-              replaceObjectParam1: "",
-              selectedCell: "",
-              selectedTdId: "",
-            }),
-          })
-      ).data as string
+    (
+      await axios({
+        url: `https://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
+        method: "POST",
+        headers: { Cookie: cookies },
+        fetch: customFetch,
+        data: qs.stringify({
+          selectedIndexId: "undefined",
+          selectedTable: "table",
+          smartFormName: "SmartForm",
+          focusElement: "",
+          gradeBookKey: "",
+          replaceObjectParam1: "",
+          selectedCell: "",
+          selectedTdId: "",
+        }),
+      })
+    ).data as string
   );
 
   const homeData = parse(
-      (
-          await axios({
-            url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
-            method: "POST",
-            headers: { Cookie: cookies },
-            fetch: customFetch,
-          })
-      ).data as string
+    (
+      await axios({
+        url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+        method: "POST",
+        headers: { Cookie: cookies },
+        fetch: customFetch,
+      })
+    ).data as string
   );
 
   if (
-      homeData.querySelector("#pageMessageDiv .message .info")?.innerText ===
-      "Your session has expired.  Please use the Close button and log in again."
+    homeData.querySelector("#pageMessageDiv .message .info")?.innerText ===
+    "Your session has expired.  Please use the Close button and log in again."
   ) {
     throw new Error(`SESSION_EXPIRED`);
   }
 
   const rawName =
-      homeData.querySelector("#defaultInfoHeader tr:nth-child(1) td:nth-child(2)")
-          ?.innerText || "";
+    homeData.querySelector("#defaultInfoHeader tr:nth-child(1) td:nth-child(2)")
+      ?.innerText || "";
 
   const lastName = rawName?.split(",")?.[0];
 
@@ -126,29 +127,32 @@ async function parseHomeInfo(host: string, cookies: string) {
   const prefferedFirstName = regex.exec(rawName)?.[0];
 
   const firstName = prefferedFirstName
-      ? prefferedFirstName.replace(/[()]/g, "")
-      : legalFirstName;
+    ? prefferedFirstName.replace(/[()]/g, "")
+    : legalFirstName;
 
   const schoolName =
-      homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(1)")
-          ?.innerText || "";
+    homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(1)")
+      ?.innerText || "";
+
+  console.log("storing", schoolName);
+
+  ScorecardModule.storeItem("school", schoolName);
+
+  console.log("immediate result", ScorecardModule.getItem("school"));
 
   const gradeLabel =
-      homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(2)")
-          ?.innerText || "";
+    homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(2)")
+      ?.innerText || "";
 
   return {
     firstName,
     lastName,
     grade: gradeLabel,
     school: schoolName,
-  }
+  };
 }
 
-async function parseHome(
-  host: string,
-  cookies: string,
-) {
+async function parseHome(host: string, cookies: string) {
   const homeData = parse(
     (
       await axios({
@@ -191,7 +195,7 @@ async function parseHome(
     const grades: Course["grades"] = [];
 
     const gradeElements = homeData.querySelectorAll(
-        `.studentGradingBottomRight tr:nth-child(${idx + 1}) td`
+      `.studentGradingBottomRight tr:nth-child(${idx + 1}) td`
     );
 
     gradeElements.forEach((gradeElement) => {
@@ -200,7 +204,7 @@ async function parseHome(
 
       if (idx === 1) {
         columnNames.push(
-            parsedKey["gradeTypeIndex"]?.toString() ?? "Grading Period"
+          parsedKey["gradeTypeIndex"]?.toString() ?? "Grading Period"
         );
       }
 
@@ -359,10 +363,7 @@ async function fetchCourse(
   const cookies = await entryPoint(host);
   await login(host, cookies, username, password);
 
-  const { courses, gradeCategoryNames } = await parseHome(
-    host,
-    cookies,
-  );
+  const { courses, gradeCategoryNames } = await parseHome(host, cookies);
   courseInfoCallback && courseInfoCallback(courses.length, gradeCategoryNames);
 
   const course =
@@ -378,8 +379,14 @@ async function fetchCourse(
 
   if (gradeCategories == null) {
     const reportCard = await fetchReportCard(host, username, password);
-    gradeCategories = (await fetchGradeCategoriesForCourse(host, reportCard.sessionId,
-        reportCard.referer, reportCard.courses.find(c => c.key === key)!)).gradeCategories;
+    gradeCategories = (
+      await fetchGradeCategoriesForCourse(
+        host,
+        reportCard.sessionId,
+        reportCard.referer,
+        reportCard.courses.find((c) => c.key === key)!
+      )
+    ).gradeCategories;
   }
 
   return {

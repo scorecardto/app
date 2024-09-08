@@ -2,8 +2,11 @@ import { View, TouchableOpacity } from "react-native";
 import useColors from "../../core/theme/useColors";
 import MediumText from "../../text/MediumText";
 import { useNavigation } from "@react-navigation/native";
+import SmallText from "../../text/SmallText";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 
 export default function ClubsToolbar() {
+  const isDark = useIsDarkMode();
   const colors = useColors();
   const navigation = useNavigation();
 

@@ -88,6 +88,7 @@ export default async function initialize(
   const oldCourseStates = ScorecardModule.getItem("oldCourseStates");
   const courseSettings = ScorecardModule.getItem("courseSettings");
   const appSettings = ScorecardModule.getItem("appSettings");
+  const school = ScorecardModule.getItem("school");
   const courseOrder = ScorecardModule.getItem("courseOrder");
   const openInviteSheetDate = ScorecardModule.getItem("openInviteSheetDate");
   const invitedNumbers = ScorecardModule.getItem("invitedNumbers");
@@ -181,15 +182,8 @@ export default async function initialize(
     );
     dispatch(setOldCourseStates(JSON.parse(oldCourseStates ?? "{}")));
 
-    const {
-      username,
-      password,
-      host,
-      school,
-      grade,
-      realFirstName,
-      realLastName,
-    } = JSON.parse(login);
+    const { username, password, host, grade, realFirstName, realLastName } =
+      JSON.parse(login);
 
     dispatch(setDistrict(host));
     dispatch(setUsername(username));

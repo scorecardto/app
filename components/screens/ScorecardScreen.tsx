@@ -10,7 +10,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
 import { updateStatus } from "../../lib/updateStatus";
-import { setSocialConnected } from "../core/state/social/socialSlice";
+import {
+  setSchool,
+  setSocialConnected,
+} from "../core/state/social/socialSlice";
 import { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import auth from "@react-native-firebase/auth";
 import { refreshImageCache } from "../../lib/refreshImageCache";
@@ -30,17 +33,25 @@ export default function ScorecardScreen(props: {
   navigation: NavigationProp<any>;
   route: any;
 }) {
+  const initialRouteName = props.route.params?.initialRouteName || null;
+
   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
     setUser(user);
     if (user) {
-      requestPermissions().then(async () =>
-          getCurrentToken() && axios.post("https://api.scorecardgrades.com/v1/register_token", {
-            pushToken: getCurrentToken()
-          }, {
-            headers: { Authorization: await user.getIdToken() }
-          })
+      requestPermissions().then(
+        async () =>
+          getCurrentToken() &&
+          axios.post(
+            "https://api.scorecardgrades.com/v1/register_token",
+            {
+              pushToken: getCurrentToken(),
+            },
+            {
+              headers: { Authorization: await user.getIdToken() },
+            }
+          )
       );
     }
   }
@@ -51,7 +62,7 @@ export default function ScorecardScreen(props: {
 
       if (url?.startsWith(joinPrefix)) {
         props.navigation.navigate("joinClub", {
-          clubCode: url.slice(joinPrefix.length),
+          clubCode: new URL(url).pathname.split("/")[2].toLowerCase(),
         });
       }
     };
@@ -83,7 +94,10 @@ export default function ScorecardScreen(props: {
     if (courses && user) {
       user?.getIdToken().then((token) => {
         updateStatus(courses, token).then((s) => {
-          dispatch(setSocialConnected(s));
+          console.log("update", s);
+
+          dispatch(setSocialConnected(s.success));
+          dispatch(setSchool(s.school));
         });
       });
     }
@@ -94,7 +108,10 @@ export default function ScorecardScreen(props: {
         flex: 1,
       }}
     >
-      <Tab.Navigator tabBar={TabBar} initialRouteName="Grades">
+      <Tab.Navigator
+        tabBar={TabBar}
+        initialRouteName={initialRouteName || "Grades"}
+      >
         <Tab.Screen
           name="Account"
           component={AccountScreen}
