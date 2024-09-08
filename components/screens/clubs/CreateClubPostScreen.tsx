@@ -435,10 +435,12 @@ export default function CreateClubPostScreen(props: {
                   autoFocus={true}
                   style={{
                     flexShrink: 1,
-                    fontSize: 20,
+                    fontSize: 18,
                     paddingHorizontal: 24,
                     paddingTop: 12,
                     marginTop: 0,
+                    color: colors.text,
+                    marginBottom: TOOLBAR_HEIGHT,
                   }}
                   placeholder="Start writing here..."
                   placeholderTextColor={colors.text}
@@ -470,6 +472,7 @@ export default function CreateClubPostScreen(props: {
             </View>
             <KeyboardStickyView
               offset={{
+                  opened: TOOLBAR_HEIGHT,
                 closed: TOOLBAR_HEIGHT,
               }}
               style={{
