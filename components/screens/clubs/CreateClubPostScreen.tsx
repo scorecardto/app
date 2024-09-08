@@ -26,6 +26,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Image as Compressor } from "react-native-compressor";
 import ClubPostArrayContainer from "../../app/clubs/ClubPostArrayContainer";
 import { Club, ClubPost } from "scorecard-types";
 import * as ImagePicker from "expo-image-picker";
@@ -106,13 +107,38 @@ export default function CreateClubPostScreen(props: {
       return;
     }
 
+    let uri = result.assets[0].uri;
+    // @ts-ignore
+    const { size } = await FileSystem.getInfoAsync(uri, { size: true });
+
+    console.log(size);
+
+    if (size > 5 * 1024 * 1024) {
+      Toast.show({
+        type: "info",
+        text1: "Image Too Large",
+        text2: "Compressing to 5MB",
+      });
+      uri = await Compressor.compress(uri, {
+        compressionMethod: "manual",
+        quality: (5 * 1024 * 1024) / size,
+        input: "uri",
+        output: "png",
+        returnableOutputType: "uri",
+      });
+    }
+
+    // @ts-ignore
+    const { size2 } = await FileSystem.getInfoAsync(uri, { size: true });
+    console.log(size2);
+
     Toast.show({
       type: "info",
       text1: "Uploading Image...",
     });
     const ret = await FileSystem.uploadAsync(
       API_HOST + "/v1/images/upload",
-      result.assets[0].uri,
+      uri,
       {
         headers: {
           Authorization: token,

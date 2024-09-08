@@ -16,9 +16,28 @@ export default function AllClubsList(props: { clubs: Club[] }) {
         overflow: "hidden",
       }}
     >
-      {props.clubs.map((c, i) => {
-        return <ClubPreview club={c} key={i} />;
-      })}
+      {props.clubs
+        .slice()
+        .sort((club1, club2) => {
+          if (club1.isOwner) {
+            if (club2.isOwner) {
+              return club2.memberCount - club1.memberCount;
+            }
+            return -1;
+          }
+          if (club2.isOwner) return 1;
+          if (club1.isMember) {
+            if (club2.isMember) {
+              return club2.memberCount - club1.memberCount;
+            }
+            return -1;
+          }
+          if (club2.isMember) return 1;
+          return club2.memberCount - club1.memberCount;
+        })
+        .map((c, i) => {
+          return <ClubPreview club={c} key={i} />;
+        })}
     </View>
   );
 }

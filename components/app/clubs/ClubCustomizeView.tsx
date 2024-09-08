@@ -41,7 +41,11 @@ export default function ClubCustomizeView(props: {
         flex: 1,
       }}
     >
-      <ClubPictureChanger initialValue={picture} onChange={setPicture} startLoading={props.startLoading} />
+      <ClubPictureChanger
+        initialValue={picture}
+        onChange={setPicture}
+        startLoading={props.startLoading}
+      />
 
       <MediumText style={{ marginBottom: 8, color: colors.primary }}>
         Display Name

@@ -1,21 +1,12 @@
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  TouchableOpacity,
-  ScrollView,
-  Share,
-} from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Share } from "react-native";
+import { useCallback, useRef, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
-import * as Sharing from "expo-sharing";
-import CourseCornerButtonContainer from "../../app/course/CourseCornerButtonContainer";
+
 import ClubViewArrayContainer from "../../app/clubs/ClubViewArrayContainer";
 import ScorecardClubImage from "../../util/ScorecardClubImage";
 import { Club } from "scorecard-types";
 import useScApi from "../../util/hooks/useScApi";
 import MediumText from "../../text/MediumText";
-import SmallText from "../../text/SmallText";
 import Color from "color";
 import useColors from "../../core/theme/useColors";
 import ClubScreenGradient from "../../app/clubs/ClubScreenGradient";
@@ -26,33 +17,33 @@ import ViewClubMenuSheet from "../../app/clubs/ViewClubMenuSheet";
 import { ActionSheetRef } from "react-native-actions-sheet";
 import Toast from "react-native-toast-message";
 import useSocial from "../../util/hooks/useSocial";
+import useCachedValue from "../../util/hooks/useCachedValue";
+import LoadingContentScreen from "../../util/LoadingContentScreen";
+import LoaderKit from "react-native-loader-kit";
+import SmallText from "../../text/SmallText";
 export default function ViewClubScreen(props: {
   route: any;
   navigation: NavigationProp<any>;
 }) {
-  const [club, setClub] = useState<Club | null>(null);
-
   const { internalCode } = props.route.params;
-
   const api = useScApi();
 
-  const fetchClub = useCallback(async () => {
-    await api
-      .get({
-        pathname: "/v1/clubs/get",
-        params: {
-          internalCode,
-        },
-        auth: true,
-      })
-      .then((result) => {
-        setClub(result.data.club);
-      });
-  }, [internalCode]);
+  const [club, loading] = useCachedValue<Club>(
+    `club/${internalCode}`,
+    async () => {
+      const club: Club = (
+        await api.get({
+          pathname: "/v1/clubs/get",
+          params: {
+            internalCode,
+          },
+          auth: true,
+        })
+      ).data.club;
 
-  useEffect(() => {
-    fetchClub();
-  }, []);
+      return club;
+    }
+  );
 
   const colors = useColors();
 
@@ -111,8 +102,9 @@ export default function ViewClubScreen(props: {
       });
   }, [club]);
 
+  const [sharing, setSharing] = useState(false);
   if (!club) {
-    return <ActivityIndicator />;
+    return <LoadingContentScreen />;
   }
 
   return (
@@ -191,15 +183,33 @@ export default function ViewClubScreen(props: {
               marginBottom: 16,
             }}
           >
-            <LargeText
+            <View
               style={{
-                fontSize: 20,
+                flexDirection: "row",
+                alignItems: "center",
                 marginTop: 8,
-                color: colors.primary,
               }}
             >
-              {club.name}
-            </LargeText>
+              <LargeText
+                style={{
+                  fontSize: 20,
+                  color: colors.primary,
+                }}
+              >
+                {club.name}
+              </LargeText>
+              {(club.verified || club.official) && (
+                <MaterialIcons
+                  name="verified"
+                  size={20}
+                  style={{
+                    marginTop: 1,
+                    marginLeft: 4,
+                    color: club.official ? colors.gold : colors.button,
+                  }}
+                />
+              )}
+            </View>
             <Text
               style={{
                 color: colors.text,
@@ -217,43 +227,123 @@ export default function ViewClubScreen(props: {
               alignItems: "stretch",
             }}
           >
-            <TouchableOpacity
+            <View
               style={{
-                marginRight: 8,
-              }}
-              onPress={() => {
-                if (club.isOwner) {
-                  props.navigation.navigate("clubAdmin", {
-                    internalCode,
-                  });
-                } else {
-                  Share.share({
-                    message: `https://scorecardgrades.com/joinclub/${club.clubCode}?preferInternalCode=${club.internalCode}`,
-                  });
-                }
+                flexDirection: "row",
               }}
             >
-              <View
+              <TouchableOpacity
                 style={{
-                  backgroundColor: darkenUntilContrast(heroColor),
-                  paddingVertical: 8,
-                  paddingHorizontal: 20,
-                  borderRadius: 24,
-                  alignSelf: "flex-start",
+                  marginRight: 8,
+                }}
+                onPress={() => {
+                  if (club.isOwner) {
+                    props.navigation.navigate("createClubPost", {
+                      club,
+                    });
+                  } else {
+                    setSharing(true);
+
+                    Share.share({
+                      message: `https://scorecardgrades.com/joinclub/${club.clubCode}?preferInternalCode=${club.internalCode}`,
+                    }).then(() => {
+                      setSharing(false);
+                    });
+                  }
                 }}
               >
-                <MediumText
+                <View
                   style={{
-                    fontSize: 16,
-                    color: "white",
-                    paddingVertical: 2,
-                    textAlign: "center",
+                    backgroundColor: darkenUntilContrast(heroColor),
+                    height: 40,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 20,
+                    borderRadius: 24,
+                    alignSelf: "flex-start",
                   }}
                 >
-                  {club.isOwner ? "Manage" : "Share"}
-                </MediumText>
-              </View>
-            </TouchableOpacity>
+                  <View>
+                    {club.isOwner ? (
+                      <MediumText
+                        style={{
+                          fontSize: 16,
+                          color: "white",
+                          paddingVertical: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        Post
+                      </MediumText>
+                    ) : (
+                      <View
+                        style={{
+                          width: 50,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          flexDirection: "row",
+                        }}
+                      >
+                        {sharing ? (
+                          <LoaderKit
+                            style={{ width: 16, height: 16 }}
+                            name={"LineScalePulseOut"}
+                            color={"white"}
+                          />
+                        ) : (
+                          <MediumText
+                            style={{
+                              fontSize: 16,
+                              color: "white",
+                              paddingVertical: 2,
+                              textAlign: "center",
+                            }}
+                          >
+                            Share
+                          </MediumText>
+                        )}
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+              {club.isOwner && (
+                <TouchableOpacity
+                  style={{
+                    marginRight: 8,
+                  }}
+                  onPress={() => {
+                    if (club.isOwner) {
+                      props.navigation.navigate("clubAdmin", {
+                        internalCode,
+                      });
+                    }
+                  }}
+                >
+                  <View
+                    style={{
+                      borderColor: colors.borderNeutral,
+                      borderWidth: 1,
+                      paddingVertical: 8,
+                      paddingHorizontal: 20,
+                      borderRadius: 24,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    <SmallText
+                      style={{
+                        fontSize: 16,
+                        color: colors.primary,
+                        paddingVertical: 2,
+                        textAlign: "center",
+                      }}
+                    >
+                      {"Manage"}
+                    </SmallText>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
             {!club.isOwner && (
               <TouchableOpacity
                 onPress={() => {
@@ -297,6 +387,7 @@ export default function ViewClubScreen(props: {
         style={{
           height: "100%",
           flexGrow: 1,
+          marginBottom: 32,
           width: "100%",
         }}
       >
@@ -307,9 +398,38 @@ export default function ViewClubScreen(props: {
             backgroundColor: colors.backgroundNeutral,
           }}
         >
-          {club.posts.map((p, i) => {
-            return <ClubPostReader key={i} post={p} />;
-          })}
+          {club.posts.length === 0 ? (
+            <View
+              style={{
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: 16,
+              }}
+            >
+              <MaterialIcons name="pages" size={32} color={colors.text} />
+              <MediumText
+                style={{
+                  fontSize: 24,
+                  marginBottom: 4,
+                  marginTop: 8,
+                  color: colors.text,
+                }}
+              >
+                No Posts
+              </MediumText>
+              <Text
+                style={{
+                  color: colors.text,
+                }}
+              >
+                {club.name} hasn't made any posts yet.
+              </Text>
+            </View>
+          ) : (
+            club.posts.map((p, i) => {
+              return <ClubPostReader key={i} post={p} />;
+            })
+          )}
         </View>
       </View>
     </ScrollView>

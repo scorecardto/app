@@ -8,7 +8,10 @@ import CourseSaveArrayContainer from "../../app/course/CourseSaveArrayContainer"
 import { Club } from "scorecard-types";
 import useScApi from "../../util/hooks/useScApi";
 import ClubHomeView from "../../app/clubs/ClubHomeView";
-import {KeyboardAwareScrollView, KeyboardProvider} from "react-native-keyboard-controller";
+import {
+  KeyboardAwareScrollView,
+  KeyboardProvider,
+} from "react-native-keyboard-controller";
 import useSocial from "../../util/hooks/useSocial";
 
 export default function ClubAdminScreen(props: {
@@ -141,17 +144,17 @@ export default function ClubAdminScreen(props: {
         }}
       >
         {club && (
-            <KeyboardProvider>
-              <KeyboardAwareScrollView
-                style={{
-                  height: "100%",
-                  flex: 1,
-                }}
-              >
-                {tab === "home" && <ClubHomeView club={club} />}
-                {tab === "edit" && clubCustomizeView}
-              </KeyboardAwareScrollView>
-            </KeyboardProvider>
+          <KeyboardProvider>
+            <KeyboardAwareScrollView
+              style={{
+                height: "100%",
+                flex: 1,
+              }}
+            >
+              {tab === "home" && <ClubHomeView club={club} />}
+              {tab === "edit" && clubCustomizeView}
+            </KeyboardAwareScrollView>
+          </KeyboardProvider>
         )}
       </View>
     </View>
