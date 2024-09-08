@@ -27,6 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>scorecard</string>
           <string>com.scorecardgrades.mobile</string>
         </array>
       </dict>
@@ -39,28 +40,12 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
           <string>exp+scorecard</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>com.scorecardgrades.mobile</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>scorecard</string>
         </array>
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>55</string>
+    <string>56</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>instagram-stories</string>
@@ -81,10 +66,16 @@
         </dict>
       </dict>
     </dict>
+    <key>NSCameraUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your camera</string>
     <key>NSContactsUsageDescription</key>
     <string>Find and invite friends to Scorecard</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your microphone</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>Save club invite QR code to your library</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your photos</string>
     <key>NSSupportsLiveActivities</key>
     <false/>
     <key>NSSupportsLiveActivitiesFrequentUpdates</key>
@@ -130,19 +121,19 @@
     <key>appExtensions</key>
     <array>
       <dict>
+        <key>targetName</key>
+        <string>expowidgetsWidgetExtension</string>
         <key>bundleIdentifier</key>
         <string>com.scorecardgrades.mobile.expowidgetsWidgetExtension</string>
         <key>entitlements</key>
         <dict>
-          <key>aps-environment</key>
-          <string>development</string>
           <key>com.apple.security.application-groups</key>
           <array>
             <string>group.com.scorecardgrades.mobile.expowidgets</string>
           </array>
+          <key>aps-environment</key>
+          <string>development</string>
         </dict>
-        <key>targetName</key>
-        <string>expowidgetsWidgetExtension</string>
       </dict>
     </array>
   </dict>
