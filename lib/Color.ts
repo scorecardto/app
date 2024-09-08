@@ -221,6 +221,7 @@ interface Theme extends NativeTheme.Theme {
     notification: string;
     button: string;
     buttonBorder: string;
+    gold: string;
   };
   accents: {
     preview: string;
@@ -248,6 +249,7 @@ const MyLightTheme = {
     card: "#FFF",
     button: "#2B74BE",
     buttonBorder: "#1585c2",
+    gold: "#de9b28",
   },
 };
 
@@ -267,6 +269,7 @@ const MyDarkTheme = {
     card: "#242635",
     button: "#2B74BE",
     buttonBorder: "#098fd7",
+    gold: "#de9b28",
   },
 };
 

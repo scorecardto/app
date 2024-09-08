@@ -89,15 +89,36 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
               justifyContent: "space-between",
             }}
           >
-            <MediumText
+            <View
               style={{
-                fontSize: 18,
+                flexDirection: "row",
                 marginBottom: 4,
-                color: colors.primary,
+                alignItems: "center",
               }}
             >
-              {props.post.club.name}
-            </MediumText>
+              {(props.post.club.verified || props.post.club.official) && (
+                <MaterialIcons
+                  name="verified"
+                  size={16}
+                  style={{
+                    marginRight: 4,
+                    marginBottom: 4,
+                    color: props.post.club.official
+                      ? colors.gold
+                      : colors.button,
+                  }}
+                />
+              )}
+              <MediumText
+                style={{
+                  fontSize: 18,
+                  marginBottom: 4,
+                  color: colors.primary,
+                }}
+              >
+                {props.post.club.name}
+              </MediumText>
+            </View>
             <MaterialIcons name="chevron-right" color={colors.text} size={24} />
           </View>
           <View
@@ -254,15 +275,35 @@ export default function ClubPostPreview(props: { post: ClubPost }) {
               width: "100%",
             }}
           >
-            <MediumText
+            <View
               style={{
-                fontSize: 18,
-                marginBottom: 4,
-                color: colors.primary,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {props.post.club.name}
-            </MediumText>
+              {(props.post.club.verified || props.post.club.official) && (
+                <MaterialIcons
+                  name="verified"
+                  size={16}
+                  style={{
+                    marginRight: 4,
+                    marginBottom: 4,
+                    color: props.post.club.official
+                      ? colors.gold
+                      : colors.button,
+                  }}
+                />
+              )}
+              <MediumText
+                style={{
+                  fontSize: 18,
+                  marginBottom: 4,
+                  color: colors.primary,
+                }}
+              >
+                {props.post.club.name}
+              </MediumText>
+            </View>
             <MaterialIcons name="chevron-right" color={colors.text} size={24} />
           </View>
           <Text

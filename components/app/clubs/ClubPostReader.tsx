@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Dimensions } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { ClubPost } from "scorecard-types";
 import {
@@ -79,12 +79,16 @@ export default function ClubPostReader(props: { post: ClubPost }) {
   }, []);
 
   const colors = useColors();
+
+  const screenWidth = Dimensions.get("screen").width;
+
   return (
     <View
       style={{
         backgroundColor: colors.card,
         borderRadius: 12,
-        paddingVertical: 8,
+        paddingTop: 8,
+        paddingBottom: 4,
         paddingHorizontal: 16,
         marginHorizontal: 16,
         marginTop: 16,
@@ -142,10 +146,15 @@ export default function ClubPostReader(props: { post: ClubPost }) {
             style={{
               width: "100%",
               marginTop: 16,
+              marginHorizontal: 8,
               aspectRatio: 1,
             }}
           >
-            <ScorecardImage contain={true} id={props.post.picture} />
+            <ScorecardImage
+              width={screenWidth - 80}
+              height={screenWidth - 80}
+              id={props.post.picture}
+            />
           </View>
         )}
       </View>

@@ -1332,6 +1332,9 @@ PODS:
     - nanopb/encode (= 2.30909.1)
   - nanopb/decode (2.30909.1)
   - nanopb/encode (2.30909.1)
+  - NVActivityIndicatorView (5.1.1):
+    - NVActivityIndicatorView/Base (= 5.1.1)
+  - NVActivityIndicatorView/Base (5.1.1)
   - PromisesObjC (2.4.0)
   - RCT-Folly (2021.07.22.00):
     - boost
@@ -1642,10 +1645,13 @@ PODS:
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
-  - react-native-date-picker (5.0.4):
+  - react-native-date-picker (5.0.7):
     - React-Core
-  - react-native-keyboard-controller (1.13.2):
+  - react-native-keyboard-controller (1.13.3):
     - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - react-native-loader-kit (2.0.8):
+    - NVActivityIndicatorView (= 5.1.1)
     - React-Core
   - react-native-pager-view (6.2.0):
     - React-Core
@@ -1771,6 +1777,8 @@ PODS:
     - React-perflogger (= 0.72.6)
   - RecaptchaInterop (100.0.0)
   - RNCMaskedView (0.2.9):
+    - React-Core
+  - RNDeviceInfo (11.1.0):
     - React-Core
   - RNFBAnalytics (18.9.0):
     - Firebase/Analytics (= 10.20.0)
@@ -1917,6 +1925,7 @@ DEPENDENCIES:
   - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
+  - react-native-loader-kit (from `../node_modules/react-native-loader-kit`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
@@ -1939,6 +1948,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBAnalytics (from `../node_modules/@react-native-firebase/analytics`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
@@ -1983,6 +1993,7 @@ SPEC REPOS:
     - libvmaf
     - libwebp
     - nanopb
+    - NVActivityIndicatorView
     - PromisesObjC
     - ReachabilitySwift
     - RecaptchaInterop
@@ -2118,6 +2129,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-keyboard-controller:
     :path: "../node_modules/react-native-keyboard-controller"
+  react-native-loader-kit:
+    :path: "../node_modules/react-native-loader-kit"
   react-native-pager-view:
     :path: "../node_modules/react-native-pager-view"
   react-native-render-html:
@@ -2162,6 +2175,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFBAnalytics:
     :path: "../node_modules/@react-native-firebase/analytics"
   RNFBApp:
@@ -2258,6 +2273,7 @@ SPEC CHECKSUMS:
   libvmaf: 27f523f1e63c694d14d534cd0fddd2fab0ae8711
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
+  NVActivityIndicatorView: 1f6c5687f1171810aa27a3296814dc2d7dec3667
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: 28469809442eb4eb5528462705f7d852948c8a74
@@ -2278,8 +2294,9 @@ SPEC CHECKSUMS:
   react-native-blur: db09583409bd872539bf6e915df484d792373810
   react-native-compressor: 3f05b3b6153f31ed5c4145ed293396a19f6ff52a
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
-  react-native-date-picker: 6891317e850deae5b53d51355226e07a495aba61
-  react-native-keyboard-controller: e3ed05962b5a7e3765815c6fc9158d743ac97f74
+  react-native-date-picker: 06a4d96ab525a163c7a90bccd68833d136b0bb13
+  react-native-keyboard-controller: 53d3e1c6e7670f7fdae7e3b2b5c7d9be6d0a0326
+  react-native-loader-kit: ed18c8ce83b69083211912326897d8286f37d797
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
@@ -2303,6 +2320,7 @@ SPEC CHECKSUMS:
   ReactCommon: cfe086d2e2ec9f2907c66666c856082608fba822
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
+  RNDeviceInfo: b899ce37a403a4dea52b7cb85e16e49c04a5b88e
   RNFBAnalytics: c79cf8da7d0bbbad0e0cc233402d2cadc4a694b9
   RNFBApp: a3e139715386fe79a09c387f2dbeb6890eb05b39
   RNFBAuth: b967a31a2ce307557a4237564d8e5f7cd83a316f

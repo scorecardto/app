@@ -1,4 +1,5 @@
-import { Image } from "react-native";
+// @ts-ignore
+import AsyncImage from "react-native-async-image-animated";
 import * as FileSystem from "expo-file-system";
 import { useEffect, useState } from "react";
 
@@ -40,22 +41,26 @@ export default function ScorecardImage(
 
   if (props.contain) {
     return (
-      <Image
+      <AsyncImage
+        placeholderColor={"#cfd8dc"}
         source={{ uri: file, cache: "reload" }}
         key={"" + refresh}
         style={{
-          flex: 1,
-          width: null,
-          height: null,
-          resizeMode: "contain",
+          height: "100%",
+          width: "100%",
         }}
       />
     );
   } else {
     return (
-      <Image
+      <AsyncImage
+        placeholderColor={"#cfd8dc"}
         source={{ uri: file, cache: "reload" }}
         key={"" + refresh}
+        style={{
+          width: props.width,
+          height: props.height,
+        }}
         width={props.width}
         height={props.height}
       />

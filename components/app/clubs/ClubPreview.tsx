@@ -116,17 +116,36 @@ export default function ClubPreview(props: { club: Club }) {
             paddingRight: 56,
           }}
         >
-          <MediumText
+          <View
             style={{
-              fontSize: 18,
-              color: colors.primary,
+              flexDirection: "row",
               marginBottom: 4,
-              overflow: "hidden",
+              alignItems: "center",
             }}
-            numberOfLines={1}
           >
-            {props.club.name}
-          </MediumText>
+            {(props.club.verified || props.club.official) && (
+              <MaterialIcons
+                name="verified"
+                size={16}
+                style={{
+                  marginRight: 4,
+                  color: props.club.official ? colors.gold : colors.button,
+                }}
+              />
+            )}
+            <MediumText
+              style={{
+                fontSize: 18,
+                color: colors.primary,
+                marginRight: 4,
+
+                overflow: "hidden",
+              }}
+              numberOfLines={1}
+            >
+              {props.club.name}
+            </MediumText>
+          </View>
           <Text
             style={{
               fontSize: 14,
