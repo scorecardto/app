@@ -93,6 +93,8 @@ export function setupForegroundNotifications(
       const { data } = response.notification.request.content;
       if (data.course) {
         navigation.navigate({ name: "course", params: { key: data.course } });
+      } else if (data.clubCode) {
+        navigation.navigate({ name: "viewClub", params: { internalCode: data.clubCode } });
       }
     }
   );
