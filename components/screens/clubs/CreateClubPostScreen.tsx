@@ -465,7 +465,7 @@ export default function CreateClubPostScreen(props: {
                     paddingHorizontal: 24,
                     paddingTop: 12,
                     marginTop: 0,
-                    color: colors.text,
+                    color: colors.primary,
                     marginBottom: TOOLBAR_HEIGHT,
                   }}
                   placeholder="Start writing here..."
@@ -498,7 +498,7 @@ export default function CreateClubPostScreen(props: {
             </View>
             <KeyboardStickyView
               offset={{
-                  opened: TOOLBAR_HEIGHT,
+                opened: TOOLBAR_HEIGHT,
                 closed: TOOLBAR_HEIGHT,
               }}
               style={{
@@ -527,13 +527,13 @@ export default function CreateClubPostScreen(props: {
                     addImage();
                   }}
                 />
-                <ToolbarButton
+                {/* <ToolbarButton
                   icon="link"
                   label="Link"
                   onPress={() => {
                     addLink();
                   }}
-                />
+                /> */}
                 <ToolbarButton
                   icon="clock"
                   label="Event"

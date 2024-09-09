@@ -3,6 +3,7 @@ import ReactNative, {
   Linking,
   Platform,
   SafeAreaView,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -273,7 +274,7 @@ const ConnectAccountScreen = (props: {
             );
           },
         });
-      }, 8000);
+      }, 10000);
 
       const reportCard = fetchAllContent(
         district.url,
@@ -390,7 +391,7 @@ const ConnectAccountScreen = (props: {
           position: "relative",
         }}
       >
-        <View style={{ marginHorizontal: 20 }}>
+        <ScrollView style={{ paddingHorizontal: 20, flexShrink: 1 }}>
           <View style={{ marginBottom: 48, paddingTop: 8 }}>
             <Text
               style={{
@@ -443,8 +444,11 @@ const ConnectAccountScreen = (props: {
               Your password will never be shared with Scorecard.
             </Text>
           </View>
-        </View>
+        </ScrollView>
         <TouchableOpacity
+          style={{
+            flexShrink: 0,
+          }}
           onPress={() => {
             setLoading(true);
           }}

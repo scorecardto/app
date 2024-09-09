@@ -2,6 +2,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -69,7 +70,7 @@ export default function AddNameScreen(props: {
           position: "relative",
         }}
       >
-        <View style={{ marginHorizontal: 24 }}>
+        <ScrollView style={{ paddingHorizontal: 24, flexShrink: 0 }}>
           <View style={{ marginBottom: 48, paddingTop: 8 }}>
             <Text
               style={{
@@ -104,8 +105,11 @@ export default function AddNameScreen(props: {
             setValue={setLastName}
             type="lastName"
           />
-        </View>
+        </ScrollView>
         <TouchableOpacity
+          style={{
+            flexShrink: 0,
+          }}
           onPress={() => {
             finish();
           }}

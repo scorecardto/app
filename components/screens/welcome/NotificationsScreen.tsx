@@ -5,6 +5,7 @@ import ActionButton from "../../input/ActionButton";
 import { NavigationProp } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Notifications from "expo-notifications";
+import { reloadApp } from "../../../lib/reloadApp";
 const icon = require("../../../assets/icon.svg");
 
 export default function NotificationsScreen(props: {
@@ -72,18 +73,7 @@ export default function NotificationsScreen(props: {
         <TouchableOpacity
           onPress={() => {
             Notifications.requestPermissionsAsync().then((result) => {
-              props.navigation.reset({
-                index: 0,
-                routes: [
-                  {
-                    name: "scorecard",
-                    params: {
-                      firstTime: true,
-                      allowNotifications: result.granted,
-                    },
-                  },
-                ],
-              });
+              reloadApp();
             });
           }}
         >

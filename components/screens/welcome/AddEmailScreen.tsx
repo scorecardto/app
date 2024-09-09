@@ -18,6 +18,7 @@ import { setPreferredEmail } from "../../core/state/social/socialSlice";
 import ScorecardModule from "../../../lib/expoModuleBridge";
 import { validate } from "email-validator";
 import Toast from "react-native-toast-message";
+import { reloadApp } from "../../../lib/reloadApp";
 
 const icon = require("../../../assets/icon.svg");
 
@@ -47,10 +48,7 @@ function AddEmailScreen(props: {
             routes: [{ name: "notifications" }],
           });
         } else {
-          props.navigation.reset({
-            index: 0,
-            routes: [{ name: "scorecard", params: { firstTime: true } }],
-          });
+          reloadApp();
         }
       });
     } else {

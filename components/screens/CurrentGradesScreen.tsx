@@ -20,9 +20,12 @@ import StatusText from "../text/StatusText";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import fetchAndStore from "../../lib/fetchAndStore";
 import { setSchoolName } from "../core/state/user/loginSlice";
+import { RouterContext } from "react-native-actions-sheet/dist/src/hooks/use-router";
+import { reloadApp } from "../../lib/reloadApp";
 
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
+  route: any;
 }) {
   const dispatch = useDispatch();
 
@@ -82,27 +85,44 @@ export default function CurrentGradesScreen(props: {
   const password = useSelector((state: RootState) => state.login.password);
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
+  const onRefresh = useCallback(
+    (refreshForClubs?: boolean) => {
+      if (refreshing) return;
 
-    const reportCard = fetchAllContent(
-      district,
-      courses.length,
-      username,
-      password,
-      (info) => {
-        dispatch(setSchoolName(info.school));
-      },
-      (s: RefreshStatus) => {
-        dispatch(setRefreshStatus(s));
-      }
-    );
+      setRefreshing(true);
 
-    reportCard.then(async (data) => {
-      await fetchAndStore(data, dispatch, false);
-      setRefreshing(false);
-    });
-  }, []);
+      const reportCard = fetchAllContent(
+        district,
+        courses.length,
+        username,
+        password,
+        (info) => {
+          dispatch(setSchoolName(info.school));
+        },
+        (s: RefreshStatus) => {
+          dispatch(setRefreshStatus(s));
+        }
+      );
+
+      reportCard.then(async (data) => {
+        await fetchAndStore(data, dispatch, false);
+        setRefreshing(false);
+
+        if (refreshForClubs) {
+          reloadApp();
+        }
+      });
+    },
+    [refreshing]
+  );
+
+  useEffect(() => {
+    if (props.route.params.refreshForClubs) {
+      setTimeout(() => {
+        onRefresh(true);
+      }, 250);
+    }
+  }, [props.route.params.refreshForClubs]);
 
   const MINS_TO_REFRESH = 60;
 
