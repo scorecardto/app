@@ -4,13 +4,17 @@ build:
     - eas/checkout
     - eas/use_npm_token
     - eas/install_node_modules
+    - run: expo prebuild
+    - run: rm -rf ios/Scorecard.xcodeproj
+    - run: echo y | expo run:ios & disown
+    - run: sed -i '' 's/5.4/5.0/g' ios/Scorecard.xcodeproj/project.pbxproj
+    - run: sed -i '' "15s/.*/pod 'SwiftSoup'/" ios/Podfile
     - eas/resolve_apple_team_id_from_credentials:
         id: resolve_apple_team_id_from_credentials
     - run:
         name: Install pods
         working_directory: ./ios
         command: pod install
-    - run: cp widgets/ios/Module.swift node_modules/@bittingz/expo-widgets/ios/ExpoWidgetsModule.swift
     - eas/configure_ios_credentials
     - eas/configure_ios_version
     - eas/generate_gymfile_from_template:

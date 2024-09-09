@@ -45,7 +45,7 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>56</string>
+    <string>61</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>instagram-stories</string>
@@ -80,14 +80,6 @@
     <false/>
     <key>NSSupportsLiveActivitiesFrequentUpdates</key>
     <false/>
-    <key>SCSDKClientId</key>
-    <string>8bfb7620-3526-4ab7-ab56-56c807606a73</string>
-    <key>SCSDKRedirectUrl</key>
-    <string>scorecard://snapchat/oauth2</string>
-    <key>SCSDKScopes</key>
-    <array>
-      <string>https://auth.snapchat.com/oauth2/api/user.display_name</string>
-    </array>
     <key>UIBackgroundModes</key>
     <array>
       <string>fetch</string>

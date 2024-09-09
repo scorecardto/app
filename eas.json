@@ -17,8 +17,13 @@
       "autoIncrement": true
     },
     "production": {
-      "config": "build.yml",
+      "ios": {
+        "config": "build.yml"
+      },
       "autoIncrement": true
     }
+  },
+  "cli": {
+    "appVersionSource": "remote"
   }
 }
