@@ -1857,6 +1857,7 @@ PODS:
   - SnapSDK/SCSDKLoginKit (1.15.0):
     - SnapSDK/SCSDKCoreKit
   - SocketRocket (0.6.1)
+  - SwiftSoup (2.7.3)
   - UMAppLoader (4.2.0)
   - Yoga (1.14.0)
 
@@ -1959,6 +1960,7 @@ DEPENDENCIES:
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - "snap-kit-react-native (from `../node_modules/@snapchat/snap-kit-react-native`)"
+  - SwiftSoup
   - UMAppLoader (from `../node_modules/unimodules-app-loader/ios`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -2001,6 +2003,7 @@ SPEC REPOS:
     - SDWebImageWebPCoder
     - SnapSDK
     - SocketRocket
+    - SwiftSoup
 
 EXTERNAL SOURCES:
   boost:
@@ -2335,9 +2338,10 @@ SPEC CHECKSUMS:
   snap-kit-react-native: 751006199818fccb38c8a01196495167bc25e9fb
   SnapSDK: 1e68aad748e080f49e3802559b3b76026666ef62
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
+  SwiftSoup: e3849c3293b1efee9cf892f91f6ae5c22bfeb5f7
   UMAppLoader: e83f024f75f07802fce99739f04b4537d188caaf
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
 
-PODFILE CHECKSUM: 106c6e90642eb61e9343cd065829a8d795af38e7
+PODFILE CHECKSUM: 28ead5576f89a9ccb240bf49f5b1c4cc96290061
 
 COCOAPODS: 1.14.3

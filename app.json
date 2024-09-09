@@ -20,7 +20,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "61",
+      "buildNumber": "62",
       "associatedDomains": [
         "applinks:scorecardgrades.com"
       ],

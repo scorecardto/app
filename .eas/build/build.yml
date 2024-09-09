@@ -9,6 +9,7 @@ build:
     - run: echo y | expo run:ios & disown
     - run: sed -i '' 's/5.4/5.0/g' ios/Scorecard.xcodeproj/project.pbxproj
     - run: sed -i '' "15s/.*/pod 'SwiftSoup'/" ios/Podfile
+    - run: cp Info.plist ios/Scorecard/Info.plist
     - eas/resolve_apple_team_id_from_credentials:
         id: resolve_apple_team_id_from_credentials
     - run:
