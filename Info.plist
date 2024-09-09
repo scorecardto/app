@@ -60,13 +60,12 @@
           </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>71</string>
+    <string>65</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>instagram-stories</string>
       <string>snapchat</string>
     </array>
-    <key>LSRequiresIPhoneOS</key>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
