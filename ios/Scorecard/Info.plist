@@ -60,7 +60,7 @@
       </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>65</string>
+    <string>67</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>instagram-stories</string>
@@ -133,23 +133,5 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
-    <key>appExtensions</key>
-    <array>
-      <dict>
-        <key>targetName</key>
-        <string>expowidgetsWidgetExtension</string>
-        <key>bundleIdentifier</key>
-        <string>com.scorecardgrades.mobile.expowidgetsWidgetExtension</string>
-        <key>entitlements</key>
-        <dict>
-          <key>com.apple.security.application-groups</key>
-          <array>
-            <string>group.com.scorecardgrades.mobile.expowidgets</string>
-          </array>
-          <key>aps-environment</key>
-          <string>development</string>
-        </dict>
-      </dict>
-    </array>
   </dict>
 </plist>

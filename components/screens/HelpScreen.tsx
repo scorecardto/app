@@ -21,6 +21,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
 
   const headerText = useMemo(() => {
     switch (reason) {
+      case "report_post":
+        return "Report a Post";
       case "help":
         return "Help";
       case "bug":
@@ -34,6 +36,8 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
 
   const bodyPlaceholder = useMemo(() => {
     switch (reason) {
+      case "report_post":
+        return "Please include relevant info...";
       case "help":
         return "Ask your question...";
       case "bug":
@@ -49,7 +53,9 @@ export default function HelpScreen(props: { route: any; navigation: any }) {
 
   const [urgent, setUrgent] = useState(false);
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(
+    props.route.params.defaultMessage || ""
+  );
 
   const [loading, setLoading] = useState(false);
 

@@ -1,4 +1,4 @@
-import { View, Text, Dimensions } from "react-native";
+import { View, Text, Dimensions, TouchableOpacity } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
 import { ClubPost } from "scorecard-types";
 import {
@@ -14,7 +14,8 @@ import useColors from "../../core/theme/useColors";
 import Color from "color";
 import MediumText from "../../text/MediumText";
 import ScorecardImage from "../../util/ScorecardImage";
-
+import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 export default function ClubPostReader(props: { post: ClubPost }) {
   const postedLabel = useMemo(() => {
     const date = new Date(props.post.postDate);
@@ -28,6 +29,8 @@ export default function ClubPostReader(props: { post: ClubPost }) {
       return format(date, "MMMM d");
     }
   }, [props.post.postDate]);
+
+  const navigation = useNavigation();
 
   const [time, setTime] = useState(Date.now());
 
@@ -94,40 +97,84 @@ export default function ClubPostReader(props: { post: ClubPost }) {
         marginTop: 16,
       }}
     >
-      {eventLabel ? (
-        <View
-          style={{
-            backgroundColor: Color(props.post.club.heroColor)
-              .mix(Color(colors.card), 0.7)
-              .hex(),
-            paddingHorizontal: 8,
-            paddingVertical: 2,
-            alignSelf: "center",
-            borderRadius: 4,
-            marginTop: 4,
-          }}
-        >
-          <MediumText
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <View style={{ width: 52 }} />
+        {eventLabel ? (
+          <View
             style={{
-              color: colors.primary,
-              fontSize: 14,
+              backgroundColor: Color(props.post.club.heroColor)
+                .mix(Color(colors.card), 0.7)
+                .hex(),
+              paddingHorizontal: 8,
+              paddingVertical: 2,
+              alignSelf: "center",
+              borderRadius: 4,
+              marginTop: 4,
             }}
           >
-            {eventLabel}
-          </MediumText>
-        </View>
-      ) : (
-        <Text
+            <MediumText
+              style={{
+                color: colors.primary,
+                fontSize: 14,
+              }}
+            >
+              {eventLabel}
+            </MediumText>
+          </View>
+        ) : (
+          <Text
+            style={{
+              color: colors.text,
+              textAlign: "center",
+              fontSize: 12,
+              textTransform: "uppercase",
+            }}
+          >
+            Posted {postedLabel}
+          </Text>
+        )}
+        <TouchableOpacity
           style={{
-            color: colors.text,
-            textAlign: "center",
-            fontSize: 12,
-            textTransform: "uppercase",
+            flexDirection: "row",
+            alignItems: "center",
+            width: 52,
+          }}
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate("help", {
+              reason: "report_post",
+              defaultMessage: `Report of #${
+                props.post.club.clubCode
+              } for a post made on ${new Date(
+                props.post.postDate
+              ).toDateString()}. Include other details below:`,
+            });
           }}
         >
-          Posted {postedLabel}
-        </Text>
-      )}
+          <MaterialIcons
+            name="report"
+            style={{
+              color: colors.text,
+              marginRight: 2,
+            }}
+          />
+          <Text
+            style={{
+              color: colors.text,
+              textAlign: "center",
+              fontSize: 12,
+              fontWeight: "bold",
+            }}
+          >
+            Report
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           paddingTop: 16,

@@ -13,6 +13,7 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MediumText from "../../text/MediumText";
 import { Club } from "scorecard-types";
+import { useNavigation } from "@react-navigation/native";
 const starred = require("../../../assets/starred.svg");
 
 const ViewClubMenuSheet = forwardRef(
@@ -20,10 +21,13 @@ const ViewClubMenuSheet = forwardRef(
     props: {
       club: Club;
       leave(): void;
+      report(): void;
     },
     ref: Ref<ActionSheetRef>
   ) => {
     const dispatch = useDispatch<AppDispatch>();
+
+    const navigation = useNavigation();
 
     const colors = useColors();
     return (
@@ -39,6 +43,34 @@ const ViewClubMenuSheet = forwardRef(
         }}
       >
         <BottomSheetHeader>{props.club.name}</BottomSheetHeader>
+
+        <TouchableOpacity
+          style={{
+            marginBottom: 12,
+          }}
+          onPress={() => {
+            props.report();
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#C53131",
+              paddingVertical: 12,
+              width: "100%",
+              borderRadius: 16,
+            }}
+          >
+            <Text
+              style={{
+                color: "#FFFFFF",
+                fontSize: 18,
+                textAlign: "center",
+              }}
+            >
+              Report
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={props.leave}>
           <View

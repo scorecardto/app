@@ -124,8 +124,14 @@ export default function ViewClubScreen(props: {
         club={club}
         leave={() => {
           leave();
-          ``;
           sheetRef.current?.hide?.();
+        }}
+        report={() => {
+          sheetRef.current?.hide?.();
+          props.navigation.navigate("help", {
+            reason: "report_post",
+            defaultMessage: `Report of #${club.clubCode}. Include other details below:`,
+          });
         }}
       />
       <ClubViewArrayContainer
