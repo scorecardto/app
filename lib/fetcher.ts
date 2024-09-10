@@ -17,7 +17,7 @@ const customFetch = (url: RequestInfo | URL, init?: RequestInit) => {
 
 async function entryPoint(host: string) {
   const ENTRY_POINT: Options = {
-    url: `http://${host}/selfserve/EntryPointHomeAction.do?parent=false`,
+    url: `https://${host}/selfserve/EntryPointHomeAction.do?parent=false`,
     method: "GET",
     fetch: customFetch,
   };
@@ -43,7 +43,7 @@ async function login(
   const login = parse(
     (
       await axios({
-        url: `http://${host}/selfserve/SignOnLoginAction.do`,
+        url: `https://${host}/selfserve/SignOnLoginAction.do`,
         method: "POST",
         data: qs.stringify({
           userLoginId: username,
@@ -78,7 +78,7 @@ async function parseHomeInfo(host: string, cookies: string) {
   const scheduleData = parse(
     (
       await axios({
-        url: `http://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
+        url: `https://${host}/selfserve/PSSViewScheduleAction.do?x-tab-id=undefined`,
         method: "POST",
         headers: { Cookie: cookies },
         fetch: customFetch,
@@ -99,7 +99,7 @@ async function parseHomeInfo(host: string, cookies: string) {
   const homeData = parse(
     (
       await axios({
-        url: `http://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+        url: `httpss://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
         method: "POST",
         headers: { Cookie: cookies },
         fetch: customFetch,
@@ -156,7 +156,7 @@ async function parseHome(host: string, cookies: string) {
   const homeData = parse(
     (
       await axios({
-        url: `http://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+        url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
         method: "POST",
         headers: { Cookie: cookies },
         fetch: customFetch,
@@ -233,7 +233,7 @@ async function parseHome(host: string, cookies: string) {
 
 async function parseCourse(host: string, cookies: string, courseKey: string) {
   let response = await axios({
-    url: `http://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
+    url: `https://${host}/selfserve/PSSViewGradeBookEntriesAction.do?x-tab-id=undefined`,
     method: "POST",
     data: qs.stringify({
       gradeBookKey: courseKey,
