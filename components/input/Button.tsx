@@ -20,7 +20,7 @@ const Button = forwardRef<
     textStyle?: StyleProp<TextStyle>;
     disabled?: boolean;
     secondary?: boolean;
-    small?: boolean;
+    buttonStyle?: 'tiny' | 'small' | 'normal';
   }
 >((props, ref) => {
   const { colors } = useTheme();
@@ -30,8 +30,8 @@ const Button = forwardRef<
       alignSelf: "center",
     },
     button: {
-      paddingHorizontal: props.small ? 16 : 32,
-      paddingVertical: props.small ? 8 : 14,
+      paddingHorizontal: props.buttonStyle == 'tiny' ? 16 : props.buttonStyle == 'small' ? 24 : 32,
+      paddingVertical: props.buttonStyle == 'tiny' ? 8 : props.buttonStyle == 'small' ? 11 : 14,
       borderRadius: 24,
       alignSelf: "center",
       backgroundColor: props.secondary
@@ -40,7 +40,7 @@ const Button = forwardRef<
       opacity: props.disabled ? 0.5 : 1,
     },
     text: {
-      fontSize: props.small ? 14 : 16,
+      fontSize: props.buttonStyle == 'tiny' ? 14 : props.buttonStyle == 'small' ? 15 : 16,
       color: props.secondary ? colors.text : "#FFFFFF",
       fontWeight: "500",
     },

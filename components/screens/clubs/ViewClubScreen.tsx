@@ -21,6 +21,7 @@ import useCachedValue from "../../util/hooks/useCachedValue";
 import LoadingContentScreen from "../../util/LoadingContentScreen";
 import LoaderKit from "react-native-loader-kit";
 import SmallText from "../../text/SmallText";
+import useGetEmail from "../../util/hooks/useGetEmail";
 export default function ViewClubScreen(props: {
   route: any;
   navigation: NavigationProp<any>;
@@ -74,6 +75,7 @@ export default function ViewClubScreen(props: {
 
   const social = useSocial();
   const scApi = useScApi();
+  const getEmail = useGetEmail();
 
   const leave = useCallback(() => {
     scApi
@@ -101,6 +103,47 @@ export default function ViewClubScreen(props: {
         social.refreshClubs();
       });
   }, [club]);
+    const join = useCallback(async () => {
+        getEmail().then((email: string) => {
+            console.log(email);
+
+            if (club?.isMember) return;
+
+            console.log({
+                email,
+                internalCode: club!.internalCode,
+            });
+
+            api
+                .post({
+                    pathname: "/v1/clubs/join",
+                    auth: true,
+                    body: {
+                        email,
+                        internalCode: club!.internalCode,
+                    },
+                })
+                .then(() => {
+                    Toast.show({
+                        type: "info",
+                        text1: `Welcome to ${club!.name}!`,
+                        text2: `You are now a member of this club.`,
+                    });
+                })
+                .catch((e) => {
+                    console.error(e);
+
+                    Toast.show({
+                        type: "info",
+                        text1: `Error Occured`,
+                        text2: `Something went wrong trying to join this club.`,
+                    });
+                })
+                .finally(() => {
+                    social.refreshClubs();
+                });
+        });
+    }, [club]);
 
   const [sharing, setSharing] = useState(false);
   if (!club) {
@@ -122,6 +165,10 @@ export default function ViewClubScreen(props: {
       <ViewClubMenuSheet
         ref={sheetRef}
         club={club}
+        join={() => {
+            join();
+            sheetRef.current?.hide?.();
+        }}
         leave={() => {
           leave();
           sheetRef.current?.hide?.();

@@ -77,157 +77,155 @@ export default function ClubPreview(props: { club: Club }) {
           });
         });
     });
-  }, []);
+  }, [props.club]);
 
-  const base = (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        paddingHorizontal: 12,
-        paddingVertical: 12,
-        borderBottomColor: colors.background,
-        borderBottomWidth: 2,
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "flex-start",
-          flexShrink: 1,
-          flexGrow: 0,
-        }}
-      >
-        <View
-          style={{
-            height: 60,
-            width: 60,
-            borderRadius: 8,
-            overflow: "hidden",
-            backgroundColor: "gray",
-          }}
-        >
-          <ScorecardClubImage club={props.club} height={60} width={60} />
-        </View>
-        <View
-          style={{
-            paddingLeft: 16,
-            paddingRight: 56,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 4,
-              alignItems: "center",
-            }}
-          >
-            {(props.club.verified || props.club.official) && (
-              <MaterialIcons
-                name="verified"
-                size={16}
-                style={{
-                  marginRight: 4,
-                  color: props.club.official ? colors.gold : colors.button,
-                }}
-              />
-            )}
-            <MediumText
-              style={{
-                fontSize: 18,
-                color: colors.primary,
-                marginRight: 4,
-
-                overflow: "hidden",
-              }}
-              numberOfLines={1}
-            >
-              {props.club.name}
-            </MediumText>
-          </View>
-          <Text
-            style={{
-              fontSize: 14,
-              color: colors.text,
-            }}
-          >
-            {props.club.clubCode} - {props.club.memberCount} member
-            {props.club.memberCount === 1 ? "" : "s"}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          flexShrink: 0,
-          flexGrow: 0,
-          marginLeft: 16,
-        }}
-      >
-        {!props.club.isMember ? (
-          <View>
-            {loading ? (
-              <View
-                style={{
-                  marginRight: 8,
-                }}
-              >
-                <ActivityIndicator />
-              </View>
-            ) : (
-              <TouchableOpacity onPress={join}>
-                <View
-                  style={{
-                    paddingHorizontal: 12,
-                    paddingVertical: 4,
-                    borderRadius: 16,
-                    backgroundColor: colors.button,
-                    alignSelf: "flex-end",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <MaterialIcons
-                    name="person-add"
-                    size={16}
-                    style={{
-                      color: "white",
-                      marginRight: 8,
-                    }}
-                  />
-                  <LargeText
-                    style={{
-                      fontSize: 18,
-                      color: "white",
-                    }}
-                  >
-                    Join
-                  </LargeText>
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-        ) : (
-          <MaterialIcons name="chevron-right" color={colors.text} size={24} />
-        )}
-      </View>
-    </View>
-  );
-
-  if (props.club.isMember) {
+    const PADDING = 12;
+    const IMAGE_SIZE = 60;
     return (
-      <TouchableOpacity
-        onPress={() => {
-          // @ts-ignore
-          navigation.navigate("viewClub", {
-            internalCode: props.club.internalCode,
-          });
-        }}
-      >
-        {base}
-      </TouchableOpacity>
+        <View
+            style={{
+                paddingHorizontal: PADDING,
+                paddingVertical: PADDING,
+                borderBottomColor: colors.background,
+                borderBottomWidth: 2,
+            }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              // @ts-ignore
+              navigation.navigate("viewClub", {
+                internalCode: props.club.internalCode,
+              });
+            }}
+            style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+            }}
+          >
+              <View
+                  style={{
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      flexShrink: 1,
+                      flexGrow: 0,
+                      overflow: "hidden",
+                  }}
+              >
+                  <View
+                      style={{
+                          height: IMAGE_SIZE,
+                          width: IMAGE_SIZE,
+                          borderRadius: 8,
+                          overflow: "hidden",
+                          backgroundColor: "gray",
+                      }}
+                  >
+                      <ScorecardClubImage club={props.club} height={IMAGE_SIZE} width={IMAGE_SIZE} />
+                  </View>
+                  <View
+                      style={{
+                          paddingLeft: 16,
+                          flexShrink: 1,
+                      }}
+                  >
+                      <View
+                          style={{
+                              flexDirection: "row",
+                              marginBottom: 4,
+                              alignItems: "center",
+                          }}
+                      >
+                          {(props.club.verified || props.club.official) && (
+                              <MaterialIcons
+                                  name="verified"
+                                  size={16}
+                                  style={{
+                                      marginRight: 4,
+                                      color: props.club.official ? colors.gold : colors.button,
+                                      flexShrink: 0,
+                                      flexGrow: 0,
+                                  }}
+                              />
+                          )}
+                          <View style={{
+                              flexShrink: 1,
+                          }}>
+                              <MediumText
+                                  style={{
+                                      fontSize: 18,
+                                      color: colors.primary,
+                                      marginRight: 4,
+                                      overflow: "hidden",
+                                  }}
+                                  ellipsizeMode={"tail"}
+                                  numberOfLines={1}
+                              >
+                                  {props.club.name}
+                              </MediumText>
+                          </View>
+                      </View>
+                      <Text
+                          style={{
+                              fontSize: 14,
+                              color: colors.text,
+                          }}
+                      >
+                          {props.club.clubCode} - {props.club.memberCount} member
+                          {props.club.memberCount === 1 ? "" : "s"}
+                      </Text>
+                  </View>
+              </View>
+              <View
+                  style={{
+                      flexShrink: 0,
+                      flexGrow: 0,
+                      marginLeft: props.club.isMember ? 0 : 90,
+                        justifyContent: "center",
+                      height: IMAGE_SIZE,
+                  }}
+              >
+                  {props.club.isMember ? (
+                      <MaterialIcons name="chevron-right" color={colors.text} size={24} />
+                  ) : undefined}
+              </View>
+            </TouchableOpacity>
+            {!props.club.isMember ? (
+                <View style={{
+                    position: "absolute",
+                    right: PADDING,
+                    height: IMAGE_SIZE + 2 * PADDING,
+                    justifyContent: "center",
+                }}>
+                    <TouchableOpacity onPress={join}
+                                      style={{
+                                          paddingHorizontal: 12,
+                                          paddingVertical: 4,
+                                          borderRadius: 16,
+                                          backgroundColor: colors.button,
+                                          alignSelf: "flex-end",
+                                          flexDirection: "row",
+                                          alignItems: "center",
+                                      }}>
+                        <MaterialIcons
+                            name="person-add"
+                            size={16}
+                            style={{
+                                color: "white",
+                                marginRight: 8,
+                            }}
+                        />
+                        <LargeText
+                            style={{
+                                fontSize: 18,
+                                color: "white",
+                            }}
+                        >
+                            Join
+                        </LargeText>
+                    </TouchableOpacity>
+                </View>
+            ) : undefined}
+        </View>
     );
-  } else {
-    return base;
-  }
 }

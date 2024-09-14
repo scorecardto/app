@@ -229,9 +229,21 @@ export default function ClubsScreen(props: {
               color: colors.primary,
             }}
           >
-            All Clubs
+            My Clubs
           </LargeText>
-          <AllClubsList clubs={clubs} />
+          <AllClubsList clubs={clubs.filter(c => c.isMember)} />
+            <LargeText
+                style={{
+                    fontSize: 18,
+                    marginHorizontal: 12,
+                    marginTop: 16,
+                    marginBottom: 8,
+                    color: colors.primary,
+                }}
+            >
+                Discover
+            </LargeText>
+            <AllClubsList clubs={clubs.filter(c => !c.isMember)} />
         </ScrollView>
       </Background>
     </PageThemeProvider>

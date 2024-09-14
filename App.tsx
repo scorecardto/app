@@ -47,7 +47,7 @@ import NotificationsScreen from "./components/screens/welcome/NotificationsScree
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 import CourseEditScreen from "./components/screens/CourseEditScreen";
 import AppStateListener from "./components/util/AppStateListener";
-import AlertFetcher from "./components/core/AlertFetcher";
+import AlertFetcher from "./components/core/alerts/AlertFetcher";
 import ManageClubsScreen from "./components/screens/clubs/ManageClubsScreen";
 import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
 import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";
