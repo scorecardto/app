@@ -1,11 +1,13 @@
 {
   "name": "scorecard-app",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build [ios]": "eas build --local -p ios",
+    "build [android]": "eas build --local -p android"
   },
   "dependencies": {
     "@bittingz/expo-widgets": "^0.5.55",
