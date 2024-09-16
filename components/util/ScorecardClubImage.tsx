@@ -30,9 +30,11 @@ export default function ScorecardClubImage(props: {
           }}
         >
           <Text
-            style={{
-              fontSize: props.height / 1.8,
-            }}
+              style={{
+                fontSize: props.height / 1.8,
+                textAlign: "center",
+                marginLeft: 1,
+              }}
           >
             {props.club.emoji || "🙂"}
           </Text>

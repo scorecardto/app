@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, Share } from "react-native";
 import { useCallback, useRef, useState } from "react";
-import { NavigationProp } from "@react-navigation/native";
+import {NavigationProp, useNavigation} from "@react-navigation/native";
 
 import ClubViewArrayContainer from "../../app/clubs/ClubViewArrayContainer";
 import ScorecardClubImage from "../../util/ScorecardClubImage";
@@ -22,6 +22,7 @@ import LoadingContentScreen from "../../util/LoadingContentScreen";
 import LoaderKit from "react-native-loader-kit";
 import SmallText from "../../text/SmallText";
 import useGetEmail from "../../util/hooks/useGetEmail";
+import Button from "../../input/Button";
 export default function ViewClubScreen(props: {
   route: any;
   navigation: NavigationProp<any>;
@@ -226,7 +227,7 @@ export default function ViewClubScreen(props: {
                 borderColor: "white",
               }}
             >
-              <ScorecardClubImage club={club} width={116} height={116} />
+              <ScorecardClubImage club={club} width={108} height={108} />
             </View>
           </View>
           <View
