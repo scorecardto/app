@@ -31,7 +31,6 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@reduxjs/toolkit": "^2.1.0",
-    "@shopify/flash-list": "1.4.3",
     "@snapchat/snap-kit-react-native": "^0.4.0",
     "@types/react-native-snap-carousel": "^3.8.10",
     "color": "^4.2.3",

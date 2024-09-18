@@ -4,41 +4,13 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import useColors from "../../core/theme/useColors";
 import { useEffect, useState } from "react";
+import {useSelector} from "react-redux";
+import {RootState} from "../../core/state/store";
 export default function CourseGlyphChanger(props: {
   value?: string;
   onChange: (accentLabel: string | undefined) => void;
 }) {
-  const ICONS = [
-    "skull",
-    "emoticon-devil",
-    "nuke",
-    "fire",
-    "food-apple",
-    "function-variant",
-    "leaf",
-    "virus",
-    "atom",
-    "calculator-variant",
-    "console",
-    "beaker",
-    "code-braces",
-    "shape",
-    "earth",
-    "flag",
-    "translate",
-    "pencil",
-    "book-open-blank-variant",
-    "brush",
-    "music",
-    "basketball",
-    "tennis",
-    "football",
-    "arm-flex",
-    "thought-bubble",
-    "drama-masks",
-    "dance-ballroom",
-    "heart"
-  ];
+  const icons = useSelector((state: RootState) => state.courseGlyphs.glyphs);
 
   // const a=  <MaterialCommunityIcons name=""/>;
   const colors = useColors();
@@ -68,7 +40,7 @@ export default function CourseGlyphChanger(props: {
           flexWrap: "wrap",
         }}
       >
-        {ICONS.map((icon, index) => {
+        {icons.map((icon, index) => {
           return (
             <TouchableOpacity
               onPress={() => {

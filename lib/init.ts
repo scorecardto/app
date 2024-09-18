@@ -42,11 +42,20 @@ type NextScreen =
 import * as SecureStorage from "expo-secure-store";
 import Storage from "expo-storage";
 import { setPreferredEmail } from "../components/core/state/social/socialSlice";
+import useScApi from "../components/util/hooks/useScApi";
+import {setCourseGlyphs} from "../components/core/state/view/courseGlyphsSlice";
 export default async function initialize(
   dispatch: AppDispatch,
   user: FirebaseAuthTypes.User | null | undefined
 ): Promise<NextScreen> {
-  console.log("test");
+  // FETCH COURSE GLYPHS
+  dispatch(setCourseGlyphs(JSON.parse(ScorecardModule.getItem("courseGlyphsCache") || "[]")));
+  axios("https://api.scorecardgrades.com/v1/static/courseGlyphs").then(res => {
+    if (res.data) {
+      dispatch(setCourseGlyphs(res.data as string[]));
+      ScorecardModule.storeItem("courseGlyphsCache", JSON.stringify(res.data));
+    }
+  });
 
   // LEGACY SUPPORT
   {
@@ -78,8 +87,6 @@ export default async function initialize(
       await SecureStorage.deleteItemAsync("login");
     }
   }
-
-  console.log("test");
 
   const login = ScorecardModule.getItem("login");
   const name = ScorecardModule.getItem("name");
