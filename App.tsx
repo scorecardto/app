@@ -16,7 +16,6 @@ import ScorecardScreen from "./components/screens/ScorecardScreen";
 import CourseScreen from "./components/screens/CourseScreen";
 import AnimatedAppLoader from "./components/screens/loader/AnimatedAppLoader";
 import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
-import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SelectDistrictScreen from "./components/screens/welcome/SelectDistrictScreen";
 import AddPhoneNumberScreen from "./components/screens/welcome/AddPhoneNumberScreen";

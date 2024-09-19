@@ -2,7 +2,6 @@ import { View, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
 import BottomSheetBase, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Assignment } from "scorecard-types";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import AssignmentEdits from "../../../../lib/types/AssignmentEdits";
 import LargeGradebookSheetTile from "./tiles/LargeGradebookSheetTile";
 import AssignmentGradeTile from "./tiles/AssignmentGradeTile";

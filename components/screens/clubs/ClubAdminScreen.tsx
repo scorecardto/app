@@ -91,19 +91,6 @@ export default function ClubAdminScreen(props: {
     console.log(club);
   }, [club]);
 
-  const clubCustomizeView = useMemo(() => {
-    if (club) {
-      return (
-        <ClubCustomizeView
-          club={club}
-          startLoading={() => setForceLoading(true)}
-          updateClub={(c) => {
-            setActiveClub(c);
-          }}
-        />
-      );
-    }
-  }, [tab]);
   return (
     <View
       style={{
@@ -152,7 +139,13 @@ export default function ClubAdminScreen(props: {
               }}
             >
               {tab === "home" && <ClubHomeView club={club} />}
-              {tab === "edit" && clubCustomizeView}
+              {tab === "edit" && <ClubCustomizeView
+                  club={club}
+                  startLoading={() => setForceLoading(true)}
+                  updateClub={(c) => {
+                      setActiveClub(c);
+                  }}
+              />}
             </KeyboardAwareScrollView>
           </KeyboardProvider>
         )}

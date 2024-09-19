@@ -1,4 +1,5 @@
-import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
