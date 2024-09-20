@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import {Platform, ScrollView as AndroidScrollView, View} from "react-native";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import useColors from "../../core/theme/useColors";
@@ -9,7 +9,7 @@ import { Club } from "scorecard-types";
 import useScApi from "../../util/hooks/useScApi";
 import ClubHomeView from "../../app/clubs/ClubHomeView";
 import {
-  KeyboardAwareScrollView,
+  KeyboardAwareScrollView as iOSScrollView,
   KeyboardProvider,
 } from "react-native-keyboard-controller";
 import useSocial from "../../util/hooks/useSocial";
@@ -91,6 +91,7 @@ export default function ClubAdminScreen(props: {
     console.log(club);
   }, [club]);
 
+  const ScrollView = Platform.OS === "ios" ? iOSScrollView : AndroidScrollView;
   return (
     <View
       style={{
@@ -130,9 +131,9 @@ export default function ClubAdminScreen(props: {
           flex: 1,
         }}
       >
-        {club && (
-          <KeyboardProvider>
-            <KeyboardAwareScrollView
+        <KeyboardProvider>
+            {club && (
+            <ScrollView
               style={{
                 height: "100%",
                 flex: 1,
@@ -146,9 +147,9 @@ export default function ClubAdminScreen(props: {
                       setActiveClub(c);
                   }}
               />}
-            </KeyboardAwareScrollView>
-          </KeyboardProvider>
-        )}
+            </ScrollView>
+            )}
+        </KeyboardProvider>
       </View>
     </View>
   );

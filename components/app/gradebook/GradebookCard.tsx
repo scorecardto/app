@@ -1,5 +1,5 @@
 import {
-  Dimensions,
+  Dimensions, Linking,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -17,6 +17,7 @@ import Button from "../../input/Button";
 
 export default function GradebookCard(props: {
   title: string;
+  summaryInfo?: { teacher?: { name: string; email?: string }, room?: string };
   grade?: { text: string; red: boolean };
   children: React.ReactNode;
   bottom: { [idx: string]: { text: string; red: boolean } };
@@ -85,6 +86,42 @@ export default function GradebookCard(props: {
           >
             {props.title}
           </MediumText>
+          {props.summaryInfo && (
+              <View style={{
+                flexDirection: "column",
+                alignSelf: "flex-end",
+                alignItems: "flex-end",
+              }}>
+                {props.summaryInfo.room && (
+                    <SmallText style={{
+                      fontSize: 13,
+                      color: colors.text,
+                    }}>
+                      Room {props.summaryInfo.room}
+                    </SmallText>
+                )}
+                {props.summaryInfo.teacher && (
+                    props.summaryInfo.teacher.email ? (
+                      <TouchableOpacity onPress={() =>
+                          Linking.openURL(`mailto:${props.summaryInfo!.teacher!.email}`)}>
+                        <SmallText style={{
+                          fontSize: 13,
+                          color: "#6b81a8"//colors.text,
+                        }}>
+                          {props.summaryInfo.teacher.name}
+                        </SmallText>
+                      </TouchableOpacity>
+                    ) : (
+                        <SmallText style={{
+                          fontSize: 13,
+                          color: colors.text,
+                        }}>
+                          {props.summaryInfo.teacher.name}
+                        </SmallText>
+                    )
+                )}
+              </View>
+          )}
           {props.grade && (
             <MediumText style={styles.headerGrade}>
               {props.grade.text}

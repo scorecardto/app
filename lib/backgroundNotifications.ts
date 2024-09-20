@@ -5,7 +5,7 @@ import { AppState, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Crypto from "expo-crypto";
 import axios, { Response } from "redaxios";
-import { Notification } from "expo-notifications";
+import {Notification, NotificationResponse} from "expo-notifications";
 import { store } from "../components/core/state/store";
 import {
   fetchAllContent,
@@ -88,18 +88,19 @@ export function setupForegroundNotifications(
     }
   });
 
-  const listener = Notifications.addNotificationResponseReceivedListener(
-    (response) => {
-      const { data } = response.notification.request.content;
-      if (data.course) {
-        navigation.navigate({ name: "course", params: { key: data.course } });
-      } else if (data.clubCode) {
-        navigation.navigate({ name: "viewClub", params: { internalCode: data.clubCode } });
-      }
-    }
-  );
+  const listener = (response: NotificationResponse | null) => {
+    if (!response) return;
 
-  return listener.remove;
+    const { data } = response.notification.request.content;
+    if (data.course) {
+      navigation.navigate({ name: "course", params: { key: data.course } });
+    } else if (data.clubCode) {
+      navigation.navigate({ name: "viewClub", params: { internalCode: data.clubCode } });
+    }
+  };
+  Notifications.getLastNotificationResponseAsync().then(listener);
+
+  return Notifications.addNotificationResponseReceivedListener(listener).remove;
 }
 
 

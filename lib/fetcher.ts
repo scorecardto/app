@@ -189,6 +189,9 @@ async function parseHome(host: string, cookies: string) {
       continue;
     }
 
+    const teacherName = courseElement.querySelector("td:nth-child(3)")?.textContent;
+    const room = courseElement.querySelector("td:nth-child(6)")?.textContent;
+
     const courseKey: string = cell.getAttribute("cellkey")!;
     const name = cell.textContent;
 
@@ -223,6 +226,8 @@ async function parseHome(host: string, cookies: string) {
 
     courses.push({
       key: courseKey,
+      teacher: teacherName ? {name: teacherName} : undefined,
+      room: room,
       name,
       grades,
     });
@@ -352,16 +357,34 @@ async function parseCourse(host: string, cookies: string, courseKey: string) {
   return gradeCategories;
 }
 
+async function parseEmail(host: string, cookies: string): Promise<{[code: string]: {name: string, email: string}}> {
+  const response = (await axios({
+        url: `https://${host}/selfserve/PSSEmailTeacherAction.do?x-tab-id=undefined`,
+        method: "GET",
+        headers: {
+          Cookie: cookies,
+        },
+        fetch: customFetch,
+      })).data as string
+
+
+  return Array.from(response.matchAll(/ComboBoxItem.*?","(.*?)\|(.*?)\|(.*?)\//g))
+      .reduce((acc, match) => {acc[match[3]] = {name: match[1], email: match[2]}; return acc;}, {} as {[code: string]: {name: string, email: string}});
+}
+
 async function fetchCourse(
   host: string,
   username: string,
   password: string,
   courseKeyOrIdx: string | number,
+  emailsCallback?: (emails: {[code: string]: {name: string, email: string}}) => void,
   courseInfoCallback?: (num: number, names: string[]) => void,
   gradeCategory?: number
 ): Promise<Course | undefined> {
   const cookies = await entryPoint(host);
   await login(host, cookies, username, password);
+
+  emailsCallback && parseEmail(host, cookies).then(emailsCallback);
 
   const { courses, gradeCategoryNames } = await parseHome(host, cookies);
   courseInfoCallback && courseInfoCallback(courses.length, gradeCategoryNames);
@@ -425,6 +448,7 @@ async function fetchAllContent(
 
   let resolved: number[] = [];
   let courses: Course[] = [];
+  let emails: {[code: string]: {name: string, email: string}} = {};
 
   let gradeCategoryNames: string[] = [];
 
@@ -436,6 +460,7 @@ async function fetchAllContent(
       username,
       password,
       i,
+      i == 0 ? (e) => {emails = e} : undefined,
       async (realNum, names) => {
         if (realNum > numCourses) {
           for (let i = numCourses; i < realNum; i++) {
@@ -478,6 +503,13 @@ async function fetchAllContent(
     setTimeout(() => wait(resolve), 50);
   };
   await new Promise((res) => wait(res));
+
+  if (emails) {
+    for (const code in emails) {
+        const course = courses.find((c) => c.key.includes(code));
+        if (course) course.teacher = emails[code];
+    }
+  }
 
   return {
     courses,

@@ -59,7 +59,7 @@
       "icon": "./assets/icon.png",
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 17,
+      "versionCode": 19,
       "intentFilters": [
         {
           "action": "VIEW",

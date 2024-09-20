@@ -204,6 +204,10 @@ function Gradebook(props: {
                         <GradebookCard
                           key={index}
                           title="Summary"
+                          summaryInfo={{
+                              room: props.course.room,
+                              teacher: props.course.teacher
+                          }}
                           bottom={{
                             Weight: { text: "100%", red: false },
                             "Exact Average": {
