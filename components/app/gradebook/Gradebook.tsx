@@ -204,16 +204,14 @@ function Gradebook(props: {
                         <GradebookCard
                           key={index}
                           title="Summary"
-                          summaryInfo={{
-                              room: props.course.room,
-                              teacher: props.course.teacher
-                          }}
                           bottom={{
-                            Weight: { text: "100%", red: false },
+                            // Weight: { text: "100%", red: false },
                             "Exact Average": {
                               text: `${exactAverage.toFixed(2)}`,
                               red: isGradeModified,
                             },
+                            ...(props.course.room ? { Room: { text: props.course.room, red: false } } : {}),
+                            ...(props.course.teacher ? { Teacher: { text: props.course.teacher.name, red: false, link: props.course.teacher.email ? `mailto:${props.course.teacher.email}` : undefined } } : {}),
                           }}
                           removable={false}
                           remove={() => {}}
