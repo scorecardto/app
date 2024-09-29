@@ -18,7 +18,10 @@
     },
     "production": {
       "ios": {
-        "config": "build.yml"
+        "config": "build-iOS.yml"
+      },
+      "android": {
+        "config": "build-android.yml"
       },
       "autoIncrement": true
     }

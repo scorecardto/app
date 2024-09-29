@@ -1,5 +1,6 @@
 import Share, { Social } from "react-native-share";
 import * as Clipboard from "expo-clipboard";
+import { Platform } from "react-native";
 
 const FB_ID = "874796944092147";
 
@@ -16,8 +17,9 @@ export async function shareToInsta(image: string, url: string) {
       if (++count > 10) {
         clearInterval(i);
       }
-      Clipboard.setUrlAsync(url);
-      console.log("trying to copy..");
+
+      if (Platform.OS == 'ios') Clipboard.setUrlAsync(url);
+      else Clipboard.setStringAsync(url);
     }, 50);
   }, 500);
 }

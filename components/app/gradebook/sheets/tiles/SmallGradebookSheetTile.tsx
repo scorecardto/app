@@ -5,7 +5,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function SmallGradebookSheetTile(props: {
   children: React.ReactNode;

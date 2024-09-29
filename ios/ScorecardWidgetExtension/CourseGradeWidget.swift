@@ -2,6 +2,11 @@ import WidgetKit
 import SwiftUI
 
 func getEntry() -> CourseGradeEntry {
+    let notif = UNMutableNotificationContent()
+    notif.sound = .default
+    notif.title = "Get Entry"
+    UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+
   let widgetSuite = UserDefaults(suiteName: "group.com.scorecardgrades.mobile.expowidgets")!
 
   var courses: [CourseData] = []
@@ -17,7 +22,13 @@ func getEntry() -> CourseGradeEntry {
     let loginData = getItem("login")
 
     let recordString = recordData == nil ? nil : String(data: recordData!, encoding: .utf8)!
-    let lastFetch = true ? nil : 0.0//recordString == nil ? nil : Double((recordString as? NSString)!.substring(with: try NSRegularExpression(pattern: "\"date\": ?([0-9]*)").firstMatch(in: recordString!, range: NSMakeRange(0, recordString!.count))!.range(at: 1)))
+    let lastFetch = recordString == nil ? nil : Double((recordString as? NSString)!.substring(with: try NSRegularExpression(pattern: "\"date\": ?([0-9]*)").firstMatch(in: recordString!, range: NSMakeRange(0, recordString!.count))!.range(at: 1)))
+
+        let notif = UNMutableNotificationContent()
+        notif.sound = .default
+        notif.title = "\(lastFetch) \(loginData != nil)"
+        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+
     if ((lastFetch == nil || time-lastFetch!/1000 >= 3600) && loginData != nil) {
       let login = try JSONSerialization.jsonObject(with: loginData!) as! [String:String]
 
@@ -25,6 +36,10 @@ func getEntry() -> CourseGradeEntry {
       let oldRecord = firstCourses == nil ? nil : try JSONDecoder().decode(GradebookRecord.self, from: recordString![firstCourses!].data(using: .utf8)!)
 
       let content = try fetchAllContent(login["host"]!, oldRecord?.courses.count, login["username"]!, login["password"]!)
+    let notif = UNMutableNotificationContent()
+    notif.sound = .default
+    notif.title = "Fetched"
+    UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
 
       let gradeCategory = max(content.courses.map({c in c.grades.filter({g in g != nil}).count}).max()! - 1, 0)
 
@@ -51,6 +66,11 @@ func getEntry() -> CourseGradeEntry {
       try storeItem("records", recordData!)
 
       if (oldRecord != nil) {
+        var notif = UNMutableNotificationContent()
+          notif.sound = .default
+          notif.title = "Checking Changes"
+          UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: UUID().uuidString, content: notif, trigger: UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)))
+
         var changedCourses: [Course] = []
 
         let courseSettingsData = getItem("courseSettings")
@@ -103,10 +123,11 @@ func getEntry() -> CourseGradeEntry {
           }
         }
 
-        let notif = UNMutableNotificationContent()
+        notif = UNMutableNotificationContent()
         notif.sound = .default
 
         var dontSend = false
+        changedCourses.append(content.courses[0])
         if (changedCourses.count == 1) {
           notif.title = getCourseName(changedCourses[0])
           notif.body = "New grades are available. Tap to go to your Scorecard."

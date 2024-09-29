@@ -20,6 +20,7 @@ const ViewClubMenuSheet = forwardRef(
   (
     props: {
       club: Club;
+      join(): void;
       leave(): void;
       report(): void;
     },
@@ -44,10 +45,30 @@ const ViewClubMenuSheet = forwardRef(
       >
         <BottomSheetHeader>{props.club.name}</BottomSheetHeader>
 
-        <TouchableOpacity
-          style={{
+        {!props.club.isMember ? <TouchableOpacity style={{
             marginBottom: 12,
-          }}
+        }} onPress={props.join}>
+            <View
+                style={{
+                    backgroundColor: colors.button,
+                    paddingVertical: 12,
+                    width: "100%",
+                    borderRadius: 16,
+                }}
+            >
+                <Text
+                    style={{
+                        color: "#FFFFFF",
+                        fontSize: 18,
+                        textAlign: "center",
+                    }}
+                >
+                    Join
+                </Text>
+            </View>
+        </TouchableOpacity> : undefined}
+
+        <TouchableOpacity
           onPress={() => {
             props.report();
           }}
@@ -72,7 +93,9 @@ const ViewClubMenuSheet = forwardRef(
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={props.leave}>
+        {props.club.isMember ? <TouchableOpacity style={{
+            marginTop: 12,
+        }} onPress={props.leave}>
           <View
             style={{
               backgroundColor: "#C53131",
@@ -91,7 +114,7 @@ const ViewClubMenuSheet = forwardRef(
               Leave
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> : undefined}
       </ActionSheet>
     );
   }

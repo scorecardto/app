@@ -10,7 +10,6 @@ import AssignmentEdits from "../../../../../lib/types/AssignmentEdits";
 import LargeGradebookSheetTile from "./LargeGradebookSheetTile";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { BottomSheetTextInputProps } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetTextInput";
-import { NativeViewGestureHandlerProps } from "react-native-gesture-handler";
 import { useTheme } from "@react-navigation/native";
 import SmallText from "../../../../text/SmallText";
 import * as Haptics from "expo-haptics";

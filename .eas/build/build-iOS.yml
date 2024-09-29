@@ -9,6 +9,8 @@ build:
     - run: echo y | expo run:ios & disown
     - run: sed -i '' 's/5.4/5.0/g' ios/Scorecard.xcodeproj/project.pbxproj
     - run: sed -i '' "15s/.*/pod 'SwiftSoup'/" ios/Podfile
+    - run: sed -i '' "63s/.*/    <string>$(pcregrep -Mo '<key>CFBundleVersion</key>\s*?<string>\K[0-9]*' ios/Scorecard/Info.plist)<\/string>/" Info.plist
+    - run: sed -i '' "22s/.*/    <string>$(pcregrep -Mo '<key>CFBundleShortVersionString</key>\s*?<string>\K[0-9\.]*' ios/Scorecard/Info.plist)<\/string>/" Info.plist
     - run: cp Info.plist ios/Scorecard/Info.plist
     - eas/resolve_apple_team_id_from_credentials:
         id: resolve_apple_team_id_from_credentials
@@ -23,3 +25,4 @@ build:
           credentials: ${ eas.job.secrets.buildCredentials }
     - eas/run_fastlane
     - eas/find_and_upload_build_artifacts
+    - run: sleep 10

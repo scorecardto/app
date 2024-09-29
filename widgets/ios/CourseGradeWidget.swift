@@ -17,7 +17,7 @@ func getEntry() -> CourseGradeEntry {
     let loginData = getItem("login")
 
     let recordString = recordData == nil ? nil : String(data: recordData!, encoding: .utf8)!
-    let lastFetch = true ? nil : 0.0//recordString == nil ? nil : Double((recordString as? NSString)!.substring(with: try NSRegularExpression(pattern: "\"date\": ?([0-9]*)").firstMatch(in: recordString!, range: NSMakeRange(0, recordString!.count))!.range(at: 1)))
+    let lastFetch = recordString == nil ? nil : Double((recordString as? NSString)!.substring(with: try NSRegularExpression(pattern: "\"date\": ?([0-9]*)").firstMatch(in: recordString!, range: NSMakeRange(0, recordString!.count))!.range(at: 1)))
     if ((lastFetch == nil || time-lastFetch!/1000 >= 3600) && loginData != nil) {
       let login = try JSONSerialization.jsonObject(with: loginData!) as! [String:String]
 

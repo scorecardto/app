@@ -174,8 +174,8 @@ export default function ShareClubInstagram(props: {
                 <ScorecardClubImage
                   noAsync={true}
                   club={club}
-                  width={IMAGE_SIZE}
-                  height={IMAGE_SIZE}
+                  width={IMAGE_SIZE-8}
+                  height={IMAGE_SIZE-8}
                 />
               </View>
             </View>

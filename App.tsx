@@ -16,7 +16,6 @@ import ScorecardScreen from "./components/screens/ScorecardScreen";
 import CourseScreen from "./components/screens/CourseScreen";
 import AnimatedAppLoader from "./components/screens/loader/AnimatedAppLoader";
 import BottomSheetProvider from "./components/util/BottomSheet/BottomSheetProvider";
-import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SelectDistrictScreen from "./components/screens/welcome/SelectDistrictScreen";
 import AddPhoneNumberScreen from "./components/screens/welcome/AddPhoneNumberScreen";
@@ -47,7 +46,7 @@ import NotificationsScreen from "./components/screens/welcome/NotificationsScree
 import PrivacyScreen from "./components/screens/welcome/PrivacyScreen";
 import CourseEditScreen from "./components/screens/CourseEditScreen";
 import AppStateListener from "./components/util/AppStateListener";
-import AlertFetcher from "./components/core/AlertFetcher";
+import AlertFetcher from "./components/core/alerts/AlertFetcher";
 import ManageClubsScreen from "./components/screens/clubs/ManageClubsScreen";
 import CreateClubScreen from "./components/screens/clubs/CreateClubScreen";
 import ClubAdminScreen from "./components/screens/clubs/ClubAdminScreen";

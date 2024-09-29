@@ -1,5 +1,5 @@
 import {
-  Dimensions,
+  Dimensions, Linking,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -19,7 +19,7 @@ export default function GradebookCard(props: {
   title: string;
   grade?: { text: string; red: boolean };
   children: React.ReactNode;
-  bottom: { [idx: string]: { text: string; red: boolean } };
+  bottom: { [idx: string]: { text: string; red: boolean; link?: string } };
   buttonAction(): void;
   removable: boolean;
   remove(): void;
@@ -101,22 +101,31 @@ export default function GradebookCard(props: {
                     <SmallText style={styles.footerText}>
                       {`${key}:`}&nbsp;
                     </SmallText>
-                    <SmallText
-                      style={{
-                        ...styles.footerText,
-                        color: props.bottom[key].red
-                          ? "red"
-                          : styles.footerText.color,
-                      }}
-                    >
-                      {props.bottom[key].text}
-                    </SmallText>
+                    <TouchableOpacity disabled={!props.bottom[key].link} onPress={() => {
+                      Linking.openURL(props.bottom[key].link!);
+                    }}>
+                      <SmallText
+                        style={{
+                          ...styles.footerText,
+                          color: props.bottom[key].red
+                            ? "red"
+                            : props.bottom[key].link ? "#6b81a8"
+                            : styles.footerText.color,
+                        }}
+                      >
+                        {props.bottom[key].text}
+                      </SmallText>
+                    </TouchableOpacity>
                   </View>
                 </React.Fragment>
               );
             })}
           </View>
-          <AddButton onPress={props.buttonAction} />
+          <View style={{
+            alignSelf: "flex-end"
+          }}>
+            <AddButton onPress={props.buttonAction} />
+          </View>
         </View>
       </View>
       {props.removable && (

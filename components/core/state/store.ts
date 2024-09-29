@@ -14,6 +14,7 @@ import virtualSheetsReducer from "./view/virtualSheetsSlice";
 import widgetReducer from "./widget/widgetSlice";
 import changeTablesReducer from "./grades/changeTablesSlice";
 import socialReducer from "./social/socialSlice";
+import courseGlyphsReducer from "./view/courseGlyphsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     widgetData: widgetReducer,
     changeTables: changeTablesReducer,
     social: socialReducer,
+    courseGlyphs: courseGlyphsReducer,
   },
 });
 

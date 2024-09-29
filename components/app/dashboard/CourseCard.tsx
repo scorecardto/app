@@ -1,4 +1,5 @@
-import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
+import {Animated, Platform, StyleSheet, View, TouchableOpacity as iOSTouchableOpacity} from "react-native";
+import { TouchableOpacity as AndroidTouchableOpacity } from "react-native-gesture-handler";
 import { Course } from "scorecard-types";
 import MediumText from "../../text/MediumText";
 import SmallText from "../../text/SmallText";
@@ -75,53 +76,48 @@ export default function CourseCard(props: {
 
   const hasNewGrades = false;
 
+  const TouchableOpacity = Platform.OS === "ios" ? iOSTouchableOpacity : AndroidTouchableOpacity;
   return (
-    <Animated.View
+    <TouchableOpacity
+      onPress={props.onClick}
+      onLongPress={props.onHold}
       style={{
-        overflow: "hidden",
+        marginBottom: 10,
       }}
     >
-      <TouchableOpacity
-        onPress={props.onClick}
-        onLongPress={props.onHold}
-        style={{
-          marginBottom: 10,
-        }}
-      >
-        <View>
-          <View style={[styles.wrapper]}>
-            <View style={styles.left}>
-              <View style={styles.badge}>
-                {courseGlyph ? (
-                  <MaterialCommunityIcons
-                    // @ts-ignore
+      <View>
+        <View style={[styles.wrapper]}>
+          <View style={styles.left}>
+            <View style={styles.badge}>
+              {courseGlyph ? (
+                <MaterialCommunityIcons
+                  // @ts-ignore
 
-                    name={courseGlyph}
-                    size={24}
-                    color={"#FFFFFF"}
-                  />
-                ) : (
-                  <></>
-                )}
-              </View>
-              <MediumText
-                numberOfLines={1}
-                ellipsizeMode={"tail"}
-                style={styles.header}
-              >
-                {courseDisplayName}
-              </MediumText>
+                  name={courseGlyph}
+                  size={24}
+                  color={"#FFFFFF"}
+                />
+              ) : (
+                <></>
+              )}
             </View>
-            {hasNewGrades ? (
-              <View style={styles.updateIndicator} />
-            ) : (
-              <SmallText style={styles.grade}>
-                {props.course.grades[props.gradingPeriod]?.value}
-              </SmallText>
-            )}
+            <MediumText
+              numberOfLines={1}
+              ellipsizeMode={"tail"}
+              style={styles.header}
+            >
+              {courseDisplayName}
+            </MediumText>
           </View>
+          {hasNewGrades ? (
+            <View style={styles.updateIndicator} />
+          ) : (
+            <SmallText style={styles.grade}>
+              {props.course.grades[props.gradingPeriod]?.value}
+            </SmallText>
+          )}
         </View>
-      </TouchableOpacity>
-    </Animated.View>
+      </View>
+    </TouchableOpacity>
   );
 }
