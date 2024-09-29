@@ -14,12 +14,14 @@ import useGetEmail from "../../util/hooks/useGetEmail";
 import { useSelector } from "react-redux";
 import { RootState } from "../../core/state/store";
 import ScorecardModule from "../../../lib/expoModuleBridge";
+import useIsDarkMode from "../../core/theme/useIsDarkMode";
 
 export default function ClubPreview(props: { club: Club }) {
   const colors = useColors();
 
   const social = useSocial();
 
+  const isDark = useIsDarkMode();
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -155,6 +157,48 @@ export default function ClubPreview(props: { club: Club }) {
             {props.club.clubCode} - {props.club.memberCount} member
             {props.club.memberCount === 1 ? "" : "s"}
           </Text>
+          {!!props.club.isOwner && (
+            <View
+              style={{
+                backgroundColor: isDark ? "#702130" : "#ffcfcf",
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                alignSelf: "flex-start",
+                borderRadius: 4,
+                marginTop: 8,
+              }}
+            >
+              <MediumText
+                style={{
+                  color: colors.primary,
+                  fontSize: 12,
+                }}
+              >
+                Owner
+              </MediumText>
+            </View>
+          )}
+          {!!props.club.isManager && (
+            <View
+              style={{
+                backgroundColor: isDark ? "#134518" : "#ebf5ce",
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                alignSelf: "flex-start",
+                borderRadius: 4,
+                marginTop: 8,
+              }}
+            >
+              <MediumText
+                style={{
+                  color: colors.primary,
+                  fontSize: 12,
+                }}
+              >
+                Manager
+              </MediumText>
+            </View>
+          )}
         </View>
       </View>
       <View

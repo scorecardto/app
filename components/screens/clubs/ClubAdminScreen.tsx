@@ -13,6 +13,7 @@ import {
   KeyboardProvider,
 } from "react-native-keyboard-controller";
 import useSocial from "../../util/hooks/useSocial";
+import ClubMembersView from "../../app/clubs/ClubMembersView";
 
 export default function ClubAdminScreen(props: {
   navigation: NavigationProp<any, any>;
@@ -153,6 +154,7 @@ export default function ClubAdminScreen(props: {
             >
               {tab === "home" && <ClubHomeView club={club} />}
               {tab === "edit" && clubCustomizeView}
+              {tab === "members" && <ClubMembersView club={club} />}
             </KeyboardAwareScrollView>
           </KeyboardProvider>
         )}

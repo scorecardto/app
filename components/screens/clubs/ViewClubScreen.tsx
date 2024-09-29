@@ -243,7 +243,7 @@ export default function ViewClubScreen(props: {
                   marginRight: 8,
                 }}
                 onPress={() => {
-                  if (club.isOwner) {
+                  if (!!club.canManage) {
                     props.navigation.navigate("createClubPost", {
                       club,
                     });
@@ -270,7 +270,7 @@ export default function ViewClubScreen(props: {
                   }}
                 >
                   <View>
-                    {club.isOwner ? (
+                    {!!club.canManage ? (
                       <MediumText
                         style={{
                           fontSize: 16,
@@ -313,13 +313,13 @@ export default function ViewClubScreen(props: {
                   </View>
                 </View>
               </TouchableOpacity>
-              {club.isOwner && (
+              {!!club.canManage && (
                 <TouchableOpacity
                   style={{
                     marginRight: 8,
                   }}
                   onPress={() => {
-                    if (club.isOwner) {
+                    if (!!club.canManage) {
                       props.navigation.navigate("clubAdmin", {
                         internalCode,
                       });
@@ -349,29 +349,33 @@ export default function ViewClubScreen(props: {
                   </View>
                 </TouchableOpacity>
               )}
-            </View>
-            {!club.isOwner && (
-              <TouchableOpacity
-                onPress={() => {
-                  sheetRef.current?.show?.();
-                }}
-              >
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: "white",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    borderRadius: 40,
-                    overflow: "hidden",
+              {!club.isOwner && (
+                <TouchableOpacity
+                  onPress={() => {
+                    sheetRef.current?.show?.();
                   }}
                 >
-                  <MaterialIcons name="more-horiz" color={"black"} size={24} />
-                </View>
-              </TouchableOpacity>
-            )}
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: "white",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "row",
+                      borderRadius: 40,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <MaterialIcons
+                      name="more-horiz"
+                      color={"black"}
+                      size={24}
+                    />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
           <View
             style={{

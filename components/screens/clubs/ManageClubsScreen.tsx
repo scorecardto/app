@@ -86,7 +86,7 @@ export default function ManageClubsScreen(props: {
             }}
           >
             {clubs
-              .filter((c) => c.isOwner)
+              .filter((c) => c.canManage)
               .map((c, i) => {
                 return <ManageClubPreview club={c} key={i} />;
               })}

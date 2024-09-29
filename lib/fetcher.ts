@@ -99,7 +99,7 @@ async function parseHomeInfo(host: string, cookies: string) {
   const homeData = parse(
     (
       await axios({
-        url: `httpss://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
+        url: `https://${host}/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined`,
         method: "POST",
         headers: { Cookie: cookies },
         fetch: customFetch,
