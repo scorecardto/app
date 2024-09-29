@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView, Share } from "react-native";
 import { useCallback, useRef, useState } from "react";
-import {NavigationProp, useNavigation} from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 
 import ClubViewArrayContainer from "../../app/clubs/ClubViewArrayContainer";
 import ScorecardClubImage from "../../util/ScorecardClubImage";
@@ -104,47 +104,47 @@ export default function ViewClubScreen(props: {
         social.refreshClubs();
       });
   }, [club]);
-    const join = useCallback(async () => {
-        getEmail().then((email: string) => {
-            console.log(email);
+  const join = useCallback(async () => {
+    getEmail().then((email: string) => {
+      console.log(email);
 
-            if (club?.isMember) return;
+      if (club?.isMember) return;
 
-            console.log({
-                email,
-                internalCode: club!.internalCode,
-            });
+      console.log({
+        email,
+        internalCode: club!.internalCode,
+      });
 
-            api
-                .post({
-                    pathname: "/v1/clubs/join",
-                    auth: true,
-                    body: {
-                        email,
-                        internalCode: club!.internalCode,
-                    },
-                })
-                .then(() => {
-                    Toast.show({
-                        type: "info",
-                        text1: `Welcome to ${club!.name}!`,
-                        text2: `You are now a member of this club.`,
-                    });
-                })
-                .catch((e) => {
-                    console.error(e);
+      api
+        .post({
+          pathname: "/v1/clubs/join",
+          auth: true,
+          body: {
+            email,
+            internalCode: club!.internalCode,
+          },
+        })
+        .then(() => {
+          Toast.show({
+            type: "info",
+            text1: `Welcome to ${club!.name}!`,
+            text2: `You are now a member of this club.`,
+          });
+        })
+        .catch((e) => {
+          console.error(e);
 
-                    Toast.show({
-                        type: "info",
-                        text1: `Error Occured`,
-                        text2: `Something went wrong trying to join this club.`,
-                    });
-                })
-                .finally(() => {
-                    social.refreshClubs();
-                });
+          Toast.show({
+            type: "info",
+            text1: `Error Occured`,
+            text2: `Something went wrong trying to join this club.`,
+          });
+        })
+        .finally(() => {
+          social.refreshClubs();
         });
-    }, [club]);
+    });
+  }, [club]);
 
   const [sharing, setSharing] = useState(false);
   if (!club) {
@@ -167,8 +167,8 @@ export default function ViewClubScreen(props: {
         ref={sheetRef}
         club={club}
         join={() => {
-            join();
-            sheetRef.current?.hide?.();
+          join();
+          sheetRef.current?.hide?.();
         }}
         leave={() => {
           leave();

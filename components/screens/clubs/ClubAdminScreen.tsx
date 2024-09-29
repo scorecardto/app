@@ -132,16 +132,16 @@ export default function ClubAdminScreen(props: {
           flex: 1,
         }}
       >
-        <KeyboardProvider>
-          {club && (
-            <ScrollView
-              style={{
-                height: "100%",
-                flex: 1,
-              }}
-            >
-              {tab === "home" && <ClubHomeView club={club} />}
-              {tab === "edit" && (
+        {club ? (
+          <ScrollView
+            style={{
+              height: "100%",
+              flex: 1,
+            }}
+          >
+            {tab === "home" && <ClubHomeView club={club} />}
+            {tab === "edit" && (
+              <KeyboardProvider>
                 <ClubCustomizeView
                   club={club}
                   startLoading={() => setForceLoading(true)}
@@ -149,11 +149,13 @@ export default function ClubAdminScreen(props: {
                     setActiveClub(c);
                   }}
                 />
-              )}
-              {tab === "members" && <ClubMembersView club={club} />}
-            </ScrollView>
-          )}
-        </KeyboardProvider>
+              </KeyboardProvider>
+            )}
+            {tab === "members" && <ClubMembersView club={club} />}
+          </ScrollView>
+        ) : (
+          <></>
+        )}
       </View>
     </View>
   );

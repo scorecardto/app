@@ -35,6 +35,7 @@ export default function ClubCustomizeView(props: {
       emoji,
     });
   }, [picture, name, color, bio, link, emoji]);
+
   return (
     <View
       style={{
