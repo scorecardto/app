@@ -3,7 +3,7 @@
     "name": "Scorecard",
     "slug": "scorecard",
     "scheme": "scorecard",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -20,7 +20,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "90",
+      "buildNumber": "91",
       "associatedDomains": [
         "applinks:scorecardgrades.com"
       ],
@@ -59,7 +59,7 @@
       "icon": "./assets/icon.png",
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 21,
+      "versionCode": 22,
       "intentFilters": [
         {
           "action": "VIEW",
