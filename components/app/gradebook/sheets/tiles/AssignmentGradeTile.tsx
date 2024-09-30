@@ -31,6 +31,7 @@ export default function AssignmentGradeTile(props: {
   grade: TileValue;
   testing: boolean;
   originalGrade: TileValue;
+  changed: boolean;
   edit(e: AssignmentEdits): boolean;
 }) {
   const textInputRef = useRef<TextInput>(null);
@@ -153,6 +154,7 @@ export default function AssignmentGradeTile(props: {
         edited={
           props.testing || inputValue !== gradeToString(props.originalGrade)
         }
+        changed={props.changed}
         onFinish={onFinishEditing}
         onStart={() => setIsEditing(true)}
         placeholder={gradeToString(props.originalGrade) || "NG"}

@@ -11,6 +11,11 @@ export default function TableRow(props: {
     grade?: boolean;
     worth?: boolean;
   };
+  changes?: {
+    name: boolean;
+    average: boolean;
+    weight: boolean;
+  };
   onPress?: () => void;
 }) {
   const colors = useColors();
@@ -35,7 +40,7 @@ export default function TableRow(props: {
       flexShrink: 1,
       flexGrow: 0,
       flexWrap: "wrap",
-      color: props.red?.name ? "red" : colors.primary,
+      color: props.red?.name ? "red" : props.changes?.name ? colors.newGrade : colors.primary,
     },
     right: {
       marginLeft: 24,
@@ -47,11 +52,11 @@ export default function TableRow(props: {
     },
     grade: {
       fontSize: 14,
-      color: props.red?.grade ? "red" : colors.primary,
+      color: props.red?.grade ? "red" : props.changes?.average ? colors.newGrade : colors.primary,
     },
     worth: {
       fontSize: 12,
-      color: props.red?.worth ? "red" : colors.text,
+      color: props.red?.worth ? "red" : props.changes?.weight ? colors.newGrade : colors.text,
     },
   });
 

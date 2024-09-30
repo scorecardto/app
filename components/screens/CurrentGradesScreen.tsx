@@ -1,4 +1,4 @@
-import { NavigationProp } from "@react-navigation/native";
+import {NavigationProp, useIsFocused} from "@react-navigation/native";
 
 import { Animated, RefreshControl, ScrollView, View } from "react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../core/state/store";
 import { FlatList } from "react-native-gesture-handler";
 import CourseCard from "../app/dashboard/CourseCard";
-import { Course } from "scorecard-types";
+import {Course, GradebookRecord} from "scorecard-types";
 import PageThemeProvider from "../core/context/PageThemeProvider";
 import Background from "../util/Background";
 import DashboardToolbar from "../app/dashboard/DashboardToolbar";
@@ -22,6 +22,9 @@ import fetchAndStore from "../../lib/fetchAndStore";
 import { setSchoolName } from "../core/state/user/loginSlice";
 import { RouterContext } from "react-native-actions-sheet/dist/src/hooks/use-router";
 import { reloadApp } from "../../lib/reloadApp";
+import Button from "../input/Button";
+import {clearGradeChanges, updateGradeChanges} from "../core/state/grades/gradeDataSlice";
+import ScorecardModule from "../../lib/expoModuleBridge";
 
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
@@ -69,6 +72,15 @@ export default function CurrentGradesScreen(props: {
 
     return `Updated on ${new Date(lastUpdated).toLocaleDateString()}`;
   }, [currentGradeCategory, lastUpdated, time]);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (!isFocused) return;
+
+    const toClear = ScorecardModule.getItem("toClearChanges");
+    ScorecardModule.storeItem("toClearChanges", "");
+    if (toClear) dispatch(clearGradeChanges(toClear));
+  }, [isFocused]);
 
   useEffect(() => {
     const i = setInterval(() => {
@@ -177,6 +189,7 @@ export default function CurrentGradesScreen(props: {
     (state: RootState) => state.courseSettings
   );
 
+  const gradeChanges = useSelector((state: RootState) => state.gradeData.gradeChanges);
   return (
     <PageThemeProvider
       theme={{
@@ -272,12 +285,15 @@ export default function CurrentGradesScreen(props: {
                     disableX={true}
                   >
                     <CourseCard
-                      onClick={() =>
+                      onClick={() => {
+                        ScorecardModule.storeItem("toClearChanges", item.key);
+
                         props.navigation.navigate("course", {
                           key: item.key,
                           gradeCategory: currentGradeCategory,
                         })
-                      }
+                      }}
+                      changes={gradeChanges.courses[item.key]}
                       onHold={() => {}}
                       course={item}
                       gradingPeriod={currentGradeCategory}

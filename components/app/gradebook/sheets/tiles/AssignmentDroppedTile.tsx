@@ -10,6 +10,7 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 export default function AssignmentDroppedTile(props: {
   dropped: boolean;
   originalDropped: boolean;
+  changed: boolean;
   edit(e: AssignmentEdits): boolean;
 }) {
   const [testingValue, setTestingValue] = useState(props.dropped);
@@ -41,7 +42,7 @@ export default function AssignmentDroppedTile(props: {
         <Text
           style={{
             color:
-              testingValue !== props.originalDropped ? "red" : colors.primary,
+              testingValue !== props.originalDropped ? "red" : props.changed ? colors.newGrade : colors.primary,
             marginVertical: -2,
           }}
         >

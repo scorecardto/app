@@ -10,6 +10,7 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 export default function AssignmentCountTile(props: {
   count: number;
   testing: boolean;
+  changed: boolean;
   originalCount: number;
   edit(e: AssignmentEdits): boolean;
 }) {
@@ -62,6 +63,7 @@ export default function AssignmentCountTile(props: {
         value={inputValue}
         ref={textInputRef}
         edited={props.testing || testingValue !== props.originalCount}
+        changed={props.changed}
         onFinish={onFinishEditing}
         placeholder={props.originalCount.toString()}
         illegalCharacters={/[^0-9]/g}

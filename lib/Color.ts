@@ -209,6 +209,7 @@ const defaultAccentLabel = "blue";
 interface Theme extends NativeTheme.Theme {
   colors: {
     primary: string;
+    newGrade: string;
     background: string;
     backgroundNeutral: string;
     borderNeutral: string;
@@ -238,6 +239,7 @@ const MyLightTheme = {
   colors: {
     ...DefaultTheme.colors,
     primary: "#000",
+    newGrade: "rgb(70,140,197)",
     text: "#A0A0A0",
     background: "#F6FAFD",
     backgroundNeutral: "#f6f6f6",
@@ -258,6 +260,7 @@ const MyDarkTheme = {
   colors: {
     ...DarkTheme.colors,
     primary: "#FFF",
+    newGrade: "rgb(70,140,197)",
     text: "#A0A0A0",
     background: "#1a1b24",
     backgroundNeutral: "#1d1f28",

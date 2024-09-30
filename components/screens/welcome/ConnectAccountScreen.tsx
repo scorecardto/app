@@ -128,7 +128,7 @@ const ConnectAccountScreenOld = (props: {
             );
           }
 
-          const fetchStoreResult = await fetchAndStore(data, dispatch, true);
+          const fetchStoreResult = await fetchAndStore(data, dispatch, true, true, true);
         })
         .catch((e: Error) => {
           clearTimeout(timeoutId);
@@ -336,7 +336,7 @@ const ConnectAccountScreen = (props: {
             );
           }
 
-          const fetchStoreResult = await fetchAndStore(data, dispatch, true);
+          const fetchStoreResult = await fetchAndStore(data, dispatch, true, true, true);
         })
         .catch((e: Error) => {
           clearTimeout(timeoutId);

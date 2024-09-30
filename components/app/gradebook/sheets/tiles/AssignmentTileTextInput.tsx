@@ -15,6 +15,7 @@ const AssignmentTileTextInput = forwardRef(
       placeholder: string;
       illegalCharacters: any;
       maxLength?: number;
+      changed: boolean;
     },
     ref: Ref<any>
   ) => {
@@ -49,7 +50,7 @@ const AssignmentTileTextInput = forwardRef(
             maxLength={props.maxLength}
             style={{
               fontVariant: ["tabular-nums"],
-              color: props.edited && !focus ? "red" : colors.primary,
+              color: props.edited && !focus ? "red" : props.changed ? colors.newGrade : colors.primary,
               fontSize: 20,
             }}
             placeholder={props.placeholder}

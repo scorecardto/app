@@ -21,6 +21,14 @@ export default function AssignmentSheet(props: {
   removeAssignment(): void;
   edit(e: AssignmentEdits): boolean;
   currentEdits: AssignmentEdits;
+  gradeChanges?: {
+    points: boolean;
+    grade: boolean;
+    dropped: boolean;
+    scale: boolean;
+    max: boolean;
+    count: boolean;
+  };
 }) {
   const isNumericGrade =
     props.currentEdits?.pointsEarned != null &&
@@ -52,6 +60,7 @@ export default function AssignmentSheet(props: {
                   }
                 : props.assignment.grade
             }
+            changed={props.gradeChanges?.grade ?? false}
             testing={props.testing}
             originalGrade={
               isNumericGrade && !isNaN(props.assignment.points ?? NaN) && !isNaN(props.assignment.scale ?? NaN)
@@ -67,6 +76,7 @@ export default function AssignmentSheet(props: {
             <AssignmentCountTile
               count={props.currentEdits.count ?? props.assignment.count}
               testing={props.testing}
+              changed={props.gradeChanges?.count ?? false}
               originalCount={props.assignment.count}
               edit={props.edit}
             />
@@ -81,6 +91,7 @@ export default function AssignmentSheet(props: {
               <AssignmentDroppedTile
                 dropped={props.currentEdits.dropped ?? props.assignment.dropped}
                 originalDropped={props.assignment.dropped}
+                changed={props.gradeChanges?.dropped ?? false}
                 edit={props.edit}
               />
             )}

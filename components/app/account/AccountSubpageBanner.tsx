@@ -3,7 +3,7 @@ import { useEffect, useMemo } from "react";
 import { Image } from "expo-image";
 import useColors from "../../core/theme/useColors";
 
-const icon = require("../../../assets/icon.svg");
+const icon = require("../../../assets/icon.png");
 
 export default function AccountSubpageBanner(props: {
   show: boolean;
