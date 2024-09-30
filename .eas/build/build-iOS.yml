@@ -29,6 +29,16 @@ build:
         name: Install pods
         working_directory: ./ios
         command: pod install
+    - run: xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKCoreKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCoreKit.framework/SCSDKCoreKit -r -o ios/Pods/SnapSDK/SCSDKCoreKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCoreKit.framework/SCSDKCoreKit
+    - run: xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKCreativeKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCreativeKit.framework/SCSDKCreativeKit -r -o ios/Pods/SnapSDK/SCSDKCreativeKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCreativeKit.framework/SCSDKCreativeKit
+    - run: xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKLoginKit.xcframework/ios-arm64_armv7_armv7s/SCSDKLoginKit.framework/SCSDKLoginKit -r -o ios/Pods/SnapSDK/SCSDKLoginKit.xcframework/ios-arm64_armv7_armv7s/SCSDKLoginKit.framework/SCSDKLoginKit
+    - run: xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes
+    - run: xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes
+    - run: xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes
+    - run:
+        name: Install pods
+        working_directory: ./ios
+        command: pod install
     - eas/configure_ios_credentials
     - eas/configure_ios_version
     - eas/generate_gymfile_from_template:
