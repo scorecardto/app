@@ -2,7 +2,7 @@ import { Assignment, GradebookRecord } from "scorecard-types";
 import CourseStateRecord from "./types/CourseStateRecord";
 import captureCourseState from "./captureCourseState";
 import { AppDispatch } from "../components/core/state/store";
-import { setGradeRecord } from "../components/core/state/grades/gradeDataSlice";
+import {setGradeRecord, updateGradeChanges} from "../components/core/state/grades/gradeDataSlice";
 import { setOldCourseStates } from "../components/core/state/grades/oldCourseStatesSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import { updateCourseIfPinned } from "../components/core/state/widget/widgetSlice";
@@ -13,7 +13,8 @@ export default async function fetchAndStore(
   data: AllContent,
   dispatch: AppDispatch,
   updateCourseStates: boolean,
-  updateWidget = true
+  updateWidget = true,
+  isFirstFetch = false,
 ) {
   const gradeCategory =
     Math.max(
@@ -59,6 +60,11 @@ export default async function fetchAndStore(
 
   dispatch(setGradeCategory(gradeCategory));
   dispatch(setGradeRecord(newData));
+  if (!isFirstFetch) {
+    dispatch(updateGradeChanges(newData));
+  } else {
+    ScorecardModule.storeItem("lastComparedRecord", JSON.stringify(newData));
+  }
 
   if (updateCourseStates) {
     const oldCourseStates: CourseStateRecord = {};

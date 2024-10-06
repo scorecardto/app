@@ -3,7 +3,7 @@
     "name": "Scorecard",
     "slug": "scorecard",
     "scheme": "scorecard",
-    "version": "2.0.1",
+    "version": "2.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -12,17 +12,26 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "86",
-      "associatedDomains": ["applinks:scorecardgrades.com"],
+      "buildNumber": "94",
+      "associatedDomains": [
+        "applinks:scorecardgrades.com"
+      ],
       "infoPlist": {
-        "LSApplicationQueriesSchemes": ["instagram-stories", "snapchat"],
-        "UIBackgroundModes": ["fetch"],
+        "LSApplicationQueriesSchemes": [
+          "instagram-stories",
+          "snapchat"
+        ],
+        "UIBackgroundModes": [
+          "fetch"
+        ],
         "appExtensions": [
           {
             "targetName": "expowidgetsWidgetExtension",
@@ -50,7 +59,7 @@
       "icon": "./assets/icon.png",
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 20,
+      "versionCode": 22,
       "intentFilters": [
         {
           "action": "VIEW",
@@ -62,7 +71,10 @@
               "pathPrefix": "/joinclub"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ],
       "permissions": [
@@ -88,13 +100,17 @@
             "src": "./widgets/ios",
             "devTeamId": "H29JJ3FSST",
             "mode": "development",
-            "moduleDependencies": ["Storage.swift"],
+            "moduleDependencies": [
+              "Storage.swift"
+            ],
             "useLiveActivities": false,
             "frequentUpdates": false
           },
           "android": {
             "src": "./widgets/android",
-            "moduleDependencies": ["Storage.kt"],
+            "moduleDependencies": [
+              "Storage.kt"
+            ],
             "widgets": [
               {
                 "name": "ScorecardWidget",

@@ -5,12 +5,20 @@ import BottomSheetContext from "../../util/BottomSheet/BottomSheetContext";
 import AssignmentSheet from "./sheets/AssignmentSheet";
 import AssignmentEdits from "../../../lib/types/AssignmentEdits";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import {useSelector} from "react-redux";
+import {RootState} from "../../core/state/store";
 
 export default function AssignmentTableRow(props: {
   assignment: Assignment;
   testing: boolean;
   removeAssignment(): void;
   setModifiedAssignment(a: Assignment): void;
+    gradeChanges?: {
+        grade: boolean;
+        dropped: boolean;
+        count: boolean;
+        name: boolean;
+    };
 }) {
   const assignment = props.assignment;
   const sheets = useContext(BottomSheetContext);
@@ -55,11 +63,17 @@ export default function AssignmentTableRow(props: {
     pointsPossible: maxPoints,
     dropped: dropped,
   };
+
   return (
     <TableRow
       name={assignment.name!}
       grade={grade!}
       worth={worth({ count, dropped })}
+      changes={{
+          name: props.gradeChanges?.name ?? false,
+          average: props.gradeChanges?.grade ?? false,
+          weight: (props.gradeChanges?.count || props.gradeChanges?.dropped) ?? false
+      }}
       red={{
         name: props.testing,
         grade: props.testing || assignment.grade !== grade,
@@ -74,6 +88,7 @@ export default function AssignmentTableRow(props: {
           <>
             <AssignmentSheet
               assignment={assignment}
+              gradeChanges={props.gradeChanges}
               testing={props.testing}
               close={close}
               currentEdits={currentEdits}

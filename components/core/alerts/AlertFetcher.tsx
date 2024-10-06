@@ -9,7 +9,10 @@ export default function AlertFetcher(): undefined {
     const sheets = useContext(BottomSheetContext);
 
     firestore().collection("alerts").get().then(snapshot => {
-        const seen = JSON.parse(ScorecardModule.getItem("seenAlerts") || "[]");
+        let seen = JSON.parse(ScorecardModule.getItem("seenAlerts") || "null");
+        if (seen == null) {
+            seen = snapshot.docs.map(d=>d.id);
+        }
 
         for (const doc of snapshot.docs) {
             if (!seen.includes(doc.id)) {

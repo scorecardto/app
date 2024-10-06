@@ -24,7 +24,7 @@ import { setOldCourseStates } from "../components/core/state/grades/oldCourseSta
 import { setAllCourseSettings } from "../components/core/state/grades/courseSettingsSlice";
 import {
   setGradeRecord,
-  setPreviousGradeRecord,
+  setPreviousGradeRecord, updateGradeChanges,
 } from "../components/core/state/grades/gradeDataSlice";
 import { setGradeCategory } from "../components/core/state/grades/gradeCategorySlice";
 import { setCourseOrder } from "../components/core/state/grades/courseOrderSlice";
@@ -159,6 +159,7 @@ export default async function initialize(
     const recordData = JSON.parse(records ?? "[]") as GradebookRecord[];
 
     const data = recordData[0];
+    dispatch(updateGradeChanges(data))
     dispatch(setGradeRecord(data));
     dispatch(setPreviousGradeRecord(recordData[1]));
     dispatch(setGradeCategory(data.gradeCategory));

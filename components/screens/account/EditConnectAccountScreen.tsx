@@ -92,7 +92,7 @@ const EditConnectAccountScreen = (props: {
               ScorecardModule.storeItem("vipProgramDate", district.vipProgramDate)
           }
 
-          await fetchAndStore(data, dispatch, true);
+          await fetchAndStore(data, dispatch, true, true, true);
         })
         .catch((e: Error) => {
           if (e.message === "INCORRECT_PASSWORD") {

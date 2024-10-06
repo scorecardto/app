@@ -18,8 +18,9 @@ import Button from "../../input/Button";
 export default function GradebookCard(props: {
   title: string;
   grade?: { text: string; red: boolean };
+  changedGrade?: { name: boolean; average: boolean };
   children: React.ReactNode;
-  bottom: { [idx: string]: { text: string; red: boolean; link?: string } };
+  bottom: { [idx: string]: { text: string; red: boolean; gradeChange: boolean; link?: string } };
   buttonAction(): void;
   removable: boolean;
   remove(): void;
@@ -44,12 +45,12 @@ export default function GradebookCard(props: {
     },
     headerText: {
       fontSize: 18,
-      color: colors.primary,
+      color: props.changedGrade?.name ? colors.newGrade : colors.primary,
       flex: 1,
     },
     headerGrade: {
       fontSize: 17,
-      color: props.grade?.red ? "red" : colors.primary,
+      color: props.grade?.red ? "red" : props.changedGrade?.average ? colors.newGrade : colors.primary,
       marginLeft: 6,
     },
     footer: {
@@ -110,6 +111,7 @@ export default function GradebookCard(props: {
                           color: props.bottom[key].red
                             ? "red"
                             : props.bottom[key].link ? "#6b81a8"
+                            : props.bottom[key].gradeChange ? colors.newGrade
                             : styles.footerText.color,
                         }}
                       >

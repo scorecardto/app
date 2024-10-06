@@ -11,8 +11,11 @@ import { Assignment, GradeCategory } from "scorecard-types";
 import TableRow from "./TableRow";
 import AssignmentSheet from "./sheets/AssignmentSheet";
 import AssignmentTableRow from "./AssignmentTableRow";
+import {useSelector} from "react-redux";
+import {RootState} from "../../core/state/store";
 
 export default function CategoryTable(props: {
+  courseKey: string;
   category: GradeCategory;
   modifiedAssignments: (Assignment | null)[] | null;
   modifyAssignment(a: Assignment, index: number): void;
@@ -32,6 +35,7 @@ export default function CategoryTable(props: {
     ];
   }, []);
 
+  const gradeChanges = useSelector((s: RootState) => s.gradeData.gradeChanges);
   return (
     <ScrollView alwaysBounceVertical={false} ref={scrollRef}>
       {new Array(
@@ -45,6 +49,7 @@ export default function CategoryTable(props: {
 
           return (
             <AssignmentTableRow
+              gradeChanges={gradeChanges.assignments[props.courseKey]?.[props.category.id]?.[assignment.name!]}
               testing={index >= props.category.assignments.length}
               removeAssignment={() => props.removeAssignment(index)}
               key={index}

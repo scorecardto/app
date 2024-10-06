@@ -9,11 +9,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../core/state/store";
 import useColors from "../../core/theme/useColors";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
+import Shimmer from "react-native-shimmer";
 export default function CourseCard(props: {
   course: Course;
   gradingPeriod: number;
   onClick: () => void;
   onHold: () => void;
+  changes: {name: boolean, average: boolean};
 }) {
   const colors = useColors();
   const dark = useIsDarkMode();
@@ -50,7 +52,7 @@ export default function CourseCard(props: {
     },
     header: {
       paddingLeft: 24,
-      color: colors.primary,
+      color: props.changes?.name ? colors.newGrade : colors.primary,
       flex: 1,
       fontSize: 18,
     },
@@ -58,7 +60,7 @@ export default function CourseCard(props: {
       marginRight: 24,
       marginLeft: 6,
       fontSize: 16,
-      color: colors.text,
+      color: props.changes?.average ? colors.newGrade : colors.text,
     },
     updateIndicator: {
       height: 10,

@@ -17,6 +17,8 @@ import GradebookInfoCard from "./GradebookInfoCard";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import useColors from "../../core/theme/useColors";
+import {useSelector} from "react-redux";
+import {RootState} from "../../core/state/store";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -137,6 +139,7 @@ function Gradebook(props: {
     setCurrentCard as (idx: number) => void,
   ]);
 
+  const gradeChanges = useSelector((s: RootState) => s.gradeData.gradeChanges);
   return (
     <View
       style={{
@@ -325,6 +328,7 @@ function Gradebook(props: {
                     >
                       <GradebookCard
                         key={index}
+                        changedGrade={gradeChanges.gradeCategories[props.course.key]?.[item.id]}
                         title={item.name}
                         grade={{
                           text: gradeText ? gradeText : "NG",
@@ -333,7 +337,7 @@ function Gradebook(props: {
                             modifiedCategories[index - 1].average !== null,
                         }}
                         bottom={{
-                          Weight: { text: `${item.weight}%`, red: testing },
+                          Weight: { text: `${item.weight}%`, red: testing, gradeChange: gradeChanges.gradeCategories[props.course.key]?.[item.id]?.weight },
                           "Exact Average": {
                             text: `${
                               modifiedCategories[index - 1].exactAverage ??
@@ -342,6 +346,7 @@ function Gradebook(props: {
                             red:
                               testing ||
                               modifiedCategories[index - 1].average !== null,
+                            gradeChange: gradeChanges.gradeCategories[props.course.key]?.[item.id]?.average,
                           },
                         }}
                         removable={testing}
@@ -389,6 +394,7 @@ function Gradebook(props: {
                       >
                         <CategoryTable
                           category={item}
+                          courseKey={props.course.key}
                           modifiedAssignments={
                             modifiedCategories[index - 1].assignments
                           }
