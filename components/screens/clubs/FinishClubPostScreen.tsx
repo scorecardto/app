@@ -19,6 +19,12 @@ import axios from "redaxios";
 import useScApi from "../../util/hooks/useScApi";
 import Toast from "react-native-toast-message";
 import { SimpleTextInput } from "../../input/SimpleTextInput";
+import ToggleInput from "../../input/ToggleInput";
+import {
+  KeyboardAvoidingView,
+  KeyboardAwareScrollView,
+  KeyboardProvider,
+} from "react-native-keyboard-controller";
 
 function PromotionOptionCard(props: {
   name: string;
@@ -130,6 +136,10 @@ export default function FinishClubPostScreen(props: {
       : `New Announcement`
   );
 
+  const [enableEmail, setEnableEmail] = useState(true);
+  const [enableSMS, setEnableSMS] = useState(true);
+  const [enablePush, setEnablePush] = useState(true);
+
   if (!post) {
     return (
       <View>
@@ -163,6 +173,9 @@ export default function FinishClubPostScreen(props: {
             ? {
                 subject,
                 post: postInternal,
+                disableEmail: !enableEmail,
+                disableSMS: !enableSMS,
+                disablePush: !enablePush,
               }
             : {
                 post: postInternal,
@@ -186,71 +199,77 @@ export default function FinishClubPostScreen(props: {
         setPublishing(false);
         props.navigation.navigate("Clubs");
       });
-  }, [promotionTier, post, subject]);
+  }, [promotionTier, post, subject, enableEmail, enablePush, enableSMS]);
 
   return (
     <View style={{}}>
       <LoadingOverlay show={publishing} />
-      <ScrollView
+      <KeyboardAvoidingView
+        behavior="padding"
         style={{
           height: "100%",
           paddingBottom: 180,
         }}
       >
-        <View
+        <ScrollView
           style={{
-            paddingHorizontal: 16,
-            // backgroundColor: "red",
-            paddingTop: 24,
+            height: "100%",
           }}
         >
-          <CourseCornerButtonContainer
-            hideRight={true}
-            onPressRight={() => {}}
-            onPressLeft={() => {
-              props.navigation.goBack();
-            }}
-          />
-          <LargeText
+          <View
             style={{
-              color: colors.primary,
-            }}
-            textProps={{
-              numberOfLines: 1,
+              paddingHorizontal: 16,
+              // backgroundColor: "red",
+              paddingTop: 24,
             }}
           >
-            Promotion
-          </LargeText>
-        </View>
-        <View>
-          <PromotionOptionCard
-            name="Basic"
-            description="Your post will be shown in the feed."
-            price={"$0"}
-            onPress={() => {
-              setPromotionTier(0);
-            }}
-            selected={promotionTier === 0}
-          />
-          <PromotionOptionCard
-            name="Promote"
-            description="Your members will recieve a notification about this post and see it in the feed."
-            price={"$0"}
-            onPress={() => {
-              setPromotionTier(1);
-            }}
-            selected={promotionTier === 1}
-          />
-          <PromotionOptionCard
-            name="Advanced Promote"
-            description="Best for power users. May lead to email issues if used incorrectly."
-            price={"$0"}
-            onPress={() => {
-              setPromotionTier(2);
-            }}
-            selected={promotionTier === 2}
-          />
-          {/* <PromotionOption
+            <CourseCornerButtonContainer
+              hideRight={true}
+              onPressRight={() => {}}
+              onPressLeft={() => {
+                props.navigation.goBack();
+              }}
+            />
+            <LargeText
+              style={{
+                color: colors.primary,
+              }}
+              textProps={{
+                numberOfLines: 1,
+              }}
+            >
+              Promotion
+            </LargeText>
+          </View>
+          <View>
+            <PromotionOptionCard
+              name="Basic"
+              description="Your post will be shown in the feed."
+              price={"$0"}
+              onPress={() => {
+                setPromotionTier(0);
+              }}
+              selected={promotionTier === 0}
+            />
+            <PromotionOptionCard
+              name="Promote"
+              description="Your members will recieve a notification about this post and see it in the feed."
+              price={"$0"}
+              onPress={() => {
+                setPromotionTier(1);
+              }}
+              selected={promotionTier === 1}
+            />
+            <PromotionOptionCard
+              name="Advanced Promote"
+              description="Best for power users. May lead to email issues if used incorrectly."
+              price={"$0"}
+              onPress={() => {
+                setPromotionTier(2);
+              }}
+              selected={promotionTier === 2}
+            />
+            {/* <PromotionOption
             name="Promote Plus"
             description="All members will recieve email, text, and device notifications about this post."
             price={"$3.99"}
@@ -260,63 +279,89 @@ export default function FinishClubPostScreen(props: {
             description="Users not in your club be notified of your post. You can target specific users to get the best results."
             price={"$7.99+"}
           /> */}
-        </View>
-        {promotionTier === 2 ? (
-          <>
-            <LargeText
-              style={{
-                color: colors.primary,
-                marginHorizontal: 12,
-                marginTop: 16,
-                fontSize: 20,
-                marginBottom: 8,
-              }}
-            >
-              Options
-            </LargeText>
-            <View
-              style={{
-                paddingVertical: 12,
-                paddingHorizontal: 16,
-                padding: 8,
-                borderWidth: 1,
-                borderColor: colors.borderNeutral,
-                marginHorizontal: 12,
-                borderRadius: 8,
-                backgroundColor: colors.card,
-              }}
-            >
-              <MediumText
+          </View>
+          {promotionTier === 2 ? (
+            <>
+              <LargeText
                 style={{
+                  color: colors.primary,
+                  marginHorizontal: 12,
+                  marginTop: 16,
+                  fontSize: 20,
                   marginBottom: 8,
-                  color: subject.length >= 64 ? "red" : colors.primary,
                 }}
               >
-                Email Subject Line
-              </MediumText>
-              <SimpleTextInput
-                disableMarginBottom
-                value={subject}
-                label="Customize Email Subject"
-                setValue={setSubject}
-              />
-            </View>
-          </>
-        ) : (
-          <></>
-        )}
-        <View
-          style={{
-            marginTop: 24,
-          }}
-        >
-          <Button
-            onPress={() => {
-              publish();
+                Options
+              </LargeText>
+              <View
+                style={{
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                  padding: 8,
+                  borderWidth: 1,
+                  borderColor: colors.borderNeutral,
+                  marginHorizontal: 12,
+                  borderRadius: 8,
+                  backgroundColor: colors.card,
+                }}
+              >
+                {enableEmail && (
+                  <>
+                    <MediumText
+                      style={{
+                        marginBottom: 8,
+                        color: subject.length >= 64 ? "red" : colors.primary,
+                      }}
+                    >
+                      Email Subject Line
+                    </MediumText>
+                    <SimpleTextInput
+                      disableMarginBottom
+                      value={subject}
+                      label="Customize Email Subject"
+                      setValue={setSubject}
+                    />
+                    <View
+                      style={{
+                        marginTop: 8,
+                      }}
+                    />
+                  </>
+                )}
+                <ToggleInput
+                  label="Promote by Email"
+                  setValue={setEnableEmail}
+                  value={enableEmail}
+                />
+
+                <ToggleInput
+                  label="Promote by Text Message"
+                  setValue={setEnableSMS}
+                  value={enableSMS}
+                />
+                <ToggleInput
+                  label="Promote by Notification"
+                  setValue={setEnablePush}
+                  value={enablePush}
+                />
+              </View>
+            </>
+          ) : (
+            <></>
+          )}
+          <View
+            style={{
+              marginTop: 24,
             }}
-          >{`Post in ${club?.name ?? "UKNOWN"}`}</Button>
-        </View>
-      </ScrollView>
+          >
+            <Button
+              onPress={() => {
+                publish();
+              }}
+            >{`Post in ${club?.name ?? "UKNOWN"}`}</Button>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
