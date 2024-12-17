@@ -55,9 +55,10 @@ export default function CurrentGradesScreen(props: {
     }
 
     if (time - lastUpdated < 1000 * 60 * 60 * 24) {
-      return `Updated ${Math.floor(
-        (time - lastUpdated) / 1000 / 60 / 60
-      )} hours ago`;
+      var hours = Math.floor(
+          (time - lastUpdated) / 1000 / 60 / 60
+      )
+      return `Updated ${hours} hour${hours == 1 ? '' : 's'} ago`;
     }
 
     if (time - lastUpdated < 1000 * 60 * 60 * 24 * 2) {
