@@ -60,6 +60,7 @@ import ClubJoinScreen from "./components/app/clubs/ClubJoinScreen";
 import ViewClubScreen from "./components/screens/clubs/ViewClubScreen";
 import ScorecardModule from "./lib/expoModuleBridge";
 import AddEmailScreen from "./components/screens/welcome/AddEmailScreen";
+import EditEmailScreen from "./components/screens/account/EditEmailScreen";
 
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
@@ -267,6 +268,15 @@ export default function App(props: { resetKey: string }) {
                           ...headerOptions,
                           headerBackTitle: "All Settings",
                         }}
+                      />
+                      <Stack.Screen
+                          name={"editEmail"}
+                          component={EditEmailScreen}
+                          options={{
+                            ...headerOptions,
+                            headerBackTitle: "Back",
+                          }}
+
                       />
                       <Stack.Screen
                         name="editDistrict"

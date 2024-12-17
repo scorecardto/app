@@ -24,6 +24,9 @@ import { resetUserRank } from "../../core/state/user/userRank";
 import { resetCourseSettings } from "../../core/state/grades/courseSettingsSlice";
 import {resetPinnedCourses} from "../../core/state/widget/widgetSlice";
 import ScorecardModule from "../../../lib/expoModuleBridge";
+import {validate} from "email-validator";
+import {setPreferredEmail} from "../../core/state/social/socialSlice";
+import CardEntry from "../../input/CardEntry";
 export default function GeneralSettingsScreen(props: {
   route: any;
   navigation: any;
@@ -44,6 +47,9 @@ export default function GeneralSettingsScreen(props: {
   const lastNameInitial = useSelector(
     (state: RootState) => state.name.lastName
   );
+  const email = useSelector(
+      (state: RootState) => state.social.preferredEmail
+  );
 
   const [firstName, setFirstName] = useState(firstNameInitial);
   const [lastName, setLastName] = useState(lastNameInitial);
@@ -56,6 +62,7 @@ export default function GeneralSettingsScreen(props: {
 
     ScorecardModule.storeItem("name", JSON.stringify({ firstName, lastName }))
   }, [firstName, lastName]);
+
   return (
     <AccountSubpageScreen
       header="General"
@@ -63,38 +70,62 @@ export default function GeneralSettingsScreen(props: {
     >
       <View style={{ marginBottom: 12 }}>
         <MediumText style={{ marginBottom: 16, color: colors.primary }}>
-          Edit your name
+          Edit your name and email
         </MediumText>
-        <View
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <View style={{ width: "100%", marginRight: 10, flexShrink: 1 }}>
-            <TextInput
-              label="First Name"
-              value={firstName}
-              setValue={(v) => {
-                setFirstName(v);
+        <View style={{
+          display: "flex",
+          flexDirection: "column"
+        }}>
+          <View
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
               }}
-              type="first-name"
-            />
+          >
+            <View style={{ width: "100%", marginRight: 10, flexShrink: 1 }}>
+              <TextInput
+                  label="First Name"
+                  value={firstName}
+                  setValue={(v) => {
+                    setFirstName(v);
+                  }}
+                  type="first-name"
+              />
+            </View>
+            <View style={{ width: "100%", flexShrink: 1 }}>
+              <TextInput
+                  label="Last Name"
+                  value={lastName}
+                  setValue={(v) => {
+                    setLastName(v);
+                  }}
+                  type="last-name"
+              />
+            </View>
           </View>
-          <View style={{ width: "100%", flexShrink: 1 }}>
-            <TextInput
-              label="Last Name"
-              value={lastName}
-              setValue={(v) => {
-                setLastName(v);
+          <View
+              style={{
+                backgroundColor: colors.backgroundNeutral,
+                borderRadius: 4,
+                marginBottom: 10,
+                borderColor: colors.borderNeutral,
+                borderWidth: 1,
+                borderBottomWidth: 2,
               }}
-              type="last-name"
+          >
+            <CardEntry
+                label={email ?? "No email provided"}
+                primary={true}
+                onPress={() => {
+                  props.navigation.navigate("editEmail", {
+                    email: email
+                  });
+                }}
             />
           </View>
         </View>
       </View>
-
       <View style={{ marginBottom: 36 }}>
         <MediumText style={{ marginBottom: 16, color: colors.primary }}>
           Your phone number

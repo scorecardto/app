@@ -16,7 +16,8 @@ export const TextInput = forwardRef<
       | "phone-number"
       | "first-name"
       | "last-name"
-      | "verification-code";
+      | "verification-code"
+      | "email";
     inputProps?: ReactNative.TextInputProps;
     clearTextOnFocus?: boolean;
     disableMarginBottom?: boolean;
@@ -80,6 +81,8 @@ export const TextInput = forwardRef<
             ? "phone-pad"
             : props.type === "verification-code"
             ? "number-pad"
+            : props.type === "email"
+            ? "email-address"
             : "default"
         }
         autoComplete={
@@ -89,6 +92,8 @@ export const TextInput = forwardRef<
             ? "given-name"
             : props.type === "last-name"
             ? "name-family"
+            : props.type === "email"
+            ? "email"
             : "off"
         }
         textContentType={
