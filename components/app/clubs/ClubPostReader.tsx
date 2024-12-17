@@ -9,6 +9,7 @@ import {
   differenceInMinutes,
   differenceInHours,
   differenceInSeconds,
+  isTomorrow,
 } from "date-fns";
 import useColors from "../../core/theme/useColors";
 import Color from "color";
@@ -59,12 +60,14 @@ export default function ClubPostReader(props: { post: ClubPost }) {
       return "Happened today";
     } else if (isYesterday(date)) {
       return "Happened yesterday";
-    } else if (
-      date > now &&
-      timeDifferenceInHours > 24 &&
-      timeDifferenceInHours < 48
-    ) {
-      return `Tomorrow at ${format(date, "h:mm a")}`;
+    } else if (date > now) {
+      if (isTomorrow(date)) {
+        return `Tomorrow at ${format(date, "h:mm a")}`;
+      } else if (isThisWeek(date)) {
+        return `Happening ${format(date, "EEEE")}`;
+      } else {
+        return `Happening ${format(date, "MMMM d")}`;
+      }
     } else if (isThisWeek(date)) {
       return `Happened ${format(date, "EEEE")}`;
     } else {
