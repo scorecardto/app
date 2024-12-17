@@ -43,6 +43,9 @@ export default function CourseScreen(props: {
   const average = useSelector((r: RootState) => {
     return course?.grades[gradeCategory]?.value || "NG";
   });
+  const active = useSelector((r: RootState) => {
+    return course?.grades[gradeCategory]?.active ?? true;
+  });
 
   const grades = useSelector((r: RootState) => {
     return course?.gradeCategories;
@@ -139,10 +142,6 @@ export default function CourseScreen(props: {
         (course) => {
           if (course.key != courseInitial.key) return;
 
-          found = true
-          dispatch(setRSType("IDLE"));
-
-          console.log(course);
           setCourse(course);
 
           setLastUpdatedOldGradingPeriod(new Date().toISOString());
@@ -150,14 +149,15 @@ export default function CourseScreen(props: {
         gradeCategory
       );
 
-      content.courses.forEach((c) => {
-        oldGradebooks[c.grades[gradeCategory]?.key ?? c.key] = {
-          ...c,
-          lastUpdated: new Date().toISOString(),
-        };
-      });
+        content.courses.forEach((c) => {
+            oldGradebooks[c.grades[gradeCategory]?.key ?? c.key] = {
+                ...c,
+                lastUpdated: new Date().toISOString(),
+            };
+        });
 
-      ScorecardModule.storeItem("oldGradebooks", JSON.stringify(oldGradebooks));
+        ScorecardModule.storeItem("oldGradebooks", JSON.stringify(oldGradebooks));
+
     },
     [courseInitial, gradeCategory, login]
   );
@@ -227,6 +227,7 @@ export default function CourseScreen(props: {
               <CourseAverageDisplay
                 average={average}
                 modifiedAverage={modifiedAvg ?? undefined}
+                active={active}
               />
             </View>
             {recordCategory != gradeCategory &&

@@ -380,7 +380,7 @@ async function fetchCourse(
   emailsCallback?: (emails: {[code: string]: {name: string, email: string}}) => void,
   courseInfoCallback?: (num: number, names: string[]) => void,
   gradeCategory?: number
-): Promise<Course | undefined> {
+): Promise<Course> {
   const cookies = await entryPoint(host);
   await login(host, cookies, username, password);
 
@@ -392,11 +392,10 @@ async function fetchCourse(
   const course =
     typeof courseKeyOrIdx == "number"
       ? courses[courseKeyOrIdx]
-      : courses.find((c) => c.key == courseKeyOrIdx);
-  if (!course) return;
+      : courses.find((c) => c.key == courseKeyOrIdx)!;
 
   const key = gradeCategory != undefined ? course.grades[gradeCategory]?.key : course.key;
-  if (!key) return;
+  if (!key) return course;
 
   let gradeCategories = await parseCourse(host, cookies, key);
 
@@ -475,14 +474,12 @@ async function fetchAllContent(
       gradeCategory
     )
       .then((course) => {
-        if (course) {
-          courseCallback && courseCallback(course);
+        courseCallback && courseCallback(course);
 
-          resolved.push(i);
-          courses[i] = course;
+        resolved.push(i);
+        courses[i] = course;
 
-          onStatusUpdate && onStatusUpdate({ type: "GETTING_COURSES", status: "Fetching courses...",  tasksCompleted: resolved.length, taskRemaining: numCourses - resolved.length });
-        }
+        onStatusUpdate && onStatusUpdate({ type: "GETTING_COURSES", status: "Fetching courses...",  tasksCompleted: resolved.length, taskRemaining: numCourses - resolved.length });
       })
       .catch((e) => {
         console.error(e.message);

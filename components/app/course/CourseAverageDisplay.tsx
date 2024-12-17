@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 export default function CourseAverageDisplay(props: {
   average?: string;
   modifiedAverage?: string;
+  active: boolean;
 }) {
   const colors = useColors();
   const accents = useAccents();
@@ -43,20 +44,33 @@ export default function CourseAverageDisplay(props: {
           style={{
             backgroundColor: props.modifiedAverage
               ? colors.secondaryNeutral
-              : accents.primary,
+              : props.active ? accents.primary : accents.secondary,
             paddingVertical: 4,
-            paddingHorizontal: 12,
+            paddingLeft: 16,
+            paddingRight: props.active ? 16 : 10,
             borderRadius: 99,
           }}
         >
-          <Text
+            <View style={{
+                alignSelf: "flex-start",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "center",
+            }}>
+
+            <Text
             style={{
               fontSize: 16,
-              color: props.modifiedAverage ? colors.text : "#FFFFFF",
+              color: props.modifiedAverage ? colors.text : props.active ? "#FFFFFF" : accents.primary,
             }}
           >
             {props.average}
           </Text>
+                {!props.active && <MaterialIcons style={{
+                    paddingLeft: 4,
+                }} name="check" size={16} color={props.modifiedAverage ? colors.text : accents.primary} />}
+            </View>
         </View>
         {props.modifiedAverage && (
           <>
