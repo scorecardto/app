@@ -92,7 +92,7 @@ export default function RefreshIndicator() {
             bottom: 0,
             left: 0,
             right: 0,
-            height: insets.bottom + 24,
+            height: insets.bottom + 35,
             backgroundColor: colors.button,
             zIndex: 100,
             width: "100%",

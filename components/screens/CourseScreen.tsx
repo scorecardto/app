@@ -18,6 +18,8 @@ import {
 } from "../core/state/grades/refreshStatusSlice";
 import { fetchAllContent } from "../../lib/fetcher";
 import OldGradingPeriodDisplay from "../app/course/OldGradingPeriodDisplay";
+import MediumText from "../text/MediumText";
+import SmallText from "../text/SmallText";
 
 export default function CourseScreen(props: {
   route: any;
@@ -39,7 +41,7 @@ export default function CourseScreen(props: {
   );
 
   const average = useSelector((r: RootState) => {
-    return course?.grades[gradeCategory]?.value;
+    return course?.grades[gradeCategory]?.value || "NG";
   });
 
   const grades = useSelector((r: RootState) => {
@@ -47,7 +49,7 @@ export default function CourseScreen(props: {
   });
 
   const name = useSelector((r: RootState) => {
-    return r.courseSettings[key]?.displayName || course?.name;
+    return r.courseSettings[key]?.displayName || course?.name || r.gradeData.record?.courses.find((c) => c.key === key)?.name;
   });
 
   const colors = useColors();
@@ -123,6 +125,8 @@ export default function CourseScreen(props: {
           tasksCompleted: 3,
         })
       );
+      setCourse(null);
+      let found = false
       const content = await fetchAllContent(
         login.district,
         numCourses,
@@ -130,13 +134,15 @@ export default function CourseScreen(props: {
         login.password,
         undefined,
         (status) => {
-          dispatch(setRefreshStatus(status));
+          !found && dispatch(setRefreshStatus(status));
         },
         (course) => {
           if (course.key != courseInitial.key) return;
 
+          found = true
           dispatch(setRSType("IDLE"));
 
+          console.log(course);
           setCourse(course);
 
           setLastUpdatedOldGradingPeriod(new Date().toISOString());
@@ -249,12 +255,31 @@ export default function CourseScreen(props: {
               flex: 1,
             }}
           >
-            {course && (
+            {course ? (
               <GradebookWrapper
                 course={course}
                 setModifiedGrade={setModifiedAvg}
                 resetKey={`${resetKey}`}
               />
+            ) : (
+                <View
+                    style={{
+                    flex: 1,
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                        paddingTop: 32
+                    }}
+                >
+                    {gradeCategory < (recordCategory ?? 0) ? (
+                        <>
+                            <MediumText style={{color: colors.text}}>Loading...</MediumText>
+                        </>) : (
+                        <>
+                            <MediumText style={{color: colors.text}}>No grades yet!</MediumText>
+                            <MediumText style={{color: colors.text}}>Are you in the right grading period?</MediumText>
+                        </>
+                    )}
+                </View>
             )}
           </View>
         </View>

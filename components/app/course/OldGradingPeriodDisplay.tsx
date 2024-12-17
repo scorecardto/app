@@ -73,7 +73,7 @@ export default function OldGradingPeriodDisplay(props: {
                         marginTop: 4,
                     }}
                 >
-                    {lastUpdatedText}
+                    {lastUpdatedText ?? "Fetching grades..."}
                 </TinyText>
 
             </View>

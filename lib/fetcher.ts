@@ -395,7 +395,7 @@ async function fetchCourse(
       : courses.find((c) => c.key == courseKeyOrIdx);
   if (!course) return;
 
-  const key = gradeCategory ? course.grades[gradeCategory]?.key : course.key;
+  const key = gradeCategory != undefined ? course.grades[gradeCategory]?.key : course.key;
   if (!key) return;
 
   let gradeCategories = await parseCourse(host, cookies, key);
@@ -452,6 +452,7 @@ async function fetchAllContent(
 
   let gradeCategoryNames: string[] = [];
 
+  onStatusUpdate && onStatusUpdate({ type: "LOGGING_IN", status: "Logging in...",  tasksCompleted: 0, taskRemaining: 0 });
   infoCallback && fetchHomeInfo(host, username, password).then(infoCallback);
 
   const runCourse = (i: number) => {
@@ -479,6 +480,8 @@ async function fetchAllContent(
 
           resolved.push(i);
           courses[i] = course;
+
+          onStatusUpdate && onStatusUpdate({ type: "GETTING_COURSES", status: "Fetching courses...",  tasksCompleted: resolved.length, taskRemaining: numCourses - resolved.length });
         }
       })
       .catch((e) => {
@@ -510,6 +513,8 @@ async function fetchAllContent(
         if (course) course.teacher = emails[code];
     }
   }
+
+  onStatusUpdate && onStatusUpdate({ type: "IDLE", status: "",  tasksCompleted: 0, taskRemaining: 0 });
 
   return {
     courses,
