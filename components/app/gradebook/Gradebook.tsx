@@ -214,7 +214,7 @@ function Gradebook(props: {
                               red: isGradeModified,
                             },
                             ...(props.course.room ? { Room: { text: props.course.room, red: false } } : {}),
-                            ...(props.course.teacher ? { Teacher: { text: props.course.teacher.name, red: false, link: props.course.teacher.email ? `mailto:${props.course.teacher.email}` : undefined } } : {}),
+                            ...(props.course.teacher ? { "Teacher/Email": { text: props.course.teacher.name, red: false, link: props.course.teacher.email ? `mailto:${props.course.teacher.email}` : undefined } } : {}),
                           }}
                           removable={false}
                           remove={() => {}}

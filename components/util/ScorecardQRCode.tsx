@@ -1,5 +1,6 @@
 import { TouchableOpacity, View, Image } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import 'text-encoding'
 import { useCallback, useRef } from "react";
 import * as MediaLibrary from "expo-media-library";
 import * as FileSystem from "expo-file-system";
