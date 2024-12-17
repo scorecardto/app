@@ -11,6 +11,8 @@ import { ActionSheetRef } from "react-native-actions-sheet";
 import ManageClubMemberSheet from "./ManageClubMemberSheet";
 import useIsDarkMode from "../../core/theme/useIsDarkMode";
 import { MaterialIcons } from "@expo/vector-icons";
+import Share from "react-native-share";
+import * as FileSystem from "expo-file-system";
 export function MemberRow(props: {
   club: Club;
   member: ClubMembershipBase;
@@ -211,21 +213,66 @@ export default function ClubMembersView(props: { club: Club }) {
       ) : (
         <>
           <View>
-            <Text
-              style={{
-                color: colors.text,
-              }}
-            >
-              {members.length} joined with Scorecard.
-            </Text>
-            <Text
-              style={{
-                color: colors.text,
-              }}
-            >
-              {enrollments.length} imported.
-            </Text>
-            <MediumText
+              <View style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between'
+              }}>
+                  <View>
+                  <Text
+                      style={{
+                        color: colors.text,
+                      }}
+                    >
+                      {members.length} joined with Scorecard.
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.text,
+                      }}
+                    >
+                      {enrollments.length} imported.
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                      onPress={async () => {
+                          let data = "Email,Last Name,First Name,Is Manager,Has Scorecard\n";
+                          for (const membership of members) {
+                              data += `${membership.email},${membership.lastName},${membership.firstName},${membership.manager},true\n`;
+                          }
+                          for (const enrollment of enrollments) {
+                              data += `${enrollment.email},${enrollment.lastName},${enrollment.firstName},false,false\n`;
+                          }
+
+                          const file = FileSystem.cacheDirectory + "members.csv";
+                          await FileSystem.writeAsStringAsync(file, data);
+                          await Share.open({
+                                url: file,
+                                filename: "members.csv",
+                                title: "members.csv",
+                                type:'text/csv',
+                                message: 'CSV list of member data',
+                              failOnCancel: false,
+                          })
+                      }}
+                      style={{
+                          backgroundColor: colors.secondary,
+                          paddingVertical: 8,
+                          paddingHorizontal: 12,
+                          borderRadius: 10,
+                      }}
+                  >
+                      <Text
+                          style={{
+                              fontSize: 16,
+                              color: colors.button
+                          }}
+                      >
+                          Export
+                      </Text>
+                  </TouchableOpacity>
+              </View>
+              <MediumText
               style={{
                 fontSize: 18,
                 color: colors.primary,
