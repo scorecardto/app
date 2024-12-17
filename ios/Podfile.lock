@@ -1640,14 +1640,14 @@ PODS:
   - react-native-blur (4.4.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - react-native-compressor (1.9.0):
+  - react-native-compressor (1.10.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
-  - react-native-date-picker (5.0.7):
+  - react-native-date-picker (5.0.8):
     - React-Core
-  - react-native-keyboard-controller (1.13.4):
+  - react-native-keyboard-controller (1.15.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-loader-kit (2.0.8):
@@ -2295,10 +2295,10 @@ SPEC CHECKSUMS:
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
   react-native-blur: db09583409bd872539bf6e915df484d792373810
-  react-native-compressor: d920e812f9f50edadd7ada05d80e9a4bd840094d
+  react-native-compressor: b2009ba82a35d463267c4d4ba3c22d8c16134a9e
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
-  react-native-date-picker: 06a4d96ab525a163c7a90bccd68833d136b0bb13
-  react-native-keyboard-controller: 5b206be8a4c14617f6a10538127103dfbde95d83
+  react-native-date-picker: 8a0d56cdef18f61945e6d0dfd250dc1b8e7a313e
+  react-native-keyboard-controller: df7343724ca925cf2d3fe12116d23500940b9178
   react-native-loader-kit: ed18c8ce83b69083211912326897d8286f37d797
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
@@ -2346,6 +2346,6 @@ SPEC CHECKSUMS:
   UMAppLoader: e83f024f75f07802fce99739f04b4537d188caaf
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
 
-PODFILE CHECKSUM: cf35be2881ab81e26e6c96793232ec724e631a83
+PODFILE CHECKSUM: 596f989b1a945a52aac1db3403c4cf48a28ce97e
 
 COCOAPODS: 1.14.3
