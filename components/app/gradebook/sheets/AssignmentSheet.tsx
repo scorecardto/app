@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
-import BottomSheetBase, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheetBase, {BottomSheetScrollView, BottomSheetView} from "@gorhom/bottom-sheet";
 import { Assignment } from "scorecard-types";
 import AssignmentEdits from "../../../../lib/types/AssignmentEdits";
 import LargeGradebookSheetTile from "./tiles/LargeGradebookSheetTile";
@@ -13,6 +13,10 @@ import BottomSheetHeader from "../../../util/BottomSheet/BottomSheetHeader";
 import AssignmentRemoveTile from "./tiles/AssignmentRemoveTile";
 import AssignmentDueDateTile from "./tiles/AssignmentDueDateTile";
 import AssignmentAssignDateTile from "./tiles/AssignmentAssignDateTile";
+import BottomSheet from "@gorhom/bottom-sheet";
+import SmallGradebookSheetTile from "./tiles/SmallGradebookSheetTile";
+import SmallText from "../../../text/SmallText";
+import {useTheme} from "@react-navigation/native";
 
 export default function AssignmentSheet(props: {
   assignment: Assignment;
@@ -34,8 +38,11 @@ export default function AssignmentSheet(props: {
     props.currentEdits?.pointsEarned != null &&
     props.currentEdits?.pointsPossible != null;
 
+  const note = props.assignment.note?.trim()
+
+  const { colors } = useTheme();
   return (
-    <BottomSheetView>
+    <BottomSheetScrollView>
       <BottomSheetHeader>{props.assignment.name!}</BottomSheetHeader>
       <View
         style={{
@@ -134,7 +141,31 @@ export default function AssignmentSheet(props: {
             </View>
           </View>
         )}
+          {!note ? (
+                  <></>
+              ) : (
+              <View style={{height:'100%', marginHorizontal: 8, flex: 1 }}>
+                  <View
+                      style={{
+                          width: "100%",
+                          borderRadius: 8,
+                          backgroundColor: colors.backgroundNeutral,
+                          flexShrink: 1,
+                          flexGrow: 0,
+                          marginVertical: 8,
+                          paddingVertical: 12,
+                          paddingHorizontal: 18,
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "left",
+                      }}
+                  >
+                      <SmallText style={{color: colors.primary, paddingBottom: 3}}>Note</SmallText>
+                      <SmallText style={{color: colors.text}}>{note}</SmallText>
+                  </View>
+              </View>
+          )}
       </View>
-    </BottomSheetView>
+    </BottomSheetScrollView>
   );
 }
