@@ -13,6 +13,96 @@ import useIsDarkMode from "../../core/theme/useIsDarkMode";
 import { MaterialIcons } from "@expo/vector-icons";
 import Share from "react-native-share";
 import * as FileSystem from "expo-file-system";
+export function EnrollmentRow(props: {
+    club: Club;
+    enrollment: ClubEnrollmentBase;
+    index: number;
+    reload(): void;
+}) {
+    const e = props.enrollment;
+    const i = props.index;
+
+    const colors = useColors();
+    const sheetRef = useRef<ActionSheetRef>(null);
+    const isDark = useIsDarkMode();
+
+    return (
+        <>
+            <ManageClubMemberSheet
+                ref={sheetRef}
+                enrollment={e}
+                club={props.club}
+                reload={() => {
+                    sheetRef.current?.hide();
+                    props.reload();
+                }}
+            />
+            <TouchableOpacity
+                onPress={() => {
+                    sheetRef.current?.show();
+                }}
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: colors.card,
+                    borderBottomWidth: 2,
+                    borderBottomColor: colors.border,
+                    paddingVertical: 8,
+                    paddingHorizontal: 12,
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                    }}
+                >
+                    <View
+                        style={{
+                            marginRight: 12,
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: colors.text,
+                            }}
+                        >
+                            {i + 1}
+                        </Text>
+                    </View>
+                    <View>
+                        {e.firstName && (
+                            <MediumText
+                                style={{
+                                    color: colors.primary,
+                                    fontSize: 16,
+                                }}
+                            >
+                                {e.firstName} {e.lastName}
+                            </MediumText>
+                        )}
+                        <Text
+                            style={{
+                                color: e.firstName ? colors.text : colors.primary,
+                            }}
+                        >
+                            {e.email}
+                        </Text>
+                    </View>
+                </View>
+                <View>
+                    <MaterialIcons
+                        name="chevron-right"
+                        color={colors.text}
+                        size={24}
+                    />
+                </View>
+            </TouchableOpacity>
+        </>
+    )
+}
+
 export function MemberRow(props: {
   club: Club;
   member: ClubMembershipBase;
@@ -317,50 +407,7 @@ export default function ClubMembersView(props: { club: Club }) {
             >
               {enrollments.map((m, i) => {
                 return (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: colors.card,
-                      borderBottomWidth: 2,
-                      borderBottomColor: colors.border,
-                      paddingVertical: 8,
-                      paddingHorizontal: 12,
-                      alignItems: "center",
-                    }}
-                  >
-                    <View
-                      style={{
-                        marginRight: 12,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: colors.text,
-                        }}
-                      >
-                        {members.length + i + 1}
-                      </Text>
-                    </View>
-                    <View>
-                      {m.firstName && (
-                        <MediumText
-                          style={{
-                            color: colors.primary,
-                            fontSize: 16,
-                          }}
-                        >
-                          {m.firstName} {m.lastName}
-                        </MediumText>
-                      )}
-                      <Text
-                        style={{
-                          color: m.firstName ? colors.text : colors.primary,
-                        }}
-                      >
-                        {m.email}
-                      </Text>
-                    </View>
-                  </View>
+                    <EnrollmentRow club={props.club} enrollment={m} index={members.length+i} reload={refresh} />
                 );
               })}
             </View>

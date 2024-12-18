@@ -1,20 +1,23 @@
-import { View, TouchableOpacity, Text } from "react-native";
+import {View, TouchableOpacity, Text, Alert} from "react-native";
 import { Ref, forwardRef, useCallback, useState } from "react";
 import BottomSheetHeader from "../../util/BottomSheet/BottomSheetHeader";
 import ActionSheet, { ActionSheetRef } from "react-native-actions-sheet";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../core/state/store";
 import useColors from "../../core/theme/useColors";
-import { Club, ClubMembershipBase } from "scorecard-types";
+import {Club, ClubEnrollmentBase, ClubMembershipBase} from "scorecard-types";
 import { useNavigation } from "@react-navigation/native";
 import LoaderKit from "react-native-loader-kit";
 import useScApi from "../../util/hooks/useScApi";
+import useSocial from "../../util/hooks/useSocial";
+import SmallText from "../../text/SmallText";
 
 const ManageClubMemberSheet = forwardRef(
   (
     props: {
       club: Club;
-      member: ClubMembershipBase;
+      member?: ClubMembershipBase;
+      enrollment?: ClubEnrollmentBase;
       reload(): void;
     },
     ref: Ref<ActionSheetRef>
@@ -38,15 +41,17 @@ const ManageClubMemberSheet = forwardRef(
           auth: true,
           body: {
             internalCode: props.club.internalCode,
-            action: props.member.manager ? "DEMOTE" : "PROMOTE",
-            membershipId: props.member.id,
+            action: props.member!.manager ? "DEMOTE" : "PROMOTE",
+            membershipId: props.member!.id,
           },
         })
         .finally(() => {
           setLoading(false);
           props.reload();
         });
-    }, [loading, props.member.manager]);
+    }, [loading, props.member?.manager]);
+    const first = (props.member?.firstName ?? props.enrollment!.firstName)?.replace("null", "") ?? '';
+    const last = (props.member?.lastName ?? props.enrollment!.lastName)?.replace("null", "") ?? '';
     return (
       <ActionSheet
         ref={ref}
@@ -60,14 +65,21 @@ const ManageClubMemberSheet = forwardRef(
         }}
       >
         <BottomSheetHeader>
-          {`${props.member.firstName} ${props.member.lastName}`.trim() ||
+          {`${first} ${last}`.trim() ||
             "Club Member"}
         </BottomSheetHeader>
 
+          {!props.member && <SmallText style={{
+              color: colors.text
+          }}>
+              Must be a Scorecard user.
+          </SmallText>}
         <TouchableOpacity
           style={{
             marginBottom: 12,
+              opacity: !props.member ? 0.2 : 1,
           }}
+          disabled={!props.member}
           onPress={() => {
             changeManagerStatus();
           }}
@@ -97,11 +109,76 @@ const ManageClubMemberSheet = forwardRef(
                   textAlign: "center",
                 }}
               >
-                {props.member.manager ? "Remove as Manager" : "Add as Manager"}
+                {props.member?.manager ? "Remove as Manager" : "Add as Manager"}
               </Text>
             )}
           </View>
         </TouchableOpacity>
+          <TouchableOpacity
+              style={{marginBottom: 12,}}
+              onPress={() => {
+                  Alert.alert("Remove Member", `Are you sure you want to remove ${(first+' '+last).trim() || 'this member'}?`, [
+                      {
+                          text: "Cancel",
+                          style: "cancel",
+                          isPreferred: true,
+                      },
+                      {
+                          text: "Remove",
+                          style: "destructive",
+                          onPress: async() => {
+                              setLoading(true);
+                              scApi
+                                  .post({
+                                      pathname: "/v1/clubs/changeMember",
+                                      auth: true,
+                                      body: {
+                                          internalCode: props.club.internalCode,
+                                          action: "REMOVE",
+                                          membershipId: props.member?.id,
+                                          enrollmentEmail: props.enrollment?.email,
+                                      },
+                                  })
+                                  .finally(() => {
+                                      setLoading(false);
+                                      props.reload();
+                                  });
+                              props.reload();
+                          }
+                      }
+                  ]);
+              }}
+          >
+              <View
+                  style={{
+                      backgroundColor: '#e44c46',
+                      paddingVertical: 12,
+                      width: "100%",
+                      borderRadius: 16,
+                      alignItems: "center",
+                      height: 48,
+                      justifyContent: "center",
+                  }}
+              >
+                  {loading ? (
+                      <LoaderKit
+                          style={{ width: 16, height: 16 }}
+                          name={"LineScalePulseOut"}
+                          color={"white"}
+                      />
+                  ) : (
+                      <Text
+                          style={{
+                              color: "#FFFFFF",
+                              fontSize: 18,
+                              textAlign: "center",
+                          }}
+                      >
+                          Remove Member
+                      </Text>
+                  )}
+              </View>
+          </TouchableOpacity>
       </ActionSheet>
     );
   }
