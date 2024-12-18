@@ -43,12 +43,14 @@ func parseHome(_ host: String, _ cookies: String) async throws -> ([Course], [St
 
   var columnNames: [String] = []
   var courses: [Course] = []
+  var periodKeys: [String: [String]] = [:]
 
   for (idx, courseElement) in courseElements.enumerated() {
     let courseKey = try courseElement.attr("cellkey")
     let name = try courseElement.text()
 
     var grades: [CourseGrade?] = []
+    var keys: [String] = []
 
     for gradeElement in try parsed.select(".studentGradingBottomRight tr:nth-child(\(idx + 2)) td") {
       let key = try gradeElement.attr("cellkey")
@@ -65,12 +67,14 @@ func parseHome(_ host: String, _ cookies: String) async throws -> ([Course], [St
       } else {
         grades.append(nil)
       }
+      keys.append(key)
     }
 
     courses.append(Course(key: courseKey, name: name, grades: grades))
+    periodKeys[courseKey] = keys
   }
 
-  return (courses, columnNames)
+  return (courses, periodKeys, columnNames)
 }
 
 func parseCourse(_ host: String, _ cookies: String, _ courseKey: String) async throws -> [GradeCategory] {
@@ -147,11 +151,11 @@ func parseCourse(_ host: String, _ cookies: String, _ courseKey: String) async t
   }
 }
 
-func fetchCourse(_ host: String, _ username: String, _ password: String, _ courseIdx: Int, courseInfoCallback: ((_ num: Int, _ names: [String]) -> Void)?=nil) async throws -> Course? {
+func fetchCourse(_ host: String, _ username: String, _ password: String, _ courseIdx: Int, _ gradingPeriod: Int?, courseInfoCallback: ((_ num: Int, _ names: [String]) -> Void)?=nil) async throws -> Course? {
   let cookies = try await entryPoint(host)
   try await login(host, cookies, username, password)
 
-  let (courses, gradeCategoryNames) = try await parseHome(host, cookies)
+  let (courses, periodKeys, gradeCategoryNames) = try await parseHome(host, cookies)
   courseInfoCallback?(courses.count, gradeCategoryNames)
 
   if (courses.count <= courseIdx) {
@@ -160,7 +164,7 @@ func fetchCourse(_ host: String, _ username: String, _ password: String, _ cours
 
   let course = courses[courseIdx];
 
-  return Course(key: course.key, name: course.name, grades: course.grades, gradeCategories: try await parseCourse(host, cookies, course.key))
+  return Course(key: course.key, name: course.name, grades: course.grades, gradeCategories: try await parseCourse(host, cookies, gradingPeriod == nil ? course.key : periodKeys[course.key][gradingPeriod]))
 }
 
 struct AllContent {
@@ -168,7 +172,7 @@ struct AllContent {
   var gradeCategoryNames: [String]
 }
 
-func fetchAllContent(_ host: String, _ oldNumCourses: Int?, _ username: String, _ password: String) throws -> AllContent {
+func fetchAllContent(_ host: String, _ oldNumCourses: Int?, _ username: String, _ password: String, _ gradingPeriod: Int?) throws -> AllContent {
   var numCourses = (oldNumCourses == 0 ? nil : oldNumCourses) ?? 8
 
   var courses: [Course?] = []
@@ -183,7 +187,7 @@ func fetchAllContent(_ host: String, _ oldNumCourses: Int?, _ username: String, 
     Task {
       let names: [String] = []
 
-      var course = try await fetchCourse(host, username, password, i, courseInfoCallback: {(realNum: Int, names: [String]) in
+      var course = try await fetchCourse(host, username, password, i, gradingPeriod, courseInfoCallback: {(realNum: Int, names: [String]) in
         serialQueue.sync {
           if (realNum > numCourses) {
             for i in numCourses...realNum {
