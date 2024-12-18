@@ -32,7 +32,6 @@ export default function CourseCard(props: {
       overflow: "hidden",
       marginHorizontal: 12,
       flexDirection: "row",
-      justifyContent: "space-between",
       alignItems: "center",
       textAlignVertical: "center",
     },
@@ -41,7 +40,7 @@ export default function CourseCard(props: {
       alignItems: "center",
       flex: 1,
       overflow: "hidden",
-      flexGrow: 10,
+      flexGrow: 18,
     },
     badge: {
       width: 56,
@@ -61,6 +60,11 @@ export default function CourseCard(props: {
     grade: {
       fontSize: 16,
       color: props.changes?.average ? colors.newGrade : colors.text,
+      textAlign: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
     },
     updateIndicator: {
       height: 10,
@@ -114,21 +118,30 @@ export default function CourseCard(props: {
           {hasNewGrades ? (
             <View style={styles.updateIndicator} />
           ) : (
-              <View style={{
-                flex: 1,
-                flexGrow: 1,
-                flexShrink: 0,
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                marginRight: 24,
-                marginLeft: 6,
-              }}>
-                <SmallText style={styles.grade}>
-                  {props.course.grades[props.gradingPeriod]?.value ?? "NG"}
-                </SmallText>
-                {!props.course.grades[props.gradingPeriod]?.active &&
-                <MaterialIcons style={{paddingLeft: 5, marginTop: 2}} name="check" size={16} color={colors.text} />}
-              </View>
+              <>
+                <View style={{
+                  flex: 1,
+                  flexShrink: 0,
+                  flexGrow: 2.5,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  // marginRight: 5,
+                }}>
+                  <SmallText style={styles.grade}>
+                    {props.course.grades[props.gradingPeriod]?.value ?? "NG"}
+                  </SmallText>
+                </View>
+                <View style={{
+                  flex: 1,
+                  flexShrink: 0,
+                  flexGrow: 1,
+                  flexDirection: 'row',
+                  marginRight: 10,
+                }}>
+                  {!props.course.grades[props.gradingPeriod]?.active &&
+                    <MaterialIcons style={{marginTop: 2}} name="check" size={16} color={colors.text} />}
+                </View>
+              </>
           )}
         </View>
       </View>
