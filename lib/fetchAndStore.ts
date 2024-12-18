@@ -36,7 +36,7 @@ export default async function fetchAndStore(
 
   const oldData: GradebookRecord[] = JSON.parse(
     ScorecardModule.getItem("records") ?? "[]"
-  );
+  ).filter((r: GradebookRecord) => Date.now() - r.date >= 1000 * 60 * 60 * 24 * 7 * 26); // half a year of storage
 
   const newData: GradebookRecord = {
     courses: data.courses.map((c) => {
