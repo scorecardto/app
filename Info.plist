@@ -24,40 +24,40 @@
     <string>????</string>
     <key>CFBundleURLTypes</key>
     <array>
-          <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-              <string>com.scorecardgrades.mobile</string>
-            </array>
-          </dict>
-          <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-              <string>com.googleusercontent.apps.870859629353-p4k4ptusm5irenbqu4grggodu1oulla4</string>
-            </array>
-          </dict>
-          <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-              <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
-            </array>
-          </dict>
-          <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-              <string>exp+scorecard</string>
-            </array>
-          </dict>
-          <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLName</key>
-            <string>com.scorecardgrades.mobile</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-              <string>scorecard</string>
-            </array>
-          </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.scorecardgrades.mobile</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.870859629353-p4k4ptusm5irenbqu4grggodu1oulla4</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>exp+scorecard</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLName</key>
+        <string>com.scorecardgrades.mobile</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>scorecard</string>
+        </array>
+      </dict>
     </array>
     <key>CFBundleVersion</key>
     <string>0</string>

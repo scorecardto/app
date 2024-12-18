@@ -30,6 +30,9 @@
 		EA9984A3B2F94820B91CCCB6 /* ScorecardTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0488144BB454D4F9F00031E /* ScorecardTypes.swift */; };
 		EBAF476A529E4283AC510E68 /* Fetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A98AA1926D6488D8E1166D5 /* Fetcher.swift */; };
 		EC373E16F75.0E6EB9C2C48D /* ScorecardWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECE56D1F999447C818A4327 /* ScorecardWidgetBundle.swift */; };
+		F60B50EFF9C24CB7AE97E731 /* ScorecardWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 196975AEBBDF4BD7BD219898 /* ScorecardWidgetExtension.appex */; };
+		4A47DE3DE6B448FBB7F25635 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CEF50E67EF0426DA563E4D7 /* WidgetKit.framework */; };
+		661720BE28D74C9DB7A2C60A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A15BB9722B4A8B9065301E /* SwiftUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +41,13 @@
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 666E13BF4DCA4103B70F8282;
+			remoteInfo = ScorecardWidgetExtension;
+		};
+		C44875739CB6465CA42475CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6F93479D1E694068871E5654;
 			remoteInfo = ScorecardWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
@@ -50,6 +60,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				4FE60655164C462595FE84F4 /* ScorecardWidgetExtension.appex in Embed Foundation Extensions */,
+				F60B50EFF9C24CB7AE97E731 /* ScorecardWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -63,6 +74,26 @@
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7B71F8F0F2A4A6B8CF90311 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Embed Foundation Extensions";
+			dstPath = "";
+			dstSubfolderSpec = 13;
+		};
+		5CF3E09D25954C84827DAD4E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Embed Foundation Extensions";
+			dstPath = "";
+			dstSubfolderSpec = 13;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -101,6 +132,9 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Scorecard/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		FC49011C863640B2AC85A675 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "Scorecard/noop-file.swift"; sourceTree = "<group>"; };
+		196975AEBBDF4BD7BD219898 /* ScorecardWidgetExtension.appex */ = {isa = PBXFileReference; name = "ScorecardWidgetExtension.appex"; path = "ScorecardWidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; fileEncoding = undefined; lastKnownFileType = undefined; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; };
+		8CEF50E67EF0426DA563E4D7 /* WidgetKit.framework */ = {isa = PBXFileReference; name = "WidgetKit.framework"; path = "System/Library/Frameworks/WidgetKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		19A15BB9722B4A8B9065301E /* SwiftUI.framework */ = {isa = PBXFileReference; name = "SwiftUI.framework"; path = "System/Library/Frameworks/SwiftUI.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +155,15 @@
 				94BFB6131C2243C4A6E16A48 /* WidgetKit.framework in Frameworks */,
 				7278044806184BB981C9E49D /* SwiftUI.framework in Frameworks */,
 				BEC056F0E18F691631F15E5E /* Pods_ScorecardWidgetExtension.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5CB2A1874C0F4B58AACBA5E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A47DE3DE6B448FBB7F25635 /* WidgetKit.framework in Frameworks */,
+				661720BE28D74C9DB7A2C60A /* SwiftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +216,7 @@
 				D65327D7A22EEC0BE12398D9 /* Pods */,
 				D7E4C46ADA2E9064B798F356 /* ExpoModulesProviders */,
 				8D9ACE02F1644A2899F52BDC /* ScorecardWidgetExtension */,
+				6FF3AC29255B432DAC0DBFC0 /* ScorecardWidgetExtension */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -184,6 +228,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* Scorecard.app */,
 				7FA5AF7AA484417B8AA08C5C /* ScorecardWidgetExtension.appex */,
+				196975AEBBDF4BD7BD219898 /* ScorecardWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -250,6 +295,23 @@
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
+		6FF3AC29255B432DAC0DBFC0 /* ScorecardWidgetExtension */ = {
+			isa = PBXGroup;
+			children = (
+				BFE8A34B008F46AD8CD32008 /* CourseGradeWidget.swift */,
+				1A98AA1926D6488D8E1166D5 /* Fetcher.swift */,
+				A0488144BB454D4F9F00031E /* ScorecardTypes.swift */,
+				6ECE56D1F999447C818A4327 /* ScorecardWidgetBundle.swift */,
+				A8497788D32D43DDBDA180B9 /* Storage.swift */,
+				EB31B68B0285404E97AA9E25 /* StringError.swift */,
+				A2998F2A4D5.049B9BADE2BD /* Assets.xcassets */,
+				306F2C7EBA6040C9B5E3C3D1 /* ScorecardWidgetExtension.entitlements */,
+				E28C6D4835964A288F3B3FC9 /* Info.plist */,
+			);
+			name = ScorecardWidgetExtension;
+			path = ScorecardWidgetExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -269,11 +331,14 @@
 				D5A5DA641A3C40BFB653DF21 /* Embed Foundation Extensions */,
 				8DDA368B00ABA0B1E915E432 /* [CP] Embed Pods Frameworks */,
 				E86F925B97EB60AD9E6C78B5 /* [CP-User] [RNFB] Core Configuration */,
+				B7B71F8F0F2A4A6B8CF90311 /* Embed Foundation Extensions */,
+				5CF3E09D25954C84827DAD4E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				ACBC53CAD37D4FD5A538AD83 /* PBXTargetDependency */,
+				20A0E95A6E0E4B5FA5367748 /* PBXTargetDependency */,
 			);
 			name = Scorecard;
 			productName = Scorecard;
@@ -301,6 +366,23 @@
 			productReference = 7FA5AF7AA484417B8AA08C5C /* ScorecardWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		6F93479D1E694068871E5654 /* ScorecardWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			name = ScorecardWidgetExtension;
+			productName = "ScorecardWidgetExtension";
+			productReference = 196975AEBBDF4BD7BD219898;
+			productType = "com.apple.product-type.app-extension";
+			buildConfigurationList = 04BE1ABF9BF94879A677250C;
+			buildPhases = (
+				5CB2A1874C0F4B58AACBA5E5 /* Frameworks */,
+				97383BA0ACCD4A82B6D8FD28 /* Embed Foundation Extensions */,
+				4FDD867CF7A8406F9422E95F /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -319,6 +401,9 @@
 						LastSwiftMigration = 1250;
 						ProvisioningStyle = Automatic;
 					};
+					6F93479D1E694068871E5654 = {
+						LastSwiftMigration = 1250;
+					};
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Scorecard" */;
@@ -336,6 +421,7 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* Scorecard */,
 				666E13BF4DCA4103B70F8282 /* ScorecardWidgetExtension */,
+				6F93479D1E694068871E5654 /* ScorecardWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -353,6 +439,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9351350F78FF41A3AA590958 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2117C973E18F4850963D8DE9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FDD867CF7A8406F9422E95F /* Embed Foundation Extensions */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -583,6 +677,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		97383BA0ACCD4A82B6D8FD28 /* Embed Foundation Extensions */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9D3C2A8204FA45909A061188 /* CourseGradeWidget.swift in Sources */,
+				EBAF476A529E4283AC510E68 /* Fetcher.swift in Sources */,
+				EA9984A3B2F94820B91CCCB6 /* ScorecardTypes.swift in Sources */,
+				EC373E16F75.0E6EB9C2C48D /* ScorecardWidgetBundle.swift in Sources */,
+				718E4396C7E04FD5908B7DDF /* Storage.swift in Sources */,
+				0BDFBCA299244418889A7790 /* StringError.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -590,6 +697,11 @@
 			isa = PBXTargetDependency;
 			target = 666E13BF4DCA4103B70F8282 /* ScorecardWidgetExtension */;
 			targetProxy = 56D37447200841379297382D /* PBXContainerItemProxy */;
+		};
+		20A0E95A6E0E4B5FA5367748 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6F93479D1E694068871E5654 /* ScorecardWidgetExtension */;
+			targetProxy = C44875739CB6465CA42475CB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -662,7 +774,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.scorecardgrades.mobile;
-				PRODUCT_NAME = Scorecard;
+				PRODUCT_NAME = "Scorecard";
 				SWIFT_OBJC_BRIDGING_HEADER = "Scorecard/Scorecard-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -693,7 +805,7 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.scorecardgrades.mobile;
-				PRODUCT_NAME = Scorecard;
+				PRODUCT_NAME = "Scorecard";
 				SWIFT_OBJC_BRIDGING_HEADER = "Scorecard/Scorecard-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -890,6 +1002,86 @@
 			};
 			name = Release;
 		};
+		8C3153299FF54BDE86B6B8D7 /* Debug */ = {
+			name = Debug;
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = ScorecardWidgetExtension/ScorecardWidgetExtension.entitlements;
+				CURRENT_PROJECT_VERSION = 94;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H29JJ3FSST;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScorecardWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScorecardWidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 2.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scorecardgrades.mobile.ScorecardWidgetExtension;
+				SKIP_INSTALL = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = -Onone;
+				SWIFT_VERSION = 5.4;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+		};
+		CC7CD50B4AC647ACA75C26C3 /* Release */ = {
+			name = Release;
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = ScorecardWidgetExtension/ScorecardWidgetExtension.entitlements;
+				CURRENT_PROJECT_VERSION = 94;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H29JJ3FSST;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ScorecardWidgetExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ScorecardWidgetExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MARKETING_VERSION = 2.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.scorecardgrades.mobile.ScorecardWidgetExtension;
+				SKIP_INSTALL = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = -Onone;
+				SWIFT_VERSION = 5.4;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -916,6 +1108,15 @@
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,
 				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04BE1ABF9BF94879A677250C /* Build configuration list for PBXNativeTarget "ScorecardWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C3153299FF54BDE86B6B8D7 /* Debug */,
+				CC7CD50B4AC647ACA75C26C3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
