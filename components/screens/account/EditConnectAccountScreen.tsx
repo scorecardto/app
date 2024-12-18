@@ -40,6 +40,7 @@ const EditConnectAccountScreen = (props: {
   const passwordRef = useRef<ReactNative.TextInput>(null);
 
   const numCourses = useSelector((state: RootState) => state.gradeData.record?.courses.length);
+  const gradingPeriod = useSelector((state: RootState) => state.gradeData.record?.gradeCategory);
   useEffect(() => {
     if (loading) {
       let schoolLabel = "";
@@ -49,6 +50,7 @@ const EditConnectAccountScreen = (props: {
         numCourses,
         username,
         password,
+        gradingPeriod,
         (name) => {
           schoolLabel = name.school;
           gradeLabel = name.grade;

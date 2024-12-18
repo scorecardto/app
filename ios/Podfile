@@ -93,9 +93,6 @@ target 'Scorecard' do
                   end
               end
           end
-           target.build_configurations.each do |config|
-             config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
-           end
       end
 # @generated begin fix2 - expo prebuild (DO NOT MODIFY) sync-8f5a065399fe8e6d9e5268295047ec3eb1f252b5
  installer.pods_project.targets.each do |target|

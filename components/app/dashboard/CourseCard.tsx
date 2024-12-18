@@ -138,7 +138,7 @@ export default function CourseCard(props: {
                   flexDirection: 'row',
                   marginRight: 10,
                 }}>
-                  {!props.course.grades[props.gradingPeriod]?.active &&
+                  {props.course.grades[props.gradingPeriod]?.value && !props.course.grades[props.gradingPeriod]?.active &&
                     <MaterialIcons style={{marginTop: 2}} name="check" size={16} color={colors.text} />}
                 </View>
               </>

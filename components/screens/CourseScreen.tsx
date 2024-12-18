@@ -104,20 +104,19 @@ export default function CourseScreen(props: {
       if (courseInitial == null || alternateKey == null) return;
 
       if (oldGradebooks[alternateKey] != null && allowGetFromStorage) {
-        if (!courseInitial.grades[gradeCategory]?.active) {
+          if (courseInitial.grades[gradeCategory]?.active) {
+              Toast.show({
+                  type: "info",
+                  text1: "Cached Grades",
+                  text2:
+                      "Scorecard has a copy of this grading period, but grades are still active. Refresh to update.",
+              });
+          }
           setCourse(oldGradebooks[alternateKey]);
           setLastUpdatedOldGradingPeriod(
             oldGradebooks[alternateKey].lastUpdated
           );
           return;
-        } else {
-          Toast.show({
-            type: "info",
-            text1: "Refreshing Grades",
-            text2:
-              "Scorecard has a copy of this grading period, but is refreshing from Frontline since grades are still active.",
-          });
-        }
       }
 
       dispatch(
@@ -135,6 +134,7 @@ export default function CourseScreen(props: {
         numCourses,
         login.username,
         login.password,
+        gradeCategory,
         undefined,
         (status) => {
           !found && dispatch(setRefreshStatus(status));
@@ -146,7 +146,6 @@ export default function CourseScreen(props: {
 
           setLastUpdatedOldGradingPeriod(new Date().toISOString());
         },
-        gradeCategory
       );
 
         content.courses.forEach((c) => {

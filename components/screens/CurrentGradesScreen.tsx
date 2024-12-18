@@ -109,6 +109,7 @@ export default function CurrentGradesScreen(props: {
         courses.length,
         username,
         password,
+        currentGradeCategory,
         (info) => {
           dispatch(setSchoolName(info.school));
         },

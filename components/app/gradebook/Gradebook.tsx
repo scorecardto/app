@@ -19,6 +19,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import useColors from "../../core/theme/useColors";
 import {useSelector} from "react-redux";
 import {RootState} from "../../core/state/store";
+import MediumText from "../../text/MediumText";
 
 const { width: viewportWidth, height: viewportHeight } =
   Dimensions.get("window");
@@ -188,7 +189,7 @@ function Gradebook(props: {
           height: "100%",
         }}
       >
-        <Carousel
+        {categories.length > 0 ? <Carousel
           ref={ref}
           data={[null, ...categories]}
           renderItem={({ item, index }) => {
@@ -451,7 +452,10 @@ function Gradebook(props: {
           onScrollIndexChanged={(index) => {
             carouselChangeHandlers.current.forEach((f) => f(index));
           }}
-        />
+        /> : <View style={{alignItems: 'center', paddingTop: 30}}>
+            <MediumText style={{color: colors.text}}>No assignments!</MediumText>
+            <MediumText style={{color: colors.text}}>This may be a semester average.</MediumText>
+        </View>}
       </View>
     </View>
   );

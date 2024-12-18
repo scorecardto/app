@@ -178,6 +178,7 @@ async function parseHome(host: string, cookies: string) {
   const columnNames: string[] = [];
 
   const courses: Course[] = [];
+  const periodKeys: {[course: string]: string[]} = {};
 
   for (let idx = 0; idx < courseElements.length; idx++) {
     const courseElement = courseElements[idx];
@@ -196,6 +197,7 @@ async function parseHome(host: string, cookies: string) {
     const name = cell.textContent;
 
     const grades: Course["grades"] = [];
+    const keys: string[] = [];
 
     const gradeElements = homeData.querySelectorAll(
       `.studentGradingBottomRight tr:nth-child(${idx + 1}) td`
@@ -222,6 +224,7 @@ async function parseHome(host: string, cookies: string) {
       } else {
         grades.push(null);
       }
+      keys.push(key);
     });
 
     courses.push({
@@ -231,9 +234,10 @@ async function parseHome(host: string, cookies: string) {
       name,
       grades,
     });
+    periodKeys[courseKey] = keys;
   }
 
-  return { courses, gradeCategoryNames: columnNames };
+  return { courses, periodKeys, gradeCategoryNames: columnNames };
 }
 
 async function parseCourse(host: string, cookies: string, courseKey: string) {
@@ -377,16 +381,16 @@ async function fetchCourse(
   username: string,
   password: string,
   courseKeyOrIdx: string | number,
+  gradeCategory?: number,
   emailsCallback?: (emails: {[code: string]: {name: string, email: string}}) => void,
   courseInfoCallback?: (num: number, names: string[]) => void,
-  gradeCategory?: number
 ): Promise<Course> {
   const cookies = await entryPoint(host);
   await login(host, cookies, username, password);
 
   emailsCallback && parseEmail(host, cookies).then(emailsCallback);
 
-  const { courses, gradeCategoryNames } = await parseHome(host, cookies);
+  const { courses, periodKeys, gradeCategoryNames } = await parseHome(host, cookies);
   courseInfoCallback && courseInfoCallback(courses.length, gradeCategoryNames);
 
   const course =
@@ -394,7 +398,7 @@ async function fetchCourse(
       ? courses[courseKeyOrIdx]
       : courses.find((c) => c.key == courseKeyOrIdx)!;
 
-  const key = gradeCategory != undefined ? course.grades[gradeCategory]?.key : course.key;
+  const key = (gradeCategory != undefined && periodKeys[course.key][gradeCategory]) || course.key;
   if (!key) return course;
 
   let gradeCategories = await parseCourse(host, cookies, key);
@@ -433,6 +437,7 @@ async function fetchAllContent(
   oldNumCourses: number | undefined,
   username: string,
   password: string,
+  gradeCategory?: number,
   infoCallback?: (info: {
     firstName: string;
     lastName: string;
@@ -441,7 +446,6 @@ async function fetchAllContent(
   }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void,
   courseCallback?: (course: Course) => void,
-  gradeCategory?: number
 ): Promise<AllContent> {
   let numCourses = oldNumCourses || 8;
 
@@ -460,6 +464,7 @@ async function fetchAllContent(
       username,
       password,
       i,
+      gradeCategory,
       i == 0 ? (e) => {emails = e} : undefined,
       async (realNum, names) => {
         if (realNum > numCourses) {
@@ -471,7 +476,6 @@ async function fetchAllContent(
         numCourses = realNum;
         gradeCategoryNames = names;
       },
-      gradeCategory
     )
       .then((course) => {
         courseCallback && courseCallback(course);

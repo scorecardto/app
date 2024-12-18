@@ -80,6 +80,7 @@ const ConnectAccountScreenOld = (props: {
         undefined,
         username,
         password,
+        undefined,
         (name) => {
           clearTimeout(timeoutId);
 
@@ -281,6 +282,7 @@ const ConnectAccountScreen = (props: {
         undefined,
         username,
         password,
+        undefined,
         (name) => {
           clearTimeout(timeoutId);
 
