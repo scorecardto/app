@@ -63,8 +63,6 @@ export default function CourseScreen(props: {
   useEffect(() => {
     if (course != null) return;
 
-    console.log("Refreshing");
-
     refreshGradingPeriod(true);
   }, [courseInitial]);
 

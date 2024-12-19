@@ -111,8 +111,6 @@ export default function CreateClubPostScreen(props: {
     // @ts-ignore
     const { size } = await FileSystem.getInfoAsync(uri, { size: true });
 
-    console.log(size);
-
     if (size > 5 * 1024 * 1024) {
       Toast.show({
         type: "info",
@@ -127,10 +125,6 @@ export default function CreateClubPostScreen(props: {
         returnableOutputType: "uri",
       });
     }
-
-    // @ts-ignore
-    const { size2 } = await FileSystem.getInfoAsync(uri, { size: true });
-    console.log(size2);
 
     Toast.show({
       type: "info",
@@ -148,7 +142,6 @@ export default function CreateClubPostScreen(props: {
       }
     );
 
-    console.log(ret.body);
     // @ts-ignore
     const body = JSON.parse(ret.body);
 

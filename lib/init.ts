@@ -219,11 +219,6 @@ export default async function initialize(
       return "addPhoneNumber";
     }
   } else {
-    // if (1 + 1 === 2) {
-    //   return "scorecard";
-    // }
-    console.log("going to start");
-
     return "start";
   }
 }

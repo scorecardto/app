@@ -106,14 +106,7 @@ export default function ViewClubScreen(props: {
   }, [club]);
   const join = useCallback(async () => {
     getEmail().then((email: string) => {
-      console.log(email);
-
       if (club?.isMember) return;
-
-      console.log({
-        email,
-        internalCode: club!.internalCode,
-      });
 
       api
         .post({

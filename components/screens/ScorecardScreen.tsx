@@ -94,8 +94,6 @@ export default function ScorecardScreen(props: {
     if (courses && user) {
       user?.getIdToken().then((token) => {
         updateStatus(courses, token).then((s) => {
-          console.log("update", s);
-
           dispatch(setSocialConnected(s.success));
           dispatch(setSchool(s.school));
         });

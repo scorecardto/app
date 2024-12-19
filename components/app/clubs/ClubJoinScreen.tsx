@@ -35,8 +35,6 @@ export default function ClubJoinScreen(props: {
 
   const { clubCode } = props.route.params;
 
-  console.log(clubCode);
-
   const club = useSelector((s: RootState) =>
     s.social.clubs.find((c) => c.clubCode.toLowerCase() === clubCode)
   );
@@ -68,8 +66,6 @@ export default function ClubJoinScreen(props: {
     setLoading(true);
 
     getEmail().then((email: string) => {
-      console.log(email);
-
       if (!club) {
         props.navigation.goBack();
         Toast.show({
@@ -107,11 +103,6 @@ export default function ClubJoinScreen(props: {
 
         return;
       }
-
-      console.log({
-        email,
-        internalCode: club.internalCode,
-      });
 
       api
         .post({

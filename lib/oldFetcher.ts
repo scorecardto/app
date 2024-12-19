@@ -553,12 +553,6 @@ const fetchGradeCategoriesForCourses = async (
     for (let i = 0; i < reportCard.courses.length; i++) {
         const course = reportCard.courses[i];
 
-        console.log(
-            `Getting grade categories for ${course.name} (${i + 1}/${
-                reportCard.courses.length
-            })`
-        );
-
         onStatusUpdate?.({
             tasksCompleted: i + 2,
             taskRemaining: reportCard.courses.length + 2,

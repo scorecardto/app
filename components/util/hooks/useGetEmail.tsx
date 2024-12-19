@@ -45,8 +45,6 @@ function useGetEmail() {
   const run = useCallback(async (): Promise<string> => {
     const preferredEmail = store.getState().social.preferredEmail;
 
-    console.log("preferred", preferredEmail);
-
     if (preferredEmail && validate(preferredEmail)) {
       return preferredEmail.toLowerCase();
     }

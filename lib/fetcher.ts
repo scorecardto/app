@@ -134,11 +134,7 @@ async function parseHomeInfo(host: string, cookies: string) {
     homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(1)")
       ?.innerText || "";
 
-  console.log("storing", schoolName);
-
   ScorecardModule.storeItem("school", schoolName);
-
-  console.log("immediate result", ScorecardModule.getItem("school"));
 
   const gradeLabel =
     homeData.querySelector("#defaultInfoHeader tr:nth-child(2) td:nth-child(2)")

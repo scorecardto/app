@@ -99,7 +99,11 @@ export function setupForegroundNotifications(
       navigation.navigate({ name: "viewClub", params: { internalCode: data.clubCode } });
     }
   };
-  Notifications.getLastNotificationResponseAsync().then(listener);
+  Notifications.getLastNotificationResponseAsync().then(notif => {
+    console.log("GOT NOTIF!!!", notif);
+    listener(notif)
+  });
+  console.log("ADDED HANDLER");
 
   return Notifications.addNotificationResponseReceivedListener(listener).remove;
 }

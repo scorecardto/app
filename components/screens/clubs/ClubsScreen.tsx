@@ -22,8 +22,6 @@ export default function ClubsScreen(props: {
   });
 
   const school = useSelector((r: RootState) => {
-    console.log("school: ", r.social.school);
-
     return r.social.school;
   });
 

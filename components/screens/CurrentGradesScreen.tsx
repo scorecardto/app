@@ -151,7 +151,6 @@ export default function CurrentGradesScreen(props: {
 
     if (mins > MINS_TO_REFRESH) {
       onRefresh();
-      console.log("will refresh");
     }
   }, [lastRecordDate, refreshing]);
 

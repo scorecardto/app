@@ -6,7 +6,7 @@ import firestore from "@react-native-firebase/firestore";
 import analytics from "@react-native-firebase/analytics";
 import auth from "@react-native-firebase/auth";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Alert, useColorScheme } from "react-native";
+import {Alert, LogBox, useColorScheme} from "react-native";
 import MobileDataProvider from "./components/core/context/MobileDataProvider";
 import { useEffect, useRef, useState } from "react";
 import Color from "./lib/Color";
@@ -61,7 +61,11 @@ import ViewClubScreen from "./components/screens/clubs/ViewClubScreen";
 import ScorecardModule from "./lib/expoModuleBridge";
 import AddEmailScreen from "./components/screens/welcome/AddEmailScreen";
 import EditEmailScreen from "./components/screens/account/EditEmailScreen";
+import ignoreWarns from "./lib/ignoreWarns";
 
+ignoreWarns([
+    'Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`',
+]);
 SplashScreen.preventAutoHideAsync();
 setupBackgroundNotifications();
 

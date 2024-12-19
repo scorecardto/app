@@ -88,10 +88,6 @@ export default function ClubAdminScreen(props: {
     }
   }, [club, activeClub]);
 
-  useEffect(() => {
-    console.log(club);
-  }, [club]);
-
   const ScrollView = Platform.OS === "ios" ? iOSScrollView : AndroidScrollView;
   return (
     <View

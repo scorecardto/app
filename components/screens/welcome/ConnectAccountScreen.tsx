@@ -316,8 +316,6 @@ const ConnectAccountScreen = (props: {
             loginSlice.setDistrictVipProgramDate(district.vipProgramDate)
           );
 
-          console.log(schoolLabel);
-
           ScorecardModule.storeItem(
             "login",
             JSON.stringify({

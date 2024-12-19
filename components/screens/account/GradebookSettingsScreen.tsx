@@ -15,8 +15,6 @@ export default function GradebookSettingsScreen(props: {
   const district = useSelector((state: RootState) => state.login.district);
   const username = useSelector((state: RootState) => state.login.username);
 
-  console.log(store.getState());
-
   return (
     <AccountSubpageScreen
       header="Gradebook"

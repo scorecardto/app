@@ -8,9 +8,7 @@ export default function MobileDataProvider(props: {
   const [confirmPhoneNumberCallback, setConfirmPhoneNumberCallback] = useState(
     () => {
       return async (code: string) => {
-        console.log(
-          "Attempted to confirm phone number, but no callback was set."
-        );
+        console.log("Attempted to confirm phone number, but no callback was set.");
       };
     }
   );

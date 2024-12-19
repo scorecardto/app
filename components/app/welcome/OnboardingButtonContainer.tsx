@@ -35,8 +35,6 @@ export default function OnboardingButtonContainer() {
           iconPadding={0}
           iconSize={32}
           onPress={() => {
-            console.log("pressed");
-
             navigation.goBack();
           }}
         />

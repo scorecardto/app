@@ -23,8 +23,6 @@ function getGiveVipFeaturesFlag(userRank: UserRankType): boolean {
   const vipProgramEnabled =
     vipProgramDate !== null && now.getTime() < Date.parse(vipProgramDate);
 
-  // console.log(Date.parse(vipProgramDate) - now.getTime());
-
   if (
     userRank !== "DEFAULT" ||
     Platform.OS === "android" ||
@@ -71,8 +69,6 @@ function useFeatureFlag(flag: FeatureFlag): boolean {
     ) {
       const vipProgramDate = state.login.districtVipProgramDate;
       const numInvitedNumbers = state.invitedNumbers.numbers?.length ?? 0;
-
-      // console.log(numInvitedNumbers, vipProgramDate);
 
       const vipProgramEnabled =
         vipProgramDate !== null && now.getTime() < Date.parse(vipProgramDate);

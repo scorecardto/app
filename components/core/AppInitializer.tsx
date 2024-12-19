@@ -36,11 +36,7 @@ export default function AppInitializer(props: {
   const { user, setUser } = useContext(MobileDataContext);
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    console.log(user);
-
     setUser(user);
-    // user?.getIdToken().then(console.log);
-
     if (!userReady) setUserReady(true);
   }
 
@@ -67,8 +63,6 @@ export default function AppInitializer(props: {
     async function prepare() {
       setAppReadyLocal(false);
       props.setAppReady(false);
-
-      console.log("Preparing app data...");
 
       const fontsAsync = Font.loadAsync({
         AnekKannada_400Regular: AnekKannada_400Regular,

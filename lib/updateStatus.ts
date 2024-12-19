@@ -15,8 +15,6 @@ export async function updateStatus(
   const name = ScorecardModule.getItem("name");
   const school = ScorecardModule.getItem("school");
 
-  console.log("school in storage", school);
-
   const { host, grade, realFirstName, realLastName } = JSON.parse(login);
 
   const { firstName, lastName } = JSON.parse(name);
@@ -58,8 +56,6 @@ export async function updateStatus(
       },
     }
   );
-
-  console.log(result);
 
   return {
     success: result.data.result === "success",

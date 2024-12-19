@@ -33,16 +33,9 @@ export default function ClubPreview(props: { club: Club }) {
   const api = useScApi();
   const join = useCallback(async () => {
     getEmail().then((email: string) => {
-      console.log(email);
-
       if (props.club.isMember) return;
 
       setLoading(true);
-
-      console.log({
-        email,
-        internalCode: props.club.internalCode,
-      });
 
       api
         .post({
