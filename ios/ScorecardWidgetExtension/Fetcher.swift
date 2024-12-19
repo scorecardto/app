@@ -27,7 +27,7 @@ func login(_ host: String, _ cookies: String, _ username: String, _ password: St
   }
 }
 
-func parseHome(_ host: String, _ cookies: String) async throws -> ([Course], [String]) {
+func parseHome(_ host: String, _ cookies: String) async throws -> ([Course], [String: [String]], [String]) {
   var request = URLRequest(url: URL(string: "https://\(host)/selfserve/PSSViewReportCardsAction.do?x-tab-id=undefined")!)
   request.httpMethod = "POST"
   request.setValue(cookies, forHTTPHeaderField: "Cookie")
@@ -164,7 +164,7 @@ func fetchCourse(_ host: String, _ username: String, _ password: String, _ cours
 
   let course = courses[courseIdx];
 
-  return Course(key: course.key, name: course.name, grades: course.grades, gradeCategories: try await parseCourse(host, cookies, gradingPeriod == nil ? course.key : periodKeys[course.key][gradingPeriod]))
+  return Course(key: course.key, name: course.name, grades: course.grades, gradeCategories: try await parseCourse(host, cookies, gradingPeriod == nil ? course.key : periodKeys[course.key]?[gradingPeriod!] ?? course.key))
 }
 
 struct AllContent {
