@@ -11,5 +11,6 @@ console.warn = (message: string, ...args) => {
 
 
 export default function ignoreWarns(patterns: (string|RegExp)[]) {
+    LogBox.ignoreLogs(patterns);
     blocking.push(...patterns);
 }
