@@ -3,7 +3,7 @@
     "name": "Scorecard",
     "slug": "scorecard",
     "scheme": "scorecard",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -59,7 +59,7 @@
       "icon": "./assets/icon.png",
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 22,
+      "versionCode": 24,
       "intentFilters": [
         {
           "action": "VIEW",
