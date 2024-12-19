@@ -119,12 +119,6 @@ export default function App(props: { resetKey: string }) {
     }
   }, [schoolName, gradeLabel]);
 
-  useEffect(() => {
-    if (navigationRef.current) {
-      return setupForegroundNotifications(navigationRef.current);
-    }
-  }, [navigationRef.current]);
-
   return (
     <MobileDataProvider>
       <AppInitializer
@@ -142,6 +136,9 @@ export default function App(props: { resetKey: string }) {
                 <BottomSheetProvider>
                   <NavigationContainer
                     ref={navigationRef}
+                    onReady={() => {
+                      setupForegroundNotifications(navigationRef.current!);
+                    }}
                     onStateChange={async () => {
                       const previousRouteName = routeNameRef.current;
                       const currentRouteName =
