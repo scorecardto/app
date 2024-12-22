@@ -25,15 +25,16 @@ export default function CourseScreen(props: {
   route: any;
   navigation: NavigationProp<any>;
 }) {
-  const { key, gradeCategory } = props.route.params;
+  const recordCategory = useSelector(
+      (root: RootState) => root.gradeData.record?.gradeCategory
+  );
+  const { key } = props.route.params;
+  const gradeCategory = props.route.params.gradeCategory ?? recordCategory;
 
   const courseInitial = useSelector(
     (state: RootState) =>
       state.gradeData.record?.courses.find((c) => c.key === key),
     () => true
-  );
-  const recordCategory = useSelector(
-    (root: RootState) => root.gradeData.record?.gradeCategory
   );
 
   const [course, setCourse] = useState(
