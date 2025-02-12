@@ -1645,9 +1645,9 @@ PODS:
     - React-Core
   - react-native-cookies (6.2.1):
     - React-Core
-  - react-native-date-picker (5.0.8):
+  - react-native-date-picker (5.0.10):
     - React-Core
-  - react-native-keyboard-controller (1.15.0):
+  - react-native-keyboard-controller (1.16.2):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - react-native-loader-kit (2.0.8):
@@ -1835,7 +1835,7 @@ PODS:
     - React-RCTImage
   - RNShare (10.2.1):
     - React-Core
-  - RNSVG (13.14.1):
+  - RNSVG (15.11.1):
     - React-Core
   - SDWebImage (5.15.8):
     - SDWebImage/Core (= 5.15.8)
@@ -2297,8 +2297,8 @@ SPEC CHECKSUMS:
   react-native-blur: db09583409bd872539bf6e915df484d792373810
   react-native-compressor: b2009ba82a35d463267c4d4ba3c22d8c16134a9e
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
-  react-native-date-picker: 8a0d56cdef18f61945e6d0dfd250dc1b8e7a313e
-  react-native-keyboard-controller: df7343724ca925cf2d3fe12116d23500940b9178
+  react-native-date-picker: 58c231c37c1a9be5715018b369210c34e83f6e48
+  react-native-keyboard-controller: be99f850c8bd0578f586acdff6920b16a93b9345
   react-native-loader-kit: ed18c8ce83b69083211912326897d8286f37d797
   react-native-pager-view: 0ccb8bf60e2ebd38b1f3669fa3650ecce81db2df
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
@@ -2333,7 +2333,7 @@ SPEC CHECKSUMS:
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   RNShare: 0fad69ae2d71de9d1f7b9a43acf876886a6cb99c
-  RNSVG: af3907ac5d4fa26a862b75a16d8f15bc74f2ceda
+  RNSVG: 15e81fc0c2b5657b76a5d13eafcc3f262141642c
   SDWebImage: cb032eba469c54e0000e78bcb0a13cdde0a52798
   SDWebImageAVIFCoder: 8348fef6d0ec69e129c66c9fe4d74fbfbf366112
   SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
