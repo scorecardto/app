@@ -4,9 +4,11 @@ import qs from "qs";
 import { Assignment, Course, GradeCategory } from "scorecard-types";
 import RefreshStatus from "./types/RefreshStatus";
 import "qs";
-import Toast from "react-native-toast-message";
 import { fetchGradeCategoriesForCourse, fetchReportCard } from "./oldFetcher";
 import ScorecardModule from "./expoModuleBridge";
+import Toast from "react-native-toast-message";
+
+type ErrorCode = 'INCORRECT_PASSWORD' | 'INCORRECT_USERNAME' | 'SESSION_EXPIRED';
 
 const customFetch = (url: RequestInfo | URL, init?: RequestInit) => {
   return fetch(url, {
@@ -433,6 +435,8 @@ async function fetchAllContent(
   oldNumCourses: number | undefined,
   username: string,
   password: string,
+  broadcastErrors: false|((name:string) => void),
+  errorCallback?: (error: ErrorCode) => void,
   gradeCategory?: number,
   infoCallback?: (info: {
     firstName: string;
@@ -441,9 +445,11 @@ async function fetchAllContent(
     grade: string;
   }) => void,
   onStatusUpdate?: (status: RefreshStatus) => void,
-  courseCallback?: (course: Course) => void,
-): Promise<AllContent> {
+  courseCallback?: (course: Course) => void
+): Promise<AllContent|null> {
   let numCourses = oldNumCourses || 8;
+
+  let error = false;
 
   let resolved: number[] = [];
   let courses: Course[] = [];
@@ -474,6 +480,8 @@ async function fetchAllContent(
       },
     )
       .then((course) => {
+        if (error) return;
+
         courseCallback && courseCallback(course);
 
         resolved.push(i);
@@ -482,14 +490,38 @@ async function fetchAllContent(
         onStatusUpdate && onStatusUpdate({ type: "GETTING_COURSES", status: "Fetching courses...",  tasksCompleted: resolved.length, taskRemaining: numCourses - resolved.length });
       })
       .catch((e) => {
-        console.error(e.message);
-        if (e.message.includes("SESSION_EXPIRED")) {
-          Toast.show({
-            type: "info",
-            text1: "Session Expired",
-            text2: "Scorecard has experienced an error. Please try again.",
-          });
+        if (error) return;
+
+        (errorCallback || console.error)(e.message);
+
+        if (broadcastErrors) {
+          switch (e.message) {
+            case "INCORRECT_PASSWORD":
+            case "INCORRECT_USERNAME":
+              Toast.show({
+                type: "info",
+                text1: "Incorrect Login",
+                text2: "Go to your settings or tap this message to edit your credentials.",
+                onPress: () => broadcastErrors("gradebookSettings")
+              });
+              break;
+            case "SESSION_EXPIRED":
+              Toast.show({
+                type: "info",
+                text1: "Session Expired",
+                text2: "Scorecard has experienced an error. Please try again.",
+              });
+              break;
+            default:
+              Toast.show({
+                type: "info",
+                text1: e.message,
+                text2: "Scorecard has experienced an error. Please try again.",
+              });
+              break;
+          }
         }
+        error = true;
       });
   };
 
@@ -498,11 +530,14 @@ async function fetchAllContent(
   }
 
   const wait = async (resolve: (val: void) => void) => {
-    if (resolved.length == numCourses) resolve();
+    if (error || resolved.length == numCourses) resolve();
 
     setTimeout(() => wait(resolve), 50);
   };
   await new Promise((res) => wait(res));
+
+  onStatusUpdate && onStatusUpdate({ type: "IDLE", status: "",  tasksCompleted: 0, taskRemaining: 0 });
+  if (error) return null;
 
   if (emails) {
     for (const code in emails) {
@@ -511,7 +546,6 @@ async function fetchAllContent(
     }
   }
 
-  onStatusUpdate && onStatusUpdate({ type: "IDLE", status: "",  tasksCompleted: 0, taskRemaining: 0 });
 
   return {
     courses,

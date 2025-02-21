@@ -1,6 +1,10 @@
 {
   "expo.jsEngine": "hermes",
   "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
+  "newArchEnabled": "false",
+  "ios.deploymentTarget": "15.1",
   "ios.useFrameworks": "static",
-  "ios.deploymentTarget": "13.4"
+  "apple.extraPods": "[{\"name\":\"SwiftSoup\"}]",
+  "apple.ccacheEnabled": "false",
+  "apple.privacyManifestAggregationEnabled": "true"
 }

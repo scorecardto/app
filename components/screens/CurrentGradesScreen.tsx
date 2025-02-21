@@ -19,12 +19,13 @@ import useColors from "../core/theme/useColors";
 import StatusText from "../text/StatusText";
 import { setRefreshStatus } from "../core/state/grades/refreshStatusSlice";
 import fetchAndStore from "../../lib/fetchAndStore";
-import { setSchoolName } from "../core/state/user/loginSlice";
+import {setPassword, setSchoolName} from "../core/state/user/loginSlice";
 import { RouterContext } from "react-native-actions-sheet/dist/src/hooks/use-router";
 import { reloadApp } from "../../lib/reloadApp";
 import Button from "../input/Button";
 import {clearGradeChanges, updateGradeChanges} from "../core/state/grades/gradeDataSlice";
 import ScorecardModule from "../../lib/expoModuleBridge";
+import Toast from "react-native-toast-message";
 
 export default function CurrentGradesScreen(props: {
   navigation: NavigationProp<any>;
@@ -109,6 +110,8 @@ export default function CurrentGradesScreen(props: {
         courses.length,
         username,
         password,
+        props.navigation.navigate,
+        undefined,
         currentGradeCategory,
         (info) => {
           dispatch(setSchoolName(info.school));
@@ -119,9 +122,10 @@ export default function CurrentGradesScreen(props: {
       );
 
       reportCard.then(async (data) => {
-        await fetchAndStore(data, dispatch, false);
         setRefreshing(false);
+        if (data == null) return;
 
+        await fetchAndStore(data, dispatch, false);
         if (refreshForClubs) {
           reloadApp();
         }

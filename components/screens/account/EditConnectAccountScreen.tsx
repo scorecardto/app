@@ -50,6 +50,36 @@ const EditConnectAccountScreen = (props: {
         numCourses,
         username,
         password,
+        false,
+        msg => {
+            if (msg === "INCORRECT_PASSWORD") {
+                setLoading(false);
+                setPassword("");
+                Toast.show({
+                    type: "info",
+                    text1: "Incorrect password",
+                    text2: "Enter the password you use to log into Frontline. Too many incorrect attempts will lock you out of your account.",
+                });
+                passwordRef.current?.focus();
+                return;
+            } else if (msg === "INCORRECT_USERNAME") {
+                setLoading(false);
+                setUsername("");
+                setPassword("");
+
+                Toast.show({
+                    type: "info",
+                    text1: "Incorrect username",
+                    text2: "Enter the username you use to log into Frontline.",
+                });
+
+                usernameRef.current?.focus();
+
+                return;
+            } else {
+                setLoading(false);
+            }
+        },
         gradingPeriod,
         (name) => {
           schoolLabel = name.school;
@@ -74,6 +104,7 @@ const EditConnectAccountScreen = (props: {
 
       reportCard
         .then(async (data) => {
+          if (data == null) return;
           loginSlice.setDistrict(district.url);
           loginSlice.setUsername(username);
           loginSlice.setPassword(password);
@@ -96,40 +127,6 @@ const EditConnectAccountScreen = (props: {
 
           await fetchAndStore(data, dispatch, true, true, true);
         })
-        .catch((e: Error) => {
-          if (e.message === "INCORRECT_PASSWORD") {
-            setLoading(false);
-            setPassword("");
-            Toast.show({
-              type: "info",
-              text1: "Incorrect password",
-              text2:
-                "Enter the password you use to log into Frontline. Too many incorrect attempts will lock you out of your account.",
-              visibilityTime: 5000,
-              position: "top",
-            });
-            passwordRef.current?.focus();
-            return;
-          } else if (e.message === "INCORRECT_USERNAME") {
-            setLoading(false);
-            setUsername("");
-            setPassword("");
-
-            Toast.show({
-              type: "info",
-              text1: "Incorrect username",
-              text2: "Enter the username you use to log into Frontline.",
-              visibilityTime: 5000,
-              position: "top",
-            });
-
-            usernameRef.current?.focus();
-
-            return;
-          } else {
-            setLoading(false);
-          }
-        });
     }
   }, [loading, username, password, district.url]);
 

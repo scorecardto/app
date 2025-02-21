@@ -27,19 +27,15 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>scorecard</string>
+          <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
           <string>com.scorecardgrades.mobile</string>
         </array>
       </dict>
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.googleusercontent.apps.870859629353-p4k4ptusm5irenbqu4grggodu1oulla4</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>app-1-870859629353-ios-5ad00397a811035b968d38</string>
+          <string>com.googleusercontent.apps.870859629353-c7al6iubtqjar419lec0tmkef298tonn</string>
         </array>
       </dict>
       <dict>
@@ -48,38 +44,24 @@
           <string>exp+scorecard</string>
         </array>
       </dict>
-      <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>com.scorecardgrades.mobile</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>scorecard</string>
-        </array>
-      </dict>
     </array>
     <key>CFBundleVersion</key>
-    <string>96</string>
+    <string>114</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
       <string>instagram-stories</string>
       <string>snapchat</string>
     </array>
+    <key>LSMinimumSystemVersion</key>
+    <string>12.0</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
+      <false/>
+      <key>NSAllowsLocalNetworking</key>
       <true/>
-      <key>NSExceptionDomains</key>
-      <dict>
-        <key>localhost</key>
-        <dict>
-          <key>NSExceptionAllowsInsecureHTTPLoads</key>
-          <true/>
-        </dict>
-      </dict>
     </dict>
     <key>NSCameraUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your camera</string>
@@ -111,7 +93,7 @@
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
-      <string>armv7</string>
+      <string>arm64</string>
     </array>
     <key>UIRequiresFullScreen</key>
     <false/>
@@ -133,5 +115,23 @@
     <string>Automatic</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>appExtensions</key>
+    <array>
+      <dict>
+        <key>targetName</key>
+        <string>expowidgetsWidgetExtension</string>
+        <key>bundleIdentifier</key>
+        <string>com.scorecardgrades.mobile.expowidgetsWidgetExtension</string>
+        <key>entitlements</key>
+        <dict>
+          <key>com.apple.security.application-groups</key>
+          <array>
+            <string>group.com.scorecardgrades.mobile.expowidgets</string>
+          </array>
+          <key>aps-environment</key>
+          <string>development</string>
+        </dict>
+      </dict>
+    </array>
   </dict>
 </plist>

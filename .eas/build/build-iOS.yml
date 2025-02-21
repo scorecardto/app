@@ -1,44 +1,32 @@
 build:
-  name: List files
+  name: Build Scorecard (iOS)
   steps:
+    # taken from https://docs.expo.dev/custom-builds/schema/#ios (but removing bitcode after `pod install`)
     - eas/checkout
     - eas/use_npm_token
     - eas/install_node_modules
-    - run: expo prebuild
-    - run: rm -rf ios/Scorecard.xcodeproj
-    - run: echo y | expo run:ios & disown
-    - run: sed -i '' 's/5.4/5.0/g' ios/Scorecard.xcodeproj/project.pbxproj
-    - run: sed -i '' "15s/.*/pod 'SwiftSoup'/" ios/Podfile
-    - run: ex -sc "86i|      end" -cx ios/Podfile
-    - run: ex -sc "86i|          end" -cx ios/Podfile
-    - run: ex -sc "86i|              end" -cx ios/Podfile
-    - run: ex -sc "86i|                  end" -cx ios/Podfile
-    - run: ex -sc "86i|                      file.settings['COMPILER_FLAGS'] = flags.join(' ')" -cx ios/Podfile
-    - run: ex -sc "86i|                      flags.reject! { |flag| flag == '-GCC_WARN_INHIBIT_ALL_WARNINGS' }" -cx ios/Podfile
-    - run: ex -sc "86i|                      flags = file.settings['COMPILER_FLAGS'].split" -cx ios/Podfile
-    - run: ex -sc "86i|                  if file.settings && file.settings['COMPILER_FLAGS']" -cx ios/Podfile
-    - run: ex -sc "86i|              target.source_build_phase.files.each do |file|" -cx ios/Podfile
-    - run: ex -sc "86i|          if target.name == 'BoringSSL-GRPC'" -cx ios/Podfile
-    - run: ex -sc "86i|      installer.pods_project.targets.each do |target|" -cx ios/Podfile
-    - run: sed -i '' "63s/.*/    <string>$(pcregrep -Mo '<key>CFBundleVersion</key>\s*?<string>\K[0-9]*' ios/Scorecard/Info.plist)<\/string>/" Info.plist
-    - run: sed -i '' "22s/.*/    <string>$(pcregrep -Mo '<key>CFBundleShortVersionString</key>\s*?<string>\K[0-9\.]*' ios/Scorecard/Info.plist)<\/string>/" Info.plist
-    - run: cp Info.plist ios/Scorecard/Info.plist
+    - eas/resolve_build_config
     - eas/resolve_apple_team_id_from_credentials:
         id: resolve_apple_team_id_from_credentials
+    - run: # not entirely sure why eas/prebuild doesn't work, but we just clear ios and completely regenerate it
+        name: prebuild
+        command: |
+          rm -rf ios
+          expo prebuild -p ios
+    - run:
+        name: Strip bitcode
+        command: |
+          xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKCoreKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCoreKit.framework/SCSDKCoreKit -r -o ios/Pods/SnapSDK/SCSDKCoreKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCoreKit.framework/SCSDKCoreKit
+          xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKCreativeKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCreativeKit.framework/SCSDKCreativeKit -r -o ios/Pods/SnapSDK/SCSDKCreativeKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCreativeKit.framework/SCSDKCreativeKit
+          xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKLoginKit.xcframework/ios-arm64_armv7_armv7s/SCSDKLoginKit.framework/SCSDKLoginKit -r -o ios/Pods/SnapSDK/SCSDKLoginKit.xcframework/ios-arm64_armv7_armv7s/SCSDKLoginKit.framework/SCSDKLoginKit
+          xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes
+          xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes
+          xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes
     - run:
         name: Install pods
         working_directory: ./ios
         command: pod install
-    - run: xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKCoreKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCoreKit.framework/SCSDKCoreKit -r -o ios/Pods/SnapSDK/SCSDKCoreKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCoreKit.framework/SCSDKCoreKit
-    - run: xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKCreativeKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCreativeKit.framework/SCSDKCreativeKit -r -o ios/Pods/SnapSDK/SCSDKCreativeKit.xcframework/ios-arm64_armv7_armv7s/SCSDKCreativeKit.framework/SCSDKCreativeKit
-    - run: xcrun bitcode_strip ios/Pods/SnapSDK/SCSDKLoginKit.xcframework/ios-arm64_armv7_armv7s/SCSDKLoginKit.framework/SCSDKLoginKit -r -o ios/Pods/SnapSDK/SCSDKLoginKit.xcframework/ios-arm64_armv7_armv7s/SCSDKLoginKit.framework/SCSDKLoginKit
-    - run: xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx/hermes.framework/hermes
-    - run: xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64/hermes.framework/hermes
-    - run: xcrun bitcode_strip ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes -r -o ios/Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework/ios-arm64_x86_64-maccatalyst/hermes.framework/hermes
-    - run:
-        name: Install pods
-        working_directory: ./ios
-        command: pod install
+    - eas/configure_eas_update
     - eas/configure_ios_credentials
     - eas/configure_ios_version
     - eas/generate_gymfile_from_template:
@@ -46,4 +34,3 @@ build:
           credentials: ${ eas.job.secrets.buildCredentials }
     - eas/run_fastlane
     - eas/find_and_upload_build_artifacts
-    - run: sleep 10

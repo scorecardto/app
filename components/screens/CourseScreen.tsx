@@ -133,6 +133,8 @@ export default function CourseScreen(props: {
         numCourses,
         login.username,
         login.password,
+        props.navigation.navigate,
+        undefined,
         gradeCategory,
         undefined,
         (status) => {
@@ -146,6 +148,8 @@ export default function CourseScreen(props: {
           setLastUpdatedOldGradingPeriod(new Date().toISOString());
         },
       );
+
+      if (!content) return;
 
         content.courses.forEach((c) => {
             oldGradebooks[c.grades[gradeCategory]?.key ?? c.key] = {

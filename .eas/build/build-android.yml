@@ -1,6 +1,7 @@
 build:
   name: Android build without credentials as executed by eas/build command
   steps:
+    # taken from https://docs.expo.dev/custom-builds/schema/#android
     - eas/checkout
 
     - eas/use_npm_token
@@ -13,11 +14,6 @@ build:
 
     - eas/prebuild
     - run: mv node_modules/@bittingz/expo-widgets/android/src/main/java/expo/modules/widgets/Storage.kt node_modules/@bittingz/expo-widgets/android/src/main/java/expo/modules/widgets/Storage-MODULE.kt
-
-    - run: sed -i '' "5s/.*/        buildToolsVersion = '34.0.0'/" android/build.gradle
-    - run: sed -i '' "6s/.*/        minSdkVersion = 24/" android/build.gradle
-    - run: sed -i '' "7s/.*/        compileSdkVersion = 34/" android/build.gradle
-    - run: sed -i '' "8s/.*/        targetSdkVersion = 34/" android/build.gradle
 
     - eas/configure_eas_update:
         inputs:

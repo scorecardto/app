@@ -39,7 +39,10 @@ export async function setupBackgroundNotifications() {
         (JSON.parse(ScorecardModule.getItem("records") ?? "[]"))[0].courses.length,
         username,
         password,
+        false,
+        undefined,
         (JSON.parse(ScorecardModule.getItem("records") ?? "[]"))[0].gradeCategory);
+    if (reportCard == null) return;
 
     const getName = (key: string) =>
         courseSettings[key]?.displayName ??

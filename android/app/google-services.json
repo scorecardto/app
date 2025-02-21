@@ -14,7 +14,23 @@
       },
       "oauth_client": [
         {
-          "client_id": "870859629353-p4k4ptusm5irenbqu4grggodu1oulla4.apps.googleusercontent.com",
+          "client_id": "870859629353-jpdvtmvjrn0ck338t5aievutcbrhsc11.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.scorecardgrades.mobile",
+            "certificate_hash": "0b98963d2d57e5787e744b4589ba840729a45ffc"
+          }
+        },
+        {
+          "client_id": "870859629353-uakc8kjj66p2uopa4qjnqg7m9jielmr5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.scorecardgrades.mobile",
+            "certificate_hash": "70a29147ff445eb294cd4602cf017e741e9d2238"
+          }
+        },
+        {
+          "client_id": "870859629353-ido9sq29ki5f1tp2r9fvkabjl5cimop4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +43,16 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "870859629353-p4k4ptusm5irenbqu4grggodu1oulla4.apps.googleusercontent.com",
+              "client_id": "870859629353-ido9sq29ki5f1tp2r9fvkabjl5cimop4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "870859629353-c7al6iubtqjar419lec0tmkef298tonn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.scorecardgrades.mobile",
+                "app_store_id": "6476124418"
+              }
             }
           ]
         }
