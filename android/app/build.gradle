@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -149,6 +151,8 @@ android {
 }
 
 dependencies {
+	implementation("com.google.code.gson:gson:2.10.1")
+	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("com.google.code.gson:gson:2.10.1")
 	implementation("com.google.code.gson:gson:2.10.1")
     // The version of react-native is set by the React Native Gradle Plugin

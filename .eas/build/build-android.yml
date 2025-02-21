@@ -14,6 +14,8 @@ build:
 
     - eas/prebuild
     - run: mv node_modules/@bittingz/expo-widgets/android/src/main/java/expo/modules/widgets/Storage.kt node_modules/@bittingz/expo-widgets/android/src/main/java/expo/modules/widgets/Storage-MODULE.kt
+    - run: sed -i '' "2s/.*//" node_modules/expo-media-library/android/src/main/AndroidManifest.xml
+    - run: sed -i '' "3s/.*//" node_modules/expo-media-library/android/src/main/AndroidManifest.xml
 
     - eas/configure_eas_update:
         inputs:

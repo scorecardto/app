@@ -4,7 +4,6 @@ import MediumText from "../../text/MediumText";
 import useColors from "../../core/theme/useColors";
 import Button from "../../input/Button";
 import * as ImagePicker from "expo-image-picker";
-import { MediaTypeOptions } from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { Image as Compressor } from "react-native-compressor";
 import { FileSystemUploadType } from "expo-file-system";
@@ -20,7 +19,7 @@ export default function ClubPictureChanger(props: {
 }) {
   const colors = useColors();
 
-  const fcmToken = useRef<string>();
+  const fcmToken = useRef<string>(undefined);
   useEffect(() => {
     return firebase.auth().onAuthStateChanged(function (user) {
       user?.getIdToken().then(function (idToken) {
@@ -31,7 +30,7 @@ export default function ClubPictureChanger(props: {
 
   const upload = useCallback(async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
