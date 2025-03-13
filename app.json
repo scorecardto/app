@@ -6,7 +6,7 @@
       "scorecard",
       "app-1-870859629353-ios-5ad00397a811035b968d38"
     ],
-    "version": "2.1.2",
+    "version": "2.1.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -23,7 +23,7 @@
       "bundleIdentifier": "com.scorecardgrades.mobile",
       "userInterfaceStyle": "automatic",
       "googleServicesFile": "./GoogleService-Info.plist",
-      "buildNumber": "115",
+      "buildNumber": "119",
       "associatedDomains": [
         "applinks:scorecardgrades.com"
       ],
@@ -67,7 +67,7 @@
       "icon": "./assets/icon.png",
       "package": "com.scorecardgrades.mobile",
       "googleServicesFile": "./google-services.json",
-      "versionCode": 30,
+      "versionCode": 34,
       "intentFilters": [
         {
           "action": "VIEW",

@@ -16,11 +16,11 @@ public val IS_WIDGET_UPDATE ="isWidgetUpdate";
 /**
  * Implementation of App Widget functionality.
  */
-class SampleWidget : AppWidgetProvider() {
+class ScorecardWidget : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.hasExtra(IS_WIDGET_UPDATE)) {
             this.onUpdate(context, AppWidgetManager.getInstance(context),
-                AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, SampleWidget::class.java)));
+                AppWidgetManager.getInstance(context).getAppWidgetIds(ComponentName(context, ScorecardWidget::class.java)));
         } else super.onReceive(context, intent)
     }
 

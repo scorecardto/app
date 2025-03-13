@@ -65,7 +65,7 @@ const ConnectAccountScreen = (props: {
             );
           },
         });
-      }, 12000);
+      }, 18000);
 
       const reportCard = fetchAllContent(
         district.url,

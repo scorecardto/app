@@ -382,7 +382,7 @@ async function fetchCourse(
   gradeCategory?: number,
   emailsCallback?: (emails: {[code: string]: {name: string, email: string}}) => void,
   courseInfoCallback?: (num: number, names: string[]) => void,
-): Promise<Course> {
+): Promise<Course|undefined> {
   const cookies = await entryPoint(host);
   await login(host, cookies, username, password);
 
@@ -395,6 +395,7 @@ async function fetchCourse(
     typeof courseKeyOrIdx == "number"
       ? courses[courseKeyOrIdx]
       : courses.find((c) => c.key == courseKeyOrIdx)!;
+  if (!course) return undefined;
 
   const key = (gradeCategory != undefined && periodKeys[course.key][gradeCategory]) || course.key;
   if (!key) return course;
@@ -408,7 +409,7 @@ async function fetchCourse(
         host,
         reportCard.sessionId,
         reportCard.referer,
-        reportCard.courses.find((c) => c.key === key)!
+        reportCard.courses.find((c) => c.key === course.key)!
       )
     ).gradeCategories;
   }
@@ -452,7 +453,7 @@ async function fetchAllContent(
   let error = false;
 
   let resolved: number[] = [];
-  let courses: Course[] = [];
+  let courses: (Course|undefined)[] = [];
   let emails: {[code: string]: {name: string, email: string}} = {};
 
   let gradeCategoryNames: string[] = [];
@@ -482,7 +483,7 @@ async function fetchAllContent(
       .then((course) => {
         if (error) return;
 
-        courseCallback && courseCallback(course);
+        course && courseCallback && courseCallback(course);
 
         resolved.push(i);
         courses[i] = course;
@@ -492,7 +493,8 @@ async function fetchAllContent(
       .catch((e) => {
         if (error) return;
 
-        (errorCallback || console.error)(e.message);
+        errorCallback?.(e.message);
+        console.error(e);
 
         if (broadcastErrors) {
           switch (e.message) {
@@ -541,14 +543,13 @@ async function fetchAllContent(
 
   if (emails) {
     for (const code in emails) {
-        const course = courses.find((c) => c.key.includes(code));
+        const course = courses.find((c) => c?.key.includes(code));
         if (course) course.teacher = emails[code];
     }
   }
 
-
   return {
-    courses,
+    courses: courses.filter(c=>c != undefined),
     gradeCategoryNames,
   };
 }
